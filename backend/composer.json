@@ -1,0 +1,59 @@
+{
+    "name": "***REMOVED***/shipyard",
+    "description": "TLS Shipyard",
+    "type": "project",
+    "license": "GPL-3.0-or-later",
+    "homepage": "https://***REMOVED***.com",
+    "authors": [
+        {
+            "name": "***REMOVED***",
+            "email": "me@***REMOVED***.com",
+            "homepage": "https://***REMOVED***.com/"
+        }
+    ],
+    "require": {
+        "php": ">=7.2",
+        "illuminate/database": "~6.0",
+        "slim/slim": "4.*",
+        "slim/psr7": "^1.1",
+        "lcobucci/jwt": ">=3.3.2 <4.1.5",
+        "vlucas/phpdotenv": "^5.0",
+        "vlucas/valitron": "^1.4",
+        "cocur/slugify": "^4.0",
+        "nesbot/carbon": "^2.50"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.2.20",
+        "phpunit/phpunit": "^9.4||^8.5",
+        "fakerphp/faker": "^1.9",
+        "laracasts/testdummy": "^2.4"
+    },
+    "autoload": {
+        "classmap": [
+            "src"
+        ],
+        "psr-4": {
+            "***REMOVED***\\Shipyard\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "coverage": [
+            "@putenv XDEBUG_MODE=coverage",
+            "phpunit --verbose --fail-on-warning --coverage-text"
+        ],
+        "coverage-report": [
+            "@putenv XDEBUG_MODE=coverage",
+            "phpunit --verbose --fail-on-warning --coverage-text --coverage-html coverage --testdox-html coverage/testdox.html"
+        ],
+        "style-check": "php-cs-fixer fix --dry-run --verbose --diff",
+        "style-fix": "php-cs-fixer fix --verbose",
+        "test": "phpunit --verbose --fail-on-warning",
+        "testOnly": "phpunit --colors --filter",
+        "test-timing": "phpunit --log-junit coverage/junit.xml"
+    }
+}

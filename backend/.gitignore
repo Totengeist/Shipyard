@@ -1,0 +1,15 @@
+.env
+.env.*.php
+.env.php
+.php_cs
+.php_cs.cache
+.phpunit.result.cache
+composer.lock
+coverage/
+docs/
+src/public/*.css
+src/public/*.js
+src/public/*.map
+src/public/install/custom_seeds.php
+src/public/storage/
+vendor/
