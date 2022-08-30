@@ -176,7 +176,7 @@ class SaveControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\User');
         $role_name = $faker->slug;
         $role = Role::create(['slug' => $role_name, 'label' => $faker->name]);
-        $role->givePermissionTo(Permission::whereSlug('edit_saves')->first());
+        $role->givePermissionTo(Permission::whereSlug('edit-saves')->first());
         $user->assignRole($role_name);
         $user->activate();
         Auth::login($user);
@@ -269,7 +269,7 @@ class SaveControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\User');
         $role_name = $faker->slug;
         $role = Role::create(['slug' => $role_name, 'label' => $faker->name]);
-        $role->givePermissionTo(Permission::whereSlug('edit_saves')->first());
+        $role->givePermissionTo(Permission::whereSlug('delete-saves')->first());
         $user->assignRole($role_name);
         $user->activate();
         Auth::login($user);

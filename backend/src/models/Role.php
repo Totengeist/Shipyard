@@ -5,6 +5,7 @@ namespace Shipyard;
 use Illuminate\Database\Eloquent\Model;
 
 class Role extends Model {
+    use HasSlug;
     /**
      * The attributes that are mass assignable.
      *

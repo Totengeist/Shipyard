@@ -5,7 +5,15 @@ namespace Shipyard;
 use Illuminate\Database\Eloquent\Model;
 
 class Challenge extends Model {
-    use CreatesUniqueIDs;
+    use HasTags;
+    use HasRef;
+
+    /**
+     * Label to use for tag table.
+     *
+     * @str
+     */
+    protected $tag_label = 'challenge';
     /**
      * The attributes that are mass assignable.
      *
@@ -22,22 +30,6 @@ class Challenge extends Model {
      */
     protected $hidden = ['id', 'file_path', 'user_id', 'save_id'];
 
-    public static function create(array $attributes = []) {
-        if (!isset($attributes['ref'])) {
-            $attributes['ref'] = self::get_guid();
-        }
-
-        return static::query()->create($attributes);
-    }
-
-    public function save(array $options = []) {
-        if (!isset($this->attributes['ref'])) {
-            $this->setAttribute('ref', self::get_guid());
-        }
-
-        return parent::save($options);
-    }
-
     /**
      * A ship can belong to a user.
      *
@@ -48,11 +40,11 @@ class Challenge extends Model {
     }
 
     /**
-     * A ship can belong to a user.
+     * A challenge has a save.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function save() {
+    public function saveFile() {
         return $this->hasOne(Save::class);
     }
 }

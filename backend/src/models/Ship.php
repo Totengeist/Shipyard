@@ -6,7 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 use Valitron\Validator;
 
 class Ship extends Model {
-    use CreatesUniqueIDs;
+    use HasTags;
+    use HasRef;
+
+    /**
+     * Label to use for tag table.
+     *
+     * @str
+     */
+    protected $tag_label = 'ship';
     /**
      * The attributes that are mass assignable.
      *
@@ -22,22 +30,6 @@ class Ship extends Model {
      * @var array
      */
     protected $hidden = ['id', 'file_path', 'user_id'];
-
-    public static function create(array $attributes = []) {
-        if (!isset($attributes['ref'])) {
-            $attributes['ref'] = self::get_guid();
-        }
-
-        return static::query()->create($attributes);
-    }
-
-    public function save(array $options = []) {
-        if (!isset($this->attributes['ref'])) {
-            $this->setAttribute('ref', self::get_guid());
-        }
-
-        return parent::save($options);
-    }
 
     /**
      * A ship can belong to a user.

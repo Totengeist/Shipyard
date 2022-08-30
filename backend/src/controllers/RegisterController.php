@@ -207,7 +207,7 @@ class RegisterController extends Controller {
      */
     public function destroy(Request $request, Response $response, $args) {
         $id = $args['userid'];
-        if (($perm_check = $this->isOrCan($id, 'delete_users')) !== null) {
+        if (($perm_check = $this->isOrCan($id, 'delete-users')) !== null) {
             return $perm_check;
         }
         $user = User::find($id);
@@ -235,7 +235,7 @@ class RegisterController extends Controller {
      */
     public function update(Request $request, Response $response, $args) {
         $id = $args['user_id'];
-        if (($perm_check = $this->isOrCan($id, 'edit_users')) !== null) {
+        if (($perm_check = $this->isOrCan($id, 'edit-users')) !== null) {
             return $perm_check;
         }
         $data = $request->getParsedBody();

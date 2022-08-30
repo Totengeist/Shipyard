@@ -42,3 +42,7 @@ $factory('Shipyard\User', [
     'email' => $faker->email(),
     'password' => $faker->md5(),
 ]);
+$factory('Shipyard\Tag', [
+    'label' => $faker->words(5, true),
+    'description' => $faker->paragraph(),
+]);

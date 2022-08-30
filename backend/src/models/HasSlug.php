@@ -3,10 +3,9 @@
 namespace Shipyard;
 
 use Cocur\Slugify\Slugify;
-use Illuminate\Database\Eloquent\Model;
 use Valitron\Validator;
 
-class SlugModel extends Model {
+trait HasSlug {
     /**
      * Clean a slug if it is dirty. If no slug is
      * specified, use the name field by default.
@@ -20,7 +19,7 @@ class SlugModel extends Model {
         if (!$this->isDirty()) {
             return;
         }
-        $this->slug = SlugModel::slugify((string) $this->slug);
+        $this->slug = $this->slugify((string) $this->slug);
     }
 
     /**
@@ -28,7 +27,7 @@ class SlugModel extends Model {
      *
      * @return string
      */
-    protected static function slugify(string $label) {
+    protected function slugify(string $label) {
         $slug = (new Slugify())->slugify($label);
 
         return $slug;
@@ -39,7 +38,7 @@ class SlugModel extends Model {
      *
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    protected static function slug_validator(array $data, Validator $v = null) {
+    protected function slug_validator(array $data, Validator $v = null) {
         if ($v === null) {
             $v = new Validator($data);
         }

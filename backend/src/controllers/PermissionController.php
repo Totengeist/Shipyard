@@ -5,11 +5,12 @@ namespace Shipyard\Controllers;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Shipyard\ChecksPermissions;
+use Shipyard\HasSlug;
 use Shipyard\Permission;
-use Shipyard\SlugModel;
 
 class PermissionController extends Controller {
     use ChecksPermissions;
+    use HasSlug;
 
     /**
      * Display a listing of the resource.
@@ -19,7 +20,7 @@ class PermissionController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request, Response $response, $args) {
-        if (($perm_check = $this->can('view_permissions')) !== null) {
+        if (($perm_check = $this->can('view-permissions')) !== null) {
             return $perm_check;
         }
 
@@ -38,14 +39,14 @@ class PermissionController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request, Response $response, $args) {
-        if (($perm_check = $this->can('create_permissions')) !== null) {
+        if (($perm_check = $this->can('create-permissions')) !== null) {
             return $perm_check;
         }
         $data = (array) $request->getParsedBody();
         if (!array_key_exists('slug', $data) || $data['slug'] === null || $data['slug'] === '') {
-            $data['slug'] = SlugModel::slugify($data['label']);
+            $data['slug'] = $this->slugify($data['label']);
         }
-        $validator = SlugModel::slug_validator($data);
+        $validator = $this->slug_validator($data);
         $validator->validate();
         $errors = $validator->errors();
 
@@ -74,7 +75,7 @@ class PermissionController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function show(Request $request, Response $response, $args) {
-        if (($perm_check = $this->can('view_permissions')) !== null) {
+        if (($perm_check = $this->can('view-permissions')) !== null) {
             return $perm_check;
         }
 
@@ -95,7 +96,7 @@ class PermissionController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Response $response, $args) {
-        if (($perm_check = $this->can('edit_permissions')) !== null) {
+        if (($perm_check = $this->can('edit-permissions')) !== null) {
             return $perm_check;
         }
         $data = $request->getParsedBody();
@@ -123,7 +124,7 @@ class PermissionController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request, Response $response, $args) {
-        if (($perm_check = $this->can('delete_permissions')) !== null) {
+        if (($perm_check = $this->can('delete-permissions')) !== null) {
             return $perm_check;
         }
         $role = Permission::where([['slug', $args['slug']]])->first();

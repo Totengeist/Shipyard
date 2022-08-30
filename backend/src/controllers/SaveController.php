@@ -120,7 +120,7 @@ class SaveController extends Controller {
         $data = $request->getParsedBody();
 
         $save = Save::where([['ref', $args['ref']]])->first();
-        $abort = $this->isOrCan($save->user_id, 'edit_saves');
+        $abort = $this->isOrCan($save->user_id, 'edit-saves');
         if ($abort !== null) {
             return $abort;
         }
@@ -157,7 +157,7 @@ class SaveController extends Controller {
      */
     public function destroy(Request $request, Response $response, $args) {
         $save = Save::where([['ref', $args['ref']]])->first();
-        $abort = $this->isOrCan($save->user_id, 'delete_saves');
+        $abort = $this->isOrCan($save->user_id, 'delete-saves');
         if ($abort !== null) {
             return $abort;
         }

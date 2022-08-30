@@ -5,6 +5,8 @@ use Shipyard\Permission;
 use Shipyard\Role;
 
 echo 'Dropping tables.<br>';
+Capsule::schema()->dropIfExists('item_tags');
+Capsule::schema()->dropIfExists('tags');
 Capsule::schema()->dropIfExists('challenges');
 Capsule::schema()->dropIfExists('saves');
 Capsule::schema()->dropIfExists('ships');
@@ -125,31 +127,53 @@ Capsule::schema()->create('challenges', function ($table) {
     $table->string('description')->unique();
     $table->timestamps();
 });
+echo 'Creating tags table.<br>';
+Capsule::schema()->create('tags', function ($table) {
+    $table->increments('id')->unsigned();
+    $table->string('slug')->unique();
+    $table->string('label')->unique();
+    $table->string('description')->nullable();
+    $table->timestamps();
+});
+echo 'Creating link table between items and tags table.<br>';
+Capsule::schema()->create('item_tags', function ($table) {
+    $table->integer('tag_id')->unsigned();
+    $table->integer('item_id')->unsigned();
+    $table->string('type');
+    $table->foreign('tag_id')
+          ->references('id')
+          ->on('tags')
+          ->onDelete('cascade');
+    $table->primary(['tag_id', 'item_id', 'type']);
+});
 
 echo 'Set schema version.<br>';
 Capsule::table('meta')->insert(
     ['name' => 'schema_version', 'section' => 'hidden', 'type' => 'integer', 'default' => '1', 'description' => 'The schema version.']
 );
 // ships
-$edit_ships = Permission::create(['slug' => 'edit_ships', 'label' => 'edit ships']);
-$edit_saves = Permission::create(['slug' => 'edit_saves', 'label' => 'edit saves']);
-$edit_challenges = Permission::create(['slug' => 'edit_challenges', 'label' => 'edit challenges']);
+$edit_ships = Permission::create(['slug' => 'edit-ships', 'label' => 'edit ships']);
+$edit_ships = Permission::create(['slug' => 'delete-ships', 'label' => 'delete ships']);
+$edit_saves = Permission::create(['slug' => 'edit-saves', 'label' => 'edit saves']);
+$edit_saves = Permission::create(['slug' => 'delete-saves', 'label' => 'delete saves']);
+$edit_challenges = Permission::create(['slug' => 'edit-challenges', 'label' => 'edit challenges']);
+$edit_challenges = Permission::create(['slug' => 'delete-challenges', 'label' => 'delete challenges']);
 
 // users
-$delete_users = Permission::create(['slug' => 'delete_users', 'label' => 'delete users']);
-$edit_users   = Permission::create(['slug' => 'edit_users',   'label' => 'edit users']);
+$delete_users = Permission::create(['slug' => 'delete-users', 'label' => 'delete users']);
+$edit_users   = Permission::create(['slug' => 'edit-users',   'label' => 'edit users']);
 
 // roles
-$view_roles   = Permission::create(['slug' => 'view_roles',   'label' => 'view roles']);
-$create_roles = Permission::create(['slug' => 'create_roles', 'label' => 'create roles']);
-$edit_roles   = Permission::create(['slug' => 'edit_roles',   'label' => 'edit roles']);
-$delete_roles = Permission::create(['slug' => 'delete_roles', 'label' => 'delete roles']);
+$view_roles   = Permission::create(['slug' => 'view-roles',   'label' => 'view roles']);
+$create_roles = Permission::create(['slug' => 'create-roles', 'label' => 'create roles']);
+$edit_roles   = Permission::create(['slug' => 'edit-roles',   'label' => 'edit roles']);
+$delete_roles = Permission::create(['slug' => 'delete-roles', 'label' => 'delete roles']);
 
 // permissions
-$view_permissions    = Permission::create(['slug' => 'view_permissions',   'label' => 'view permissions']);
-$create_permissions  = Permission::create(['slug' => 'create_permissions', 'label' => 'create permissions']);
-$edit_permissions    = Permission::create(['slug' => 'edit_permissions',   'label' => 'edit permissions']);
-$delete_permissions  = Permission::create(['slug' => 'delete_permissions', 'label' => 'delete permissions']);
+$view_permissions    = Permission::create(['slug' => 'view-permissions',   'label' => 'view permissions']);
+$create_permissions  = Permission::create(['slug' => 'create-permissions', 'label' => 'create permissions']);
+$edit_permissions    = Permission::create(['slug' => 'edit-permissions',   'label' => 'edit permissions']);
+$delete_permissions  = Permission::create(['slug' => 'delete-permissions', 'label' => 'delete permissions']);
 
 // administrator permissions
 $admin = Role::create(['slug' => 'administrator', 'label' => 'Administrator']);

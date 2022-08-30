@@ -120,7 +120,7 @@ class ShipController extends Controller {
         $data = $request->getParsedBody();
 
         $ship = Ship::where([['ref', $args['ref']]])->first();
-        $abort = $this->isOrCan($ship->user_id, 'edit_ships');
+        $abort = $this->isOrCan($ship->user_id, 'edit-ships');
         if ($abort !== null) {
             return $abort;
         }
@@ -157,7 +157,7 @@ class ShipController extends Controller {
      */
     public function destroy(Request $request, Response $response, $args) {
         $ship = Ship::where([['ref', $args['ref']]])->first();
-        $abort = $this->isOrCan($ship->user_id, 'delete_ships');
+        $abort = $this->isOrCan($ship->user_id, 'delete-ships');
         if ($abort !== null) {
             return $abort;
         }

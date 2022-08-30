@@ -5,11 +5,12 @@ namespace Shipyard\Controllers;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Shipyard\ChecksPermissions;
+use Shipyard\HasSlug;
 use Shipyard\Role;
-use Shipyard\SlugModel;
 
 class RoleController extends Controller {
     use ChecksPermissions;
+    use HasSlug;
 
     /**
      * Display a listing of the resource.
@@ -19,7 +20,7 @@ class RoleController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request, Response $response, $args) {
-        if (($perm_check = $this->can('view_roles')) !== null) {
+        if (($perm_check = $this->can('view-roles')) !== null) {
             return $perm_check;
         }
 
@@ -38,14 +39,14 @@ class RoleController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request, Response $response, $args) {
-        if (($perm_check = $this->can('create_roles')) !== null) {
+        if (($perm_check = $this->can('create-roles')) !== null) {
             return $perm_check;
         }
         $data = (array) $request->getParsedBody();
         if (!array_key_exists('slug', $data) || $data['slug'] === null || $data['slug'] === '') {
-            $data['slug'] = SlugModel::slugify($data['label']);
+            $data['slug'] = $this->slugify($data['label']);
         }
-        $validator = SlugModel::slug_validator($data);
+        $validator = $this->slug_validator($data);
         $validator->validate();
         $errors = $validator->errors();
 
@@ -74,7 +75,7 @@ class RoleController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function show(Request $request, Response $response, $args) {
-        if (($perm_check = $this->can('view_roles')) !== null) {
+        if (($perm_check = $this->can('view-roles')) !== null) {
             return $perm_check;
         }
 
@@ -94,7 +95,7 @@ class RoleController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Response $response, $args) {
-        if (($perm_check = $this->can('edit_roles')) !== null) {
+        if (($perm_check = $this->can('edit-roles')) !== null) {
             return $perm_check;
         }
         $data = $request->getParsedBody();
@@ -120,7 +121,7 @@ class RoleController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request, Response $response, $args) {
-        if (($perm_check = $this->can('delete_roles')) !== null) {
+        if (($perm_check = $this->can('delete-roles')) !== null) {
             return $perm_check;
         }
         $role = Role::where([['slug', $args['slug']]])->first();

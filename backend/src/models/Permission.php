@@ -5,6 +5,7 @@ namespace Shipyard;
 use Illuminate\Database\Eloquent\Model;
 
 class Permission extends Model {
+    use HasSlug;
     /**
      * The attributes that are mass assignable.
      *
