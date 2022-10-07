@@ -32,6 +32,16 @@ class UserControllerTest extends APITestCase {
     }
 
     /**
+     * Check logged in user when not logged in.
+     *
+     * @return void
+     */
+    public function testCannotCheckLoggedInUserWhenNotLoggedIn() {
+        $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertStatus(401);
+    }
+
+    /**
      * Insert a user item without a custom slug.
      *
      * @return void
