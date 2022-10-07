@@ -65,13 +65,13 @@ class ShipControllerTest extends APITestCase {
         $title = $faker->words(3, true);
         $description = $faker->paragraph();
 
-        $this->post('api/v1/ship', ['user_ref' => $user->ref, 'title' => $title, 'description' => $description, 'file_path' => 'tests/science-vessel.ship'], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->post('api/v1/ship', ['user_ref' => $user->ref, 'title' => $title, 'description' => $description, 'file_path' => 'tests/assets/science-vessel.ship'], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
              ->assertJsonResponse([
             'title' => $title,
             'description' => $description,
         ]);
 
-        $ship = json_decode(Ship::where([['title', $title], ['description', $description], ['file_path', 'tests/science-vessel.ship']])->first()->toJson(), true);
+        $ship = json_decode(Ship::where([['title', $title], ['description', $description], ['file_path', 'tests/assets/science-vessel.ship']])->first()->toJson(), true);
         $this->assertJsonFragment([
             'title' => $title,
             'description' => $description,

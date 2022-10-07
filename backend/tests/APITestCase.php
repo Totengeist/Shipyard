@@ -53,7 +53,7 @@ class APITestCase extends TestCase {
     }
 
     protected function createSampleUpload($name = 'science-vessel.ship') {
-        $filepath = realpath('tests/' . $name);
+        $filepath = realpath('tests/assets/' . $name);
         $temppath = self::get_guid() . '.tmp';
         copy($filepath, $temppath);
 

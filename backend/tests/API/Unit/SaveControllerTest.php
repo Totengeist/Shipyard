@@ -65,13 +65,13 @@ class SaveControllerTest extends APITestCase {
         $title = $faker->words(3, true);
         $description = $faker->paragraph();
 
-        $this->post('api/v1/save', ['user_ref' => $user->ref, 'title' => $title, 'description' => $description, 'file_path' => 'tests/test.save'], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->post('api/v1/save', ['user_ref' => $user->ref, 'title' => $title, 'description' => $description, 'file_path' => 'tests/assets/test.save'], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
              ->assertJsonResponse([
             'title' => $title,
             'description' => $description,
         ]);
 
-        $save = json_decode(Save::where([['title', $title], ['description', $description], ['file_path', 'tests/test.save']])->first()->toJson(), true);
+        $save = json_decode(Save::where([['title', $title], ['description', $description], ['file_path', 'tests/assets/test.save']])->first()->toJson(), true);
         $this->assertJsonFragment([
             'title' => $title,
             'description' => $description,
