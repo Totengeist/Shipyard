@@ -54,14 +54,18 @@ trait HasRoles {
     }
 
     /**
-     * Alias for hasRole.
+     * Alias for hasPermission.
      *
-     * @param mixed $role
+     * @param mixed $permission
      *
      * @return bool
      */
     public function can($permission) {
-        return $this->hasPermission(Permission::where('slug', $permission)->first());
+        if (is_string($permission)) {
+            $permission = Permission::where('slug', $permission)->first();
+        }
+
+        return $this->hasPermission($permission);
     }
 
     /**
