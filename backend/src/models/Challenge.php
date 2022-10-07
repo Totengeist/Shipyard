@@ -13,7 +13,7 @@ class Challenge extends Model {
      *
      * @str
      */
-    protected $tag_label = 'challenge';
+    public static $tag_label = 'challenge';
     /**
      * The attributes that are mass assignable.
      *

@@ -9,7 +9,7 @@ trait HasTags {
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function tags() {
-        return $this->belongsToMany(Tag::class, 'item_tags', 'item_id', 'tag_id')->wherePivot('type', $this->tag_label);
+        return $this->belongsToMany(Tag::class, 'item_tags', 'item_id', 'tag_id')->wherePivot('type', self::$tag_label);
     }
 
     /**
@@ -20,9 +20,13 @@ trait HasTags {
      * @return mixed
      */
     public function assignTag($tag) {
-        return $this->tags()->save(
-            Tag::whereSlug($tag)->firstOrFail(), ['type' => $this->tag_label]
-        );
+        if (is_string($tag)) {
+            $tag = Tag::whereSlug($tag)->firstOrFail();
+        }
+
+        $return = $this->tags()->save($tag, ['type' => self::$tag_label]);
+        unset($this->tags);
+        return $return;
     }
 
     /**
@@ -33,9 +37,13 @@ trait HasTags {
      * @return mixed
      */
     public function removeTag($tag) {
-        return $this->tags()->detach(
-            Tag::whereSlug($tag)->firstOrFail()->id, ['type' => $this->tag_label]
-        );
+        if (is_string($tag)) {
+            $tag = Tag::whereSlug($tag)->firstOrFail();
+        }
+
+        $return = $this->tags()->detach($tag->id);
+        unset($this->tags);
+        return $return;
     }
 
     /**
@@ -50,6 +58,6 @@ trait HasTags {
             return $this->tags->contains('slug', $tag);
         }
 
-        return (bool) $role->intersect($this->tags)->count();
+        return (bool) $this->tags->intersect([$tag])->count();
     }
 }

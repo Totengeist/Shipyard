@@ -30,7 +30,7 @@ class Tag extends Model {
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function ships() {
-        return $this->belongsToMany(Ship::class)->wherePivot('type', '=', 'ship');
+        return $this->retrieve_type(Ship::class);
     }
 
     /**
@@ -39,7 +39,7 @@ class Tag extends Model {
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function saves() {
-        return $this->belongsToMany(Ship::class)->wherePivot('type', '=', 'save');
+        return $this->retrieve_type(Save::class);
     }
 
     /**
@@ -48,6 +48,10 @@ class Tag extends Model {
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function challenges() {
-        return $this->belongsToMany(Ship::class)->wherePivot('type', '=', 'challenge');
+        return $this->retrieve_type(Challenge::class);
+    }
+    
+    public function retrieve_type($class) {
+        return $this->belongsToMany($class, 'item_tags', 'tag_id', 'item_id')->wherePivot('type', '=', $class::$tag_label);
     }
 }

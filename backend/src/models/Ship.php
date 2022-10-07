@@ -14,7 +14,7 @@ class Ship extends Model {
      *
      * @str
      */
-    protected $tag_label = 'ship';
+    public static $tag_label = 'ship';
     /**
      * The attributes that are mass assignable.
      *

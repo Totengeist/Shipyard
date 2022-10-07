@@ -14,7 +14,7 @@ class Save extends Model {
      *
      * @str
      */
-    protected $tag_label = 'save';
+    public static $tag_label = 'save';
     /**
      * The attributes that are mass assignable.
      *
