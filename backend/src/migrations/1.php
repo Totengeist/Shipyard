@@ -101,7 +101,7 @@ Capsule::schema()->create('ships', function ($table) {
     $table->string('ref')->unique();
     $table->bigInteger('user_id')->unsigned()->nullable();
     $table->string('title')->default(false);
-    $table->string('description')->unique();
+    $table->text('description')->unique();
     $table->string('file_path');
     $table->bigInteger('downloads')->unsigned()->nullable(false)->default('0');
     $table->timestamps();
@@ -112,7 +112,7 @@ Capsule::schema()->create('saves', function ($table) {
     $table->string('ref')->unique();
     $table->bigInteger('user_id')->unsigned()->nullable();
     $table->string('title')->default(false);
-    $table->string('description')->unique();
+    $table->text('description')->unique();
     $table->string('file_path');
     $table->bigInteger('downloads')->unsigned()->nullable(false)->default('0');
     $table->timestamps();
@@ -124,7 +124,7 @@ Capsule::schema()->create('challenges', function ($table) {
     $table->bigInteger('user_id')->unsigned()->nullable();
     $table->bigInteger('save_id')->unsigned()->nullable();
     $table->string('title')->default(false);
-    $table->string('description')->unique();
+    $table->text('description')->unique();
     $table->timestamps();
 });
 echo 'Creating tags table.<br>';
@@ -132,7 +132,7 @@ Capsule::schema()->create('tags', function ($table) {
     $table->increments('id')->unsigned();
     $table->string('slug')->unique();
     $table->string('label')->unique();
-    $table->string('description')->nullable();
+    $table->text('description')->nullable();
     $table->timestamps();
 });
 echo 'Creating link table between items and tags table.<br>';
