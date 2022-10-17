@@ -22,12 +22,6 @@ class ShipFile extends IVFile {
     }
 
     public function get_info() {
-        // - Overall size/area
-        // - Crew capacity
-        // - Max energy amount
-        // - Cargo capacity (I.e. amount of zoned space)-
-        // - % armour coverage
-        // - And then yeah stats on number of weapons/lasers/drone bays
         $this->info = [];
         $this->info['Type'] = $this->content['Type'];
         $this->info['Name'] = $this->content['Name'];
@@ -59,8 +53,6 @@ class ShipFile extends IVFile {
         }
 
         $this->info = array_merge($this->info, $this->get_cell_info());
-
-        return $this->info;
     }
 
     public function get_cell_info() {
@@ -86,8 +78,8 @@ class ShipFile extends IVFile {
         $typekeys = array_keys($types);
         $cell_width = strlen($typekeys[count($typekeys)-1])+1;
 
-        foreach ($this->get_section('GridMap/Cells')->content as $cell) {
-            for ($i = 1; $i < strlen($cell)-2; $i += $cell_width) {
+        foreach ($this->get_section('GridMap/Cells')->content as $cellk => $cell) {
+            for ($i = 0; $i < strlen($cell); $i += $cell_width) {
                 $char = trim(substr($cell, $i, $cell_width));
                 if (in_array($char, array_keys($types))) {
                     foreach ($types[$char] as $type) {
@@ -128,7 +120,7 @@ class ShipFile extends IVFile {
         $content = [];
         foreach ($this->sections['Objects']->sections as $object) {
             if ($object->content['Type'] == $label) {
-                if ($item != null) {
+                if ($item != null && isset($object->content[$item])) {
                     $content[] = $object->content[$item];
                 } else {
                     $content[] = $object->content;
@@ -150,8 +142,7 @@ class ShipFile extends IVFile {
         foreach (self::POWER as $gen) {
             $info['PowerGenerators'] += $info[$gen];
         }
-        print_r($info);
-        $template = 'Your ship is named %s. It has %d weapons and %d engines. Its %d power generators generate %01.2f Mw.';
+        $template = "Your ship is named %s. It has %3d weapons and %3d engines. Its %3d power generators generate %01.2f Mw.";
         echo sprintf($template,
             $info['Name'],
             $info['Weapons'],
@@ -159,6 +150,6 @@ class ShipFile extends IVFile {
             $info['PowerGenerators'],
             $info['PowerOutput']
         );
-        
+        print_r($info);
     }
 }
