@@ -20,7 +20,7 @@ class FileManager {
         $extension = pathinfo($uploadedFile->getClientFilename(), PATHINFO_EXTENSION);
         $basename = self::get_guid();
         $filename = sprintf('%s.%0.8s', $basename, $extension);
-        $fullpath = self::getStorageDirectory($basename) . DIRECTORY_SEPARATOR . $filename;
+        $fullpath = self::getStorageDirectory($basename) . $filename;
 
         $uploadedFile->moveTo($fullpath);
 
@@ -28,7 +28,7 @@ class FileManager {
     }
 
     public static function getStorageDirectory($hash) {
-        $dir = __DIR__ . '/../public/storage/' . $hash[0] . '/' . $hash[1] . '/' . $hash . '/';
+        $dir = dirname(__DIR__) . '/public/storage/' . $hash[0] . '/' . $hash[1] . '/' . $hash . '/';
         if (!is_dir($dir)) {
             mkdir($dir, 0777, true);
         }

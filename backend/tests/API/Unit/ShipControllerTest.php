@@ -29,54 +29,21 @@ class ShipControllerTest extends APITestCase {
      *
      * @return void
      */
-    public function testCannotCreateShipsFromLocalFileWhenDisabled() {
+    public function testCannotCreateShipsFromLocalFile() {
         $user = Factory::create('Shipyard\User');
         $user->activate();
         Auth::login($user);
         $token = Auth::generate_token();
 
-        $_ENV['ALLOW_LOCAL'] = 'false';
         $user = Factory::create('Shipyard\User');
         $faker = \Faker\Factory::create();
         $title = $faker->words(3, true);
 
-        $this->post('api/v1/ship', ['user_ref' => $user->ref, 'title' => $title, 'file_path' => 'tests/testPaper.pdf'], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->post('api/v1/ship', ['user_ref' => $user->ref, 'title' => $title, 'file_path' => 'tests/assets/science-vessel.ship'], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
              ->assertStatus(401);
 
-        $ship = Ship::where([['user_id', $user->id], ['title', $title], ['file_path', 'tests/testPaper.pdf']])->first();
+        $ship = Ship::where([['user_id', $user->id], ['title', $title], ['file_path', 'tests/assets/science-vessel.ship']])->first();
         $this->assertNull($ship);
-        unset($_ENV['ALLOW_LOCAL']);
-    }
-
-    /**
-     * A basic test example.
-     *
-     * @return void
-     */
-    public function testCanCreateShipsFromLocalFileWhenEnabled() {
-        $user = Factory::create('Shipyard\User');
-        $user->activate();
-        Auth::login($user);
-        $token = Auth::generate_token();
-
-        $_ENV['ALLOW_LOCAL'] = 'true';
-        $user = Factory::create('Shipyard\User');
-        $faker = \Faker\Factory::create();
-        $title = $faker->words(3, true);
-        $description = $faker->paragraph();
-
-        $this->post('api/v1/ship', ['user_ref' => $user->ref, 'title' => $title, 'description' => $description, 'file_path' => 'tests/assets/science-vessel.ship'], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
-             ->assertJsonResponse([
-            'title' => $title,
-            'description' => $description,
-        ]);
-
-        $ship = json_decode(Ship::where([['title', $title], ['description', $description], ['file_path', 'tests/assets/science-vessel.ship']])->first()->toJson(), true);
-        $this->assertJsonFragment([
-            'title' => $title,
-            'description' => $description,
-        ], $ship);
-        unset($_ENV['ALLOW_LOCAL']);
     }
 
     /**

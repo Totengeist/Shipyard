@@ -44,6 +44,7 @@ class SaveController extends Controller {
             $data['user_id'] = $user->id;
         }
         unset($data['user_ref']);
+        unset($data['file_path']);
 
         if (isset($files['file'])) {
             if (!is_array($files['file'])) {
@@ -57,7 +58,7 @@ class SaveController extends Controller {
                   ->withStatus(401)
                   ->withHeader('Content-Type', 'application/json');
             }
-        } elseif (!isset($_ENV['ALLOW_LOCAL']) || strtolower(@$_ENV['ALLOW_LOCAL']) !== 'true') {
+        } else {
             $payload = json_encode(['errors' => ['file' => 'File is missing or incorrect.']]);
 
             $response->getBody()->write($payload);

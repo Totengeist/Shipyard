@@ -29,13 +29,12 @@ class SaveControllerTest extends APITestCase {
      *
      * @return void
      */
-    public function testCannotCreateSavesFromLocalFileWhenDisabled() {
+    public function testCannotCreateSavesFromLocalFile() {
         $user = Factory::create('Shipyard\User');
         $user->activate();
         Auth::login($user);
         $token = Auth::generate_token();
 
-        $_ENV['ALLOW_LOCAL'] = 'false';
         $user = Factory::create('Shipyard\User');
         $faker = \Faker\Factory::create();
         $title = $faker->words(3, true);
@@ -45,38 +44,6 @@ class SaveControllerTest extends APITestCase {
 
         $save = Save::where([['user_id', $user->id], ['title', $title], ['file_path', 'tests/test.sav']])->first();
         $this->assertNull($save);
-        unset($_ENV['ALLOW_LOCAL']);
-    }
-
-    /**
-     * A basic test example.
-     *
-     * @return void
-     */
-    public function testCanCreateSavesFromLocalFileWhenEnabled() {
-        $user = Factory::create('Shipyard\User');
-        $user->activate();
-        Auth::login($user);
-        $token = Auth::generate_token();
-
-        $_ENV['ALLOW_LOCAL'] = 'true';
-        $user = Factory::create('Shipyard\User');
-        $faker = \Faker\Factory::create();
-        $title = $faker->words(3, true);
-        $description = $faker->paragraph();
-
-        $this->post('api/v1/save', ['user_ref' => $user->ref, 'title' => $title, 'description' => $description, 'file_path' => 'tests/assets/test.save'], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
-             ->assertJsonResponse([
-            'title' => $title,
-            'description' => $description,
-        ]);
-
-        $save = json_decode(Save::where([['title', $title], ['description', $description], ['file_path', 'tests/assets/test.save']])->first()->toJson(), true);
-        $this->assertJsonFragment([
-            'title' => $title,
-            'description' => $description,
-        ], $save);
-        unset($_ENV['ALLOW_LOCAL']);
     }
 
     /**
