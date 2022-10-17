@@ -44,9 +44,9 @@ class Section {
             $pretext = str_repeat('    ', $level);
             if ($start == -1) {
                 if (strpos($line, $pretext . 'BEGIN') === 0) {
-                    if (strpos($line, 'END') === (strlen($line)-3)) {
+                    if (strpos($line, 'END') === (strlen(rtrim($line))-3)) {
                         // section ends in the same line
-                        preg_match('/^ *BEGIN ([^ "]*|"[^"]*") +(.*) END *$/i', $line, $matches);
+                        preg_match('/^ *BEGIN ([^ "]*|"[^"]*")(?: +(.*))? +END *$/i', $line, $matches);
                         if (count($matches) == 0) {
                             echo __LINE__ . $line;
                         }
@@ -81,7 +81,7 @@ class Section {
                     if (count($matches) == 0) {
                         echo __LINE__ . ' ' . $i . ' ' . $line;
                     } else {
-                        $content[trim($matches['name'])] = trim($matches['value']);
+                        $content[trim($matches['name'])] = trim(trim($matches['value']), '"');
                     }
                 }
             } else {
@@ -103,6 +103,9 @@ class Section {
         return new Section($path, $content, $level, $subfiles);
     }
 
+    /**
+     * Returns a Section object or an array of Section objects.
+     */
     public function addSection($key, $object) {
         if (isset($this->sections[$key])) {
             if (gettype($this->sections[$key]) == 'array') {
