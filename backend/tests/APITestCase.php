@@ -54,7 +54,7 @@ class APITestCase extends TestCase {
 
     protected function createSampleUpload($name = 'science-vessel.ship') {
         $filepath = realpath('tests/assets/' . $name);
-        $temppath = self::get_guid() . '.tmp';
+        $temppath = tempnam(sys_get_temp_dir(), 'TLS');
         copy($filepath, $temppath);
 
         return new UploadedFile($temppath, $name, 'application/octet-stream', 1952654);
