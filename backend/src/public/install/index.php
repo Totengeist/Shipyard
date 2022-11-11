@@ -4,11 +4,11 @@ use Shipyard\User;
 
 require __DIR__ . '/../../bootstrap.php';
 
-echo 'Installing.<br><br>';
+echo 'Installing.<br><br>\n\n';
 
-echo 'Running migrations.<br>';
-require_once '../../migrations/1.php';
-echo 'Inserting administrator user.<br>';
+echo 'Running migrations.<br>\n';
+require_once __DIR__ . '/../../migrations/1.php';
+echo 'Inserting administrator user.<br>\n';
 $admin = User::create([
     'name'       => 'administrator',
     'email'      => 'admin@tls-wiki.com',
@@ -17,7 +17,7 @@ $admin = User::create([
 ]);
 $admin->assignRole('administrator');
 
-echo 'Running seeds.<br>';
+echo 'Running seeds.<br>\n';
 require_once 'seeder.php';
 
-echo '<br>Done.';
+echo '<br>\nDone.';
