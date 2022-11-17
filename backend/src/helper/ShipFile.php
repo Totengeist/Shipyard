@@ -16,9 +16,24 @@ class ShipFile extends IVFile {
     const CELL_TYPES = ['Storage'];
 
     public function __construct($structure = null, $level = 0, $subfiles = []) {
+        if( !$this->is_ship($structure, $level) ) {
+            throw new \Exception('This is not a ship file.');
+        }
         parent::__construct($structure, $level, $subfiles);
 
         $this->get_info();
+    }
+    
+    public function is_ship($structure, $level) {
+        if( is_string($structure) ) {
+            $structure = preg_split('/\r?\n/', $structure);
+        }
+        foreach( $structure as $line ) {
+            if (strpos($line, str_repeat('    ', $level) . 'BEGIN Habitation') === 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function get_info() {

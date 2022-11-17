@@ -11,7 +11,22 @@ class SaveFile extends IVFile {
     const SHIPS = ['FriendlyShip', 'HostileShip', 'ShipForSale', 'NeutralShip', 'Derelict'];
     
     public function __construct($structure = null, $level = 0, $subfiles = ['/Layer' => ShipFile::class]) {
+        if( !$this->is_save($structure, $level) ) {
+            throw new \Exception('This is not a save file.');
+        }
         parent::__construct($structure, $level, $subfiles);
+    }
+    
+    public function is_save($structure, $level) {
+        if( is_string($structure) ) {
+            $structure = preg_split('/\r?\n/', $structure);
+        }
+        foreach( $structure as $line ) {
+            if (strpos($line, str_repeat('    ', $level) . 'BEGIN Galaxy') === 0) {
+                return true;
+            }
+        }
+        return false;
     }
     
     public function get_layers() {
