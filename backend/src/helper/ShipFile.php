@@ -14,6 +14,8 @@ class ShipFile extends IVFile {
     const THRUSTERS = ['Thrusters'];
     const CELLS = ['Hull', 'Interior', 'Floor', 'Habitation', 'Armour'];
     const CELL_TYPES = ['Storage'];
+    const TANKS = ['TinyTank', 'Small Tank', 'Tank'];
+    const RESOURCES = ['Fuel', 'Oxygen', 'Water', 'Sewage', 'WasteWater', 'CarbonDioxide', 'Deuterium'];
 
     public function __construct($structure = null, $level = 0, $subfiles = []) {
         if( !$this->is_ship($structure, $level) ) {
@@ -42,12 +44,20 @@ class ShipFile extends IVFile {
         $this->info['Name'] = $this->content['Name'];
         $this->info['Engines'] = 0;
         $this->info['PowerOutput'] = 0;
+        $this->info['Weapons'] = [];
+        $this->info['Structure'] = [];
+        $this->info['Storage'] = [];
+        $this->info['TankCapacity'] = [];
+
+        foreach (self::RESOURCES as $resource) {
+            $this->info['TankCapacity'][$resource] = 0;
+        }
         $this->info['Mass'] = (float) $this->content['Mass'];
         foreach (self::WEAPONS as $weapon) {
             if (!isset($this->info[$weapon])) {
-                $this->info[$weapon] = $this->get_object_count($weapon);
+                $this->info["Weapons"][$weapon] = $this->get_object_count($weapon);
             } else {
-                $this->info[$weapon] += $this->get_object_count($weapon);
+                $this->info["Weapons"][$weapon] += $this->get_object_count($weapon);
             }
         }
         foreach (self::ENGINES as $engine) {
@@ -66,8 +76,19 @@ class ShipFile extends IVFile {
         foreach (self::LOGISTICS as $item) {
             $this->info[$item] = $this->get_object_count($item);
         }
-
-        $this->info = array_merge($this->info, $this->get_cell_info());
+        foreach (self::TANKS as $tank) {
+            foreach ($this->get_object_content($tank) as $output) {
+                $this->info['TankCapacity'][$output['Resource']] += (float) $output['Capacity'];
+            }
+        }
+        foreach ($this->get_cell_info() as $key => $cell) {
+            $shortkey = str_replace("Storage ", "", $key);
+            if( $key == $shortkey ) {
+                $this->info['Structure'][$key] = $cell;
+            } else {
+                $this->info['Storage'][$shortkey] = $cell;
+            }
+        }
     }
 
     public function get_cell_info() {
