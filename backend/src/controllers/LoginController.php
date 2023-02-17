@@ -51,14 +51,7 @@ class LoginController extends Controller {
         }
 
         Auth::login($user);
-        $token = Auth::generate_token();
-
-        $data = [
-            'access_token' => $token->toString(),
-            'token_type' => 'Bearer',
-            'expires' => $token->claims()->get('exp'),
-            'user' => Auth::user(),
-        ];
+        $data = Auth::user();
 
         $response->getBody()->write(json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
 

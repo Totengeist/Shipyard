@@ -16,7 +16,6 @@
         "illuminate/database": "~6.0",
         "slim/slim": "4.*",
         "slim/psr7": "^1.1",
-        "lcobucci/jwt": ">=3.3.2 <4.1.5",
         "bryanjhv/slim-session": "~4.0",
         "vlucas/phpdotenv": "^5.0",
         "vlucas/valitron": "^1.4",

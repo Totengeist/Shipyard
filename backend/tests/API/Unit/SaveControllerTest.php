@@ -33,13 +33,12 @@ class SaveControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\User');
         $user->activate();
         Auth::login($user);
-        $token = Auth::generate_token();
 
         $user = Factory::create('Shipyard\User');
         $faker = \Faker\Factory::create();
         $title = $faker->words(3, true);
 
-        $this->post('api/v1/save', ['user_ref' => $user->ref, 'title' => $title, 'file_path' => 'tests/test.sav'], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->post('api/v1/save', ['user_ref' => $user->ref, 'title' => $title, 'file_path' => 'tests/test.sav'], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
 
         $save = Save::where([['user_id', $user->id], ['title', $title], ['file_path', 'tests/test.sav']])->first();
@@ -55,12 +54,11 @@ class SaveControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\User');
         $user->activate();
         Auth::login($user);
-        $token = Auth::generate_token();
         $faker = \Faker\Factory::create();
         $title = $faker->words(3, true);
         $description = $faker->paragraph();
 
-        $this->post('api/v1/save', ['user_ref' => $user->ref, 'title' => $title, 'description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()], ['file' => $this->createSampleUpload('test.save')])
+        $this->post('api/v1/save', ['user_ref' => $user->ref, 'title' => $title, 'description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => $this->createSampleUpload('test.save')])
              ->assertJsonResponse([
             'title' => $title,
             'description' => $description,
@@ -82,7 +80,6 @@ class SaveControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\User');
         $user->activate();
         Auth::login($user);
-        $token = Auth::generate_token();
         $faker = \Faker\Factory::create();
         $save = Factory::create('Shipyard\Save');
         $save->user_id = $user->id;
@@ -91,7 +88,7 @@ class SaveControllerTest extends APITestCase {
         $faker = \Faker\Factory::create();
         $title = $faker->words(3, true);
 
-        $this->post('api/v1/save/' . $save->ref, ['user_ref' => $user->ref, 'title' => $title, 'file_path' => '/'], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->post('api/v1/save/' . $save->ref, ['user_ref' => $user->ref, 'title' => $title, 'file_path' => '/'], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
             'title' => $title,
         ]);
@@ -111,7 +108,6 @@ class SaveControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\User');
         $user->activate();
         Auth::login($user);
-        $token = Auth::generate_token();
         $faker = \Faker\Factory::create();
 
         $user1 = Factory::create('Shipyard\User');
@@ -123,7 +119,7 @@ class SaveControllerTest extends APITestCase {
         $oldtitle = $save->title;
         $title = $faker->words(3, true);
 
-        $this->post('api/v1/save/' . $save->ref, ['user_ref' => $user->ref, 'title' => $title, 'file_path' => '/'], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->post('api/v1/save/' . $save->ref, ['user_ref' => $user->ref, 'title' => $title, 'file_path' => '/'], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(403);
 
         $save = json_decode(Save::where([['ref', $save->ref]])->first()->toJson(), true);
@@ -147,7 +143,6 @@ class SaveControllerTest extends APITestCase {
         $user->assignRole($role_name);
         $user->activate();
         Auth::login($user);
-        $token = Auth::generate_token();
 
         $user1 = Factory::create('Shipyard\User');
         $save = Factory::create('Shipyard\Save');
@@ -157,7 +152,7 @@ class SaveControllerTest extends APITestCase {
         $title = $faker->words(3, true);
         $description = $faker->paragraph;
 
-        $this->post('api/v1/save/' . $save->ref, ['title' => $title, 'description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->post('api/v1/save/' . $save->ref, ['title' => $title, 'description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
             'title' => $title,
             'description' => $description,
@@ -179,14 +174,13 @@ class SaveControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\User');
         $user->activate();
         Auth::login($user);
-        $token = Auth::generate_token();
         $faker = \Faker\Factory::create();
         $save = Factory::create('Shipyard\Save');
         $save->user_id = $user->id;
         $save->save();
 
         $this->assertEquals($save->ref, Save::where([['ref', $save->ref]])->first()->ref);
-        $this->delete('api/v1/save/' . $save->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->delete('api/v1/save/' . $save->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
                 'message' => 'successful'
         ]);
@@ -204,7 +198,6 @@ class SaveControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\User');
         $user->activate();
         Auth::login($user);
-        $token = Auth::generate_token();
         $faker = \Faker\Factory::create();
 
         $user1 = Factory::create('Shipyard\User');
@@ -215,7 +208,7 @@ class SaveControllerTest extends APITestCase {
         $title = $save->title;
         $description = $save->description;
 
-        $this->delete('api/v1/save/' . $save->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->delete('api/v1/save/' . $save->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(403);
 
         $save = json_decode(Save::where([['ref', $save->ref]])->first()->toJson(), true);
@@ -240,7 +233,6 @@ class SaveControllerTest extends APITestCase {
         $user->assignRole($role_name);
         $user->activate();
         Auth::login($user);
-        $token = Auth::generate_token();
 
         $user1 = Factory::create('Shipyard\User');
         $save = Factory::create('Shipyard\Save');
@@ -248,7 +240,7 @@ class SaveControllerTest extends APITestCase {
         $save->save();
 
         $this->assertEquals($save->ref, Save::where([['ref', $save->ref]])->first()->ref);
-        $this->delete('api/v1/save/' . $save->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->delete('api/v1/save/' . $save->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
                 'message' => 'successful'
         ]);

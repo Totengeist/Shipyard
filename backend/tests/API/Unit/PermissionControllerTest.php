@@ -23,11 +23,10 @@ class PermissionControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\User');
         $user->activate();
         Auth::login($user);
-        $token = Auth::generate_token();
 
-        $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(200);
-        $this->get('api/v1/permission', ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->get('api/v1/permission', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(403);
     }
 
@@ -41,10 +40,9 @@ class PermissionControllerTest extends APITestCase {
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
-        $token = Auth::generate_token();
 
         $permission = Factory::create('Shipyard\Permission');
-        $this->get('api/v1/permission', ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->get('api/v1/permission', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
             'slug' => $permission->slug,
             'label' => $permission->label,
@@ -69,11 +67,10 @@ class PermissionControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\User');
         $user->activate();
         Auth::login($user);
-        $token = Auth::generate_token();
 
-        $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(200);
-        $this->post('api/v1/permission', ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->post('api/v1/permission', ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(403);
     }
 
@@ -88,12 +85,11 @@ class PermissionControllerTest extends APITestCase {
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
-        $token = Auth::generate_token();
 
         $slug = $faker->slug;
         $label = $faker->words(3, true);
 
-        $this->post('api/v1/permission', ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->post('api/v1/permission', ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
             'slug' => $slug,
             'label' => $label,
@@ -117,12 +113,11 @@ class PermissionControllerTest extends APITestCase {
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
-        $token = Auth::generate_token();
 
         $slug = $faker->slug;
         $label = '';
 
-        $this->post('api/v1/permission', ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->post('api/v1/permission', ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
             'label' => ['Label is required'],
         ]);
@@ -147,11 +142,10 @@ class PermissionControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\User');
         $user->activate();
         Auth::login($user);
-        $token = Auth::generate_token();
 
-        $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(200);
-        $this->post('api/v1/permission/' . $permission->slug, ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->post('api/v1/permission/' . $permission->slug, ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(403);
     }
 
@@ -167,12 +161,11 @@ class PermissionControllerTest extends APITestCase {
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
-        $token = Auth::generate_token();
 
         $slug = $faker->slug;
         $label = $faker->words(3, true);
 
-        $this->post('api/v1/permission/' . $permission->slug, ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->post('api/v1/permission/' . $permission->slug, ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
             'slug' => $slug,
             'label' => $label,
@@ -201,11 +194,10 @@ class PermissionControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\User');
         $user->activate();
         Auth::login($user);
-        $token = Auth::generate_token();
 
-        $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(200);
-        $this->delete('api/v1/permission/' . $permission->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->delete('api/v1/permission/' . $permission->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(403);
     }
 
@@ -220,10 +212,9 @@ class PermissionControllerTest extends APITestCase {
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
-        $token = Auth::generate_token();
 
         $this->assertEquals($permission->id, Permission::find($permission->id)->id);
-        $this->delete('api/v1/permission/' . $permission->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->delete('api/v1/permission/' . $permission->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
                 'message' => 'successful',
         ]);
@@ -248,11 +239,10 @@ class PermissionControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\User');
         $user->activate();
         Auth::login($user);
-        $token = Auth::generate_token();
 
-        $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(200);
-        $this->get('api/v1/permission/' . $permission->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->get('api/v1/permission/' . $permission->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(403);
     }
 
@@ -267,9 +257,8 @@ class PermissionControllerTest extends APITestCase {
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
-        $token = Auth::generate_token();
 
-        $this->get('api/v1/permission/' . $permission->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->get('api/v1/permission/' . $permission->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
             'slug' => $permission->slug,
             'label' => $permission->label,

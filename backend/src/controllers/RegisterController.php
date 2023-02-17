@@ -166,7 +166,7 @@ class RegisterController extends Controller {
 
         Auth::login($user);
 
-        $payload = json_encode(['user' => $user, 'token' => Auth::generate_token()->toString()]);
+        $payload = json_encode($user);
 
         $response->getBody()->write($payload);
 

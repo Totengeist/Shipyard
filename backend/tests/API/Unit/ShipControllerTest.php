@@ -33,13 +33,10 @@ class ShipControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\User');
         $user->activate();
         Auth::login($user);
-        $token = Auth::generate_token();
-
-        $user = Factory::create('Shipyard\User');
         $faker = \Faker\Factory::create();
         $title = $faker->words(3, true);
 
-        $this->post('api/v1/ship', ['user_ref' => $user->ref, 'title' => $title, 'file_path' => 'tests/assets/science-vessel.ship'], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->post('api/v1/ship', ['user_ref' => $user->ref, 'title' => $title, 'file_path' => 'tests/assets/science-vessel.ship'], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
 
         $ship = Ship::where([['user_id', $user->id], ['title', $title], ['file_path', 'tests/assets/science-vessel.ship']])->first();
@@ -55,12 +52,11 @@ class ShipControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\User');
         $user->activate();
         Auth::login($user);
-        $token = Auth::generate_token();
         $faker = \Faker\Factory::create();
         $title = $faker->words(3, true);
         $description = $faker->paragraph();
 
-        $this->post('api/v1/ship', ['user_ref' => $user->ref, 'title' => $title, 'description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()], ['file' => $this->createSampleUpload()])
+        $this->post('api/v1/ship', ['user_ref' => $user->ref, 'title' => $title, 'description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => $this->createSampleUpload()])
              ->assertJsonResponse([
             'title' => $title,
             'description' => $description,
@@ -82,7 +78,6 @@ class ShipControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\User');
         $user->activate();
         Auth::login($user);
-        $token = Auth::generate_token();
         $faker = \Faker\Factory::create();
         $ship = Factory::create('Shipyard\Ship');
         $ship->user_id = $user->id;
@@ -91,7 +86,7 @@ class ShipControllerTest extends APITestCase {
         $faker = \Faker\Factory::create();
         $title = $faker->words(3, true);
 
-        $this->post('api/v1/ship/' . $ship->ref, ['user_ref' => $user->ref, 'title' => $title, 'file_path' => '/'], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->post('api/v1/ship/' . $ship->ref, ['user_ref' => $user->ref, 'title' => $title, 'file_path' => '/'], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
             'title' => $title,
         ]);
@@ -111,7 +106,6 @@ class ShipControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\User');
         $user->activate();
         Auth::login($user);
-        $token = Auth::generate_token();
         $faker = \Faker\Factory::create();
 
         $user1 = Factory::create('Shipyard\User');
@@ -123,7 +117,7 @@ class ShipControllerTest extends APITestCase {
         $oldtitle = $ship->title;
         $title = $faker->words(3, true);
 
-        $this->post('api/v1/ship/' . $ship->ref, ['user_ref' => $user->ref, 'title' => $title, 'file_path' => '/'], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->post('api/v1/ship/' . $ship->ref, ['user_ref' => $user->ref, 'title' => $title, 'file_path' => '/'], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(403);
 
         $ship = json_decode(Ship::where([['ref', $ship->ref]])->first()->toJson(), true);
@@ -147,7 +141,6 @@ class ShipControllerTest extends APITestCase {
         $user->assignRole($role_name);
         $user->activate();
         Auth::login($user);
-        $token = Auth::generate_token();
 
         $user1 = Factory::create('Shipyard\User');
         $ship = Factory::create('Shipyard\Ship');
@@ -157,7 +150,7 @@ class ShipControllerTest extends APITestCase {
         $title = $faker->words(3, true);
         $description = $faker->paragraph;
 
-        $this->post('api/v1/ship/' . $ship->ref, ['title' => $title, 'description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->post('api/v1/ship/' . $ship->ref, ['title' => $title, 'description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
             'title' => $title,
             'description' => $description,
@@ -179,14 +172,13 @@ class ShipControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\User');
         $user->activate();
         Auth::login($user);
-        $token = Auth::generate_token();
         $faker = \Faker\Factory::create();
         $ship = Factory::create('Shipyard\Ship');
         $ship->user_id = $user->id;
         $ship->save();
 
         $this->assertEquals($ship->ref, Ship::where([['ref', $ship->ref]])->first()->ref);
-        $this->delete('api/v1/ship/' . $ship->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->delete('api/v1/ship/' . $ship->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
                 'message' => 'successful'
         ]);
@@ -204,7 +196,6 @@ class ShipControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\User');
         $user->activate();
         Auth::login($user);
-        $token = Auth::generate_token();
         $faker = \Faker\Factory::create();
 
         $user1 = Factory::create('Shipyard\User');
@@ -215,7 +206,7 @@ class ShipControllerTest extends APITestCase {
         $title = $ship->title;
         $description = $ship->description;
 
-        $this->delete('api/v1/ship/' . $ship->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->delete('api/v1/ship/' . $ship->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(403);
 
         $ship = json_decode(Ship::where([['ref', $ship->ref]])->first()->toJson(), true);
@@ -240,7 +231,6 @@ class ShipControllerTest extends APITestCase {
         $user->assignRole($role_name);
         $user->activate();
         Auth::login($user);
-        $token = Auth::generate_token();
 
         $user1 = Factory::create('Shipyard\User');
         $ship = Factory::create('Shipyard\Ship');
@@ -248,7 +238,8 @@ class ShipControllerTest extends APITestCase {
         $ship->save();
 
         $this->assertEquals($ship->ref, Ship::where([['ref', $ship->ref]])->first()->ref);
-        $this->delete('api/v1/ship/' . $ship->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        echo Auth::user()->name;
+        $this->delete('api/v1/ship/' . $ship->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
                 'message' => 'successful'
         ]);

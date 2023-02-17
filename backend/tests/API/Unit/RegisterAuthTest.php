@@ -140,11 +140,10 @@ class UserControllerTest extends APITestCase {
             'password' => 'secret',
         ], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-                'access_token',
+                'email' => $user->email,
          ]);
 
-        $token = json_decode($this->response->getBody(), true)['access_token'];
-        $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token])
+        $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
                 'email' => $user->email,
         ]);
@@ -160,17 +159,16 @@ class UserControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\User');
         $user->activate();
         Auth::login($user);
-        $token = Auth::generate_token();
 
-        $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
         ->assertJsonResponse(['email' => $user->email]);
 
-        $this->get('api/v1/logout', ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->get('api/v1/logout', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
          ->assertJsonResponse([
              'message' => 'You have been logged out.',
          ]);
 
-        $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
     }
 
@@ -231,19 +229,18 @@ class UserControllerTest extends APITestCase {
         $newEmail = $faker->email;
         $newPass = password_hash('secret', PASSWORD_BCRYPT);
         Auth::login($admin);
-        $token = Auth::generate_token();
 
-        $this->post('api/v1/user/' . $user->id, ['name' => $newName], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->post('api/v1/user/' . $user->id, ['name' => $newName], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
         ->assertJsonResponse([
             'name' => $newName,
             'email' => $user->email,
         ]);
-        $this->post('api/v1/user/' . $user->id, ['name' => $user->name, 'email' => $newEmail], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->post('api/v1/user/' . $user->id, ['name' => $user->name, 'email' => $newEmail], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
         ->assertJsonResponse([
             'name' => $user->name,
             'email' => $newEmail,
         ]);
-        $this->post('api/v1/user/' . $user->id, ['password' => $newPass, 'password_confirmation' => $newPass], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->post('api/v1/user/' . $user->id, ['password' => $newPass, 'password_confirmation' => $newPass], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
         ->assertJsonResponse([
             'name' => $user->name,
             'email' => $newEmail,
@@ -269,19 +266,18 @@ class UserControllerTest extends APITestCase {
         $newEmail = $faker->email;
         $newPass = password_hash('secret', PASSWORD_BCRYPT);
         Auth::login($user);
-        $token = Auth::generate_token();
 
-        $this->post('api/v1/user/' . $user->id, ['name' => $newName], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->post('api/v1/user/' . $user->id, ['name' => $newName], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
         ->assertJsonResponse([
             'name' => $newName,
             'email' => $user->email,
         ]);
-        $this->post('api/v1/user/' . $user->id, ['name' => $user->name, 'email' => $newEmail], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->post('api/v1/user/' . $user->id, ['name' => $user->name, 'email' => $newEmail], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
         ->assertJsonResponse([
             'name' => $user->name,
             'email' => $newEmail,
         ]);
-        $this->post('api/v1/user/' . $user->id, ['password' => $newPass, 'password_confirmation' => $newPass], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->post('api/v1/user/' . $user->id, ['password' => $newPass, 'password_confirmation' => $newPass], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
         ->assertJsonResponse([
             'name' => $user->name,
             'email' => $newEmail,
@@ -307,9 +303,8 @@ class UserControllerTest extends APITestCase {
         $other->activate();
         $newName = $faker->name;
         Auth::login($other);
-        $token = Auth::generate_token();
 
-        $this->post('api/v1/user/' . $user->id, ['name' => $newName], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->post('api/v1/user/' . $user->id, ['name' => $newName], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
         ->assertStatus(403);
 
         $user2 = json_decode(User::where([['name', $user->name], ['email', $user->email]])->first()->toJson(), true);
@@ -330,9 +325,8 @@ class UserControllerTest extends APITestCase {
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
-        $token = Auth::generate_token();
 
-        $this->delete('api/v1/user/' . $user->id, ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->delete('api/v1/user/' . $user->id, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
         ->assertJsonResponse([
             'message' => 'successful',
         ]);
@@ -352,9 +346,8 @@ class UserControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\User');
         $user->activate();
         Auth::login($user);
-        $token = Auth::generate_token();
 
-        $this->delete('api/v1/user/' . $user->id, ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->delete('api/v1/user/' . $user->id, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
         ->assertJsonResponse([
             'message' => 'successful',
         ]);
@@ -376,9 +369,8 @@ class UserControllerTest extends APITestCase {
         $user->activate();
         $other->activate();
         Auth::login($other);
-        $token = Auth::generate_token();
 
-        $this->delete('api/v1/user/' . $user->id, ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->delete('api/v1/user/' . $user->id, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
         ->assertStatus(403);
 
         $user2 = json_decode(User::where([['name', $user->name], ['email', $user->email]])->first()->toJson(), true);

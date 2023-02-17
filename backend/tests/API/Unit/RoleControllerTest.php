@@ -23,11 +23,10 @@ class RoleControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\User');
         $user->activate();
         Auth::login($user);
-        $token = Auth::generate_token();
 
-        $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(200);
-        $this->get('api/v1/role', ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->get('api/v1/role', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(403);
     }
 
@@ -41,10 +40,9 @@ class RoleControllerTest extends APITestCase {
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
-        $token = Auth::generate_token();
 
         $role = Factory::create('Shipyard\Role');
-        $this->get('api/v1/role', ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->get('api/v1/role', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
             'slug' => $role->slug,
             'label' => $role->label,
@@ -69,11 +67,10 @@ class RoleControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\User');
         $user->activate();
         Auth::login($user);
-        $token = Auth::generate_token();
 
-        $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(200);
-        $this->post('api/v1/role', ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->post('api/v1/role', ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(403);
     }
 
@@ -88,12 +85,11 @@ class RoleControllerTest extends APITestCase {
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
-        $token = Auth::generate_token();
 
         $slug = $faker->slug;
         $label = $faker->words(3, true);
 
-        $this->post('api/v1/role', ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->post('api/v1/role', ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
             'slug' => $slug,
             'label' => $label,
@@ -117,12 +113,11 @@ class RoleControllerTest extends APITestCase {
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
-        $token = Auth::generate_token();
 
         $slug = $faker->slug;
         $label = '';
 
-        $this->post('api/v1/role', ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->post('api/v1/role', ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
             'label' => ['Label is required'],
         ]);
@@ -147,11 +142,10 @@ class RoleControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\User');
         $user->activate();
         Auth::login($user);
-        $token = Auth::generate_token();
 
-        $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(200);
-        $this->post('api/v1/role/' . $role->slug, ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->post('api/v1/role/' . $role->slug, ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(403);
     }
 
@@ -167,12 +161,11 @@ class RoleControllerTest extends APITestCase {
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
-        $token = Auth::generate_token();
 
         $slug = $faker->slug;
         $label = $faker->words(3, true);
 
-        $this->post('api/v1/role/' . $role->slug, ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->post('api/v1/role/' . $role->slug, ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
             'slug' => $slug,
             'label' => $label,
@@ -201,11 +194,10 @@ class RoleControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\User');
         $user->activate();
         Auth::login($user);
-        $token = Auth::generate_token();
 
-        $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(200);
-        $this->delete('api/v1/role/' . $role->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->delete('api/v1/role/' . $role->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(403);
     }
 
@@ -220,10 +212,9 @@ class RoleControllerTest extends APITestCase {
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
-        $token = Auth::generate_token();
 
         $this->assertEquals($role->id, Role::find($role->id)->id);
-        $this->delete('api/v1/role/' . $role->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->delete('api/v1/role/' . $role->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
             'message' => 'successful',
         ]);
@@ -248,11 +239,10 @@ class RoleControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\User');
         $user->activate();
         Auth::login($user);
-        $token = Auth::generate_token();
 
-        $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(200);
-        $this->get('api/v1/role/' . $role->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->get('api/v1/role/' . $role->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(403);
     }
 
@@ -267,9 +257,8 @@ class RoleControllerTest extends APITestCase {
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
-        $token = Auth::generate_token();
 
-        $this->get('api/v1/role/' . $role->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest', 'Authorization' => 'Bearer ' . $token->toString()])
+        $this->get('api/v1/role/' . $role->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
             'slug' => $role->slug,
             'label' => $role->label,
