@@ -155,7 +155,6 @@ class UserControllerTest extends APITestCase {
      * @return void
      */
     public function testCanLogoutValidUser() {
-        $this->markTestIncomplete('Must implement proper token invalidation.');
         $user = Factory::create('Shipyard\User');
         $user->activate();
         Auth::login($user);

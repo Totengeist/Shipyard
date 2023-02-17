@@ -21,6 +21,14 @@ class Auth {
         static::$session->set('user', $user);
     }
 
+    public static function logout() {
+        if (static::$session === null) {
+            static::$session = new SessionHelper();
+        }
+
+        static::$session->destroy();
+    }
+
     public static function user() {
         if (static::$session === null) {
             static::$session = new SessionHelper();

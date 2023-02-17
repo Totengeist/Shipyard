@@ -77,6 +77,13 @@ class LoginController extends Controller {
             ->withStatus(200);
     }
 
-    public function logout() {
+    public function logout(Request $request, Response $response) {
+        Auth::logout();
+
+        $response->getBody()->write(json_encode(['message' => 'You have been logged out.']));
+
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus(200);
     }
 }
