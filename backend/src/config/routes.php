@@ -3,7 +3,7 @@
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Shipyard\Middleware\JwtAuthMiddleware;
+use Shipyard\Middleware\SessionMiddleware;
 use Slim\Routing\RouteCollectorProxy;
 
 $app->group($_ENV['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $group) {
@@ -61,7 +61,7 @@ $app->group($_ENV['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $group)
         $group->post('/challenge', 'Shipyard\Controllers\ChallengeController:store');
         $group->post('/challenge/{ref}', 'Shipyard\Controllers\ChallengeController:update');
         $group->delete('/challenge/{ref}', 'Shipyard\Controllers\ChallengeController:destroy');
-    })->add(JwtAuthMiddleware::class);
+    })->add(SessionMiddleware::class);
     $group->get('/{path:.*}', function ($request, $response, array $args) {
         return $response
              ->withStatus(404);

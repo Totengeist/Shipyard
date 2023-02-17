@@ -5,7 +5,6 @@ namespace Tests;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Shipyard\Auth;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase {
@@ -24,10 +23,6 @@ class TestCase extends BaseTestCase {
 
         $capsule->setAsGlobal();
         $capsule->bootEloquent();
-    }
-    
-    public function tearDown(): void {
-        Auth::$user = null;
     }
 
     public function assertJsonFragment(array $dataExpected, array $dataActual, $negate = false) {

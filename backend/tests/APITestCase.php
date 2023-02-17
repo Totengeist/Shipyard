@@ -11,6 +11,9 @@ use Slim\Psr7\Headers;
 use Slim\Psr7\Request as SlimRequest;
 use Slim\Psr7\UploadedFile;
 use Slim\Psr7\Uri;
+use SlimSession\Helper as SessionHelper;
+
+ob_start();
 
 class APITestCase extends TestCase {
     use CreatesUniqueIDs;
@@ -24,9 +27,12 @@ class APITestCase extends TestCase {
         $dotenv = Dotenv::createImmutable(realpath(__DIR__ . '/..'));
         $dotenv->load();
         $this->app = (new App())->get();
+        session_start();
     }
 
     public function tearDown(): void {
+        $session = new SessionHelper();
+        $session::destroy();
         $this->http = null;
         parent::tearDown();
     }
