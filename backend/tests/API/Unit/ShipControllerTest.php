@@ -238,7 +238,6 @@ class ShipControllerTest extends APITestCase {
         $ship->save();
 
         $this->assertEquals($ship->ref, Ship::where([['ref', $ship->ref]])->first()->ref);
-        echo Auth::user()->name;
         $this->delete('api/v1/ship/' . $ship->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
                 'message' => 'successful'

@@ -50,7 +50,7 @@ class Tag extends Model {
     public function challenges() {
         return $this->retrieve_type(Challenge::class);
     }
-    
+
     public function retrieve_type($class) {
         return $this->belongsToMany($class, 'item_tags', 'tag_id', 'item_id')->wherePivot('type', '=', $class::$tag_label);
     }

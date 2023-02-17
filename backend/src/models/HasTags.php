@@ -26,6 +26,7 @@ trait HasTags {
 
         $return = $this->tags()->save($tag, ['type' => self::$tag_label]);
         unset($this->tags);
+
         return $return;
     }
 
@@ -43,6 +44,7 @@ trait HasTags {
 
         $return = $this->tags()->detach($tag->id);
         unset($this->tags);
+
         return $return;
     }
 
