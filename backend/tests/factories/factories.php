@@ -20,7 +20,7 @@ $factory('Shipyard\Ship', [
     'ref' => $faker->md5(),
     'title' => $faker->words(3, true),
     'description' => $faker->paragraph(),
-    'file_path' => realpath('../testPaper.pdf'),
+    'file_path' => realpath('../assets/science-vessel.ship'),
     'downloads' => $faker->randomNumber(5, false),
 ]);
 $factory('Shipyard\Save', [
@@ -28,7 +28,7 @@ $factory('Shipyard\Save', [
     'ref' => $faker->md5(),
     'title' => $faker->words(3, true),
     'description' => $faker->paragraph(),
-    'file_path' => realpath('../testPaper.pdf'),
+    'file_path' => realpath('../assets/Battle.space'),
 ]);
 $factory('Shipyard\Challenge', [
     'user_id' => $faker->randomDigit(),
@@ -37,11 +37,7 @@ $factory('Shipyard\Challenge', [
     'title' => $faker->words(3, true),
     'description' => $faker->paragraph(),
 ]);
-$factory('Shipyard\User', [
-    'name' => $faker->name,
-    'email' => $faker->email(),
-    'password' => $faker->md5(),
-]);
+
 $factory('Shipyard\Tag', [
     'label' => $faker->words(5, true),
     'description' => $faker->paragraph(),

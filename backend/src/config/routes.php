@@ -10,6 +10,7 @@ $app->group($_ENV['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $group)
     $group->post('/register', 'Shipyard\Controllers\RegisterController:register');
     $group->post('/activate/{token}', 'Shipyard\Controllers\RegisterController:activate');
     $group->post('/login', 'Shipyard\Controllers\LoginController:login');
+    $group->get('/logout', 'Shipyard\Controllers\LoginController:logout');
     $group->get('/version', function (Request $request, Response $response, $args) {
         $raw_version = Capsule::select('select `default`,`value` from `meta` where `name` = ?', ['schema_version'])[0];
         $version = (empty($raw_version->value) ? $raw_version->default : $raw_version->value);
@@ -33,7 +34,6 @@ $app->group($_ENV['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $group)
 
     $group->group('', function (RouteCollectorProxy $group) {
         $group->get('/me', 'Shipyard\Controllers\LoginController:me');
-        $group->get('/logout', 'Shipyard\Controllers\LoginController:logout');
 
         $group->post('/user/{user_id}', 'Shipyard\Controllers\RegisterController:update');
         $group->delete('/user/{userid}', 'Shipyard\Controllers\RegisterController:destroy');
