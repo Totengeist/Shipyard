@@ -7,6 +7,7 @@ use Valitron\Validator;
 
 class Ship extends Model {
     use HasTags;
+    use HasReleases;
     use HasRef;
 
     /**

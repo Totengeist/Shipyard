@@ -7,6 +7,7 @@ use Valitron\Validator;
 
 class Save extends Model {
     use HasTags;
+    use HasReleases;
     use HasRef;
 
     /**
@@ -32,7 +33,7 @@ class Save extends Model {
     protected $hidden = ['id', 'file_path', 'user_id'];
 
     /**
-     * A ship can belong to a user.
+     * A save can belong to a user.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

@@ -42,3 +42,8 @@ $factory('Shipyard\Tag', [
     'label' => $faker->words(5, true),
     'description' => $faker->paragraph(),
 ]);
+
+$factory('Shipyard\Release', [
+    'label' => $faker->words(5, true),
+    'description' => $faker->paragraph(),
+]);

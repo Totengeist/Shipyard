@@ -7,6 +7,7 @@ use Shipyard\Role;
 echo 'Dropping tables.<br>\n';
 Capsule::schema()->dropIfExists('item_tags');
 Capsule::schema()->dropIfExists('tags');
+Capsule::schema()->dropIfExists('item_releases');
 Capsule::schema()->dropIfExists('challenges');
 Capsule::schema()->dropIfExists('saves');
 Capsule::schema()->dropIfExists('ships');
@@ -17,6 +18,7 @@ Capsule::schema()->dropIfExists('roles');
 Capsule::schema()->dropIfExists('password_resets');
 Capsule::schema()->dropIfExists('user_activations');
 Capsule::schema()->dropIfExists('users');
+Capsule::schema()->dropIfExists('releases');
 Capsule::schema()->dropIfExists('meta');
 
 echo 'Creating meta table.<br>\n';
@@ -28,6 +30,14 @@ Capsule::schema()->create('meta', function ($table) {
     $table->string('default');
     $table->string('value')->nullable();
     $table->string('description');
+});
+echo 'Creating releases table.<br>\n';
+Capsule::schema()->create('releases', function ($table) {
+    $table->increments('id');
+    $table->string('slug')->unique();
+    $table->string('label')->nullable();
+    $table->text('description')->nullable();
+    $table->timestamps();
 });
 echo 'Creating users table.<br>\n';
 Capsule::schema()->create('users', function ($table) {
@@ -126,6 +136,17 @@ Capsule::schema()->create('challenges', function ($table) {
     $table->string('title')->default(false);
     $table->text('description')->unique();
     $table->timestamps();
+});
+echo 'Creating link table between items and releases table.<br>\n';
+Capsule::schema()->create('item_releases', function ($table) {
+    $table->integer('release_id')->unsigned();
+    $table->integer('item_id')->unsigned();
+    $table->string('type');
+    $table->foreign('release_id')
+          ->references('id')
+          ->on('releases')
+          ->onDelete('cascade');
+    $table->primary(['release_id', 'item_id', 'type']);
 });
 echo 'Creating tags table.<br>\n';
 Capsule::schema()->create('tags', function ($table) {

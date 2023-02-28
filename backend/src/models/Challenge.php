@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Challenge extends Model {
     use HasTags;
+    use HasReleases;
     use HasRef;
 
     /**
@@ -31,7 +32,7 @@ class Challenge extends Model {
     protected $hidden = ['id', 'file_path', 'user_id', 'save_id'];
 
     /**
-     * A ship can belong to a user.
+     * A challenge can belong to a user.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
