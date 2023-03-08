@@ -1,7 +1,6 @@
 <?php
 
 use Shipyard\Release;
-use Shipyard\Ship;
 use Shipyard\User;
 
 echo 'Inserting administrator user.<br>\n';
@@ -23,6 +22,6 @@ Release::firstOrCreate(['label' => 'Alpha1A']);
 Release::firstOrCreate(['label' => 'Alpha1C']);
 Release::firstOrCreate(['label' => 'Alpha1D']);
 
-if (file_exists('custom_seeds.php')) {
-    include 'custom_seeds.php';
+if (file_exists(__DIR__.'/custom_seeds.php')) {
+    include __DIR__.'/custom_seeds.php';
 }
