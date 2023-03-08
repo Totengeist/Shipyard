@@ -10,7 +10,6 @@ import { RegisterComponent } from './register/register.component';
 import { HomeComponent } from './home/home.component';
 import { ProfileComponent } from './profile/profile.component';
 
-import { authInterceptorProviders } from './_helpers/auth.interceptor';
 import { AdminDashboardComponent } from './admin/dashboard/admin.component';
 import { AdminRolesComponent } from './admin/roles/roles.component';
 import { AdminPermissionsComponent } from './admin/permissions/permissions.component';
@@ -34,7 +33,6 @@ import { AdminEditPermissionsComponent } from './admin/edit-permissions/edit-per
     FormsModule,
     HttpClientModule
   ],
-  providers: [authInterceptorProviders],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

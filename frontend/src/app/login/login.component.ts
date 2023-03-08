@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService } from '../_services/auth.service';
 import { TokenStorageService } from '../_services/token-storage.service';
 
@@ -17,7 +18,7 @@ export class LoginComponent implements OnInit {
   errorMessage = '';
   name: string = '';
 
-  constructor(private authService: AuthService, private tokenStorage: TokenStorageService) { }
+  constructor(private router: Router, private authService: AuthService, private tokenStorage: TokenStorageService) { }
 
   ngOnInit(): void {
     if (this.tokenStorage.getToken()) {
@@ -32,30 +33,26 @@ export class LoginComponent implements OnInit {
     this.authService.login(username, password).subscribe(
       data => {
         var roles: string[] = [];
-        data.user.roles.forEach((element: any) => {
+        data.roles.forEach((element: any) => {
             roles.push(element.label);
         })
         var permissions: string[] = [];
-        data.user.roles[0].permissions.forEach((element: any) => {
+        data.roles[0].permissions.forEach((element: any) => {
             permissions.push(element.label);
         })
-        var userData: object = { "name": data.user.name, "email": data.user.email, "roles": roles, "permissions": permissions };
-        this.tokenStorage.saveToken(data.access_token);
+        var userData: object = { "name": data.name, "email": data.email, "roles": roles, "permissions": permissions };
         this.tokenStorage.saveUser(userData);
 
         this.isLoginFailed = false;
         this.isLoggedIn = true;
         this.name = this.tokenStorage.getUser().name;
-        this.reloadPage();
+        this.router.navigate(['/admin/dashboard'])
+        window.location.reload();
       },
       err => {
         this.errorMessage = err.error.message;
         this.isLoginFailed = true;
       }
     );
-  }
-
-  reloadPage(): void {
-    window.location.reload();
   }
 }
