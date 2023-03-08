@@ -14,6 +14,10 @@ import { AdminDashboardComponent } from './admin/dashboard/admin.component';
 import { AdminRolesComponent } from './admin/roles/roles.component';
 import { AdminPermissionsComponent } from './admin/permissions/permissions.component';
 import { AdminEditPermissionsComponent } from './admin/edit-permissions/edit-permissions.component';
+import { ShipsComponent } from './ships/ships.component';
+import { ReleasesComponent } from './releases/releases.component';
+import { ChallengesComponent } from './challenges/challenges.component';
+import { SavesComponent } from './saves/saves.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +30,10 @@ import { AdminEditPermissionsComponent } from './admin/edit-permissions/edit-per
     AdminRolesComponent,
     AdminPermissionsComponent,
     AdminEditPermissionsComponent,
+    ShipsComponent,
+    ReleasesComponent,
+    ChallengesComponent,
+    SavesComponent,
   ],
   imports: [
     BrowserModule,

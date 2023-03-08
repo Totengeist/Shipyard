@@ -5,6 +5,10 @@ import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 import { ProfileComponent } from './profile/profile.component';
+import { ShipsComponent } from './ships/ships.component';
+import { ChallengesComponent } from './challenges/challenges.component';
+import { SavesComponent } from './saves/saves.component';
+import { ReleasesComponent } from './releases/releases.component';
 import { AdminDashboardComponent } from './admin/dashboard/admin.component';
 import { AdminRolesComponent } from './admin/roles/roles.component';
 import { AdminPermissionsComponent } from './admin/permissions/permissions.component';
@@ -15,6 +19,10 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'profile', component: ProfileComponent },
+  { path: 'ships', component: ShipsComponent },
+  { path: 'challenges', component: ChallengesComponent },
+  { path: 'saves', component: SavesComponent },
+  { path: 'releases', component:ReleasesComponent },
   { path: 'admin/dashboard', component: AdminDashboardComponent },
   { path: 'admin/roles', component: AdminRolesComponent },
   { path: 'admin/role/:slug/edit', component: AdminRolesComponent },
