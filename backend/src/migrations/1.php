@@ -4,7 +4,7 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 use Shipyard\Permission;
 use Shipyard\Role;
 
-echo 'Dropping tables.<br>\n';
+echo "Dropping tables.<br>\n";
 Capsule::schema()->dropIfExists('item_tags');
 Capsule::schema()->dropIfExists('tags');
 Capsule::schema()->dropIfExists('item_releases');
@@ -21,7 +21,7 @@ Capsule::schema()->dropIfExists('users');
 Capsule::schema()->dropIfExists('releases');
 Capsule::schema()->dropIfExists('meta');
 
-echo 'Creating meta table.<br>\n';
+echo "Creating meta table.<br>\n";
 Capsule::schema()->create('meta', function ($table) {
     $table->increments('id');
     $table->string('name')->unique();
@@ -31,7 +31,7 @@ Capsule::schema()->create('meta', function ($table) {
     $table->string('value')->nullable();
     $table->string('description');
 });
-echo 'Creating releases table.<br>\n';
+echo "Creating releases table.<br>\n";
 Capsule::schema()->create('releases', function ($table) {
     $table->increments('id');
     $table->string('slug')->unique();
@@ -39,7 +39,7 @@ Capsule::schema()->create('releases', function ($table) {
     $table->text('description')->nullable();
     $table->timestamps();
 });
-echo 'Creating users table.<br>\n';
+echo "Creating users table.<br>\n";
 Capsule::schema()->create('users', function ($table) {
     $table->increments('id');
     $table->string('name');
@@ -50,33 +50,33 @@ Capsule::schema()->create('users', function ($table) {
     $table->rememberToken();
     $table->timestamps();
 });
-echo 'Creating user activations table.<br>\n';
+echo "Creating user activations table.<br>\n";
 Capsule::schema()->create('user_activations', function ($table) {
     $table->string('email');
     $table->string('token')->index();
     $table->timestamp('created_at')->nullable();
 });
-echo 'Creating password resets table.<br>\n';
+echo "Creating password resets table.<br>\n";
 Capsule::schema()->create('password_resets', function ($table) {
     $table->string('email')->index();
     $table->string('token');
     $table->timestamp('created_at')->nullable();
 });
-echo 'Creating roles table.<br>\n';
+echo "Creating roles table.<br>\n";
 Capsule::schema()->create('roles', function ($table) {
     $table->increments('id');
     $table->string('slug')->unique();
     $table->string('label')->nullable();
     $table->timestamps();
 });
-echo 'Creating permissions table.<br>\n';
+echo "Creating permissions table.<br>\n";
 Capsule::schema()->create('permissions', function ($table) {
     $table->increments('id');
     $table->string('slug')->unique();
     $table->string('label')->nullable();
     $table->timestamps();
 });
-echo 'Creating link table between roles and permissions table.<br>\n';
+echo "Creating link table between roles and permissions table.<br>\n";
 Capsule::schema()->create('permission_role', function ($table) {
     $table->integer('permission_id')->unsigned();
     $table->integer('role_id')->unsigned();
@@ -90,7 +90,7 @@ Capsule::schema()->create('permission_role', function ($table) {
           ->onDelete('cascade');
     $table->primary(['permission_id', 'role_id']);
 });
-echo 'Creating link table between users and roles table.<br>\n';
+echo "Creating link table between users and roles table.<br>\n";
 Capsule::schema()->create('role_user', function ($table) {
     $table->integer('role_id')->unsigned();
     $table->integer('user_id')->unsigned();
@@ -105,7 +105,7 @@ Capsule::schema()->create('role_user', function ($table) {
     $table->primary(['role_id', 'user_id']);
 });
 
-echo 'Creating ships table.<br>\n';
+echo "Creating ships table.<br>\n";
 Capsule::schema()->create('ships', function ($table) {
     $table->increments('id')->unsigned();
     $table->string('ref')->unique();
@@ -116,7 +116,7 @@ Capsule::schema()->create('ships', function ($table) {
     $table->bigInteger('downloads')->unsigned()->nullable(false)->default('0');
     $table->timestamps();
 });
-echo 'Creating saves table.<br>\n';
+echo "Creating saves table.<br>\n";
 Capsule::schema()->create('saves', function ($table) {
     $table->increments('id')->unsigned();
     $table->string('ref')->unique();
@@ -127,7 +127,7 @@ Capsule::schema()->create('saves', function ($table) {
     $table->bigInteger('downloads')->unsigned()->nullable(false)->default('0');
     $table->timestamps();
 });
-echo 'Creating challenges table.<br>\n';
+echo "Creating challenges table.<br>\n";
 Capsule::schema()->create('challenges', function ($table) {
     $table->increments('id')->unsigned();
     $table->string('ref')->unique();
@@ -137,7 +137,7 @@ Capsule::schema()->create('challenges', function ($table) {
     $table->text('description')->unique();
     $table->timestamps();
 });
-echo 'Creating link table between items and releases table.<br>\n';
+echo "Creating link table between items and releases table.<br>\n";
 Capsule::schema()->create('item_releases', function ($table) {
     $table->integer('release_id')->unsigned();
     $table->integer('item_id')->unsigned();
@@ -148,7 +148,7 @@ Capsule::schema()->create('item_releases', function ($table) {
           ->onDelete('cascade');
     $table->primary(['release_id', 'item_id', 'type']);
 });
-echo 'Creating tags table.<br>\n';
+echo "Creating tags table.<br>\n";
 Capsule::schema()->create('tags', function ($table) {
     $table->increments('id')->unsigned();
     $table->string('slug')->unique();
@@ -156,7 +156,7 @@ Capsule::schema()->create('tags', function ($table) {
     $table->text('description')->nullable();
     $table->timestamps();
 });
-echo 'Creating link table between items and tags table.<br>\n';
+echo "Creating link table between items and tags table.<br>\n";
 Capsule::schema()->create('item_tags', function ($table) {
     $table->integer('tag_id')->unsigned();
     $table->integer('item_id')->unsigned();
@@ -168,7 +168,7 @@ Capsule::schema()->create('item_tags', function ($table) {
     $table->primary(['tag_id', 'item_id', 'type']);
 });
 
-echo 'Set schema version.<br>\n';
+echo "Set schema version.<br>\n";
 Capsule::table('meta')->insert(
     ['name' => 'schema_version', 'section' => 'hidden', 'type' => 'integer', 'default' => '1', 'description' => 'The schema version.']
 );
