@@ -5,7 +5,6 @@ import { Observable } from 'rxjs';
 import { TokenStorageService } from '../../_services/token-storage.service';
 import { environment } from '../../../environments/environment';
 
-
 @Component({
   selector: 'app-permissions',
   templateUrl: './permissions.component.html',
@@ -31,7 +30,7 @@ export class AdminPermissionsComponent implements OnInit {
   
   getPermissions(): Observable<any> {
     const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'Accept': '*/*', 'Authorization': 'Bearer ' + this.token.getToken() })
+      headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'Accept': '*/*' })
     };
 
     return this.http.get(environment.apiUrl + 'permission', httpOptions);
