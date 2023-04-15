@@ -30,6 +30,12 @@ $app->group($_ENV['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $group)
 
         $group->get('/challenge', 'Shipyard\Controllers\ChallengeController:index');
         $group->get('/challenge/{ref}', 'Shipyard\Controllers\ChallengeController:show');
+
+        $group->get('/tag', 'Shipyard\Controllers\TagController:index');
+        $group->get('/tag/{slug}', 'Shipyard\Controllers\TagController:show');
+
+        $group->get('/release', 'Shipyard\Controllers\ReleaseController:index');
+        $group->get('/release/{slug}', 'Shipyard\Controllers\ReleaseController:show');
     });
 
     $group->group('', function (RouteCollectorProxy $group) {
@@ -61,6 +67,14 @@ $app->group($_ENV['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $group)
         $group->post('/challenge', 'Shipyard\Controllers\ChallengeController:store');
         $group->post('/challenge/{ref}', 'Shipyard\Controllers\ChallengeController:update');
         $group->delete('/challenge/{ref}', 'Shipyard\Controllers\ChallengeController:destroy');
+
+        $group->post('/tag', 'Shipyard\Controllers\TagController:store');
+        $group->post('/tag/{slug}', 'Shipyard\Controllers\TagController:update');
+        $group->delete('/tag/{slug}', 'Shipyard\Controllers\TagController:destroy');
+
+        $group->post('/release', 'Shipyard\Controllers\ReleaseController:store');
+        $group->post('/release/{slug}', 'Shipyard\Controllers\ReleaseController:update');
+        $group->delete('/release/{slug}', 'Shipyard\Controllers\ReleaseController:destroy');
     })->add(SessionMiddleware::class);
     $group->get('/{path:.*}', function ($request, $response, array $args) {
         return $response

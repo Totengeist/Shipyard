@@ -39,11 +39,13 @@ $factory('Shipyard\Challenge', [
 ]);
 
 $factory('Shipyard\Tag', [
+    'slug' => $faker->slug,
     'label' => $faker->words(5, true),
     'description' => $faker->paragraph(),
 ]);
 
 $factory('Shipyard\Release', [
+    'slug' => $faker->slug,
     'label' => $faker->words(5, true),
     'description' => $faker->paragraph(),
 ]);
