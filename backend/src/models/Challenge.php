@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Challenge extends Model {
     use HasTags;
     use HasReleases;
+    use HasScreenshots;
     use HasRef;
 
     /**

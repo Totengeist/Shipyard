@@ -49,3 +49,8 @@ $factory('Shipyard\Release', [
     'label' => $faker->words(5, true),
     'description' => $faker->paragraph(),
 ]);
+
+$factory('Shipyard\Screenshot', [
+    'ref' => $faker->md5(),
+    'description' => $faker->paragraph(),
+]);

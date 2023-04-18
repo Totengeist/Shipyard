@@ -3,10 +3,10 @@
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Shipyard\Permission;
 use Shipyard\Role;
-use Shipyard\Tag;
-use Shipyard\Release;
 
 echo "Dropping tables.<br>\n";
+Capsule::schema()->dropIfExists('item_screenshots');
+Capsule::schema()->dropIfExists('screenshots');
 Capsule::schema()->dropIfExists('item_tags');
 Capsule::schema()->dropIfExists('tags');
 Capsule::schema()->dropIfExists('item_releases');
@@ -169,6 +169,25 @@ Capsule::schema()->create('item_tags', function ($table) {
           ->onDelete('cascade');
     $table->primary(['tag_id', 'item_id', 'type']);
 });
+echo "Creating screenshots table.<br>\n";
+Capsule::schema()->create('screenshots', function ($table) {
+    $table->increments('id')->unsigned();
+    $table->string('ref')->unique();
+    $table->text('description')->nullable();
+    $table->string('file_path');
+    $table->timestamps();
+});
+echo "Creating link table between items and tags table.<br>\n";
+Capsule::schema()->create('item_screenshots', function ($table) {
+    $table->integer('screenshot_id')->unsigned();
+    $table->integer('item_id')->unsigned();
+    $table->string('type');
+    $table->foreign('screenshot_id')
+          ->references('id')
+          ->on('screenshots')
+          ->onDelete('cascade');
+    $table->primary(['screenshot_id', 'item_id', 'type']);
+});
 
 echo "Set schema version.<br>\n";
 Capsule::table('meta')->insert(
@@ -208,6 +227,11 @@ $create_releases  = Permission::create(['slug' => 'create-releases', 'label' => 
 $edit_releases    = Permission::create(['slug' => 'edit-releases',   'label' => 'edit releases']);
 $delete_releases  = Permission::create(['slug' => 'delete-releases', 'label' => 'delete releases']);
 
+// screenshots
+$create_screenshots  = Permission::create(['slug' => 'create-screenshots', 'label' => 'create screenshots']);
+$edit_screenshots    = Permission::create(['slug' => 'edit-screenshots',   'label' => 'edit screenshots']);
+$delete_screenshots  = Permission::create(['slug' => 'delete-screenshots', 'label' => 'delete screenshots']);
+
 // administrator permissions
 $admin = Role::create(['slug' => 'administrator', 'label' => 'Administrator']);
 $admin->givePermissionTo($edit_ships);
@@ -229,3 +253,6 @@ $admin->givePermissionTo($delete_tags);
 $admin->givePermissionTo($create_releases);
 $admin->givePermissionTo($edit_releases);
 $admin->givePermissionTo($delete_releases);
+$admin->givePermissionTo($create_screenshots);
+$admin->givePermissionTo($edit_screenshots);
+$admin->givePermissionTo($delete_screenshots);

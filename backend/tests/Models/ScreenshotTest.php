@@ -1,0 +1,89 @@
+<?php
+
+namespace Tests\Unit\API;
+
+use Laracasts\TestDummy\Factory;
+use Shipyard\Screenshot;
+use Tests\TestCase;
+
+class ScreenshotModelTest extends TestCase {
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testCanCreateScreenshot() {
+        $faker = \Faker\Factory::create();
+        $screenshot1 = Screenshot::create([
+            'label' => $faker->words(5, true)
+        ]);
+
+        $screenshot2 = Screenshot::findOrFail($screenshot1->id);
+        $this->assertEquals($screenshot1->label, $screenshot2->label);
+    }
+
+    public function testCanAssignScreenshot() {
+        $screenshot = Factory::create('Shipyard\Screenshot');
+        $ship = Factory::create('Shipyard\Ship');
+        $save = Factory::create('Shipyard\Save');
+        $challenge = Factory::create('Shipyard\Challenge');
+
+        $ship->assignScreenshot($screenshot->ref);
+        $this->assertTrue($ship->hasScreenshot($screenshot->ref), 'Failed to assert that a ship has the screenshot ' . $screenshot->label . '.');
+
+        $save->assignScreenshot($screenshot->ref);
+        $this->assertTrue($save->hasScreenshot($screenshot->ref), 'Failed to assert that a save has the screenshot ' . $screenshot->label . '.');
+
+        $challenge->assignScreenshot($screenshot->ref);
+        $this->assertTrue($challenge->hasScreenshot($screenshot->ref), 'Failed to assert that a challenge has the screenshot ' . $screenshot->label . '.');
+    }
+
+    /**
+     * @depends testCanAssignScreenshot
+     */
+    public function testCanRemoveScreenshot() {
+        $screenshot = Factory::create('Shipyard\Screenshot');
+        $ship = Factory::create('Shipyard\Ship');
+        $save = Factory::create('Shipyard\Save');
+        $challenge = Factory::create('Shipyard\Challenge');
+
+        $ship->assignScreenshot($screenshot->ref);
+        $save->assignScreenshot($screenshot->ref);
+        $challenge->assignScreenshot($screenshot->ref);
+
+        $ship->removeScreenshot($screenshot);
+        $this->assertFalse($ship->hasScreenshot($screenshot->ref), 'Failed to assert that a ship does not have the screenshot ' . $screenshot->label . '.');
+
+        $save->removeScreenshot($screenshot->ref);
+        $this->assertFalse($save->hasScreenshot($screenshot->ref), 'Failed to assert that a save does not have the screenshot ' . $screenshot->label . '.');
+
+        $challenge->removeScreenshot($screenshot->ref);
+        $this->assertFalse($challenge->hasScreenshot($screenshot->ref), 'Failed to assert that a challenge does not have the screenshot ' . $screenshot->label . '.');
+    }
+
+    public function testCanGetScreenshotItems() {
+        $screenshot = Factory::create('Shipyard\Screenshot');
+
+        $ships = [];
+        $saves = [];
+        $challenges = [];
+
+        for ($i = 0; $i < 4; $i++) {
+            $ships[$i] = Factory::create('Shipyard\Ship');
+            $ships[$i]->assignScreenshot($screenshot->ref);
+            $ships[$i]->save();
+            $saves[$i] = Factory::create('Shipyard\Save');
+            $saves[$i]->assignScreenshot($screenshot->ref);
+            $saves[$i]->save();
+            $challenges[$i] = Factory::create('Shipyard\Challenge');
+            $challenges[$i]->assignScreenshot($screenshot->ref);
+            $challenges[$i]->save();
+        }
+
+        $screenshot = Screenshot::where('ref', $screenshot->ref)->with('ships', 'saves', 'challenges')->first();
+
+        $this->assertEquals(4, count($screenshot->ships), "Failed to find 4 ships with screenshot '{$screenshot->label}'. Found " . count($screenshot->ships));
+        $this->assertEquals(4, count($screenshot->saves), "Failed to find 4 saves with screenshot '{$screenshot->label}'. Found " . count($screenshot->ships));
+        $this->assertEquals(4, count($screenshot->challenges), "Failed to find 4 challenges with screenshot '{$screenshot->label}'. Found " . count($screenshot->ships));
+    }
+}

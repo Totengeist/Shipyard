@@ -36,6 +36,9 @@ $app->group($_ENV['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $group)
 
         $group->get('/release', 'Shipyard\Controllers\ReleaseController:index');
         $group->get('/release/{slug}', 'Shipyard\Controllers\ReleaseController:show');
+
+        $group->get('/screenshots/{ship_ref}', 'Shipyard\Controllers\ScreenshotController:index');
+        $group->get('/screenshot/{ref}', 'Shipyard\Controllers\ScreenshotController:show');
     });
 
     $group->group('', function (RouteCollectorProxy $group) {
@@ -75,6 +78,10 @@ $app->group($_ENV['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $group)
         $group->post('/release', 'Shipyard\Controllers\ReleaseController:store');
         $group->post('/release/{slug}', 'Shipyard\Controllers\ReleaseController:update');
         $group->delete('/release/{slug}', 'Shipyard\Controllers\ReleaseController:destroy');
+
+        $group->post('/screenshots/{ship_ref}', 'Shipyard\Controllers\ScreenshotController:store');
+        $group->post('/screenshot/{ref}', 'Shipyard\Controllers\ScreenshotController:update');
+        $group->delete('/screenshot/{ref}', 'Shipyard\Controllers\ScreenshotController:destroy');
     })->add(SessionMiddleware::class);
     $group->get('/{path:.*}', function ($request, $response, array $args) {
         return $response

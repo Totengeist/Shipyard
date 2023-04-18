@@ -8,6 +8,7 @@ use Valitron\Validator;
 class Save extends Model {
     use HasTags;
     use HasReleases;
+    use HasScreenshots;
     use HasRef;
 
     /**
