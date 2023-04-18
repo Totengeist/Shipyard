@@ -14,7 +14,7 @@ class PermissionControllerTest extends APITestCase {
      *
      * @return void
      */
-    public function testNonadminCannotListPermissions() {
+    public function testUserCannotListPermissions() {
         $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
         $this->get('api/v1/permission', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
@@ -54,7 +54,7 @@ class PermissionControllerTest extends APITestCase {
      *
      * @return void
      */
-    public function testNonadminCannotCreatePermissions() {
+    public function testUserCannotCreatePermissions() {
         $faker = \Faker\Factory::create();
         $slug = $faker->slug;
         $label = $faker->words(3, true);
@@ -128,7 +128,7 @@ class PermissionControllerTest extends APITestCase {
      *
      * @return void
      */
-    public function testNonadminCannotEditPermissions() {
+    public function testUserCannotEditPermissions() {
         $faker = \Faker\Factory::create();
         $permission = Factory::create('Shipyard\Permission');
         $slug = $faker->slug;
@@ -183,7 +183,7 @@ class PermissionControllerTest extends APITestCase {
      *
      * @return void
      */
-    public function testNonadminCannotDeletePermissions() {
+    public function testUserCannotDeletePermissions() {
         $permission = Factory::create('Shipyard\Permission');
 
         $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
@@ -228,7 +228,7 @@ class PermissionControllerTest extends APITestCase {
      *
      * @return void
      */
-    public function testNonadminCannotViewAPermission() {
+    public function testUserCannotViewAPermission() {
         $permission = Factory::create('Shipyard\Permission');
 
         $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])

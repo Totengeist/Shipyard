@@ -30,7 +30,7 @@ class ReleaseControllerTest extends APITestCase {
      *
      * @return void
      */
-    public function testNonadminCannotCreateReleases() {
+    public function testUserCannotCreateReleases() {
         $faker = \Faker\Factory::create();
         $slug = $faker->slug;
         $label = $faker->words(3, true);
@@ -104,7 +104,7 @@ class ReleaseControllerTest extends APITestCase {
      *
      * @return void
      */
-    public function testNonadminCannotEditReleases() {
+    public function testUserCannotEditReleases() {
         $faker = \Faker\Factory::create();
         $release = Factory::create('Shipyard\Release');
         $slug = $faker->slug;
@@ -159,7 +159,7 @@ class ReleaseControllerTest extends APITestCase {
      *
      * @return void
      */
-    public function testNonadminCannotDeleteReleases() {
+    public function testUserCannotDeleteReleases() {
         $release = Factory::create('Shipyard\Release');
 
         $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
@@ -204,7 +204,7 @@ class ReleaseControllerTest extends APITestCase {
      *
      * @return void
      */
-    public function testNonadminCanViewARelease() {
+    public function testUserCanViewARelease() {
         $release = Factory::create('Shipyard\Release');
 
         $this->get('api/v1/release/' . $release->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])

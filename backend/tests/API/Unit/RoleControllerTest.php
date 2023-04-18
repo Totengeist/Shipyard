@@ -14,7 +14,7 @@ class RoleControllerTest extends APITestCase {
      *
      * @return void
      */
-    public function testNonadminCannotListRoles() {
+    public function testUserCannotListRoles() {
         $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
         $this->get('api/v1/role', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
@@ -54,7 +54,7 @@ class RoleControllerTest extends APITestCase {
      *
      * @return void
      */
-    public function testNonadminCannotCreateRoles() {
+    public function testUserCannotCreateRoles() {
         $faker = \Faker\Factory::create();
         $slug = $faker->slug;
         $label = $faker->words(3, true);
@@ -128,7 +128,7 @@ class RoleControllerTest extends APITestCase {
      *
      * @return void
      */
-    public function testNonadminCannotEditRoles() {
+    public function testUserCannotEditRoles() {
         $faker = \Faker\Factory::create();
         $role = Factory::create('Shipyard\Role');
         $slug = $faker->slug;
@@ -183,7 +183,7 @@ class RoleControllerTest extends APITestCase {
      *
      * @return void
      */
-    public function testNonadminCannotDeleteRoles() {
+    public function testUserCannotDeleteRoles() {
         $role = Factory::create('Shipyard\Role');
 
         $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
@@ -228,7 +228,7 @@ class RoleControllerTest extends APITestCase {
      *
      * @return void
      */
-    public function testNonadminCannotViewARole() {
+    public function testUserCannotViewARole() {
         $role = Factory::create('Shipyard\Role');
 
         $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])

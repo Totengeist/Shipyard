@@ -21,7 +21,8 @@ Release::firstOrCreate(['label' => 'DEMO3A']);
 Release::firstOrCreate(['label' => 'Alpha1A']);
 Release::firstOrCreate(['label' => 'Alpha1C']);
 Release::firstOrCreate(['label' => 'Alpha1D']);
+Release::firstOrCreate(['label' => 'Alpha2D']);
 
-if (file_exists(__DIR__.'/custom_seeds.php')) {
-    include __DIR__.'/custom_seeds.php';
+if (file_exists(__DIR__ . '/custom_seeds.php')) {
+    include __DIR__ . '/custom_seeds.php';
 }

@@ -1,7 +1,5 @@
 <?php
 
-use Shipyard\User;
-
 require __DIR__ . '/../../bootstrap.php';
 
 echo "Installing.<br><br>\n\n";

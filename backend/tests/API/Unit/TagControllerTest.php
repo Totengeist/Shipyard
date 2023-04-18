@@ -15,8 +15,6 @@ class TagControllerTest extends APITestCase {
      * @return void
      */
     public function testCanListTags() {
-        $admin = Factory::create('Shipyard\User');
-
         $tag = Factory::create('Shipyard\Tag');
         $this->get('api/v1/tag', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
@@ -30,7 +28,7 @@ class TagControllerTest extends APITestCase {
      *
      * @return void
      */
-    public function testNonadminCannotCreateTags() {
+    public function testUserCannotCreateTags() {
         $faker = \Faker\Factory::create();
         $slug = $faker->slug;
         $label = $faker->words(3, true);
@@ -104,7 +102,7 @@ class TagControllerTest extends APITestCase {
      *
      * @return void
      */
-    public function testNonadminCannotEditTags() {
+    public function testUserCannotEditTags() {
         $faker = \Faker\Factory::create();
         $tag = Factory::create('Shipyard\Tag');
         $slug = $faker->slug;
@@ -159,7 +157,7 @@ class TagControllerTest extends APITestCase {
      *
      * @return void
      */
-    public function testNonadminCannotDeleteTags() {
+    public function testUserCannotDeleteTags() {
         $tag = Factory::create('Shipyard\Tag');
 
         $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
@@ -204,7 +202,7 @@ class TagControllerTest extends APITestCase {
      *
      * @return void
      */
-    public function testNonadminCanViewATag() {
+    public function testUserCanViewATag() {
         $tag = Factory::create('Shipyard\Tag');
 
         $this->get('api/v1/tag/' . $tag->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
