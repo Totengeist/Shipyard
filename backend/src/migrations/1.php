@@ -113,7 +113,7 @@ Capsule::schema()->create('ships', function ($table) {
     $table->string('ref')->unique();
     $table->bigInteger('user_id')->unsigned()->nullable();
     $table->string('title')->default(false);
-    $table->text('description')->unique();
+    $table->text('description');
     $table->string('file_path');
     $table->bigInteger('downloads')->unsigned()->nullable(false)->default('0');
     $table->timestamps();
@@ -124,7 +124,7 @@ Capsule::schema()->create('saves', function ($table) {
     $table->string('ref')->unique();
     $table->bigInteger('user_id')->unsigned()->nullable();
     $table->string('title')->default(false);
-    $table->text('description')->unique();
+    $table->text('description');
     $table->string('file_path');
     $table->bigInteger('downloads')->unsigned()->nullable(false)->default('0');
     $table->timestamps();
@@ -136,7 +136,7 @@ Capsule::schema()->create('challenges', function ($table) {
     $table->bigInteger('user_id')->unsigned()->nullable();
     $table->bigInteger('save_id')->unsigned()->nullable();
     $table->string('title')->default(false);
-    $table->text('description')->unique();
+    $table->text('description');
     $table->timestamps();
 });
 echo "Creating link table between items and releases table.<br>\n";
