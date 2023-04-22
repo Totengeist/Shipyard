@@ -53,4 +53,6 @@ $factory('Shipyard\Release', [
 $factory('Shipyard\Screenshot', [
     'ref' => $faker->md5(),
     'description' => $faker->paragraph(),
+    'primary' => false,
+    'file_path' => realpath('../assets/science-vessel.png'),
 ]);

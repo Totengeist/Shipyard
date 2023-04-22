@@ -175,6 +175,7 @@ Capsule::schema()->create('screenshots', function ($table) {
     $table->string('ref')->unique();
     $table->text('description')->nullable();
     $table->string('file_path');
+    $table->boolean('primary')->default(false);
     $table->timestamps();
 });
 echo "Creating link table between items and tags table.<br>\n";
