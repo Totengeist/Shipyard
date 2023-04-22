@@ -2,8 +2,6 @@
 
 namespace Tests;
 
-use Dotenv\Dotenv;
-use Illuminate\Database\Capsule\Manager as Capsule;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Shipyard\App;
 use Shipyard\CreatesUniqueIDs;
