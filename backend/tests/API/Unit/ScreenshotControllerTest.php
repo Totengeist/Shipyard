@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Laracasts\TestDummy\Factory;
 use Shipyard\Auth;
 use Shipyard\Screenshot;
+use Shipyard\Ship;
 use Tests\APITestCase;
 
 class ScreenshotControllerTest extends APITestCase {
@@ -143,7 +144,7 @@ class ScreenshotControllerTest extends APITestCase {
         $screenshot = $ship->screenshots()->create([
             'description' => $faker->paragraph(),
             'file_path' => realpath(__DIR__.'/../../assets/science-vessel.png'),
-        ]);
+        ], ['type' => Ship::$tag_label]);
         $description = $faker->paragraph();
 
         $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
