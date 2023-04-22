@@ -13,7 +13,7 @@ class Screenshot extends Model {
      * @var array
      */
     protected $fillable = [
-        'ref',
+        'ref', 'file_path', 'description', 'primary',
     ];
 
     /**
@@ -22,7 +22,7 @@ class Screenshot extends Model {
      * @var array
      */
     protected $hidden = [
-        'id',
+        'id', 'file_path',
     ];
 
     /**
