@@ -141,7 +141,8 @@ class ScreenshotControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\User');
         $ship = Factory::create('Shipyard\Ship', ['user_id' => $user->id]);
         $screenshot = $ship->screenshots()->create([
-            'description' => $faker->paragraph()
+            'description' => $faker->paragraph(),
+            'file_path' => realpath('../../assets/assets/science-vessel.png'),
         ]);
         $description = $faker->paragraph();
 

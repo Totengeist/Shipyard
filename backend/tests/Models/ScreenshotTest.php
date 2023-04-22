@@ -15,7 +15,8 @@ class ScreenshotModelTest extends TestCase {
     public function testCanCreateScreenshot() {
         $faker = \Faker\Factory::create();
         $screenshot1 = Screenshot::create([
-            'label' => $faker->words(5, true)
+            'description' => $faker->words(5, true),
+            'file_path' => realpath('../../assets/assets/science-vessel.png'),
         ]);
 
         $screenshot2 = Screenshot::findOrFail($screenshot1->id);
