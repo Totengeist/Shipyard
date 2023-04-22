@@ -12,13 +12,15 @@ class TestCase extends BaseTestCase {
 
     public function setUp(): void {
         parent::setUp();
+        $dotenv = Dotenv::createImmutable(realpath(__DIR__ . '/..'));
+        $dotenv->load();
         $capsule = new Capsule();
         $capsule->addConnection([
             'driver' => 'mysql',
-            'host' =>'localhost',
-            'database' => 'shipyard',
-            'username' => 'root',
-            'password' => ''
+            'host' => $_ENV['DB_HOST'],
+            'database' => $_ENV['DB_DATABASE'],
+            'username' => $_ENV['DB_USERNAME'],
+            'password' => $_ENV['DB_PASSWORD'],
         ]);
 
         $capsule->setAsGlobal();
