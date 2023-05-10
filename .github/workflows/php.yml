@@ -11,6 +11,17 @@ jobs:
       run:
         working-directory: ./backend
 
+    services:
+      mysql:
+        image: mysql:latest
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: false
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: shipyard
+        ports:
+          - 3306/tcp
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
     strategy:
         fail-fast: true
         matrix:
@@ -25,12 +36,16 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php }}
+        extensions: mysql
         
     - name: Report PHP version
       run: php -v
 
     - name: Validate composer.json and composer.lock
       run: composer validate --strict
+
+    - name: Rename .env
+      run: mv github.env .env
 
     - name: Cache Composer packages
       id: composer-cache
@@ -42,6 +57,9 @@ jobs:
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest
+
+    - name: Run Migration
+      run: php src/public/install/index.php
 
     - name: Run test suite
       run: composer test
