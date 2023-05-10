@@ -7,6 +7,10 @@ jobs:
 
     runs-on: ${{ matrix.runner }}
 
+    defaults:
+      run:
+        working-directory: ./backend
+
     strategy:
         fail-fast: true
         matrix:
@@ -27,21 +31,17 @@ jobs:
 
     - name: Validate composer.json and composer.lock
       run: composer validate --strict
-      working-directory: ./backend
 
     - name: Cache Composer packages
       id: composer-cache
       uses: actions/cache@v3
-      working-directory: ./backend
       with:
-        path: vendor
+        path: backend/vendor
         key: ${{ matrix.runner }}-php${{ matrix.php }}-${{ hashFiles('**/composer.lock') }}
         restore-keys: ${{ matrix.runner }}-php${{ matrix.php }}-
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest
-      working-directory: ./backend
 
     - name: Run test suite
       run: composer test
-      working-directory: ./backend
