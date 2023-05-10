@@ -26,7 +26,7 @@ $config
 
         'phpdoc_no_package' => false,
         'phpdoc_order' => true,
-        'phpdoc_summary' => false,
+        'phpdoc_summary' => true,
         'phpdoc_types_order' => array('null_adjustment' => 'none', 'sort_algorithm' => 'none'),
         
         'braces' => [
