@@ -82,5 +82,5 @@ jobs:
       if: ${{ matrix.php == '7.4' && matrix.runner == 'ubuntu-22.04' }}
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        files: ./coverage.xml
+        files: ./backend/coverage.xml
         verbose: true
