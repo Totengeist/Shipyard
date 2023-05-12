@@ -14,17 +14,16 @@ $dotenv->required([
     'DB_HOST',
     'DB_PORT',
     'DB_DATABASE',
-    'DB_USERNAME',
-    'DB_PASSWORD'
+    'DB_USERNAME'
 ]);
 
 $capsule = new Capsule();
 $capsule->addConnection([
     'driver' => 'mysql',
-    'host' => $_ENV['DB_HOST'],
-    'database' => $_ENV['DB_DATABASE'],
-    'username' => $_ENV['DB_USERNAME'],
-    'password' => $_ENV['DB_PASSWORD'],
+    'host' => $_SERVER['DB_HOST'],
+    'database' => $_SERVER['DB_DATABASE'],
+    'username' => $_SERVER['DB_USERNAME'],
+    'password' => isset($_SERVER['DB_PASSWORD'])?$_SERVER['DB_PASSWORD']:"",
 ]);
 
 $capsule->setAsGlobal();

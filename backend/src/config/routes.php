@@ -6,7 +6,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Shipyard\Middleware\SessionMiddleware;
 use Slim\Routing\RouteCollectorProxy;
 
-$app->group($_ENV['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $group) {
+$app->group($_SERVER['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $group) {
     $group->post('/register', 'Shipyard\Controllers\RegisterController:register');
     $group->post('/activate/{token}', 'Shipyard\Controllers\RegisterController:activate');
     $group->post('/login', 'Shipyard\Controllers\LoginController:login');
@@ -14,7 +14,7 @@ $app->group($_ENV['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $group)
     $group->get('/version', function (Request $request, Response $response, $args) {
         $raw_version = Capsule::select('select `default`,`value` from `meta` where `name` = ?', ['schema_version'])[0];
         $version = (empty($raw_version->value) ? $raw_version->default : $raw_version->value);
-        $payload = json_encode(['app' => $_ENV['APP_TITLE'], 'version' => 'alpha', 'schema' => $version]);
+        $payload = json_encode(['app' => $_SERVER['APP_TITLE'], 'version' => 'alpha', 'schema' => $version]);
         $response->getBody()->write($payload);
 
         return $response

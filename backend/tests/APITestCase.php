@@ -42,7 +42,7 @@ class APITestCase extends TestCase {
         array $serverParams = [],
         array $uploadedFiles = []
     ): Request {
-        $path = $_ENV['BASE_URL'] . '/' . $path;
+        $path = $_SERVER['BASE_URL'] . '/' . $path;
         $uri = new Uri('', '', 80, $path);
         $handle = fopen('php://temp', 'w+');
         $stream = (new StreamFactory())->createStreamFromResource($handle);

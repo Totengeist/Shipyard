@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   build:
-
+    name: PHP ${{ matrix.php }} on ${{ matrix.runner }}
     runs-on: ${{ matrix.runner }}
 
     defaults:
@@ -13,12 +13,12 @@ jobs:
 
     env:
       APP_TITLE: Shipyard
-      BASE_URL: 
+      BASE_URL: /
       DB_HOST: 127.0.0.1
       DB_PORT: 3306
       DB_DATABASE: shipyard
       DB_USERNAME: root
-      DB_PASSWORD: password
+      DB_PASSWORD: root
 
     services:
       mysql:
@@ -26,7 +26,6 @@ jobs:
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: false
           MYSQL_DATABASE: shipyard
-          MYSQL_ROOT_PASSWORD: password
         ports:
           - 3306/tcp
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
@@ -34,10 +33,9 @@ jobs:
     strategy:
         fail-fast: true
         matrix:
-            php: ['7.3', '7.4']
+            php: ['7.4']
             runner: ['ubuntu-20.04', 'ubuntu-22.04']
 
-    name: PHP ${{ matrix.php }} on ${{ matrix.runner }}
     steps:
     - uses: actions/checkout@v3
 
@@ -46,9 +44,6 @@ jobs:
       with:
         php-version: ${{ matrix.php }}
         extensions: mysql
-
-    - name: Report PHP version
-      run: php -v
 
     - name: Validate composer.json and composer.lock
       run: composer validate --strict
@@ -65,7 +60,9 @@ jobs:
       run: composer install --prefer-dist --no-progress --no-suggest
 
     - name: Start MySQL
-      run: sudo /etc/init.d/mysql start
+      run: |
+        sudo /etc/init.d/mysql start
+        mysql -h 127.0.0.1 --port 3306 -u root -proot -e 'CREATE DATABASE IF NOT EXISTS shipyard;'
 
     - name: Run Migration
       run: php src/public/install/index.php
@@ -76,7 +73,7 @@ jobs:
 
     - name: Run test suite
       run: vendor/bin/phpunit --verbose --coverage-clover ./coverage.xml
-      if: ${{ matrix.php == '7.4' }}
+      if: ${{ matrix.php == '7.4' && matrix.runner == 'ubuntu-22.04' }}
       env:
         XDEBUG_MODE: coverage
 
