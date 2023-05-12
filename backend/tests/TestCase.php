@@ -11,23 +11,6 @@ use PHPUnit\Framework\TestCase as BaseTestCase;
 class TestCase extends BaseTestCase {
     protected $http = null;
 
-    public function setUp(): void {
-        parent::setUp();
-        $dotenv = Dotenv::createImmutable(realpath(__DIR__ . '/..'));
-        $dotenv->load();
-        $capsule = new Capsule();
-        $capsule->addConnection([
-            'driver' => 'mysql',
-            'host' => $_ENV['DB_HOST'],
-            'database' => $_ENV['DB_DATABASE'],
-            'username' => $_ENV['DB_USERNAME'],
-            'password' => $_ENV['DB_PASSWORD'],
-        ]);
-
-        $capsule->setAsGlobal();
-        $capsule->bootEloquent();
-    }
-
     public function assertJsonFragment(array $dataExpected, array $dataActual, $negate = false) {
         $actual = substr(json_encode(Arr::sortRecursive($dataActual)), 1, -1);
 

@@ -1,4 +1,4 @@
-name: phpunit
+name: tests
 
 on: [push, pull_request]
 
@@ -12,6 +12,9 @@ jobs:
         working-directory: ./backend
 
     env:
+      APP_TITLE: Shipyard
+      BASE_URL: 
+      DB_HOST: 127.0.0.1
       DB_DATABASE: shipyard
       DB_USERNAME: root
       DB_PASSWORD: password
@@ -21,8 +24,8 @@ jobs:
         image: mysql:latest
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: false
-          MYSQL_ROOT_PASSWORD: password
           MYSQL_DATABASE: shipyard
+          MYSQL_ROOT_PASSWORD: password
         ports:
           - 3306/tcp
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
@@ -36,13 +39,13 @@ jobs:
     name: PHP ${{ matrix.php }} on ${{ matrix.runner }}
     steps:
     - uses: actions/checkout@v3
-    
+
     - name: Install PHP
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php }}
         extensions: mysql
-        
+
     - name: Report PHP version
       run: php -v
 
@@ -60,13 +63,16 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest
 
+    - name: Start MySQL
+      run: sudo /etc/init.d/mysql start
+
     - name: Run Migration
       run: php src/public/install/index.php
 
     - name: Run test suite
       run: composer test
       if: ${{ matrix.php != '7.4' }}
-      
+
     - name: Run test suite
       run: vendor/bin/phpunit --verbose --coverage-clover ./coverage.xml
       if: ${{ matrix.php == '7.4' }}
