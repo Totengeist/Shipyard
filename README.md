@@ -1,5 +1,5 @@
 # The Last Starship Shipyard
-[![Build Status](https://github.com/Totengeist/Shipyard/actions/workflows/php.yml/badge.svg)](https://github.com/Totengeist/Shipyard/actions/workflows/php.yml)
+[![Build Status](https://github.com/Totengeist/Shipyard/actions/workflows/tests.yml/badge.svg)](https://github.com/Totengeist/Shipyard/actions/workflows/tests.yml) [![codecov](https://codecov.io/gh/Totengeist/Shipyard/branch/main/graph/badge.svg?token=ECJQYDJRPX)](https://codecov.io/gh/Totengeist/Shipyard)
 
 [The Last Starship][1] Shipyard is a sharing system for player created ships, saves and challenges.
 
