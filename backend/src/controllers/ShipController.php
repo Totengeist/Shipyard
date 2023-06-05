@@ -8,9 +8,11 @@ use Shipyard\FileManager;
 use Shipyard\Models\Ship;
 use Shipyard\Models\User;
 use Shipyard\Traits\ChecksPermissions;
+use Shipyard\Traits\HasSlug;
 
 class ShipController extends Controller {
     use ChecksPermissions;
+    use HasSlug;
 
     /**
      * Display a listing of the resource.
@@ -107,6 +109,32 @@ class ShipController extends Controller {
 
         return $response
           ->withHeader('Content-Type', 'application/json');
+    }
+
+    /**
+     * Download the specified resource.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function download(Request $request, Response $response, $args) {
+        $item = Ship::where([['ref', $args['ref']]])->first();
+
+        if (file_exists($item->file_path) === false) {
+            $response->getBody()->write(['error' => 'file does not exist']);
+
+            return $response
+              ->withHeader('Content-Type', 'application/json');
+        }
+
+        $response->getBody()->write($item->file_contents());
+        $item->downloads++;
+        $item->save();
+
+        return $response
+          ->withHeader('Content-Disposition', 'attachment; filename="' . $this->slugify($item->title) . '.ship"')
+          ->withHeader('Content-Type', 'text/plain');
     }
 
     /**

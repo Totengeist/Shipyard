@@ -8,9 +8,12 @@ use Shipyard\Auth;
 use Shipyard\Models\Permission;
 use Shipyard\Models\Role;
 use Shipyard\Models\Ship;
+use Shipyard\Traits\HasSlug;
 use Tests\APITestCase;
 
 class ShipControllerTest extends APITestCase {
+    use HasSlug;
+
     /**
      * A basic test example.
      *
@@ -258,6 +261,28 @@ class ShipControllerTest extends APITestCase {
         $this->get('api/v1/ship/' . $ship->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
             'title' => $ship->title,
+        ]);
+    }
+
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testCanDownloadShips() {
+        $ship = Factory::create('Shipyard\Models\Ship');
+
+        $this->get('api/v1/ship/' . $ship->ref . '/download', ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
+
+        $this->assertNotEquals((string) $this->response->getBody(), '');
+        $this->assertEquals((string) $this->response->getBody(), $ship->file_contents());
+        $this->assertEquals($this->response->getHeader('Content-Disposition')[0], 'attachment; filename="' . $this->slugify($ship->title) . '.ship"');
+
+        $this->get('api/v1/ship/' . $ship->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertJsonResponse([
+            'ref' => $ship->ref,
+            'title' => $ship->title,
+            'downloads' => $ship->downloads+1,
         ]);
     }
 }

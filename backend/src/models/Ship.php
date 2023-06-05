@@ -37,6 +37,10 @@ class Ship extends Model {
      */
     protected $hidden = ['id', 'file_path', 'user_id'];
 
+    public function file_contents() {
+        return file_get_contents($this->file_path);
+    }
+
     /**
      * A ship can belong to a user.
      *

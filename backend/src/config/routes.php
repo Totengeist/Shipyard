@@ -24,6 +24,7 @@ $app->group($_SERVER['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $gro
     $group->group('', function (RouteCollectorProxy $group) {
         $group->get('/ship', 'Shipyard\Controllers\ShipController:index');
         $group->get('/ship/{ref}', 'Shipyard\Controllers\ShipController:show');
+        $group->get('/ship/{ref}/download', 'Shipyard\Controllers\ShipController:download');
 
         $group->get('/save', 'Shipyard\Controllers\SaveController:index');
         $group->get('/save/{ref}', 'Shipyard\Controllers\SaveController:show');
