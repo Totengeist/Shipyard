@@ -5,9 +5,9 @@ namespace Shipyard\Controllers;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Shipyard\Auth;
-use Shipyard\ChecksPermissions;
-use Shipyard\User;
-use Shipyard\UserActivation;
+use Shipyard\Models\User;
+use Shipyard\Models\UserActivation;
+use Shipyard\Traits\ChecksPermissions;
 use Valitron\Validator;
 
 class RegisterController extends Controller {

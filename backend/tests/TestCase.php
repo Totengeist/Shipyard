@@ -2,8 +2,6 @@
 
 namespace Tests;
 
-use Dotenv\Dotenv;
-use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use PHPUnit\Framework\TestCase as BaseTestCase;

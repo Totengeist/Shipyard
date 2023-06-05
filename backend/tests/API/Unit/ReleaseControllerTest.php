@@ -5,7 +5,7 @@ namespace Tests\Unit\API;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Laracasts\TestDummy\Factory;
 use Shipyard\Auth;
-use Shipyard\Release;
+use Shipyard\Models\Release;
 use Tests\APITestCase;
 
 class ReleaseControllerTest extends APITestCase {
@@ -15,9 +15,9 @@ class ReleaseControllerTest extends APITestCase {
      * @return void
      */
     public function testCanListReleases() {
-        $admin = Factory::create('Shipyard\User');
+        $admin = Factory::create('Shipyard\Models\User');
 
-        $release = Factory::create('Shipyard\Release');
+        $release = Factory::create('Shipyard\Models\Release');
         $this->get('api/v1/release', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
             'slug' => $release->slug,
@@ -40,7 +40,7 @@ class ReleaseControllerTest extends APITestCase {
         $this->post('api/v1/release', ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
 
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
 
@@ -57,7 +57,7 @@ class ReleaseControllerTest extends APITestCase {
      */
     public function testAdminCanCreateReleases() {
         $faker = \Faker\Factory::create();
-        $admin = Factory::create('Shipyard\User');
+        $admin = Factory::create('Shipyard\Models\User');
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
@@ -85,7 +85,7 @@ class ReleaseControllerTest extends APITestCase {
      */
     public function testAdminCannotCreateEmptyReleases() {
         $faker = \Faker\Factory::create();
-        $admin = Factory::create('Shipyard\User');
+        $admin = Factory::create('Shipyard\Models\User');
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
@@ -106,7 +106,7 @@ class ReleaseControllerTest extends APITestCase {
      */
     public function testUserCannotEditReleases() {
         $faker = \Faker\Factory::create();
-        $release = Factory::create('Shipyard\Release');
+        $release = Factory::create('Shipyard\Models\Release');
         $slug = $faker->slug;
         $label = $faker->words(3, true);
 
@@ -115,7 +115,7 @@ class ReleaseControllerTest extends APITestCase {
         $this->post('api/v1/release/' . $release->slug, ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
 
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
 
@@ -132,8 +132,8 @@ class ReleaseControllerTest extends APITestCase {
      */
     public function testAdminCanEditReleases() {
         $faker = \Faker\Factory::create();
-        $release = Factory::create('Shipyard\Release');
-        $admin = Factory::create('Shipyard\User');
+        $release = Factory::create('Shipyard\Models\Release');
+        $admin = Factory::create('Shipyard\Models\User');
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
@@ -160,14 +160,14 @@ class ReleaseControllerTest extends APITestCase {
      * @return void
      */
     public function testUserCannotDeleteReleases() {
-        $release = Factory::create('Shipyard\Release');
+        $release = Factory::create('Shipyard\Models\Release');
 
         $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
         $this->delete('api/v1/release/' . $release->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
 
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
 
@@ -183,8 +183,8 @@ class ReleaseControllerTest extends APITestCase {
      * @return void
      */
     public function testAdminCanDeleteReleases() {
-        $release = Factory::create('Shipyard\Release');
-        $admin = Factory::create('Shipyard\User');
+        $release = Factory::create('Shipyard\Models\Release');
+        $admin = Factory::create('Shipyard\Models\User');
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
@@ -205,7 +205,7 @@ class ReleaseControllerTest extends APITestCase {
      * @return void
      */
     public function testUserCanViewARelease() {
-        $release = Factory::create('Shipyard\Release');
+        $release = Factory::create('Shipyard\Models\Release');
 
         $this->get('api/v1/release/' . $release->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
@@ -220,8 +220,8 @@ class ReleaseControllerTest extends APITestCase {
      * @return void
      */
     public function testAdminCanViewARelease() {
-        $release = Factory::create('Shipyard\Release');
-        $admin = Factory::create('Shipyard\User');
+        $release = Factory::create('Shipyard\Models\Release');
+        $admin = Factory::create('Shipyard\Models\User');
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);

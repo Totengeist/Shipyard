@@ -5,7 +5,7 @@ namespace Tests\Unit\API;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Laracasts\TestDummy\Factory;
 use Shipyard\Auth;
-use Shipyard\Role;
+use Shipyard\Models\Role;
 use Tests\APITestCase;
 
 class RoleControllerTest extends APITestCase {
@@ -20,7 +20,7 @@ class RoleControllerTest extends APITestCase {
         $this->get('api/v1/role', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
 
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
 
@@ -36,12 +36,12 @@ class RoleControllerTest extends APITestCase {
      * @return void
      */
     public function testAdminCanListRoles() {
-        $admin = Factory::create('Shipyard\User');
+        $admin = Factory::create('Shipyard\Models\User');
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
 
-        $role = Factory::create('Shipyard\Role');
+        $role = Factory::create('Shipyard\Models\Role');
         $this->get('api/v1/role', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
             'slug' => $role->slug,
@@ -64,7 +64,7 @@ class RoleControllerTest extends APITestCase {
         $this->post('api/v1/role', ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
 
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
 
@@ -81,7 +81,7 @@ class RoleControllerTest extends APITestCase {
      */
     public function testAdminCanCreateRoles() {
         $faker = \Faker\Factory::create();
-        $admin = Factory::create('Shipyard\User');
+        $admin = Factory::create('Shipyard\Models\User');
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
@@ -109,7 +109,7 @@ class RoleControllerTest extends APITestCase {
      */
     public function testAdminCannotCreateEmptyRoles() {
         $faker = \Faker\Factory::create();
-        $admin = Factory::create('Shipyard\User');
+        $admin = Factory::create('Shipyard\Models\User');
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
@@ -130,7 +130,7 @@ class RoleControllerTest extends APITestCase {
      */
     public function testUserCannotEditRoles() {
         $faker = \Faker\Factory::create();
-        $role = Factory::create('Shipyard\Role');
+        $role = Factory::create('Shipyard\Models\Role');
         $slug = $faker->slug;
         $label = $faker->words(3, true);
 
@@ -139,7 +139,7 @@ class RoleControllerTest extends APITestCase {
         $this->post('api/v1/role/' . $role->slug, ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
 
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
 
@@ -156,8 +156,8 @@ class RoleControllerTest extends APITestCase {
      */
     public function testAdminCanEditRoles() {
         $faker = \Faker\Factory::create();
-        $role = Factory::create('Shipyard\Role');
-        $admin = Factory::create('Shipyard\User');
+        $role = Factory::create('Shipyard\Models\Role');
+        $admin = Factory::create('Shipyard\Models\User');
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
@@ -184,14 +184,14 @@ class RoleControllerTest extends APITestCase {
      * @return void
      */
     public function testUserCannotDeleteRoles() {
-        $role = Factory::create('Shipyard\Role');
+        $role = Factory::create('Shipyard\Models\Role');
 
         $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
         $this->delete('api/v1/role/' . $role->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
 
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
 
@@ -207,8 +207,8 @@ class RoleControllerTest extends APITestCase {
      * @return void
      */
     public function testAdminCanDeleteRoles() {
-        $role = Factory::create('Shipyard\Role');
-        $admin = Factory::create('Shipyard\User');
+        $role = Factory::create('Shipyard\Models\Role');
+        $admin = Factory::create('Shipyard\Models\User');
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
@@ -229,14 +229,14 @@ class RoleControllerTest extends APITestCase {
      * @return void
      */
     public function testUserCannotViewARole() {
-        $role = Factory::create('Shipyard\Role');
+        $role = Factory::create('Shipyard\Models\Role');
 
         $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
         $this->get('api/v1/role/' . $role->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
 
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
 
@@ -252,8 +252,8 @@ class RoleControllerTest extends APITestCase {
      * @return void
      */
     public function testAdminCanViewARole() {
-        $role = Factory::create('Shipyard\Role');
-        $admin = Factory::create('Shipyard\User');
+        $role = Factory::create('Shipyard\Models\Role');
+        $admin = Factory::create('Shipyard\Models\User');
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);

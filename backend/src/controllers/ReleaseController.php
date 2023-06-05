@@ -4,9 +4,9 @@ namespace Shipyard\Controllers;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Shipyard\ChecksPermissions;
-use Shipyard\HasSlug;
-use Shipyard\Release;
+use Shipyard\Models\Release;
+use Shipyard\Traits\ChecksPermissions;
+use Shipyard\Traits\HasSlug;
 
 class ReleaseController extends Controller {
     use ChecksPermissions;

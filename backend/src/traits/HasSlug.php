@@ -1,6 +1,6 @@
 <?php
 
-namespace Shipyard;
+namespace Shipyard\Traits;
 
 use Cocur\Slugify\Slugify;
 use Valitron\Validator;

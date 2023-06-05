@@ -4,9 +4,9 @@ namespace Shipyard\Controllers;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Shipyard\ChecksPermissions;
-use Shipyard\HasSlug;
-use Shipyard\Role;
+use Shipyard\Models\Role;
+use Shipyard\Traits\ChecksPermissions;
+use Shipyard\Traits\HasSlug;
 
 class RoleController extends Controller {
     use ChecksPermissions;

@@ -1,8 +1,10 @@
 <?php
 
-namespace Shipyard;
+namespace Shipyard\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Shipyard\Traits\CreatesUniqueIDs;
+use Shipyard\Traits\HasRoles;
 
 class User extends Model {
     use HasRoles;

@@ -5,8 +5,8 @@ namespace Tests\Unit\API;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Laracasts\TestDummy\Factory;
 use Shipyard\Auth;
-use Shipyard\Screenshot;
-use Shipyard\Ship;
+use Shipyard\Models\Screenshot;
+use Shipyard\Models\Ship;
 use Tests\APITestCase;
 
 class ScreenshotControllerTest extends APITestCase {
@@ -16,10 +16,10 @@ class ScreenshotControllerTest extends APITestCase {
      * @return void
      */
     public function testCanListScreenshots() {
-        $ship1 = Factory::create('Shipyard\Ship');
-        $ship2 = Factory::create('Shipyard\Ship');
-        $screenshot1 = Factory::create('Shipyard\Screenshot');
-        $screenshot2 = Factory::create('Shipyard\Screenshot');
+        $ship1 = Factory::create('Shipyard\Models\Ship');
+        $ship2 = Factory::create('Shipyard\Models\Ship');
+        $screenshot1 = Factory::create('Shipyard\Models\Screenshot');
+        $screenshot2 = Factory::create('Shipyard\Models\Screenshot');
         $ship1->assignScreenshot($screenshot1);
         $ship2->assignScreenshot($screenshot2);
 
@@ -40,8 +40,8 @@ class ScreenshotControllerTest extends APITestCase {
      */
     public function testOwnerCanCreateScreenshots() {
         $faker = \Faker\Factory::create();
-        $user = Factory::create('Shipyard\User');
-        $ship = Factory::create('Shipyard\Ship', ['user_id' => $user->id]);
+        $user = Factory::create('Shipyard\Models\User');
+        $ship = Factory::create('Shipyard\Models\Ship', ['user_id' => $user->id]);
         $description = $faker->paragraph();
         $user->activate();
         Auth::login($user);
@@ -66,12 +66,12 @@ class ScreenshotControllerTest extends APITestCase {
      */
     public function testAdminCanCreateScreenshots() {
         $faker = \Faker\Factory::create();
-        $admin = Factory::create('Shipyard\User');
+        $admin = Factory::create('Shipyard\Models\User');
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
 
-        $ship = Factory::create('Shipyard\Ship');
+        $ship = Factory::create('Shipyard\Models\Ship');
         $description = $faker->paragraph();
 
         $this->post('api/v1/screenshots/' . $ship->ref, ['description' => [$description]], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => [$this->createSampleUpload('science-vessel.png')]])
@@ -94,9 +94,9 @@ class ScreenshotControllerTest extends APITestCase {
      */
     public function testNonOwnerCannotCreateScreenshots() {
         $faker = \Faker\Factory::create();
-        $user1 = Factory::create('Shipyard\User');
-        $user2 = Factory::create('Shipyard\User');
-        $ship = Factory::create('Shipyard\Ship', ['user_id' => $user1->id]);
+        $user1 = Factory::create('Shipyard\Models\User');
+        $user2 = Factory::create('Shipyard\Models\User');
+        $ship = Factory::create('Shipyard\Models\Ship', ['user_id' => $user1->id]);
         $description = $faker->paragraph();
         $user2->activate();
         Auth::login($user2);
@@ -117,8 +117,8 @@ class ScreenshotControllerTest extends APITestCase {
      */
     public function testAdminCanCreateEmptyScreenshots() {
         $faker = \Faker\Factory::create();
-        $ship = Factory::create('Shipyard\Ship');
-        $admin = Factory::create('Shipyard\User');
+        $ship = Factory::create('Shipyard\Models\Ship');
+        $admin = Factory::create('Shipyard\Models\User');
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
@@ -139,11 +139,11 @@ class ScreenshotControllerTest extends APITestCase {
      */
     public function testUserCannotEditScreenshots() {
         $faker = \Faker\Factory::create();
-        $user = Factory::create('Shipyard\User');
-        $ship = Factory::create('Shipyard\Ship', ['user_id' => $user->id]);
+        $user = Factory::create('Shipyard\Models\User');
+        $ship = Factory::create('Shipyard\Models\Ship', ['user_id' => $user->id]);
         $screenshot = $ship->screenshots()->create([
             'description' => $faker->paragraph(),
-            'file_path' => realpath(__DIR__.'/../../assets/science-vessel.png'),
+            'file_path' => realpath(__DIR__ . '/../../assets/science-vessel.png'),
         ], ['type' => Ship::$tag_label]);
         $description = $faker->paragraph();
 
@@ -168,10 +168,10 @@ class ScreenshotControllerTest extends APITestCase {
      */
     public function testAdminCanEditScreenshots() {
         $faker = \Faker\Factory::create();
-        $screenshot = Factory::create('Shipyard\Screenshot');
+        $screenshot = Factory::create('Shipyard\Models\Screenshot');
         $description = $faker->paragraph();
 
-        $admin = Factory::create('Shipyard\User');
+        $admin = Factory::create('Shipyard\Models\User');
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
@@ -193,14 +193,14 @@ class ScreenshotControllerTest extends APITestCase {
      * @return void
      */
     public function testUserCannotDeleteScreenshots() {
-        $screenshot = Factory::create('Shipyard\Screenshot');
+        $screenshot = Factory::create('Shipyard\Models\Screenshot');
 
         $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
         $this->delete('api/v1/screenshot/' . $screenshot->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
 
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
 
@@ -216,8 +216,8 @@ class ScreenshotControllerTest extends APITestCase {
      * @return void
      */
     public function testAdminCanDeleteScreenshots() {
-        $screenshot = Factory::create('Shipyard\Screenshot');
-        $admin = Factory::create('Shipyard\User');
+        $screenshot = Factory::create('Shipyard\Models\Screenshot');
+        $admin = Factory::create('Shipyard\Models\User');
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
@@ -238,7 +238,7 @@ class ScreenshotControllerTest extends APITestCase {
      * @return void
      */
     public function testGuestCanViewAScreenshot() {
-        $screenshot = Factory::create('Shipyard\Screenshot');
+        $screenshot = Factory::create('Shipyard\Models\Screenshot');
 
         $this->get('api/v1/screenshot/' . $screenshot->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([

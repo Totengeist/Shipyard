@@ -1,6 +1,8 @@
 <?php
 
-namespace Shipyard;
+namespace Shipyard\Traits;
+
+use Shipyard\Models\Tag;
 
 trait HasTags {
     /**

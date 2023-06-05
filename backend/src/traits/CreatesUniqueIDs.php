@@ -1,6 +1,6 @@
 <?php
 
-namespace Shipyard;
+namespace Shipyard\Traits;
 
 trait CreatesUniqueIDs {
     public static function get_guid($length = 16) {

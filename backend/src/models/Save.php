@@ -1,8 +1,12 @@
 <?php
 
-namespace Shipyard;
+namespace Shipyard\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Shipyard\Traits\HasRef;
+use Shipyard\Traits\HasReleases;
+use Shipyard\Traits\HasScreenshots;
+use Shipyard\Traits\HasTags;
 use Valitron\Validator;
 
 class Save extends Model {

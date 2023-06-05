@@ -5,9 +5,9 @@ namespace Tests\Unit\API;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Laracasts\TestDummy\Factory;
 use Shipyard\Auth;
-use Shipyard\Permission;
-use Shipyard\Role;
-use Shipyard\Save;
+use Shipyard\Models\Permission;
+use Shipyard\Models\Role;
+use Shipyard\Models\Save;
 use Tests\APITestCase;
 
 class SaveControllerTest extends APITestCase {
@@ -17,7 +17,7 @@ class SaveControllerTest extends APITestCase {
      * @return void
      */
     public function testCanListSaves() {
-        $save = Factory::create('Shipyard\Save');
+        $save = Factory::create('Shipyard\Models\Save');
         $this->get('api/v1/save', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
             'title' => $save->title,
@@ -30,11 +30,11 @@ class SaveControllerTest extends APITestCase {
      * @return void
      */
     public function testCannotCreateSavesFromLocalFile() {
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
 
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $faker = \Faker\Factory::create();
         $title = $faker->words(3, true);
 
@@ -51,7 +51,7 @@ class SaveControllerTest extends APITestCase {
      * @return void
      */
     public function testCanCreateSavesFromUploadedFile() {
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
         $faker = \Faker\Factory::create();
@@ -77,11 +77,11 @@ class SaveControllerTest extends APITestCase {
      * @return void
      */
     public function testCanEditOwnSaves() {
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
         $faker = \Faker\Factory::create();
-        $save = Factory::create('Shipyard\Save');
+        $save = Factory::create('Shipyard\Models\Save');
         $save->user_id = $user->id;
         $save->save();
 
@@ -105,13 +105,13 @@ class SaveControllerTest extends APITestCase {
      * @return void
      */
     public function testCannotEditOtherSaves() {
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
         $faker = \Faker\Factory::create();
 
-        $user1 = Factory::create('Shipyard\User');
-        $save = Factory::create('Shipyard\Save');
+        $user1 = Factory::create('Shipyard\Models\User');
+        $save = Factory::create('Shipyard\Models\Save');
         $save->user_id = $user1->id;
         $save->save();
 
@@ -136,7 +136,7 @@ class SaveControllerTest extends APITestCase {
     public function testCanEditSavesWithRole() {
         $faker = \Faker\Factory::create();
 
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $role_name = $faker->slug;
         $role = Role::create(['slug' => $role_name, 'label' => $faker->name]);
         $role->givePermissionTo(Permission::whereSlug('edit-saves')->first());
@@ -144,8 +144,8 @@ class SaveControllerTest extends APITestCase {
         $user->activate();
         Auth::login($user);
 
-        $user1 = Factory::create('Shipyard\User');
-        $save = Factory::create('Shipyard\Save');
+        $user1 = Factory::create('Shipyard\Models\User');
+        $save = Factory::create('Shipyard\Models\Save');
         $save->user_id = $user1->id;
         $save->save();
 
@@ -171,11 +171,11 @@ class SaveControllerTest extends APITestCase {
      * @return void
      */
     public function testCanDeleteOwnSaves() {
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
         $faker = \Faker\Factory::create();
-        $save = Factory::create('Shipyard\Save');
+        $save = Factory::create('Shipyard\Models\Save');
         $save->user_id = $user->id;
         $save->save();
 
@@ -195,13 +195,13 @@ class SaveControllerTest extends APITestCase {
      * @return void
      */
     public function testCannnotDeleteOtherSaves() {
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
         $faker = \Faker\Factory::create();
 
-        $user1 = Factory::create('Shipyard\User');
-        $save = Factory::create('Shipyard\Save');
+        $user1 = Factory::create('Shipyard\Models\User');
+        $save = Factory::create('Shipyard\Models\Save');
         $save->user_id = $user1->id;
         $save->save();
 
@@ -226,7 +226,7 @@ class SaveControllerTest extends APITestCase {
     public function testCanDeleteSavesWithRole() {
         $faker = \Faker\Factory::create();
 
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $role_name = $faker->slug;
         $role = Role::create(['slug' => $role_name, 'label' => $faker->name]);
         $role->givePermissionTo(Permission::whereSlug('delete-saves')->first());
@@ -234,8 +234,8 @@ class SaveControllerTest extends APITestCase {
         $user->activate();
         Auth::login($user);
 
-        $user1 = Factory::create('Shipyard\User');
-        $save = Factory::create('Shipyard\Save');
+        $user1 = Factory::create('Shipyard\Models\User');
+        $save = Factory::create('Shipyard\Models\Save');
         $save->user_id = $user1->id;
         $save->save();
 
@@ -255,7 +255,7 @@ class SaveControllerTest extends APITestCase {
      * @return void
      */
     public function testCanViewSaves() {
-        $save = Factory::create('Shipyard\Save');
+        $save = Factory::create('Shipyard\Models\Save');
 
         $this->get('api/v1/save/' . $save->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([

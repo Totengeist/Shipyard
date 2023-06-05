@@ -4,7 +4,7 @@ namespace Tests;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Shipyard\App;
-use Shipyard\CreatesUniqueIDs;
+use Shipyard\Traits\CreatesUniqueIDs;
 use Slim\Psr7\Factory\StreamFactory;
 use Slim\Psr7\Headers;
 use Slim\Psr7\Request as SlimRequest;

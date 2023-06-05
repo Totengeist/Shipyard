@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Unit\API;
+namespace Tests\Models;
 
 use Laracasts\TestDummy\Factory;
-use Shipyard\Release;
+use Shipyard\Models\Release;
 use Tests\TestCase;
 
 class ReleaseModelTest extends TestCase {
@@ -23,10 +23,10 @@ class ReleaseModelTest extends TestCase {
     }
 
     public function testCanAssignRelease() {
-        $release = Factory::create('Shipyard\Release');
-        $ship = Factory::create('Shipyard\Ship');
-        $save = Factory::create('Shipyard\Save');
-        $challenge = Factory::create('Shipyard\Challenge');
+        $release = Factory::create('Shipyard\Models\Release');
+        $ship = Factory::create('Shipyard\Models\Ship');
+        $save = Factory::create('Shipyard\Models\Save');
+        $challenge = Factory::create('Shipyard\Models\Challenge');
 
         $ship->assignRelease($release->slug);
         $this->assertTrue($ship->hasRelease($release->slug), 'Failed to assert that a ship has the release ' . $release->label . '.');
@@ -42,10 +42,10 @@ class ReleaseModelTest extends TestCase {
      * @depends testCanAssignRelease
      */
     public function testCanRemoveRelease() {
-        $release = Factory::create('Shipyard\Release');
-        $ship = Factory::create('Shipyard\Ship');
-        $save = Factory::create('Shipyard\Save');
-        $challenge = Factory::create('Shipyard\Challenge');
+        $release = Factory::create('Shipyard\Models\Release');
+        $ship = Factory::create('Shipyard\Models\Ship');
+        $save = Factory::create('Shipyard\Models\Save');
+        $challenge = Factory::create('Shipyard\Models\Challenge');
 
         $ship->assignRelease($release->slug);
         $save->assignRelease($release->slug);
@@ -62,20 +62,20 @@ class ReleaseModelTest extends TestCase {
     }
 
     public function testCanGetReleaseItems() {
-        $release = Factory::create('Shipyard\Release');
+        $release = Factory::create('Shipyard\Models\Release');
 
         $ships = [];
         $saves = [];
         $challenges = [];
 
         for ($i = 0; $i < 4; $i++) {
-            $ships[$i] = Factory::create('Shipyard\Ship');
+            $ships[$i] = Factory::create('Shipyard\Models\Ship');
             $ships[$i]->assignRelease($release->slug);
             $ships[$i]->save();
-            $saves[$i] = Factory::create('Shipyard\Save');
+            $saves[$i] = Factory::create('Shipyard\Models\Save');
             $saves[$i]->assignRelease($release->slug);
             $saves[$i]->save();
-            $challenges[$i] = Factory::create('Shipyard\Challenge');
+            $challenges[$i] = Factory::create('Shipyard\Models\Challenge');
             $challenges[$i]->assignRelease($release->slug);
             $challenges[$i]->save();
         }

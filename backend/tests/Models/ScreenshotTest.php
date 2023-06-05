@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Unit\API;
+namespace Tests\Models;
 
 use Laracasts\TestDummy\Factory;
-use Shipyard\Screenshot;
+use Shipyard\Models\Screenshot;
 use Tests\TestCase;
 
 class ScreenshotModelTest extends TestCase {
@@ -16,7 +16,7 @@ class ScreenshotModelTest extends TestCase {
         $faker = \Faker\Factory::create();
         $screenshot1 = Screenshot::create([
             'description' => $faker->words(5, true),
-            'file_path' => realpath(__DIR__.'/../../assets/science-vessel.png'),
+            'file_path' => realpath(__DIR__ . '/../../assets/science-vessel.png'),
         ]);
 
         $screenshot2 = Screenshot::findOrFail($screenshot1->id);
@@ -24,10 +24,10 @@ class ScreenshotModelTest extends TestCase {
     }
 
     public function testCanAssignScreenshot() {
-        $screenshot = Factory::create('Shipyard\Screenshot');
-        $ship = Factory::create('Shipyard\Ship');
-        $save = Factory::create('Shipyard\Save');
-        $challenge = Factory::create('Shipyard\Challenge');
+        $screenshot = Factory::create('Shipyard\Models\Screenshot');
+        $ship = Factory::create('Shipyard\Models\Ship');
+        $save = Factory::create('Shipyard\Models\Save');
+        $challenge = Factory::create('Shipyard\Models\Challenge');
 
         $ship->assignScreenshot($screenshot->ref);
         $this->assertTrue($ship->hasScreenshot($screenshot->ref), 'Failed to assert that a ship has the screenshot ' . $screenshot->label . '.');
@@ -43,10 +43,10 @@ class ScreenshotModelTest extends TestCase {
      * @depends testCanAssignScreenshot
      */
     public function testCanRemoveScreenshot() {
-        $screenshot = Factory::create('Shipyard\Screenshot');
-        $ship = Factory::create('Shipyard\Ship');
-        $save = Factory::create('Shipyard\Save');
-        $challenge = Factory::create('Shipyard\Challenge');
+        $screenshot = Factory::create('Shipyard\Models\Screenshot');
+        $ship = Factory::create('Shipyard\Models\Ship');
+        $save = Factory::create('Shipyard\Models\Save');
+        $challenge = Factory::create('Shipyard\Models\Challenge');
 
         $ship->assignScreenshot($screenshot->ref);
         $save->assignScreenshot($screenshot->ref);
@@ -63,20 +63,20 @@ class ScreenshotModelTest extends TestCase {
     }
 
     public function testCanGetScreenshotItems() {
-        $screenshot = Factory::create('Shipyard\Screenshot');
+        $screenshot = Factory::create('Shipyard\Models\Screenshot');
 
         $ships = [];
         $saves = [];
         $challenges = [];
 
         for ($i = 0; $i < 4; $i++) {
-            $ships[$i] = Factory::create('Shipyard\Ship');
+            $ships[$i] = Factory::create('Shipyard\Models\Ship');
             $ships[$i]->assignScreenshot($screenshot->ref);
             $ships[$i]->save();
-            $saves[$i] = Factory::create('Shipyard\Save');
+            $saves[$i] = Factory::create('Shipyard\Models\Save');
             $saves[$i]->assignScreenshot($screenshot->ref);
             $saves[$i]->save();
-            $challenges[$i] = Factory::create('Shipyard\Challenge');
+            $challenges[$i] = Factory::create('Shipyard\Models\Challenge');
             $challenges[$i]->assignScreenshot($screenshot->ref);
             $challenges[$i]->save();
         }

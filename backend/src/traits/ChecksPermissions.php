@@ -1,6 +1,8 @@
 <?php
 
-namespace Shipyard;
+namespace Shipyard\Traits;
+
+use Shipyard\Auth;
 
 trait ChecksPermissions {
     private function can($permission) {

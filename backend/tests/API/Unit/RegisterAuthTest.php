@@ -5,8 +5,8 @@ namespace Tests\API\Unit;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Laracasts\TestDummy\Factory;
 use Shipyard\Auth;
-use Shipyard\User;
-use Shipyard\UserActivation;
+use Shipyard\Models\User;
+use Shipyard\Models\UserActivation;
 use Tests\APITestCase;
 
 class UserControllerTest extends APITestCase {
@@ -84,7 +84,7 @@ class UserControllerTest extends APITestCase {
      */
     public function testCannotRegisterUserWithExistingEmail() {
         $faker = \Faker\Factory::create();
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         $password = password_hash('secret', PASSWORD_BCRYPT);
         $this->post('api/v1/register', [
@@ -109,7 +109,7 @@ class UserControllerTest extends APITestCase {
      */
     public function testCanActivateUser() {
         $faker = \Faker\Factory::create();
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $activation = $user->create_activation();
 
         $this->post('api/v1/activate/' . $activation->token, [], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
@@ -132,7 +132,7 @@ class UserControllerTest extends APITestCase {
      * @return void
      */
     public function testCanLoginValidUser() {
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $user->activate();
 
         $this->post('api/v1/login', [
@@ -155,7 +155,7 @@ class UserControllerTest extends APITestCase {
      * @return void
      */
     public function testCanLogoutValidUser() {
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
 
@@ -177,7 +177,7 @@ class UserControllerTest extends APITestCase {
      * @return void
      */
     public function testCannotLoginInvalidUser() {
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $user->activate();
 
         $this->post('api/v1/login', [
@@ -198,7 +198,7 @@ class UserControllerTest extends APITestCase {
      * @return void
      */
     public function testCannotLoginInactiveUser() {
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $user->create_activation();
 
         $this->post('api/v1/login', [
@@ -220,8 +220,8 @@ class UserControllerTest extends APITestCase {
      */
     public function testAdminCanEditUser() {
         $faker = \Faker\Factory::create();
-        $user = Factory::create('Shipyard\User');
-        $admin = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
+        $admin = Factory::create('Shipyard\Models\User');
         $admin->activate();
         $admin->assignRole('administrator');
         $newName = $faker->name;
@@ -259,7 +259,7 @@ class UserControllerTest extends APITestCase {
      */
     public function testCanSelfEditUser() {
         $faker = \Faker\Factory::create();
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         $newName = $faker->name;
         $newEmail = $faker->email;
@@ -296,8 +296,8 @@ class UserControllerTest extends APITestCase {
      */
     public function testCannotEditOtherUser() {
         $faker = \Faker\Factory::create();
-        $user = Factory::create('Shipyard\User');
-        $other = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
+        $other = Factory::create('Shipyard\Models\User');
         $user->activate();
         $other->activate();
         $newName = $faker->name;
@@ -319,8 +319,8 @@ class UserControllerTest extends APITestCase {
      * @return void
      */
     public function testAdminCanDeleteUser() {
-        $user = Factory::create('Shipyard\User');
-        $admin = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
+        $admin = Factory::create('Shipyard\Models\User');
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
@@ -342,7 +342,7 @@ class UserControllerTest extends APITestCase {
      * @return void
      */
     public function testCanSelfDeleteUser() {
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
 
@@ -363,8 +363,8 @@ class UserControllerTest extends APITestCase {
      * @return void
      */
     public function testCannotDeleteAnotherUser() {
-        $user = Factory::create('Shipyard\User');
-        $other = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
+        $other = Factory::create('Shipyard\Models\User');
         $user->activate();
         $other->activate();
         Auth::login($other);

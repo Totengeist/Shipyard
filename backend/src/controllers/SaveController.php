@@ -4,10 +4,10 @@ namespace Shipyard\Controllers;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Shipyard\ChecksPermissions;
 use Shipyard\FileManager;
-use Shipyard\Save;
-use Shipyard\User;
+use Shipyard\Models\Save;
+use Shipyard\Models\User;
+use Shipyard\Traits\ChecksPermissions;
 
 class SaveController extends Controller {
     use ChecksPermissions;

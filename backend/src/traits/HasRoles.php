@@ -1,6 +1,9 @@
 <?php
 
-namespace Shipyard;
+namespace Shipyard\Traits;
+
+use Shipyard\Models\Role;
+use Shipyard\Models\Permission;
 
 trait HasRoles {
     /**

@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Unit\API;
+namespace Tests\Models;
 
 use Laracasts\TestDummy\Factory;
-use Shipyard\Tag;
+use Shipyard\Models\Tag;
 use Tests\TestCase;
 
 class TagModelTest extends TestCase {
@@ -23,10 +23,10 @@ class TagModelTest extends TestCase {
     }
 
     public function testCanAssignTag() {
-        $tag = Factory::create('Shipyard\Tag');
-        $ship = Factory::create('Shipyard\Ship');
-        $save = Factory::create('Shipyard\Save');
-        $challenge = Factory::create('Shipyard\Challenge');
+        $tag = Factory::create('Shipyard\Models\Tag');
+        $ship = Factory::create('Shipyard\Models\Ship');
+        $save = Factory::create('Shipyard\Models\Save');
+        $challenge = Factory::create('Shipyard\Models\Challenge');
 
         $ship->assignTag($tag->slug);
         $this->assertTrue($ship->hasTag($tag->slug), 'Failed to assert that a ship has the tag ' . $tag->label . '.');
@@ -42,10 +42,10 @@ class TagModelTest extends TestCase {
      * @depends testCanAssignTag
      */
     public function testCanRemoveTag() {
-        $tag = Factory::create('Shipyard\Tag');
-        $ship = Factory::create('Shipyard\Ship');
-        $save = Factory::create('Shipyard\Save');
-        $challenge = Factory::create('Shipyard\Challenge');
+        $tag = Factory::create('Shipyard\Models\Tag');
+        $ship = Factory::create('Shipyard\Models\Ship');
+        $save = Factory::create('Shipyard\Models\Save');
+        $challenge = Factory::create('Shipyard\Models\Challenge');
 
         $ship->assignTag($tag->slug);
         $save->assignTag($tag->slug);
@@ -62,20 +62,20 @@ class TagModelTest extends TestCase {
     }
 
     public function testCanGetTagItems() {
-        $tag = Factory::create('Shipyard\Tag');
+        $tag = Factory::create('Shipyard\Models\Tag');
 
         $ships = [];
         $saves = [];
         $challenges = [];
 
         for ($i = 0; $i < 4; $i++) {
-            $ships[$i] = Factory::create('Shipyard\Ship');
+            $ships[$i] = Factory::create('Shipyard\Models\Ship');
             $ships[$i]->assignTag($tag->slug);
             $ships[$i]->save();
-            $saves[$i] = Factory::create('Shipyard\Save');
+            $saves[$i] = Factory::create('Shipyard\Models\Save');
             $saves[$i]->assignTag($tag->slug);
             $saves[$i]->save();
-            $challenges[$i] = Factory::create('Shipyard\Challenge');
+            $challenges[$i] = Factory::create('Shipyard\Models\Challenge');
             $challenges[$i]->assignTag($tag->slug);
             $challenges[$i]->save();
         }

@@ -1,8 +1,9 @@
 <?php
 
-namespace Shipyard;
+namespace Shipyard\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Shipyard\Traits\HasSlug;
 
 class Permission extends Model {
     use HasSlug;

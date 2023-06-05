@@ -5,7 +5,7 @@ namespace Tests\Unit\API;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Laracasts\TestDummy\Factory;
 use Shipyard\Auth;
-use Shipyard\Permission;
+use Shipyard\Models\Permission;
 use Tests\APITestCase;
 
 class PermissionControllerTest extends APITestCase {
@@ -20,7 +20,7 @@ class PermissionControllerTest extends APITestCase {
         $this->get('api/v1/permission', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
 
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\\User');
         $user->activate();
         Auth::login($user);
 
@@ -36,12 +36,12 @@ class PermissionControllerTest extends APITestCase {
      * @return void
      */
     public function testAdminCanListPermissions() {
-        $admin = Factory::create('Shipyard\User');
+        $admin = Factory::create('Shipyard\Models\\User');
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
 
-        $permission = Factory::create('Shipyard\Permission');
+        $permission = Factory::create('Shipyard\Models\\Permission');
         $this->get('api/v1/permission', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
             'slug' => $permission->slug,
@@ -64,7 +64,7 @@ class PermissionControllerTest extends APITestCase {
         $this->post('api/v1/permission', ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
 
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\\User');
         $user->activate();
         Auth::login($user);
 
@@ -81,7 +81,7 @@ class PermissionControllerTest extends APITestCase {
      */
     public function testAdminCanCreatePermissions() {
         $faker = \Faker\Factory::create();
-        $admin = Factory::create('Shipyard\User');
+        $admin = Factory::create('Shipyard\Models\\User');
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
@@ -109,7 +109,7 @@ class PermissionControllerTest extends APITestCase {
      */
     public function testAdminCannotCreateEmptyPermissions() {
         $faker = \Faker\Factory::create();
-        $admin = Factory::create('Shipyard\User');
+        $admin = Factory::create('Shipyard\Models\\User');
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
@@ -130,7 +130,7 @@ class PermissionControllerTest extends APITestCase {
      */
     public function testUserCannotEditPermissions() {
         $faker = \Faker\Factory::create();
-        $permission = Factory::create('Shipyard\Permission');
+        $permission = Factory::create('Shipyard\Models\\Permission');
         $slug = $faker->slug;
         $label = $faker->words(3, true);
 
@@ -139,7 +139,7 @@ class PermissionControllerTest extends APITestCase {
         $this->post('api/v1/permission/' . $permission->slug, ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
 
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\\User');
         $user->activate();
         Auth::login($user);
 
@@ -156,8 +156,8 @@ class PermissionControllerTest extends APITestCase {
      */
     public function testAdminCanEditPermissions() {
         $faker = \Faker\Factory::create();
-        $permission = Factory::create('Shipyard\Permission');
-        $admin = Factory::create('Shipyard\User');
+        $permission = Factory::create('Shipyard\Models\\Permission');
+        $admin = Factory::create('Shipyard\Models\\User');
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
@@ -184,14 +184,14 @@ class PermissionControllerTest extends APITestCase {
      * @return void
      */
     public function testUserCannotDeletePermissions() {
-        $permission = Factory::create('Shipyard\Permission');
+        $permission = Factory::create('Shipyard\Models\\Permission');
 
         $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
         $this->delete('api/v1/permission/' . $permission->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
 
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\\User');
         $user->activate();
         Auth::login($user);
 
@@ -207,8 +207,8 @@ class PermissionControllerTest extends APITestCase {
      * @return void
      */
     public function testAdminCanDeletePermissions() {
-        $permission = Factory::create('Shipyard\Permission');
-        $admin = Factory::create('Shipyard\User');
+        $permission = Factory::create('Shipyard\Models\\Permission');
+        $admin = Factory::create('Shipyard\Models\\User');
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
@@ -229,14 +229,14 @@ class PermissionControllerTest extends APITestCase {
      * @return void
      */
     public function testUserCannotViewAPermission() {
-        $permission = Factory::create('Shipyard\Permission');
+        $permission = Factory::create('Shipyard\Models\\Permission');
 
         $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
         $this->get('api/v1/permission/' . $permission->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
 
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\\User');
         $user->activate();
         Auth::login($user);
 
@@ -252,8 +252,8 @@ class PermissionControllerTest extends APITestCase {
      * @return void
      */
     public function testAdminCanViewAPermission() {
-        $permission = Factory::create('Shipyard\Permission');
-        $admin = Factory::create('Shipyard\User');
+        $permission = Factory::create('Shipyard\Models\\Permission');
+        $admin = Factory::create('Shipyard\Models\\User');
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);

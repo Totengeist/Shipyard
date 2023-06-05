@@ -4,10 +4,10 @@ namespace Shipyard\Controllers;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Shipyard\ChecksPermissions;
 use Shipyard\FileManager;
-use Shipyard\Screenshot;
-use Shipyard\Ship;
+use Shipyard\Models\Screenshot;
+use Shipyard\Models\Ship;
+use Shipyard\Traits\ChecksPermissions;
 
 class ScreenshotController extends Controller {
     use ChecksPermissions;

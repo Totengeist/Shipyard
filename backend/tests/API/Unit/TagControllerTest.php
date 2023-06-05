@@ -5,7 +5,7 @@ namespace Tests\Unit\API;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Laracasts\TestDummy\Factory;
 use Shipyard\Auth;
-use Shipyard\Tag;
+use Shipyard\Models\Tag;
 use Tests\APITestCase;
 
 class TagControllerTest extends APITestCase {
@@ -15,7 +15,7 @@ class TagControllerTest extends APITestCase {
      * @return void
      */
     public function testCanListTags() {
-        $tag = Factory::create('Shipyard\Tag');
+        $tag = Factory::create('Shipyard\Models\Tag');
         $this->get('api/v1/tag', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
             'slug' => $tag->slug,
@@ -38,7 +38,7 @@ class TagControllerTest extends APITestCase {
         $this->post('api/v1/tag', ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
 
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
 
@@ -55,7 +55,7 @@ class TagControllerTest extends APITestCase {
      */
     public function testAdminCanCreateTags() {
         $faker = \Faker\Factory::create();
-        $admin = Factory::create('Shipyard\User');
+        $admin = Factory::create('Shipyard\Models\User');
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
@@ -83,7 +83,7 @@ class TagControllerTest extends APITestCase {
      */
     public function testAdminCannotCreateEmptyTags() {
         $faker = \Faker\Factory::create();
-        $admin = Factory::create('Shipyard\User');
+        $admin = Factory::create('Shipyard\Models\User');
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
@@ -104,7 +104,7 @@ class TagControllerTest extends APITestCase {
      */
     public function testUserCannotEditTags() {
         $faker = \Faker\Factory::create();
-        $tag = Factory::create('Shipyard\Tag');
+        $tag = Factory::create('Shipyard\Models\Tag');
         $slug = $faker->slug;
         $label = $faker->words(3, true);
 
@@ -113,7 +113,7 @@ class TagControllerTest extends APITestCase {
         $this->post('api/v1/tag/' . $tag->slug, ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
 
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
 
@@ -130,8 +130,8 @@ class TagControllerTest extends APITestCase {
      */
     public function testAdminCanEditTags() {
         $faker = \Faker\Factory::create();
-        $tag = Factory::create('Shipyard\Tag');
-        $admin = Factory::create('Shipyard\User');
+        $tag = Factory::create('Shipyard\Models\Tag');
+        $admin = Factory::create('Shipyard\Models\User');
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
@@ -158,14 +158,14 @@ class TagControllerTest extends APITestCase {
      * @return void
      */
     public function testUserCannotDeleteTags() {
-        $tag = Factory::create('Shipyard\Tag');
+        $tag = Factory::create('Shipyard\Models\Tag');
 
         $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
         $this->delete('api/v1/tag/' . $tag->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
 
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
 
@@ -181,8 +181,8 @@ class TagControllerTest extends APITestCase {
      * @return void
      */
     public function testAdminCanDeleteTags() {
-        $tag = Factory::create('Shipyard\Tag');
-        $admin = Factory::create('Shipyard\User');
+        $tag = Factory::create('Shipyard\Models\Tag');
+        $admin = Factory::create('Shipyard\Models\User');
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
@@ -203,7 +203,7 @@ class TagControllerTest extends APITestCase {
      * @return void
      */
     public function testUserCanViewATag() {
-        $tag = Factory::create('Shipyard\Tag');
+        $tag = Factory::create('Shipyard\Models\Tag');
 
         $this->get('api/v1/tag/' . $tag->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
@@ -218,8 +218,8 @@ class TagControllerTest extends APITestCase {
      * @return void
      */
     public function testAdminCanViewATag() {
-        $tag = Factory::create('Shipyard\Tag');
-        $admin = Factory::create('Shipyard\User');
+        $tag = Factory::create('Shipyard\Models\Tag');
+        $admin = Factory::create('Shipyard\Models\User');
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);

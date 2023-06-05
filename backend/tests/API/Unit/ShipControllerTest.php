@@ -5,9 +5,9 @@ namespace Tests\Unit\API;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Laracasts\TestDummy\Factory;
 use Shipyard\Auth;
-use Shipyard\Permission;
-use Shipyard\Role;
-use Shipyard\Ship;
+use Shipyard\Models\Permission;
+use Shipyard\Models\Role;
+use Shipyard\Models\Ship;
 use Tests\APITestCase;
 
 class ShipControllerTest extends APITestCase {
@@ -17,7 +17,7 @@ class ShipControllerTest extends APITestCase {
      * @return void
      */
     public function testCanListShips() {
-        $ship = Factory::create('Shipyard\Ship');
+        $ship = Factory::create('Shipyard\Models\Ship');
         $this->get('api/v1/ship', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
             'title' => $ship->title,
@@ -30,7 +30,7 @@ class ShipControllerTest extends APITestCase {
      * @return void
      */
     public function testCannotCreateShipsFromLocalFile() {
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
         $faker = \Faker\Factory::create();
@@ -49,7 +49,7 @@ class ShipControllerTest extends APITestCase {
      * @return void
      */
     public function testCanCreateShipsFromUploadedFile() {
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
         $faker = \Faker\Factory::create();
@@ -75,11 +75,11 @@ class ShipControllerTest extends APITestCase {
      * @return void
      */
     public function testCanEditOwnShips() {
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
         $faker = \Faker\Factory::create();
-        $ship = Factory::create('Shipyard\Ship');
+        $ship = Factory::create('Shipyard\Models\Ship');
         $ship->user_id = $user->id;
         $ship->save();
 
@@ -103,13 +103,13 @@ class ShipControllerTest extends APITestCase {
      * @return void
      */
     public function testCannotEditOtherShips() {
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
         $faker = \Faker\Factory::create();
 
-        $user1 = Factory::create('Shipyard\User');
-        $ship = Factory::create('Shipyard\Ship');
+        $user1 = Factory::create('Shipyard\Models\User');
+        $ship = Factory::create('Shipyard\Models\Ship');
         $ship->user_id = $user1->id;
         $ship->save();
 
@@ -134,7 +134,7 @@ class ShipControllerTest extends APITestCase {
     public function testCanEditShipsWithRole() {
         $faker = \Faker\Factory::create();
 
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $role_name = $faker->slug;
         $role = Role::create(['slug' => $role_name, 'label' => $faker->name]);
         $role->givePermissionTo(Permission::whereSlug('edit-ships')->first());
@@ -142,8 +142,8 @@ class ShipControllerTest extends APITestCase {
         $user->activate();
         Auth::login($user);
 
-        $user1 = Factory::create('Shipyard\User');
-        $ship = Factory::create('Shipyard\Ship');
+        $user1 = Factory::create('Shipyard\Models\User');
+        $ship = Factory::create('Shipyard\Models\Ship');
         $ship->user_id = $user1->id;
         $ship->save();
 
@@ -169,11 +169,11 @@ class ShipControllerTest extends APITestCase {
      * @return void
      */
     public function testCanDeleteOwnShips() {
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
         $faker = \Faker\Factory::create();
-        $ship = Factory::create('Shipyard\Ship');
+        $ship = Factory::create('Shipyard\Models\Ship');
         $ship->user_id = $user->id;
         $ship->save();
 
@@ -193,13 +193,13 @@ class ShipControllerTest extends APITestCase {
      * @return void
      */
     public function testCannnotDeleteOtherShips() {
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
         $faker = \Faker\Factory::create();
 
-        $user1 = Factory::create('Shipyard\User');
-        $ship = Factory::create('Shipyard\Ship');
+        $user1 = Factory::create('Shipyard\Models\User');
+        $ship = Factory::create('Shipyard\Models\Ship');
         $ship->user_id = $user1->id;
         $ship->save();
 
@@ -224,7 +224,7 @@ class ShipControllerTest extends APITestCase {
     public function testCanDeleteShipsWithRole() {
         $faker = \Faker\Factory::create();
 
-        $user = Factory::create('Shipyard\User');
+        $user = Factory::create('Shipyard\Models\User');
         $role_name = $faker->slug;
         $role = Role::create(['slug' => $role_name, 'label' => $faker->name]);
         $role->givePermissionTo(Permission::whereSlug('delete-ships')->first());
@@ -232,8 +232,8 @@ class ShipControllerTest extends APITestCase {
         $user->activate();
         Auth::login($user);
 
-        $user1 = Factory::create('Shipyard\User');
-        $ship = Factory::create('Shipyard\Ship');
+        $user1 = Factory::create('Shipyard\Models\User');
+        $ship = Factory::create('Shipyard\Models\Ship');
         $ship->user_id = $user1->id;
         $ship->save();
 
@@ -253,7 +253,7 @@ class ShipControllerTest extends APITestCase {
      * @return void
      */
     public function testCanViewShips() {
-        $ship = Factory::create('Shipyard\Ship');
+        $ship = Factory::create('Shipyard\Models\Ship');
 
         $this->get('api/v1/ship/' . $ship->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([

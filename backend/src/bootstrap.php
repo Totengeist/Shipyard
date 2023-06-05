@@ -5,7 +5,7 @@ use Dotenv\Dotenv;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
 $dotenv = Dotenv::createMutable(realpath(dirname(__DIR__)));
-if(getenv('APP_ENV') == 'development') {
+if (getenv('APP_ENV') == 'development') {
     $dotenv->load(dirname(__DIR__), '.env');
 }
 $dotenv->required([
@@ -23,7 +23,7 @@ $capsule->addConnection([
     'host' => $_SERVER['DB_HOST'],
     'database' => $_SERVER['DB_DATABASE'],
     'username' => $_SERVER['DB_USERNAME'],
-    'password' => isset($_SERVER['DB_PASSWORD'])?$_SERVER['DB_PASSWORD']:"",
+    'password' => isset($_SERVER['DB_PASSWORD']) ? $_SERVER['DB_PASSWORD'] : '',
 ]);
 
 $capsule->setAsGlobal();

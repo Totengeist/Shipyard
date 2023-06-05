@@ -5,8 +5,8 @@ namespace Shipyard\Controllers;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Shipyard\Auth;
-use Shipyard\User;
-use Shipyard\UserActivation;
+use Shipyard\Models\User;
+use Shipyard\Models\UserActivation;
 
 class LoginController extends Controller {
     /*

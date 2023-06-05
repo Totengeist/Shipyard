@@ -3,6 +3,7 @@
 namespace Shipyard;
 
 use Slim\Psr7\UploadedFile;
+use Shipyard\Traits\CreatesUniqueIDs;
 
 class FileManager {
     use CreatesUniqueIDs;

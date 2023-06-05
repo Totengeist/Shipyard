@@ -1,6 +1,6 @@
 <?php
 
-namespace Shipyard;
+namespace Shipyard\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
