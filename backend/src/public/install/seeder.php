@@ -1,7 +1,7 @@
 <?php
 
-use Shipyard\Release;
-use Shipyard\User;
+use Shipyard\Models\Release;
+use Shipyard\Models\User;
 
 echo 'Inserting administrator user.<br>\n';
 $admin = User::create([

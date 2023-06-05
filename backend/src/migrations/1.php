@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Database\Capsule\Manager as Capsule;
-use Shipyard\Permission;
-use Shipyard\Role;
+use Shipyard\Models\Permission;
+use Shipyard\Models\Role;
 
 echo "Dropping tables.<br>\n";
 Capsule::schema()->dropIfExists('item_screenshots');

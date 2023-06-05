@@ -2,8 +2,8 @@
 
 namespace Shipyard\Traits;
 
-use Shipyard\Models\Role;
 use Shipyard\Models\Permission;
+use Shipyard\Models\Role;
 
 trait HasRoles {
     /**
