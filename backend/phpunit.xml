@@ -19,7 +19,6 @@
             <exclude>
                 <directory>src/migrations</directory>
                 <directory>src/public</directory>
-                <file>src/middleware/JwtAuthMiddleware.php</file>
             </exclude>
         </whitelist>
     </filter>
