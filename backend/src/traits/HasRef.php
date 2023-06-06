@@ -2,13 +2,15 @@
 
 namespace Shipyard\Traits;
 
+use Valitron\Validator;
+
 trait HasRef {
     use CreatesUniqueIDs;
 
     /**
-     * Get a validator for an incoming request.
+     * Create or add on to a validator.
      *
-     * @return \Illuminate\Contracts\Validation\Validator
+     * @return Validator
      */
     protected static function ref_validator(array $data, Validator $v = null) {
         if ($v === null) {

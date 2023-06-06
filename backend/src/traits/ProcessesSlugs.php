@@ -18,7 +18,7 @@ trait ProcessesSlugs {
     }
 
     /**
-     * Get a validator for an incoming request.
+     * Create or add on to a validator.
      *
      * @return Validator
      */

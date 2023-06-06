@@ -20,6 +20,7 @@ class APITestCase extends TestCase {
     protected $http = null;
     protected $statusCode = null;
     protected $response = null;
+    protected $app = null;
 
     public function setUp(): void {
         parent::setUp();

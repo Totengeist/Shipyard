@@ -33,9 +33,9 @@ class RegisterController extends Controller {
     }
 
     /**
-     * Get a validator for an incoming registration request.
+     * Create or add on to a validator for an incoming registration request.
      *
-     * @return \Illuminate\Contracts\Validation\Validator
+     * @return Validator
      */
     protected function validator(array $data, $optional = false) {
         Validator::addRule('unique', function ($field, $value, array $params, array $fields) {
@@ -175,30 +175,6 @@ class RegisterController extends Controller {
     }
 
     /**
-     * Refresh a token.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function refresh() {
-        return $this->respondWithToken($this->guard()->refresh());
-    }
-
-    /**
-     * Get the token array structure.
-     *
-     * @param string $token
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    protected function respondWithToken($token) {
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => $this->guard()->factory()->getTTL() * 60,
-        ]);
-    }
-
-    /**
      * Remove the specified resource from storage.
      *
      * @param int $id
@@ -243,7 +219,10 @@ class RegisterController extends Controller {
         $subdata = array_intersect_key($data, array_flip((array) ['name', 'email', 'password', 'password_confirmation']));
         $errors = $this->validator($subdata, true)->errors();
         if (count($errors)) {
-            return response(['errors' => $errors], 401);
+            $response->getBody()->write(['errors' => $errors]);
+
+            return $response
+                ->withHeader('Content-Type', 'application/json');
         }
 
         $user = User::where('id', $id)->first();

@@ -58,11 +58,11 @@ class Screenshot extends Model {
     }
 
     /**
-     * Get a validator for an incoming request.
+     * Create or add on to a validator.
      *
-     * @return \Illuminate\Contracts\Validation\Validator
+     * @return Validator
      */
-    protected function validator(array $data, Validator $v = null) {
+    public static function validator(array $data, Validator $v = null) {
         if ($v === null) {
             $v = new Validator($data);
         }

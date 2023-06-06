@@ -38,6 +38,7 @@ class UserActivation extends Model {
     public function save(array $options = []) {
         $this->created_at = $this->freshTimestamp();
         $this->token = bin2hex(random_bytes(20));
-        parent::save($options);
+
+        return parent::save($options);
     }
 }
