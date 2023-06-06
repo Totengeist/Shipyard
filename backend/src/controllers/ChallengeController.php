@@ -4,8 +4,14 @@ namespace Shipyard\Controllers;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Shipyard\Models\Challenge;
+use Shipyard\Traits\ChecksPermissions;
+use Shipyard\Traits\ProcessesSlugs;
 
-class SectionController extends Controller {
+class ChallengeController extends Controller {
+    use ChecksPermissions;
+    use ProcessesSlugs;
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +20,7 @@ class SectionController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request, Response $response, $args) {
-        $payload = json_encode(Section::all());
+        $payload = json_encode(Challenge::all());
         $response->getBody()->write($payload);
 
         return $response
@@ -31,9 +37,9 @@ class SectionController extends Controller {
     public function store(Request $request, Response $response, $args) {
         $data = (array) $request->getParsedBody();
         if (!array_key_exists('slug', $data) || $data['slug'] === null || $data['slug'] === '') {
-            $data['slug'] = SlugModel::slugify($data['label']);
+            $data['slug'] = self::slugify($data['label']);
         }
-        $validator = SlugModel::slug_validator($data);
+        $validator = self::slug_validator($data);
         $validator->validate();
         $errors = $validator->errors();
 
@@ -46,7 +52,7 @@ class SectionController extends Controller {
               ->withStatus(401)
               ->withHeader('Content-Type', 'application/json');
         }
-        $payload = json_encode(Section::create($data));
+        $payload = json_encode(Challenge::create($data));
 
         $response->getBody()->write($payload);
 
@@ -62,7 +68,7 @@ class SectionController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function show(Request $request, Response $response, $args) {
-        $payload = json_encode(Section::where([['slug', $args['slug']]])->first());
+        $payload = json_encode(Challenge::where([['slug', $args['slug']]])->first());
 
         $response->getBody()->write($payload);
 
@@ -81,7 +87,7 @@ class SectionController extends Controller {
     public function update(Request $request, Response $response, $args) {
         $data = $request->getParsedBody();
 
-        $permission = Section::where([['slug', $args['slug']]])->first();
+        $permission = Challenge::where([['slug', $args['slug']]])->first();
         if (array_key_exists('slug', $data) && $data['slug'] !== null && $data['slug'] !== '') {
             $permission->slug = $data['slug'];
         }
@@ -104,7 +110,7 @@ class SectionController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request, Response $response, $args) {
-        $role = Section::where([['slug', $args['slug']]])->first();
+        $role = Challenge::where([['slug', $args['slug']]])->first();
         $role->delete();
 
         $payload = json_encode(['message' => 'successful']);

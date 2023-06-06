@@ -8,11 +8,11 @@ use Shipyard\FileManager;
 use Shipyard\Models\Ship;
 use Shipyard\Models\User;
 use Shipyard\Traits\ChecksPermissions;
-use Shipyard\Traits\HasSlug;
+use Shipyard\Traits\ProcessesSlugs;
 
 class ShipController extends Controller {
     use ChecksPermissions;
-    use HasSlug;
+    use ProcessesSlugs;
 
     /**
      * Display a listing of the resource.
@@ -133,7 +133,7 @@ class ShipController extends Controller {
         $item->save();
 
         return $response
-          ->withHeader('Content-Disposition', 'attachment; filename="' . $this->slugify($item->title) . '.ship"')
+          ->withHeader('Content-Disposition', 'attachment; filename="' . self::slugify($item->title) . '.ship"')
           ->withHeader('Content-Type', 'text/plain');
     }
 

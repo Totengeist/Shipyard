@@ -4,11 +4,11 @@ namespace Tests\Unit\API;
 
 use Laracasts\TestDummy\Factory;
 use Shipyard\Models\Ship;
-use Shipyard\Traits\HasSlug;
+use Shipyard\Traits\ProcessesSlugs;
 use Tests\APITestCase;
 
 class BrowseAndDownloadWorkflowTest extends APITestCase {
-    use HasSlug;
+    use ProcessesSlugs;
 
     /**
      * Test all API calls neede when a user browses for and downloads a ship (without searching).
@@ -47,7 +47,7 @@ class BrowseAndDownloadWorkflowTest extends APITestCase {
 
         $this->assertNotEquals((string) $this->response->getBody(), '');
         $this->assertEquals((string) $this->response->getBody(), $chosen_ship->file_contents());
-        $this->assertEquals($this->response->getHeader('Content-Disposition')[0], 'attachment; filename="' . $this->slugify($chosen_ship->title) . '.ship"');
+        $this->assertEquals($this->response->getHeader('Content-Disposition')[0], 'attachment; filename="' . self::slugify($chosen_ship->title) . '.ship"');
 
         $this->get('api/v1/ship/' . $chosen_ship->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([

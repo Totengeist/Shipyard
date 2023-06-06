@@ -6,11 +6,11 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Shipyard\Models\Permission;
 use Shipyard\Traits\ChecksPermissions;
-use Shipyard\Traits\HasSlug;
+use Shipyard\Traits\ProcessesSlugs;
 
 class PermissionController extends Controller {
     use ChecksPermissions;
-    use HasSlug;
+    use ProcessesSlugs;
 
     /**
      * Display a listing of the resource.
@@ -44,7 +44,7 @@ class PermissionController extends Controller {
         }
         $data = (array) $request->getParsedBody();
         if (!array_key_exists('slug', $data) || $data['slug'] === null || $data['slug'] === '') {
-            $data['slug'] = $this->slugify($data['label']);
+            $data['slug'] = self::slugify($data['label']);
         }
         $validator = $this->slug_validator($data);
         $validator->validate();
