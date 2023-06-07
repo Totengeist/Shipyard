@@ -61,7 +61,7 @@ class UserControllerTest extends APITestCase {
                 'email' => $email,
          ]);
 
-        $user = User::where([['email', $email]])->first();
+        $user = User::query()->where([['email', $email]])->first();
         $user_json = json_decode($user->toJson(), true);
         $this->assertJsonFragment([
             'name' => $name,
@@ -69,7 +69,7 @@ class UserControllerTest extends APITestCase {
         ], $user_json);
         $this->assertEquals(false, $user->active());
 
-        $user_activation = json_decode(UserActivation::where('email', $email)->firstOrFail()->toJson(), true);
+        $user_activation = json_decode(UserActivation::query()->where('email', $email)->firstOrFail()->toJson(), true);
         $this->assertJsonFragment([
             'email' => $email,
         ], $user_activation);
@@ -118,10 +118,10 @@ class UserControllerTest extends APITestCase {
                 'email' => $user->email,
          ]);
 
-        $real_user = User::findOrFail($user->id);
+        $real_user = User::query()->findOrFail($user->id);
         $this->assertTrue($real_user->active());
 
-        $activation = !(UserActivation::where('email', $user->email)->get()->isEmpty());
+        $activation = !(UserActivation::query()->where('email', $user->email)->get()->isEmpty());
         $this->assertFalse($activation);
         $this->assertTrue($real_user->id == $user->id);
     }
@@ -245,7 +245,7 @@ class UserControllerTest extends APITestCase {
             'email' => $newEmail,
         ]);
 
-        $user2 = json_decode(User::where([['name', $user->name], ['email', $newEmail]])->first()->toJson(), true);
+        $user2 = json_decode(User::query()->where([['name', $user->name], ['email', $newEmail]])->first()->toJson(), true);
         $this->assertJsonFragment([
             'name' => $user->name,
             'email' => $newEmail,
@@ -282,7 +282,7 @@ class UserControllerTest extends APITestCase {
             'email' => $newEmail,
         ]);
 
-        $user2 = json_decode(User::where([['name', $user->name], ['email', $newEmail]])->first()->toJson(), true);
+        $user2 = json_decode(User::query()->where([['name', $user->name], ['email', $newEmail]])->first()->toJson(), true);
         $this->assertJsonFragment([
             'name' => $user->name,
             'email' => $newEmail,
@@ -306,7 +306,7 @@ class UserControllerTest extends APITestCase {
         $this->post('api/v1/user/' . $user->id, ['name' => $newName], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
         ->assertStatus(403);
 
-        $user2 = json_decode(User::where([['name', $user->name], ['email', $user->email]])->first()->toJson(), true);
+        $user2 = json_decode(User::query()->where([['name', $user->name], ['email', $user->email]])->first()->toJson(), true);
         $this->assertJsonFragment([
             'name' => $user->name,
             'email' => $user->email,
@@ -331,9 +331,9 @@ class UserControllerTest extends APITestCase {
         ]);
 
         $this->expectException(ModelNotFoundException::class);
-        User::findOrFail($user->id);
+        User::query()->findOrFail($user->id);
         $this->expectException(ModelNotFoundException::class);
-        UserActivation::where('email', $user->email)->firstOrFail();
+        UserActivation::query()->where('email', $user->email)->firstOrFail();
     }
 
     /**
@@ -352,9 +352,9 @@ class UserControllerTest extends APITestCase {
         ]);
 
         $this->expectException(ModelNotFoundException::class);
-        User::findOrFail($user->id);
+        User::query()->findOrFail($user->id);
         $this->expectException(ModelNotFoundException::class);
-        UserActivation::where('email', $user->email)->firstOrFail();
+        UserActivation::query()->where('email', $user->email)->firstOrFail();
     }
 
     /**
@@ -372,7 +372,7 @@ class UserControllerTest extends APITestCase {
         $this->delete('api/v1/user/' . $user->id, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
         ->assertStatus(403);
 
-        $user2 = json_decode(User::where([['name', $user->name], ['email', $user->email]])->first()->toJson(), true);
+        $user2 = json_decode(User::query()->where([['name', $user->name], ['email', $user->email]])->first()->toJson(), true);
         $this->assertJsonFragment([
             'name' => $user->name,
             'email' => $user->email,

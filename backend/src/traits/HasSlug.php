@@ -2,6 +2,12 @@
 
 namespace Shipyard\Traits;
 
+/**
+ * @property string $label
+ * @property string $slug
+ *
+ * @method Model|static whereSlug(string $slug)
+ */
 trait HasSlug {
     use ProcessesSlugs;
 

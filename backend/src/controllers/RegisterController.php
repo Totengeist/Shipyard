@@ -33,13 +33,13 @@ class RegisterController extends Controller {
     }
 
     /**
-     * Create or add on to a validator for an incoming registration request.
+     * Create or add on to a validator.
      *
      * @return Validator
      */
     protected function validator(array $data, $optional = false) {
         Validator::addRule('unique', function ($field, $value, array $params, array $fields) {
-            if (User::where('email', $fields['email'])->get()->isEmpty()) {
+            if (User::query()->where('email', $fields['email'])->get()->isEmpty()) {
                 return true;
             }
 
@@ -110,7 +110,7 @@ class RegisterController extends Controller {
      * @return \Shipyard\User
      */
     protected function create(array $data) {
-        return User::create([
+        return User::query()->create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => password_hash($data['password'], PASSWORD_BCRYPT),
@@ -160,8 +160,8 @@ class RegisterController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function activate(Request $request, Response $response, $args) {
-        $activation = UserActivation::where('token', $args['token'])->firstOrFail();
-        $user = User::where('email', $activation->email)->first();
+        $activation = UserActivation::query()->where('token', $args['token'])->firstOrFail();
+        $user = User::query()->where('email', $activation->email)->first();
         $user->activate();
 
         Auth::login($user);
@@ -186,9 +186,9 @@ class RegisterController extends Controller {
         if (($perm_check = $this->isOrCan($id, 'delete-users')) !== null) {
             return $perm_check;
         }
-        $user = User::find($id);
+        $user = User::query()->find($id);
 
-        $activations = UserActivation::where('email', $user->email)->get();
+        $activations = UserActivation::query()->where('email', $user->email)->get();
         foreach ($activations as $activation) {
             $activation->delete();
         }
@@ -225,7 +225,7 @@ class RegisterController extends Controller {
                 ->withHeader('Content-Type', 'application/json');
         }
 
-        $user = User::where('id', $id)->first();
+        $user = User::query()->where('id', $id)->first();
 
         if (isset($subdata['name'])) {
             $user->name = $subdata['name'];

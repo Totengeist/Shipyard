@@ -40,7 +40,7 @@ class SaveController extends Controller {
 
         unset($data['user_id']);
         if (isset($data['user_ref'])) {
-            $user = User::where([['ref', $data['user_ref']]])->first();
+            $user = User::query()->where([['ref', $data['user_ref']]])->first();
             $data['user_id'] = $user->id;
         }
         unset($data['user_ref']);
@@ -84,7 +84,7 @@ class SaveController extends Controller {
               ->withStatus(401)
               ->withHeader('Content-Type', 'application/json');
         }
-        $save = Save::create($data);
+        $save = Save::query()->create($data);
         $payload = json_encode($save);
 
         $response->getBody()->write($payload);
@@ -101,7 +101,7 @@ class SaveController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function show(Request $request, Response $response, $args) {
-        $payload = json_encode(Save::where([['ref', $args['ref']]])->with('user')->first());
+        $payload = json_encode(Save::query()->where([['ref', $args['ref']]])->with('user')->first());
 
         $response->getBody()->write($payload);
 
@@ -120,7 +120,7 @@ class SaveController extends Controller {
     public function update(Request $request, Response $response, $args) {
         $data = $request->getParsedBody();
 
-        $save = Save::where([['ref', $args['ref']]])->first();
+        $save = Save::query()->where([['ref', $args['ref']]])->first();
         $abort = $this->isOrCan($save->user_id, 'edit-saves');
         if ($abort !== null) {
             return $abort;
@@ -157,7 +157,7 @@ class SaveController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request, Response $response, $args) {
-        $save = Save::where([['ref', $args['ref']]])->first();
+        $save = Save::query()->where([['ref', $args['ref']]])->first();
         $abort = $this->isOrCan($save->user_id, 'delete-saves');
         if ($abort !== null) {
             return $abort;

@@ -4,6 +4,9 @@ namespace Shipyard\Traits;
 
 use Shipyard\Models\Screenshot;
 
+/**
+ * @property array $screenshots
+ */
 trait HasScreenshots {
     /**
      * A user may have multiple roles.
@@ -23,7 +26,7 @@ trait HasScreenshots {
      */
     public function assignScreenshot($screenshot) {
         if (is_string($screenshot)) {
-            $screenshot = Screenshot::whereRef($screenshot)->firstOrFail();
+            $screenshot = Screenshot::query()->whereRef($screenshot)->firstOrFail();
         }
 
         $return = $this->screenshots()->save($screenshot, ['type' => self::$tag_label]);
@@ -41,7 +44,7 @@ trait HasScreenshots {
      */
     public function removeScreenshot($screenshots) {
         if (is_string($screenshots)) {
-            $screenshots = Screenshot::whereRef($screenshots)->firstOrFail();
+            $screenshots = Screenshot::query()->whereRef($screenshots)->firstOrFail();
         }
 
         $return = $this->screenshots()->detach($screenshots->id);

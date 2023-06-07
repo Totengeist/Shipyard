@@ -2,10 +2,13 @@
 
 namespace Shipyard\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Shipyard\Traits\CreatesUniqueIDs;
 use Shipyard\Traits\HasRoles;
 
+/**
+ * @property string $email
+ * @property bool   $activated
+ */
 class User extends Model {
     use HasRoles;
     use CreatesUniqueIDs;
@@ -54,7 +57,7 @@ class User extends Model {
     }
 
     public function create_activation() {
-        return UserActivation::create([
+        return UserActivation::query()->create([
             'email' => $this->email,
         ]);
     }
@@ -63,7 +66,7 @@ class User extends Model {
         if ($this->activated) {
             return;
         }
-        $activation = UserActivation::where('email', $this->email);
+        $activation = UserActivation::query()->where('email', $this->email);
         if ($activation !== null) {
             $activation->delete();
         }

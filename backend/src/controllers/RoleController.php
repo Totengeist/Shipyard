@@ -59,7 +59,7 @@ class RoleController extends Controller {
               ->withStatus(401)
               ->withHeader('Content-Type', 'application/json');
         }
-        $payload = json_encode(Role::create($data));
+        $payload = json_encode(Role::query()->create($data));
 
         $response->getBody()->write($payload);
 
@@ -79,7 +79,7 @@ class RoleController extends Controller {
             return $perm_check;
         }
 
-        $payload = json_encode(Role::where([['slug', $args['slug']]])->first());
+        $payload = json_encode(Role::query()->where([['slug', $args['slug']]])->first());
 
         $response->getBody()->write($payload);
 
@@ -100,7 +100,7 @@ class RoleController extends Controller {
         }
         $data = $request->getParsedBody();
 
-        $role = Role::where([['slug', $args['slug']]])->first();
+        $role = Role::query()->where([['slug', $args['slug']]])->first();
         $role->slug = $data['slug'];
         $role->label = $data['label'];
         $role->save();
@@ -124,7 +124,7 @@ class RoleController extends Controller {
         if (($perm_check = $this->can('delete-roles')) !== null) {
             return $perm_check;
         }
-        $role = Role::where([['slug', $args['slug']]])->first();
+        $role = Role::query()->where([['slug', $args['slug']]])->first();
         $role->delete();
 
         $payload = json_encode(['message' => 'successful']);

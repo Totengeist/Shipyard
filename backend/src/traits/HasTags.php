@@ -4,6 +4,9 @@ namespace Shipyard\Traits;
 
 use Shipyard\Models\Tag;
 
+/**
+ * @property array $tags
+ */
 trait HasTags {
     /**
      * A user may have multiple roles.
@@ -23,7 +26,7 @@ trait HasTags {
      */
     public function assignTag($tag) {
         if (is_string($tag)) {
-            $tag = Tag::whereSlug($tag)->firstOrFail();
+            $tag = Tag::query()->whereSlug($tag)->firstOrFail();
         }
 
         $return = $this->tags()->save($tag, ['type' => self::$tag_label]);
@@ -41,7 +44,7 @@ trait HasTags {
      */
     public function removeTag($tag) {
         if (is_string($tag)) {
-            $tag = Tag::whereSlug($tag)->firstOrFail();
+            $tag = Tag::query()->whereSlug($tag)->firstOrFail();
         }
 
         $return = $this->tags()->detach($tag->id);

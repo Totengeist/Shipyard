@@ -95,7 +95,7 @@ class RoleControllerTest extends APITestCase {
             'label' => $label,
         ]);
 
-        $role = json_decode(Role::where([['slug', $slug], ['label', $label]])->first()->toJson(), true);
+        $role = json_decode(Role::query()->where([['slug', $slug], ['label', $label]])->first()->toJson(), true);
         $this->assertJsonFragment([
             'slug' => $slug,
             'label' => $label,
@@ -171,7 +171,7 @@ class RoleControllerTest extends APITestCase {
             'label' => $label,
         ]);
 
-        $role = json_decode(Role::find($role->id)->toJson(), true);
+        $role = json_decode(Role::query()->find($role->id)->toJson(), true);
         $this->assertJsonFragment([
             'slug' => $slug,
             'label' => $label,
@@ -213,14 +213,14 @@ class RoleControllerTest extends APITestCase {
         $admin->assignRole('administrator');
         Auth::login($admin);
 
-        $this->assertEquals($role->id, Role::find($role->id)->id);
+        $this->assertEquals($role->id, Role::query()->find($role->id)->id);
         $this->delete('api/v1/role/' . $role->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
             'message' => 'successful',
         ]);
 
         $this->expectException(ModelNotFoundException::class);
-        Role::findOrFail($role->id);
+        Role::query()->findOrFail($role->id);
     }
 
     /**

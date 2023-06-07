@@ -71,7 +71,7 @@ class ReleaseControllerTest extends APITestCase {
             'label' => $label,
         ]);
 
-        $release = json_decode(Release::where([['slug', $slug], ['label', $label]])->first()->toJson(), true);
+        $release = json_decode(Release::query()->where([['slug', $slug], ['label', $label]])->first()->toJson(), true);
         $this->assertJsonFragment([
             'slug' => $slug,
             'label' => $label,
@@ -147,7 +147,7 @@ class ReleaseControllerTest extends APITestCase {
             'label' => $label,
         ]);
 
-        $release = json_decode(Release::find($release->id)->toJson(), true);
+        $release = json_decode(Release::query()->find($release->id)->toJson(), true);
         $this->assertJsonFragment([
             'slug' => $slug,
             'label' => $label,
@@ -189,14 +189,14 @@ class ReleaseControllerTest extends APITestCase {
         $admin->assignRole('administrator');
         Auth::login($admin);
 
-        $this->assertEquals($release->id, Release::find($release->id)->id);
+        $this->assertEquals($release->id, Release::query()->find($release->id)->id);
         $this->delete('api/v1/release/' . $release->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
             'message' => 'successful',
         ]);
 
         $this->expectException(ModelNotFoundException::class);
-        Release::findOrFail($release->id);
+        Release::query()->findOrFail($release->id);
     }
 
     /**

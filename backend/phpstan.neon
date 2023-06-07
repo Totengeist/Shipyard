@@ -1,5 +1,12 @@
 parameters:
-	level: 0
+	level: 1
 	paths:
 		- src
 		- tests
+	ignoreErrors:
+		-
+			message: '#^Variable \$(faker|factory) might not be defined.#'
+			path: tests/*
+		-
+			message: '#^Variable \$app might not be defined.#'
+			path: src/config/routes.php

@@ -41,7 +41,7 @@ class SaveControllerTest extends APITestCase {
         $this->post('api/v1/save', ['user_ref' => $user->ref, 'title' => $title, 'file_path' => 'tests/test.sav'], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
 
-        $save = Save::where([['user_id', $user->id], ['title', $title], ['file_path', 'tests/test.sav']])->first();
+        $save = Save::query()->where([['user_id', $user->id], ['title', $title], ['file_path', 'tests/test.sav']])->first();
         $this->assertNull($save);
     }
 
@@ -64,7 +64,7 @@ class SaveControllerTest extends APITestCase {
             'description' => $description,
         ]);
 
-        $save = json_decode(Save::where([['title', $title], ['description', $description]])->with('user')->first()->toJson(), true);
+        $save = json_decode(Save::query()->where([['title', $title], ['description', $description]])->with('user')->first()->toJson(), true);
         $this->assertJsonFragment([
             'title' => $title,
             'description' => $description,
@@ -93,7 +93,7 @@ class SaveControllerTest extends APITestCase {
             'title' => $title,
         ]);
 
-        $save = json_decode(Save::where([['ref', $save->ref]])->first()->toJson(), true);
+        $save = json_decode(Save::query()->where([['ref', $save->ref]])->first()->toJson(), true);
         $this->assertJsonFragment([
             'title' => $title,
         ], $save);
@@ -122,7 +122,7 @@ class SaveControllerTest extends APITestCase {
         $this->post('api/v1/save/' . $save->ref, ['user_ref' => $user->ref, 'title' => $title, 'file_path' => '/'], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(403);
 
-        $save = json_decode(Save::where([['ref', $save->ref]])->first()->toJson(), true);
+        $save = json_decode(Save::query()->where([['ref', $save->ref]])->first()->toJson(), true);
         $this->assertJsonFragment([
             'title' => $oldtitle,
         ], $save);
@@ -138,8 +138,8 @@ class SaveControllerTest extends APITestCase {
 
         $user = Factory::create('Shipyard\Models\User');
         $role_name = $faker->slug;
-        $role = Role::create(['slug' => $role_name, 'label' => $faker->name]);
-        $role->givePermissionTo(Permission::whereSlug('edit-saves')->first());
+        $role = Role::query()->create(['slug' => $role_name, 'label' => $faker->name]);
+        $role->givePermissionTo(Permission::query()->whereSlug('edit-saves')->first());
         $user->assignRole($role_name);
         $user->activate();
         Auth::login($user);
@@ -158,7 +158,7 @@ class SaveControllerTest extends APITestCase {
             'description' => $description,
         ]);
 
-        $save = json_decode(Save::where([['ref', $save->ref]])->first()->toJson(), true);
+        $save = json_decode(Save::query()->where([['ref', $save->ref]])->first()->toJson(), true);
         $this->assertJsonFragment([
             'title' => $title,
             'description' => $description,
@@ -179,14 +179,14 @@ class SaveControllerTest extends APITestCase {
         $save->user_id = $user->id;
         $save->save();
 
-        $this->assertEquals($save->ref, Save::where([['ref', $save->ref]])->first()->ref);
+        $this->assertEquals($save->ref, Save::query()->where([['ref', $save->ref]])->first()->ref);
         $this->delete('api/v1/save/' . $save->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
                 'message' => 'successful'
         ]);
 
         $this->expectException(ModelNotFoundException::class);
-        Save::findOrFail($save->id);
+        Save::query()->findOrFail($save->id);
     }
 
     /**
@@ -211,7 +211,7 @@ class SaveControllerTest extends APITestCase {
         $this->delete('api/v1/save/' . $save->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(403);
 
-        $save = json_decode(Save::where([['ref', $save->ref]])->first()->toJson(), true);
+        $save = json_decode(Save::query()->where([['ref', $save->ref]])->first()->toJson(), true);
         $this->assertJsonFragment([
             'title' => $title,
             'description' => $description,
@@ -228,8 +228,8 @@ class SaveControllerTest extends APITestCase {
 
         $user = Factory::create('Shipyard\Models\User');
         $role_name = $faker->slug;
-        $role = Role::create(['slug' => $role_name, 'label' => $faker->name]);
-        $role->givePermissionTo(Permission::whereSlug('delete-saves')->first());
+        $role = Role::query()->create(['slug' => $role_name, 'label' => $faker->name]);
+        $role->givePermissionTo(Permission::query()->whereSlug('delete-saves')->first());
         $user->assignRole($role_name);
         $user->activate();
         Auth::login($user);
@@ -239,14 +239,14 @@ class SaveControllerTest extends APITestCase {
         $save->user_id = $user1->id;
         $save->save();
 
-        $this->assertEquals($save->ref, Save::where([['ref', $save->ref]])->first()->ref);
+        $this->assertEquals($save->ref, Save::query()->where([['ref', $save->ref]])->first()->ref);
         $this->delete('api/v1/save/' . $save->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
                 'message' => 'successful'
         ]);
 
         $this->expectException(ModelNotFoundException::class);
-        Save::findOrFail($save->id);
+        Save::query()->findOrFail($save->id);
     }
 
     /**

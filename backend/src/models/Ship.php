@@ -2,13 +2,15 @@
 
 namespace Shipyard\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Shipyard\Traits\HasRef;
 use Shipyard\Traits\HasReleases;
 use Shipyard\Traits\HasScreenshots;
 use Shipyard\Traits\HasTags;
 use Valitron\Validator;
 
+/**
+ * @property string $file_path
+ */
 class Ship extends Model {
     use HasTags;
     use HasReleases;

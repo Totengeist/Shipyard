@@ -59,7 +59,7 @@ class PermissionController extends Controller {
               ->withStatus(401)
               ->withHeader('Content-Type', 'application/json');
         }
-        $payload = json_encode(Permission::create($data));
+        $payload = json_encode(Permission::query()->create($data));
 
         $response->getBody()->write($payload);
 
@@ -79,7 +79,7 @@ class PermissionController extends Controller {
             return $perm_check;
         }
 
-        $payload = json_encode(Permission::where([['slug', $args['slug']]])->first());
+        $payload = json_encode(Permission::query()->where([['slug', $args['slug']]])->first());
 
         $response->getBody()->write($payload);
 
@@ -101,7 +101,7 @@ class PermissionController extends Controller {
         }
         $data = $request->getParsedBody();
 
-        $permission = Permission::where([['slug', $args['slug']]])->first();
+        $permission = Permission::query()->where([['slug', $args['slug']]])->first();
         if (array_key_exists('slug', $data) && $data['slug'] !== null && $data['slug'] !== '') {
             $permission->slug = $data['slug'];
         }
@@ -127,7 +127,7 @@ class PermissionController extends Controller {
         if (($perm_check = $this->can('delete-permissions')) !== null) {
             return $perm_check;
         }
-        $role = Permission::where([['slug', $args['slug']]])->first();
+        $role = Permission::query()->where([['slug', $args['slug']]])->first();
         $role->delete();
 
         $payload = json_encode(['message' => 'successful']);

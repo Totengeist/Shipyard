@@ -55,7 +55,7 @@ class ReleaseController extends Controller {
               ->withStatus(401)
               ->withHeader('Content-Type', 'application/json');
         }
-        $payload = json_encode(Release::create($data));
+        $payload = json_encode(Release::query()->create($data));
 
         $response->getBody()->write($payload);
 
@@ -71,7 +71,7 @@ class ReleaseController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function show(Request $request, Response $response, $args) {
-        $payload = json_encode(Release::where([['slug', $args['slug']]])->first());
+        $payload = json_encode(Release::query()->where([['slug', $args['slug']]])->first());
 
         $response->getBody()->write($payload);
 
@@ -92,7 +92,7 @@ class ReleaseController extends Controller {
         }
         $data = $request->getParsedBody();
 
-        $release = Release::where([['slug', $args['slug']]])->first();
+        $release = Release::query()->where([['slug', $args['slug']]])->first();
         $release->slug = $data['slug'];
         $release->label = $data['label'];
         $release->save();
@@ -116,7 +116,7 @@ class ReleaseController extends Controller {
         if (($perm_check = $this->can('delete-releases')) !== null) {
             return $perm_check;
         }
-        $release = Release::where([['slug', $args['slug']]])->first();
+        $release = Release::query()->where([['slug', $args['slug']]])->first();
         $release->delete();
 
         $payload = json_encode(['message' => 'successful']);

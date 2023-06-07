@@ -14,11 +14,11 @@ class ReleaseModelTest extends TestCase {
      */
     public function testCanCreatRelease() {
         $faker = \Faker\Factory::create();
-        $release1 = Release::create([
+        $release1 = Release::query()->create([
             'label' => $faker->words(5, true)
         ]);
 
-        $release2 = Release::findOrFail($release1->id);
+        $release2 = Release::query()->findOrFail($release1->id);
         $this->assertEquals($release1->label, $release2->label);
     }
 
@@ -80,7 +80,7 @@ class ReleaseModelTest extends TestCase {
             $challenges[$i]->save();
         }
 
-        $release = Release::where('slug', $release->slug)->with('ships', 'saves', 'challenges')->first();
+        $release = Release::query()->where('slug', $release->slug)->with('ships', 'saves', 'challenges')->first();
 
         $this->assertEquals(4, count($release->ships), "Failed to find 4 ships with release '{$release->label}'. Found " . count($release->ships));
         $this->assertEquals(4, count($release->saves), "Failed to find 4 saves with release '{$release->label}'. Found " . count($release->ships));

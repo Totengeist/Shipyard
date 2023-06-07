@@ -42,7 +42,7 @@ class ShipControllerTest extends APITestCase {
         $this->post('api/v1/ship', ['user_ref' => $user->ref, 'title' => $title, 'file_path' => 'tests/assets/science-vessel.ship'], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
 
-        $ship = Ship::where([['user_id', $user->id], ['title', $title], ['file_path', 'tests/assets/science-vessel.ship']])->first();
+        $ship = Ship::query()->where([['user_id', $user->id], ['title', $title], ['file_path', 'tests/assets/science-vessel.ship']])->first();
         $this->assertNull($ship);
     }
 
@@ -65,7 +65,7 @@ class ShipControllerTest extends APITestCase {
             'description' => $description,
         ]);
 
-        $ship = json_decode(Ship::where([['title', $title], ['description', $description]])->with('user')->first()->toJson(), true);
+        $ship = json_decode(Ship::query()->where([['title', $title], ['description', $description]])->with('user')->first()->toJson(), true);
         $this->assertJsonFragment([
             'title' => $title,
             'description' => $description,
@@ -94,7 +94,7 @@ class ShipControllerTest extends APITestCase {
             'title' => $title,
         ]);
 
-        $ship = json_decode(Ship::where([['ref', $ship->ref]])->first()->toJson(), true);
+        $ship = json_decode(Ship::query()->where([['ref', $ship->ref]])->first()->toJson(), true);
         $this->assertJsonFragment([
             'title' => $title,
         ], $ship);
@@ -123,7 +123,7 @@ class ShipControllerTest extends APITestCase {
         $this->post('api/v1/ship/' . $ship->ref, ['user_ref' => $user->ref, 'title' => $title, 'file_path' => '/'], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(403);
 
-        $ship = json_decode(Ship::where([['ref', $ship->ref]])->first()->toJson(), true);
+        $ship = json_decode(Ship::query()->where([['ref', $ship->ref]])->first()->toJson(), true);
         $this->assertJsonFragment([
             'title' => $oldtitle,
         ], $ship);
@@ -139,8 +139,8 @@ class ShipControllerTest extends APITestCase {
 
         $user = Factory::create('Shipyard\Models\User');
         $role_name = $faker->slug;
-        $role = Role::create(['slug' => $role_name, 'label' => $faker->name]);
-        $role->givePermissionTo(Permission::whereSlug('edit-ships')->first());
+        $role = Role::query()->create(['slug' => $role_name, 'label' => $faker->name]);
+        $role->givePermissionTo(Permission::query()->whereSlug('edit-ships')->first());
         $user->assignRole($role_name);
         $user->activate();
         Auth::login($user);
@@ -159,7 +159,7 @@ class ShipControllerTest extends APITestCase {
             'description' => $description,
         ]);
 
-        $ship = json_decode(Ship::where([['ref', $ship->ref]])->first()->toJson(), true);
+        $ship = json_decode(Ship::query()->where([['ref', $ship->ref]])->first()->toJson(), true);
         $this->assertJsonFragment([
             'title' => $title,
             'description' => $description,
@@ -180,14 +180,14 @@ class ShipControllerTest extends APITestCase {
         $ship->user_id = $user->id;
         $ship->save();
 
-        $this->assertEquals($ship->ref, Ship::where([['ref', $ship->ref]])->first()->ref);
+        $this->assertEquals($ship->ref, Ship::query()->where([['ref', $ship->ref]])->first()->ref);
         $this->delete('api/v1/ship/' . $ship->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
                 'message' => 'successful'
         ]);
 
         $this->expectException(ModelNotFoundException::class);
-        Ship::findOrFail($ship->id);
+        Ship::query()->findOrFail($ship->id);
     }
 
     /**
@@ -212,7 +212,7 @@ class ShipControllerTest extends APITestCase {
         $this->delete('api/v1/ship/' . $ship->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(403);
 
-        $ship = json_decode(Ship::where([['ref', $ship->ref]])->first()->toJson(), true);
+        $ship = json_decode(Ship::query()->where([['ref', $ship->ref]])->first()->toJson(), true);
         $this->assertJsonFragment([
             'title' => $title,
             'description' => $description,
@@ -229,8 +229,8 @@ class ShipControllerTest extends APITestCase {
 
         $user = Factory::create('Shipyard\Models\User');
         $role_name = $faker->slug;
-        $role = Role::create(['slug' => $role_name, 'label' => $faker->name]);
-        $role->givePermissionTo(Permission::whereSlug('delete-ships')->first());
+        $role = Role::query()->create(['slug' => $role_name, 'label' => $faker->name]);
+        $role->givePermissionTo(Permission::query()->whereSlug('delete-ships')->first());
         $user->assignRole($role_name);
         $user->activate();
         Auth::login($user);
@@ -240,14 +240,14 @@ class ShipControllerTest extends APITestCase {
         $ship->user_id = $user1->id;
         $ship->save();
 
-        $this->assertEquals($ship->ref, Ship::where([['ref', $ship->ref]])->first()->ref);
+        $this->assertEquals($ship->ref, Ship::query()->where([['ref', $ship->ref]])->first()->ref);
         $this->delete('api/v1/ship/' . $ship->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
                 'message' => 'successful'
         ]);
 
         $this->expectException(ModelNotFoundException::class);
-        Ship::findOrFail($ship->id);
+        Ship::query()->findOrFail($ship->id);
     }
 
     /**

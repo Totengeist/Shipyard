@@ -5,6 +5,9 @@ namespace Shipyard\Traits;
 use Shipyard\Models\Permission;
 use Shipyard\Models\Role;
 
+/**
+ * @property array $roles
+ */
 trait HasRoles {
     /**
      * A user may have multiple roles.
@@ -24,7 +27,7 @@ trait HasRoles {
      */
     public function assignRole($role) {
         return $this->roles()->save(
-            Role::whereSlug($role)->firstOrFail()
+            Role::query()->whereSlug($role)->firstOrFail()
         );
     }
 
@@ -37,7 +40,7 @@ trait HasRoles {
      */
     public function removeRole($role) {
         return $this->roles()->detach(
-            Role::whereSlug($role)->firstOrFail()->id
+            Role::query()->whereSlug($role)->firstOrFail()->id
         );
     }
 
@@ -65,7 +68,7 @@ trait HasRoles {
      */
     public function can($permission) {
         if (is_string($permission)) {
-            $permission = Permission::where('slug', $permission)->first();
+            $permission = Permission::query()->where('slug', $permission)->first();
         }
 
         return $this->hasPermission($permission);

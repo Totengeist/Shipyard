@@ -69,7 +69,7 @@ class TagControllerTest extends APITestCase {
             'label' => $label,
         ]);
 
-        $tag = json_decode(Tag::where([['slug', $slug], ['label', $label]])->first()->toJson(), true);
+        $tag = json_decode(Tag::query()->where([['slug', $slug], ['label', $label]])->first()->toJson(), true);
         $this->assertJsonFragment([
             'slug' => $slug,
             'label' => $label,
@@ -145,7 +145,7 @@ class TagControllerTest extends APITestCase {
             'label' => $label,
         ]);
 
-        $tag = json_decode(Tag::find($tag->id)->toJson(), true);
+        $tag = json_decode(Tag::query()->find($tag->id)->toJson(), true);
         $this->assertJsonFragment([
             'slug' => $slug,
             'label' => $label,
@@ -187,14 +187,14 @@ class TagControllerTest extends APITestCase {
         $admin->assignRole('administrator');
         Auth::login($admin);
 
-        $this->assertEquals($tag->id, Tag::find($tag->id)->id);
+        $this->assertEquals($tag->id, Tag::query()->find($tag->id)->id);
         $this->delete('api/v1/tag/' . $tag->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
             'message' => 'successful',
         ]);
 
         $this->expectException(ModelNotFoundException::class);
-        Tag::findOrFail($tag->id);
+        Tag::query()->findOrFail($tag->id);
     }
 
     /**

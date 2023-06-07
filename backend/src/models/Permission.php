@@ -2,9 +2,12 @@
 
 namespace Shipyard\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Shipyard\Traits\HasSlug;
 
+/**
+ * @method Builder|static create()
+ * @method static         Builder|static query()
+ */
 class Permission extends Model {
     use HasSlug;
     /**

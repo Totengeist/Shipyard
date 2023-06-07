@@ -4,6 +4,9 @@ namespace Shipyard\Traits;
 
 use Valitron\Validator;
 
+/**
+ * @method Model|static whereRef(string $ref)
+ */
 trait HasRef {
     use CreatesUniqueIDs;
 

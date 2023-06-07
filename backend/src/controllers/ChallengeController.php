@@ -52,7 +52,7 @@ class ChallengeController extends Controller {
               ->withStatus(401)
               ->withHeader('Content-Type', 'application/json');
         }
-        $payload = json_encode(Challenge::create($data));
+        $payload = json_encode(Challenge::query()->create($data));
 
         $response->getBody()->write($payload);
 
@@ -68,7 +68,7 @@ class ChallengeController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function show(Request $request, Response $response, $args) {
-        $payload = json_encode(Challenge::where([['slug', $args['slug']]])->first());
+        $payload = json_encode(Challenge::query()->where([['slug', $args['slug']]])->first());
 
         $response->getBody()->write($payload);
 
@@ -87,7 +87,7 @@ class ChallengeController extends Controller {
     public function update(Request $request, Response $response, $args) {
         $data = $request->getParsedBody();
 
-        $permission = Challenge::where([['slug', $args['slug']]])->first();
+        $permission = Challenge::query()->where([['slug', $args['slug']]])->first();
         if (array_key_exists('slug', $data) && $data['slug'] !== null && $data['slug'] !== '') {
             $permission->slug = $data['slug'];
         }
@@ -110,7 +110,7 @@ class ChallengeController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request, Response $response, $args) {
-        $role = Challenge::where([['slug', $args['slug']]])->first();
+        $role = Challenge::query()->where([['slug', $args['slug']]])->first();
         $role->delete();
 
         $payload = json_encode(['message' => 'successful']);

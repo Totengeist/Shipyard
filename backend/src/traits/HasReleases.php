@@ -4,6 +4,9 @@ namespace Shipyard\Traits;
 
 use Shipyard\Models\Release;
 
+/**
+ * @property array $releases
+ */
 trait HasReleases {
     /**
      * An item may be compatible with multiple releases.
@@ -23,7 +26,7 @@ trait HasReleases {
      */
     public function assignRelease($release) {
         if (is_string($release)) {
-            $release = Release::whereSlug($release)->firstOrFail();
+            $release = Release::query()->whereSlug($release)->firstOrFail();
         }
 
         $return = $this->releases()->save($release, ['type' => self::$tag_label]);
@@ -41,7 +44,7 @@ trait HasReleases {
      */
     public function removeRelease($release) {
         if (is_string($release)) {
-            $release = Release::whereSlug($release)->firstOrFail();
+            $release = Release::query()->whereSlug($release)->firstOrFail();
         }
 
         $return = $this->releases()->detach($release->id);

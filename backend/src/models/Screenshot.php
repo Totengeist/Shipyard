@@ -2,7 +2,6 @@
 
 namespace Shipyard\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Shipyard\Traits\HasRef;
 use Valitron\Validator;
 

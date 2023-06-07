@@ -32,7 +32,7 @@ class LoginController extends Controller {
 
         $email = (string) ($data['email'] ?? '');
         $password = (string) ($data['password'] ?? '');
-        $user = User::where('email', $email)->with('roles', 'roles.permissions')->first();
+        $user = User::query()->where('email', $email)->with('roles', 'roles.permissions')->first();
 
         if ($user === null || !password_verify($password, $user->password)) {
             $response->getBody()->write(json_encode(['message' => 'These credentials do not match our records.']));
@@ -42,7 +42,7 @@ class LoginController extends Controller {
                 ->withStatus(401, 'Unauthorized');
         }
 
-        if (!UserActivation::where('email', $user->email)->get()->isEmpty()) {
+        if (!UserActivation::query()->where('email', $user->email)->get()->isEmpty()) {
             $response->getBody()->write(json_encode(['message' => 'This account has not been activated. Please check your email.']));
 
             return $response

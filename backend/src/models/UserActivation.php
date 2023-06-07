@@ -2,8 +2,10 @@
 
 namespace Shipyard\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
+/**
+ * @property string $created_at
+ * @property string $token
+ */
 class UserActivation extends Model {
     public $timestamps = false;
 

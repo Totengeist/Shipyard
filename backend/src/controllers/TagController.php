@@ -55,7 +55,7 @@ class TagController extends Controller {
               ->withStatus(401)
               ->withHeader('Content-Type', 'application/json');
         }
-        $payload = json_encode(Tag::create($data));
+        $payload = json_encode(Tag::query()->create($data));
 
         $response->getBody()->write($payload);
 
@@ -71,7 +71,7 @@ class TagController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function show(Request $request, Response $response, $args) {
-        $payload = json_encode(Tag::where([['slug', $args['slug']]])->first());
+        $payload = json_encode(Tag::query()->where([['slug', $args['slug']]])->first());
 
         $response->getBody()->write($payload);
 
@@ -92,7 +92,7 @@ class TagController extends Controller {
         }
         $data = $request->getParsedBody();
 
-        $tag = Tag::where([['slug', $args['slug']]])->first();
+        $tag = Tag::query()->where([['slug', $args['slug']]])->first();
         $tag->slug = $data['slug'];
         $tag->label = $data['label'];
         $tag->save();
@@ -116,7 +116,7 @@ class TagController extends Controller {
         if (($perm_check = $this->can('delete-tags')) !== null) {
             return $perm_check;
         }
-        $tag = Tag::where([['slug', $args['slug']]])->first();
+        $tag = Tag::query()->where([['slug', $args['slug']]])->first();
         $tag->delete();
 
         $payload = json_encode(['message' => 'successful']);

@@ -20,7 +20,7 @@ class ScreenshotController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request, Response $response, $args) {
-        $payload = json_encode(Ship::whereRef($args['ship_ref'])->firstOrFail()->screenshots()->get());
+        $payload = json_encode(Ship::query()->whereRef($args['ship_ref'])->firstOrFail()->screenshots()->get());
         $response->getBody()->write($payload);
 
         return $response
@@ -35,7 +35,7 @@ class ScreenshotController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request, Response $response, $args) {
-        $ship = Ship::whereRef($args['ship_ref'])->firstOrFail();
+        $ship = Ship::query()->whereRef($args['ship_ref'])->firstOrFail();
         $user_id = $ship->user_id;
 
         if (($perm_check = $this->isOrCan($user_id, 'create-screenshots')) !== null) {
@@ -101,7 +101,7 @@ class ScreenshotController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function show(Request $request, Response $response, $args) {
-        $payload = json_encode(Screenshot::where([['ref', $args['ref']]])->first());
+        $payload = json_encode(Screenshot::query()->where([['ref', $args['ref']]])->first());
 
         $response->getBody()->write($payload);
 
@@ -122,7 +122,7 @@ class ScreenshotController extends Controller {
         }
         $data = $request->getParsedBody();
 
-        $screenshot = Screenshot::where([['ref', $args['ref']]])->first();
+        $screenshot = Screenshot::query()->where([['ref', $args['ref']]])->first();
         $screenshot->description = $data['description'];
         $screenshot->save();
 
@@ -145,7 +145,7 @@ class ScreenshotController extends Controller {
         if (($perm_check = $this->can('delete-screenshots')) !== null) {
             return $perm_check;
         }
-        $screenshot = Screenshot::where([['ref', $args['ref']]])->first();
+        $screenshot = Screenshot::query()->where([['ref', $args['ref']]])->first();
         $screenshot->delete();
 
         $payload = json_encode(['message' => 'successful']);

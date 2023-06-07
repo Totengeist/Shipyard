@@ -95,7 +95,7 @@ class PermissionControllerTest extends APITestCase {
             'label' => $label,
         ]);
 
-        $permission = json_decode(Permission::where([['slug', $slug], ['label', $label]])->first()->toJson(), true);
+        $permission = json_decode(Permission::query()->where([['slug', $slug], ['label', $label]])->first()->toJson(), true);
         $this->assertJsonFragment([
             'slug' => $slug,
             'label' => $label,
@@ -171,7 +171,7 @@ class PermissionControllerTest extends APITestCase {
             'label' => $label,
         ]);
 
-        $permission = json_decode(Permission::find($permission->id)->toJson(), true);
+        $permission = json_decode(Permission::query()->find($permission->id)->toJson(), true);
         $this->assertJsonFragment([
             'slug' => $slug,
             'label' => $label,
@@ -213,14 +213,14 @@ class PermissionControllerTest extends APITestCase {
         $admin->assignRole('administrator');
         Auth::login($admin);
 
-        $this->assertEquals($permission->id, Permission::find($permission->id)->id);
+        $this->assertEquals($permission->id, Permission::query()->find($permission->id)->id);
         $this->delete('api/v1/permission/' . $permission->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
                 'message' => 'successful',
         ]);
 
         $this->expectException(ModelNotFoundException::class);
-        Permission::findOrFail($permission->id);
+        Permission::query()->findOrFail($permission->id);
     }
 
     /**

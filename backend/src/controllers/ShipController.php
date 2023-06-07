@@ -42,7 +42,7 @@ class ShipController extends Controller {
 
         unset($data['user_id']);
         if (isset($data['user_ref'])) {
-            $user = User::where([['ref', $data['user_ref']]])->first();
+            $user = User::query()->where([['ref', $data['user_ref']]])->first();
             $data['user_id'] = $user->id;
         }
         unset($data['user_ref']);
@@ -86,7 +86,7 @@ class ShipController extends Controller {
               ->withStatus(401)
               ->withHeader('Content-Type', 'application/json');
         }
-        $ship = Ship::create($data);
+        $ship = Ship::query()->create($data);
         $payload = json_encode($ship);
 
         $response->getBody()->write($payload);
@@ -103,7 +103,7 @@ class ShipController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function show(Request $request, Response $response, $args) {
-        $payload = json_encode(Ship::where([['ref', $args['ref']]])->with('user')->first());
+        $payload = json_encode(Ship::query()->where([['ref', $args['ref']]])->with('user')->first());
 
         $response->getBody()->write($payload);
 
@@ -119,7 +119,7 @@ class ShipController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function download(Request $request, Response $response, $args) {
-        $item = Ship::where([['ref', $args['ref']]])->first();
+        $item = Ship::query()->where([['ref', $args['ref']]])->first();
 
         if (file_exists($item->file_path) === false) {
             $response->getBody()->write(['error' => 'file does not exist']);
@@ -148,7 +148,7 @@ class ShipController extends Controller {
     public function update(Request $request, Response $response, $args) {
         $data = $request->getParsedBody();
 
-        $ship = Ship::where([['ref', $args['ref']]])->first();
+        $ship = Ship::query()->where([['ref', $args['ref']]])->first();
         $abort = $this->isOrCan($ship->user_id, 'edit-ships');
         if ($abort !== null) {
             return $abort;
@@ -185,7 +185,7 @@ class ShipController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request, Response $response, $args) {
-        $ship = Ship::where([['ref', $args['ref']]])->first();
+        $ship = Ship::query()->where([['ref', $args['ref']]])->first();
         $abort = $this->isOrCan($ship->user_id, 'delete-ships');
         if ($abort !== null) {
             return $abort;
