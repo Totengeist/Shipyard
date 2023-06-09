@@ -234,6 +234,9 @@ $edit_screenshots    = Permission::query()->create(['slug' => 'edit-screenshots'
 $delete_screenshots  = Permission::query()->create(['slug' => 'delete-screenshots', 'label' => 'delete screenshots']);
 
 // administrator permissions
+/**
+ * @var Role $admin
+ */
 $admin = Role::query()->create(['slug' => 'administrator', 'label' => 'Administrator']);
 $admin->givePermissionTo($edit_ships);
 $admin->givePermissionTo($edit_saves);

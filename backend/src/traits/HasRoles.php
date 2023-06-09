@@ -6,7 +6,7 @@ use Shipyard\Models\Permission;
 use Shipyard\Models\Role;
 
 /**
- * @property array $roles
+ * @property \Illuminate\Database\Eloquent\Collection $roles
  */
 trait HasRoles {
     /**
@@ -19,29 +19,44 @@ trait HasRoles {
     }
 
     /**
-     * Assign the given role to the user.
+     * Assign the given role to an item.
      *
      * @param string $role
      *
      * @return mixed
      */
     public function assignRole($role) {
-        return $this->roles()->save(
-            Role::query()->whereSlug($role)->firstOrFail()
-        );
+        if (is_string($role)) {
+            /** @var \Illuminate\Database\Eloquent\Builder $query */
+            $query = Role::query()->whereSlug($role);
+            $role = $query->firstOrFail();
+        }
+
+        $return = $this->roles()->save($role);
+        unset($this->roles);
+
+        return $return;
     }
 
     /**
-     * Remove the given role from the user.
+     * Remove the given role from an item.
      *
      * @param string $role
      *
      * @return mixed
      */
     public function removeRole($role) {
-        return $this->roles()->detach(
-            Role::query()->whereSlug($role)->firstOrFail()->id
-        );
+        if (is_string($role)) {
+            /** @var \Illuminate\Database\Eloquent\Builder $query */
+            $query = Role::query()->whereSlug($role);
+            /** @var \Shipyard\Models\Role $role */
+            $role = $query->firstOrFail();
+        }
+
+        $return = $this->roles()->detach($role->id);
+        unset($this->roles);
+
+        return $return;
     }
 
     /**
@@ -77,9 +92,15 @@ trait HasRoles {
     /**
      * Determine if the user has permission to perform the given task.
      *
+     * @param mixed $permission
+     *
      * @return bool
      */
-    public function hasPermission(Permission $permission) {
+    public function hasPermission($permission) {
+        if (is_string($permission)) {
+            $permission = Permission::query()->where('slug', $permission)->first();
+        }
+
         return $this->hasRole($permission->roles);
     }
 }

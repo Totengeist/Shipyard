@@ -5,11 +5,11 @@ namespace Shipyard\Traits;
 use Shipyard\Models\Screenshot;
 
 /**
- * @property array $screenshots
+ * @property \Illuminate\Database\Eloquent\Collection $screenshots
  */
 trait HasScreenshots {
     /**
-     * A user may have multiple roles.
+     * An item may have multiple screenshots.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
@@ -18,15 +18,17 @@ trait HasScreenshots {
     }
 
     /**
-     * Assign the given role to the user.
+     * Assign the given screenshot to the item.
      *
-     * @param string $role
+     * @param string $screenshot
      *
      * @return mixed
      */
     public function assignScreenshot($screenshot) {
         if (is_string($screenshot)) {
-            $screenshot = Screenshot::query()->whereRef($screenshot)->firstOrFail();
+            /** @var \Illuminate\Database\Eloquent\Builder $query */
+            $query = Screenshot::query()->whereRef($screenshot);
+            $screenshot = $query->firstOrFail();
         }
 
         $return = $this->screenshots()->save($screenshot, ['type' => self::$tag_label]);
@@ -36,27 +38,30 @@ trait HasScreenshots {
     }
 
     /**
-     * Remove the given role from the user.
+     * Remove the given screenshot from the item.
      *
-     * @param string $role
+     * @param string $screenshot
      *
      * @return mixed
      */
-    public function removeScreenshot($screenshots) {
-        if (is_string($screenshots)) {
-            $screenshots = Screenshot::query()->whereRef($screenshots)->firstOrFail();
+    public function removeScreenshot($screenshot) {
+        if (is_string($screenshot)) {
+            /** @var \Illuminate\Database\Eloquent\Builder $query */
+            $query = Screenshot::query()->whereRef($screenshot);
+            /** @var \Shipyard\Models\Screenshot $screenshot */
+            $screenshot = $query->firstOrFail();
         }
 
-        $return = $this->screenshots()->detach($screenshots->id);
+        $return = $this->screenshots()->detach($screenshot->id);
         unset($this->screenshots);
 
         return $return;
     }
 
     /**
-     * Determine if the user has the given role.
+     * Determine if the item has the given screenshot.
      *
-     * @param mixed $role
+     * @param mixed $screenshots
      *
      * @return bool
      */

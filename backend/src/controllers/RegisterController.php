@@ -107,7 +107,7 @@ class RegisterController extends Controller {
     /**
      * Create a new user instance after a valid registration.
      *
-     * @return \Shipyard\User
+     * @return \Shipyard\Models\User
      */
     protected function create(array $data) {
         return User::query()->create([
@@ -122,7 +122,7 @@ class RegisterController extends Controller {
      *
      * @override
      *
-     * @return \Illuminate\Http\Response
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function register(Request $request, Response $response, $args) {
         $data = $request->getParsedBody();
@@ -155,11 +155,10 @@ class RegisterController extends Controller {
      *
      * @override
      *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function activate(Request $request, Response $response, $args) {
+        /** @var \Shipyard\Models\UserActivation $activation */
         $activation = UserActivation::query()->where('token', $args['token'])->firstOrFail();
         $user = User::query()->where('email', $activation->email)->first();
         $user->activate();
@@ -177,15 +176,14 @@ class RegisterController extends Controller {
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function destroy(Request $request, Response $response, $args) {
         $id = $args['userid'];
         if (($perm_check = $this->isOrCan($id, 'delete-users')) !== null) {
             return $perm_check;
         }
+        /** @var \Shipyard\Models\User $user */
         $user = User::query()->find($id);
 
         $activations = UserActivation::query()->where('email', $user->email)->get();
@@ -205,9 +203,7 @@ class RegisterController extends Controller {
     /**
      * Update the specified resource in storage.
      *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function update(Request $request, Response $response, $args) {
         $id = $args['user_id'];

@@ -4,6 +4,9 @@ namespace Shipyard\Models;
 
 use Shipyard\Traits\HasSlug;
 
+/**
+ * @property int $id
+ */
 class Tag extends Model {
     use HasSlug;
     /**

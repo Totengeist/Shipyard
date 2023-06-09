@@ -10,6 +10,7 @@ use Valitron\Validator;
 
 /**
  * @property string $file_path
+ * @property int    $user_id
  */
 class Ship extends Model {
     use HasTags;

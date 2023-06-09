@@ -5,6 +5,7 @@ namespace Shipyard\Models;
 /**
  * @property string $created_at
  * @property string $token
+ * @property string $email
  */
 class UserActivation extends Model {
     public $timestamps = false;

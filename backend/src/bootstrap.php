@@ -6,7 +6,7 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 
 $dotenv = Dotenv::createMutable(realpath(dirname(__DIR__)));
 if (getenv('APP_ENV') == 'development') {
-    $dotenv->load(dirname(__DIR__), '.env');
+    $dotenv->load();
 }
 $dotenv->required([
     'APP_TITLE',

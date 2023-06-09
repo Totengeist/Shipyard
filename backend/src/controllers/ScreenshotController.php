@@ -15,12 +15,16 @@ class ScreenshotController extends Controller {
     /**
      * Display a listing of the resource.
      *
-     * @group changed
+     * @todo Expand screenshots to items other than ships (item_ref and tag_label?)
      *
-     * @return \Illuminate\Http\Response
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function index(Request $request, Response $response, $args) {
-        $payload = json_encode(Ship::query()->whereRef($args['ship_ref'])->firstOrFail()->screenshots()->get());
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Ship::query()->whereRef($args['ship_ref']);
+        /** @var \Shipyard\Models\Ship $ship */
+        $ship = $query->firstOrFail();
+        $payload = json_encode($ship->screenshots()->get());
         $response->getBody()->write($payload);
 
         return $response
@@ -30,12 +34,13 @@ class ScreenshotController extends Controller {
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function store(Request $request, Response $response, $args) {
-        $ship = Ship::query()->whereRef($args['ship_ref'])->firstOrFail();
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Ship::query()->whereRef($args['ship_ref']);
+        /** @var \Shipyard\Models\Ship $ship */
+        $ship = $query->firstOrFail();
         $user_id = $ship->user_id;
 
         if (($perm_check = $this->isOrCan($user_id, 'create-screenshots')) !== null) {
@@ -96,9 +101,7 @@ class ScreenshotController extends Controller {
     /**
      * Display the specified resource.
      *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function show(Request $request, Response $response, $args) {
         $payload = json_encode(Screenshot::query()->where([['ref', $args['ref']]])->first());
@@ -112,9 +115,7 @@ class ScreenshotController extends Controller {
     /**
      * Update the specified resource in storage.
      *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function update(Request $request, Response $response, $args) {
         if (($perm_check = $this->can('edit-screenshots')) !== null) {
@@ -137,9 +138,7 @@ class ScreenshotController extends Controller {
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function destroy(Request $request, Response $response, $args) {
         if (($perm_check = $this->can('delete-screenshots')) !== null) {

@@ -14,13 +14,15 @@ class ScreenshotModelTest extends TestCase {
      */
     public function testCanCreateScreenshot() {
         $faker = \Faker\Factory::create();
+        /** @var \Shipyard\Models\Screenshot $screenshot1 */
         $screenshot1 = Screenshot::query()->create([
             'description' => $faker->words(5, true),
             'file_path' => realpath(__DIR__ . '/../../assets/science-vessel.png'),
         ]);
 
+        /** @var \Shipyard\Models\Screenshot $screenshot2 */
         $screenshot2 = Screenshot::query()->findOrFail($screenshot1->id);
-        $this->assertEquals($screenshot1->label, $screenshot2->label);
+        $this->assertEquals($screenshot1->description, $screenshot2->description);
     }
 
     public function testCanAssignScreenshot() {
@@ -81,7 +83,7 @@ class ScreenshotModelTest extends TestCase {
             $challenges[$i]->save();
         }
 
-        $screenshot = Screenshot::query()->where('ref', $screenshot->ref)->with('ships', 'saves', 'challenges')->first();
+        $screenshot = Screenshot::query()->where('ref', $screenshot->ref)->with(['ships', 'saves', 'challenges'])->first();
 
         $this->assertEquals(4, count($screenshot->ships), "Failed to find 4 ships with screenshot '{$screenshot->label}'. Found " . count($screenshot->ships));
         $this->assertEquals(4, count($screenshot->saves), "Failed to find 4 saves with screenshot '{$screenshot->label}'. Found " . count($screenshot->ships));

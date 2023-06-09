@@ -14,10 +14,12 @@ class TagModelTest extends TestCase {
      */
     public function testCanCreateTag() {
         $faker = \Faker\Factory::create();
+        /** @var \Shipyard\Models\Tag $tag1 */
         $tag1 = Tag::query()->create([
             'label' => $faker->words(5, true)
         ]);
 
+        /** @var \Shipyard\Models\Tag $tag2 */
         $tag2 = Tag::query()->findOrFail($tag1->id);
         $this->assertEquals($tag1->label, $tag2->label);
     }
@@ -80,7 +82,7 @@ class TagModelTest extends TestCase {
             $challenges[$i]->save();
         }
 
-        $tag = Tag::query()->where('slug', $tag->slug)->with('ships', 'saves', 'challenges')->first();
+        $tag = Tag::query()->where('slug', $tag->slug)->with(['ships', 'saves', 'challenges'])->first();
 
         $this->assertEquals(4, count($tag->ships), "Failed to find 4 ships with tag '{$tag->label}'. Found " . count($tag->ships));
         $this->assertEquals(4, count($tag->saves), "Failed to find 4 saves with tag '{$tag->label}'. Found " . count($tag->ships));

@@ -15,9 +15,7 @@ class SaveController extends Controller {
     /**
      * Display a listing of the resource.
      *
-     * @group changed
-     *
-     * @return \Illuminate\Http\Response
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function index(Request $request, Response $response, $args) {
         $payload = json_encode(Save::all());
@@ -30,9 +28,7 @@ class SaveController extends Controller {
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function store(Request $request, Response $response, $args) {
         $data = (array) $request->getParsedBody();
@@ -96,9 +92,7 @@ class SaveController extends Controller {
     /**
      * Display the specified resource.
      *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function show(Request $request, Response $response, $args) {
         $payload = json_encode(Save::query()->where([['ref', $args['ref']]])->with('user')->first());
@@ -112,10 +106,7 @@ class SaveController extends Controller {
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param int                      $id
-     *
-     * @return \Illuminate\Http\Response
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function update(Request $request, Response $response, $args) {
         $data = $request->getParsedBody();
@@ -152,9 +143,7 @@ class SaveController extends Controller {
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function destroy(Request $request, Response $response, $args) {
         $save = Save::query()->where([['ref', $args['ref']]])->first();

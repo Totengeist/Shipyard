@@ -189,7 +189,9 @@ class ReleaseControllerTest extends APITestCase {
         $admin->assignRole('administrator');
         Auth::login($admin);
 
-        $this->assertEquals($release->id, Release::query()->find($release->id)->id);
+        /** @var \Shipyard\Models\Release $dbRelease */
+        $dbRelease = Release::query()->find($release->id);
+        $this->assertEquals($release->id, $dbRelease->id);
         $this->delete('api/v1/release/' . $release->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
             'message' => 'successful',

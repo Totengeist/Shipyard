@@ -187,7 +187,9 @@ class TagControllerTest extends APITestCase {
         $admin->assignRole('administrator');
         Auth::login($admin);
 
-        $this->assertEquals($tag->id, Tag::query()->find($tag->id)->id);
+        /** @var \Shipyard\Models\Tag $dbTag */
+        $dbTag = Tag::query()->find($tag->id);
+        $this->assertEquals($tag->id, $dbTag->id);
         $this->delete('api/v1/tag/' . $tag->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
             'message' => 'successful',

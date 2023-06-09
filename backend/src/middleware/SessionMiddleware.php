@@ -16,9 +16,6 @@ class SessionMiddleware implements MiddlewareInterface {
     /**
      * Invoke middleware.
      *
-     * @param ServerRequestInterface  $request The request
-     * @param RequestHandlerInterface $handler The handler
-     *
      * @return ResponseInterface The response
      */
     public function process(Request $request, Handler $handler): ResponseInterface {

@@ -5,6 +5,11 @@ namespace Shipyard\Models;
 use Shipyard\Traits\HasRef;
 use Valitron\Validator;
 
+/**
+ * @property string $description
+ * @property string $file_path
+ * @property bool   $primary
+ */
 class Screenshot extends Model {
     use HasRef;
     /**
@@ -14,6 +19,15 @@ class Screenshot extends Model {
      */
     protected $fillable = [
         'ref', 'file_path', 'description', 'primary',
+    ];
+
+    /**
+     * The attributes that are casted.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'primary' => 'boolean',
     ];
 
     /**

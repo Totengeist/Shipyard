@@ -5,11 +5,11 @@ namespace Shipyard\Traits;
 use Shipyard\Models\Tag;
 
 /**
- * @property array $tags
+ * @property \Illuminate\Database\Eloquent\Collection $tags
  */
 trait HasTags {
     /**
-     * A user may have multiple roles.
+     * An item may have multiple tags.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
@@ -18,15 +18,17 @@ trait HasTags {
     }
 
     /**
-     * Assign the given role to the user.
+     * Assign the given tag to the item.
      *
-     * @param string $role
+     * @param Tag|string $tag
      *
      * @return mixed
      */
     public function assignTag($tag) {
         if (is_string($tag)) {
-            $tag = Tag::query()->whereSlug($tag)->firstOrFail();
+            /** @var \Illuminate\Database\Eloquent\Builder $query */
+            $query = Tag::query()->whereSlug($tag);
+            $tag = $query->firstOrFail();
         }
 
         $return = $this->tags()->save($tag, ['type' => self::$tag_label]);
@@ -36,15 +38,18 @@ trait HasTags {
     }
 
     /**
-     * Remove the given role from the user.
+     * Remove the given tag from the item.
      *
-     * @param string $role
+     * @param Tag|string $tag
      *
      * @return mixed
      */
     public function removeTag($tag) {
         if (is_string($tag)) {
-            $tag = Tag::query()->whereSlug($tag)->firstOrFail();
+            /** @var \Illuminate\Database\Eloquent\Builder $query */
+            $query = Tag::query()->whereSlug($tag);
+            /** @var \Shipyard\Models\Tag $tag */
+            $tag = $query->firstOrFail();
         }
 
         $return = $this->tags()->detach($tag->id);
@@ -54,9 +59,9 @@ trait HasTags {
     }
 
     /**
-     * Determine if the user has the given role.
+     * Determine if the item has the given tag.
      *
-     * @param mixed $role
+     * @param Tag|string $tag
      *
      * @return bool
      */

@@ -15,9 +15,7 @@ class ReleaseController extends Controller {
     /**
      * Display a listing of the resource.
      *
-     * @group changed
-     *
-     * @return \Illuminate\Http\Response
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function index(Request $request, Response $response, $args) {
         $payload = json_encode(Release::all());
@@ -30,9 +28,7 @@ class ReleaseController extends Controller {
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function store(Request $request, Response $response, $args) {
         if (($perm_check = $this->can('create-releases')) !== null) {
@@ -66,9 +62,7 @@ class ReleaseController extends Controller {
     /**
      * Display the specified resource.
      *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function show(Request $request, Response $response, $args) {
         $payload = json_encode(Release::query()->where([['slug', $args['slug']]])->first());
@@ -82,9 +76,7 @@ class ReleaseController extends Controller {
     /**
      * Update the specified resource in storage.
      *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function update(Request $request, Response $response, $args) {
         if (($perm_check = $this->can('edit-releases')) !== null) {
@@ -108,9 +100,7 @@ class ReleaseController extends Controller {
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function destroy(Request $request, Response $response, $args) {
         if (($perm_check = $this->can('delete-releases')) !== null) {

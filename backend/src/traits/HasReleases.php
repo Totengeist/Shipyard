@@ -5,7 +5,7 @@ namespace Shipyard\Traits;
 use Shipyard\Models\Release;
 
 /**
- * @property array $releases
+ * @property \Illuminate\Database\Eloquent\Collection $releases
  */
 trait HasReleases {
     /**
@@ -26,7 +26,9 @@ trait HasReleases {
      */
     public function assignRelease($release) {
         if (is_string($release)) {
-            $release = Release::query()->whereSlug($release)->firstOrFail();
+            /** @var \Illuminate\Database\Eloquent\Builder $query */
+            $query = Release::query()->whereSlug($release);
+            $release = $query->firstOrFail();
         }
 
         $return = $this->releases()->save($release, ['type' => self::$tag_label]);
@@ -44,7 +46,10 @@ trait HasReleases {
      */
     public function removeRelease($release) {
         if (is_string($release)) {
-            $release = Release::query()->whereSlug($release)->firstOrFail();
+            /** @var \Illuminate\Database\Eloquent\Builder $query */
+            $query = Release::query()->whereSlug($release);
+            /** @var \Shipyard\Models\Release $release */
+            $release = $query->firstOrFail();
         }
 
         $return = $this->releases()->detach($release->id);

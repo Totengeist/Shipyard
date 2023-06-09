@@ -139,8 +139,11 @@ class ShipControllerTest extends APITestCase {
 
         $user = Factory::create('Shipyard\Models\User');
         $role_name = $faker->slug;
+        /** @var \Shipyard\Models\Role $role */
         $role = Role::query()->create(['slug' => $role_name, 'label' => $faker->name]);
-        $role->givePermissionTo(Permission::query()->whereSlug('edit-ships')->first());
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Permission::query()->whereSlug('edit-ships');
+        $role->givePermissionTo($query->first());
         $user->assignRole($role_name);
         $user->activate();
         Auth::login($user);
@@ -229,8 +232,11 @@ class ShipControllerTest extends APITestCase {
 
         $user = Factory::create('Shipyard\Models\User');
         $role_name = $faker->slug;
+        /** @var \Shipyard\Models\Role $role */
         $role = Role::query()->create(['slug' => $role_name, 'label' => $faker->name]);
-        $role->givePermissionTo(Permission::query()->whereSlug('delete-ships')->first());
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Permission::query()->whereSlug('delete-ships');
+        $role->givePermissionTo($query->first());
         $user->assignRole($role_name);
         $user->activate();
         Auth::login($user);

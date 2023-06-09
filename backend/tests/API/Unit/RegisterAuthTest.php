@@ -118,6 +118,7 @@ class UserControllerTest extends APITestCase {
                 'email' => $user->email,
          ]);
 
+        /** @var \Shipyard\Models\User $real_user */
         $real_user = User::query()->findOrFail($user->id);
         $this->assertTrue($real_user->active());
 

@@ -14,10 +14,12 @@ class ReleaseModelTest extends TestCase {
      */
     public function testCanCreatRelease() {
         $faker = \Faker\Factory::create();
+        /** @var \Shipyard\Models\Release $release1 */
         $release1 = Release::query()->create([
             'label' => $faker->words(5, true)
         ]);
 
+        /** @var \Shipyard\Models\Release $release2 */
         $release2 = Release::query()->findOrFail($release1->id);
         $this->assertEquals($release1->label, $release2->label);
     }
@@ -52,7 +54,7 @@ class ReleaseModelTest extends TestCase {
         $challenge->assignRelease($release->slug);
 
         $ship->removeRelease($release);
-        $this->assertFalse($ship->hasRelease($release->slug), 'Failed to assert that a ship does not have the release ' . $release->label . '.');
+        $this->assertFalse($ship->hasRelease($release), 'Failed to assert that a ship does not have the release ' . $release->label . '.');
 
         $save->removeRelease($release->slug);
         $this->assertFalse($save->hasRelease($release->slug), 'Failed to assert that a save does not have the release ' . $release->label . '.');
@@ -80,7 +82,7 @@ class ReleaseModelTest extends TestCase {
             $challenges[$i]->save();
         }
 
-        $release = Release::query()->where('slug', $release->slug)->with('ships', 'saves', 'challenges')->first();
+        $release = Release::query()->where('slug', $release->slug)->with(['ships', 'saves', 'challenges'])->first();
 
         $this->assertEquals(4, count($release->ships), "Failed to find 4 ships with release '{$release->label}'. Found " . count($release->ships));
         $this->assertEquals(4, count($release->saves), "Failed to find 4 saves with release '{$release->label}'. Found " . count($release->ships));

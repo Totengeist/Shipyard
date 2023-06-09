@@ -23,16 +23,14 @@ class LoginController extends Controller {
     /**
      * Handle a login request to the application.
      *
-     * @param Psr\Http\Message\ServerRequestInterface $request
-     *
-     * @return Psr\Http\Message\ResponseInterface
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function login(Request $request, Response $response) {
         $data = (array) $request->getParsedBody();
 
         $email = (string) ($data['email'] ?? '');
         $password = (string) ($data['password'] ?? '');
-        $user = User::query()->where('email', $email)->with('roles', 'roles.permissions')->first();
+        $user = User::query()->where('email', $email)->with(['roles', 'roles.permissions'])->first();
 
         if ($user === null || !password_verify($password, $user->password)) {
             $response->getBody()->write(json_encode(['message' => 'These credentials do not match our records.']));
@@ -63,9 +61,7 @@ class LoginController extends Controller {
     /**
      * Handle a request for authenticated user information to the application.
      *
-     * @param Psr\Http\Message\ServerRequestInterface $request
-     *
-     * @return Psr\Http\Message\ResponseInterface
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function me(Request $request, Response $response) {
         $payload = json_encode(Auth::user());

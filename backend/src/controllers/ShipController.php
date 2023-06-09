@@ -17,9 +17,7 @@ class ShipController extends Controller {
     /**
      * Display a listing of the resource.
      *
-     * @group changed
-     *
-     * @return \Illuminate\Http\Response
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function index(Request $request, Response $response, $args) {
         $payload = json_encode(Ship::all());
@@ -32,9 +30,7 @@ class ShipController extends Controller {
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function store(Request $request, Response $response, $args) {
         $data = (array) $request->getParsedBody();
@@ -98,9 +94,7 @@ class ShipController extends Controller {
     /**
      * Display the specified resource.
      *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function show(Request $request, Response $response, $args) {
         $payload = json_encode(Ship::query()->where([['ref', $args['ref']]])->with('user')->first());
@@ -114,9 +108,7 @@ class ShipController extends Controller {
     /**
      * Download the specified resource.
      *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function download(Request $request, Response $response, $args) {
         $item = Ship::query()->where([['ref', $args['ref']]])->first();
@@ -140,10 +132,7 @@ class ShipController extends Controller {
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param int                      $id
-     *
-     * @return \Illuminate\Http\Response
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function update(Request $request, Response $response, $args) {
         $data = $request->getParsedBody();
@@ -180,9 +169,7 @@ class ShipController extends Controller {
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function destroy(Request $request, Response $response, $args) {
         $ship = Ship::query()->where([['ref', $args['ref']]])->first();
