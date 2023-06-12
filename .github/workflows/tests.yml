@@ -85,8 +85,9 @@ jobs:
         files: ./backend/coverage.xml
         verbose: true
 
-    - name: Run phpstan suite
+    - name: Run phpstan and php-cs-fixer
       run: |
         composer require --dev phpstan/phpstan
+        composer style-check
         vendor/bin/phpstan analyse
       if: ${{ matrix.php == '7.4' && matrix.runner == 'ubuntu-22.04' }}
