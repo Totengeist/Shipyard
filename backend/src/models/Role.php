@@ -9,7 +9,7 @@ class Role extends Model {
     /**
      * The attributes that are mass assignable.
      *
-     * @var array
+     * @var string[]
      */
     protected $fillable = [
         'slug', 'label',
@@ -18,7 +18,7 @@ class Role extends Model {
     /**
      * The attributes that should be hidden for arrays.
      *
-     * @var array
+     * @var string[]
      */
     protected $hidden = [
         'id',

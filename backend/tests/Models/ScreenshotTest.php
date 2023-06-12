@@ -83,6 +83,7 @@ class ScreenshotModelTest extends TestCase {
             $challenges[$i]->save();
         }
 
+        /** @var \Shipyard\Models\Screenshot $screenshot */
         $screenshot = Screenshot::query()->where('ref', $screenshot->ref)->with(['ships', 'saves', 'challenges'])->first();
 
         $this->assertEquals(4, count($screenshot->ships), "Failed to find 4 ships with screenshot '{$screenshot->label}'. Found " . count($screenshot->ships));

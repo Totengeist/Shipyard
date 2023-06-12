@@ -82,6 +82,7 @@ class ReleaseModelTest extends TestCase {
             $challenges[$i]->save();
         }
 
+        /** @var \Shipyard\Models\Release $release */
         $release = Release::query()->where('slug', $release->slug)->with(['ships', 'saves', 'challenges'])->first();
 
         $this->assertEquals(4, count($release->ships), "Failed to find 4 ships with release '{$release->label}'. Found " . count($release->ships));

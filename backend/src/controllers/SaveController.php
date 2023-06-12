@@ -17,8 +17,8 @@ class SaveController extends Controller {
      *
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function index(Request $request, Response $response, $args) {
-        $payload = json_encode(Save::all());
+    public function index(Request $request, Response $response) {
+        $payload = (string) json_encode(Save::all());
         $response->getBody()->write($payload);
 
         return $response
@@ -30,13 +30,16 @@ class SaveController extends Controller {
      *
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function store(Request $request, Response $response, $args) {
+    public function store(Request $request, Response $response) {
         $data = (array) $request->getParsedBody();
         $files = $request->getUploadedFiles();
 
         unset($data['user_id']);
         if (isset($data['user_ref'])) {
-            $user = User::query()->where([['ref', $data['user_ref']]])->first();
+            /** @var \Illuminate\Database\Eloquent\Builder $query */
+            $query = User::query()->where([['ref', $data['user_ref']]]);
+            /** @var \Shipyard\Models\User $user */
+            $user = $query->first();
             $data['user_id'] = $user->id;
         }
         unset($data['user_ref']);
@@ -46,7 +49,7 @@ class SaveController extends Controller {
             if (!is_array($files['file'])) {
                 $data['file_path'] = FileManager::moveUploadedFile($files['file']);
             } else {
-                $payload = json_encode(['errors' => ['file' => 'Multiple file uploads are not allowsed.']]);
+                $payload = (string) json_encode(['errors' => ['file' => 'Multiple file uploads are not allowsed.']]);
 
                 $response->getBody()->write($payload);
 
@@ -55,7 +58,7 @@ class SaveController extends Controller {
                   ->withHeader('Content-Type', 'application/json');
             }
         } else {
-            $payload = json_encode(['errors' => ['file' => 'File is missing or incorrect.']]);
+            $payload = (string) json_encode(['errors' => ['file' => 'File is missing or incorrect.']]);
 
             $response->getBody()->write($payload);
 
@@ -66,13 +69,14 @@ class SaveController extends Controller {
 
         $validator = Save::validator($data);
         $validator->validate();
+        /** @var string[] $errors */
         $errors = $validator->errors();
-        if (isset($data['file_path']) && (!file_exists($data['file_path']) || is_dir($data['file_path']))) {
+        if ((!file_exists($data['file_path']) || is_dir($data['file_path']))) {
             $errors = array_merge_recursive($errors, ['errors' => ['file_path' => 'File Path is missing or incorrect.']]);
         }
 
         if (count($errors)) {
-            $payload = json_encode(['errors' => $errors]);
+            $payload = (string) json_encode(['errors' => $errors]);
 
             $response->getBody()->write($payload);
 
@@ -81,7 +85,7 @@ class SaveController extends Controller {
               ->withHeader('Content-Type', 'application/json');
         }
         $save = Save::query()->create($data);
-        $payload = json_encode($save);
+        $payload = (string) json_encode($save);
 
         $response->getBody()->write($payload);
 
@@ -92,10 +96,14 @@ class SaveController extends Controller {
     /**
      * Display the specified resource.
      *
+     * @param array<string,string> $args
+     *
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function show(Request $request, Response $response, $args) {
-        $payload = json_encode(Save::query()->where([['ref', $args['ref']]])->with('user')->first());
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Save::query()->where([['ref', $args['ref']]])->with('user');
+        $payload = (string) json_encode($query->first());
 
         $response->getBody()->write($payload);
 
@@ -106,12 +114,17 @@ class SaveController extends Controller {
     /**
      * Update the specified resource in storage.
      *
+     * @param array<string,string> $args
+     *
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function update(Request $request, Response $response, $args) {
         $data = $request->getParsedBody();
 
-        $save = Save::query()->where([['ref', $args['ref']]])->first();
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Save::query()->where([['ref', $args['ref']]]);
+        /** @var \Shipyard\Models\Save $save */
+        $save = $query->first();
         $abort = $this->isOrCan($save->user_id, 'edit-saves');
         if ($abort !== null) {
             return $abort;
@@ -132,7 +145,7 @@ class SaveController extends Controller {
 
         $save->save();
 
-        $payload = json_encode($save);
+        $payload = (string) json_encode($save);
 
         $response->getBody()->write($payload);
 
@@ -143,17 +156,22 @@ class SaveController extends Controller {
     /**
      * Remove the specified resource from storage.
      *
+     * @param array<string,string> $args
+     *
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function destroy(Request $request, Response $response, $args) {
-        $save = Save::query()->where([['ref', $args['ref']]])->first();
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Save::query()->where([['ref', $args['ref']]]);
+        /** @var \Shipyard\Models\Save $save */
+        $save = $query->first();
         $abort = $this->isOrCan($save->user_id, 'delete-saves');
         if ($abort !== null) {
             return $abort;
         }
         $save->delete();
 
-        $payload = json_encode(['message' => 'successful']);
+        $payload = (string) json_encode(['message' => 'successful']);
 
         $response->getBody()->write($payload);
 

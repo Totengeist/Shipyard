@@ -61,6 +61,7 @@ class UserControllerTest extends APITestCase {
                 'email' => $email,
          ]);
 
+        /** @var \Shipyard\Models\User $user */
         $user = User::query()->where([['email', $email]])->first();
         $user_json = json_decode($user->toJson(), true);
         $this->assertJsonFragment([

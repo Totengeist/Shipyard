@@ -27,7 +27,8 @@ trait HasTags {
     public function assignTag($tag) {
         if (is_string($tag)) {
             /** @var \Illuminate\Database\Eloquent\Builder $query */
-            $query = Tag::query()->whereSlug($tag);
+            $query = Tag::query()->where('slug', '=', $tag);
+            /** @var \Shipyard\Models\Tag $tag */
             $tag = $query->firstOrFail();
         }
 
@@ -47,7 +48,7 @@ trait HasTags {
     public function removeTag($tag) {
         if (is_string($tag)) {
             /** @var \Illuminate\Database\Eloquent\Builder $query */
-            $query = Tag::query()->whereSlug($tag);
+            $query = Tag::query()->where('slug', '=', $tag);
             /** @var \Shipyard\Models\Tag $tag */
             $tag = $query->firstOrFail();
         }

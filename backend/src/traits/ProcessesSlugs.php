@@ -20,6 +20,8 @@ trait ProcessesSlugs {
     /**
      * Create or add on to a validator.
      *
+     * @param array<string, string> $data
+     *
      * @return Validator
      */
     protected static function slug_validator(array $data, Validator $v = null) {

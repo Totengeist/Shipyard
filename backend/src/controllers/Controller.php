@@ -5,6 +5,7 @@ namespace Shipyard\Controllers;
 use Psr\Container\ContainerInterface;
 
 class Controller {
+    /** @var \Psr\Container\ContainerInterface */
     protected $container;
 
     // constructor receives container instance

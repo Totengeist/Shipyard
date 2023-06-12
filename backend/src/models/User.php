@@ -3,20 +3,24 @@
 namespace Shipyard\Models;
 
 use Shipyard\Traits\CreatesUniqueIDs;
+use Shipyard\Traits\HasRef;
 use Shipyard\Traits\HasRoles;
 
 /**
+ * @property string $name
  * @property string $email
+ * @property string $password
  * @property bool   $activated
  */
 class User extends Model {
     use HasRoles;
+    use HasRef;
     use CreatesUniqueIDs;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var array
+     * @var string[]
      */
     protected $fillable = [
         'name', 'email', 'password',
@@ -25,7 +29,7 @@ class User extends Model {
     /**
      * The attributes that are casted.
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $casts = [
         'activated' => 'boolean',
@@ -34,34 +38,23 @@ class User extends Model {
     /**
      * The attributes that should be hidden for arrays.
      *
-     * @var array
+     * @var string[]
      */
     protected $hidden = [
         'password', 'remember_token', 'activated', 'id',
     ];
 
-    public static function create(array $attributes = []) {
-        if (!isset($attributes['ref'])) {
-            $attributes['ref'] = self::get_guid();
-        }
-
-        return static::query()->create($attributes);
-    }
-
-    public function save(array $options = []) {
-        if (!isset($this->attributes['ref'])) {
-            $this->setAttribute('ref', self::get_guid());
-        }
-
-        return parent::save($options);
-    }
-
+    /** @return \Shipyard\Models\UserActivation */
     public function create_activation() {
-        return UserActivation::query()->create([
+        /** @var \Shipyard\Models\UserActivation $activation */
+        $activation = UserActivation::query()->create([
             'email' => $this->email,
         ]);
+
+        return $activation;
     }
 
+    /** @return void */
     public function activate() {
         if ($this->activated) {
             return;
@@ -74,6 +67,7 @@ class User extends Model {
         $this->save();
     }
 
+    /** @return bool */
     public function active() {
         return $this->activated;
     }

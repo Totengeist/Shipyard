@@ -4,12 +4,15 @@ namespace Shipyard\Models;
 
 use Shipyard\Traits\HasSlug;
 
+/**
+ * @property \Illuminate\Database\Eloquent\Collection $roles
+ */
 class Permission extends Model {
     use HasSlug;
     /**
      * The attributes that are mass assignable.
      *
-     * @var array
+     * @var string[]
      */
     protected $fillable = [
         'slug', 'label',
@@ -18,7 +21,7 @@ class Permission extends Model {
     /**
      * The attributes that should be hidden for arrays.
      *
-     * @var array
+     * @var string[]
      */
     protected $hidden = [
         'id',

@@ -5,14 +5,16 @@ namespace Shipyard\Models;
 use Shipyard\Traits\HasSlug;
 
 /**
- * @property int $id
+ * @property int    $id
+ * @property string $slug
+ * @property string $label
  */
 class Tag extends Model {
     use HasSlug;
     /**
      * The attributes that are mass assignable.
      *
-     * @var array
+     * @var string[]
      */
     protected $fillable = [
         'slug', 'label',
@@ -21,7 +23,7 @@ class Tag extends Model {
     /**
      * The attributes that should be hidden for arrays.
      *
-     * @var array
+     * @var string[]
      */
     protected $hidden = [
         'id',
@@ -54,6 +56,13 @@ class Tag extends Model {
         return $this->retrieve_type(Challenge::class);
     }
 
+    /**
+     * Retrieve tagged items of a specific class.
+     *
+     * @param class-string $class
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function retrieve_type($class) {
         return $this->belongsToMany($class, 'item_tags', 'tag_id', 'item_id')->wherePivot('type', '=', $class::$tag_label);
     }

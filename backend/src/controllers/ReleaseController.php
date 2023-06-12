@@ -17,8 +17,8 @@ class ReleaseController extends Controller {
      *
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function index(Request $request, Response $response, $args) {
-        $payload = json_encode(Release::all());
+    public function index(Request $request, Response $response) {
+        $payload = (string) json_encode(Release::all());
         $response->getBody()->write($payload);
 
         return $response
@@ -30,7 +30,7 @@ class ReleaseController extends Controller {
      *
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function store(Request $request, Response $response, $args) {
+    public function store(Request $request, Response $response) {
         if (($perm_check = $this->can('create-releases')) !== null) {
             return $perm_check;
         }
@@ -40,10 +40,11 @@ class ReleaseController extends Controller {
         }
         $validator = $this->slug_validator($data);
         $validator->validate();
+        /** @var string[] $errors */
         $errors = $validator->errors();
 
         if (count($errors)) {
-            $payload = json_encode(['errors' => $errors]);
+            $payload = (string) json_encode(['errors' => $errors]);
 
             $response->getBody()->write($payload);
 
@@ -51,7 +52,7 @@ class ReleaseController extends Controller {
               ->withStatus(401)
               ->withHeader('Content-Type', 'application/json');
         }
-        $payload = json_encode(Release::query()->create($data));
+        $payload = (string) json_encode(Release::query()->create($data));
 
         $response->getBody()->write($payload);
 
@@ -62,10 +63,14 @@ class ReleaseController extends Controller {
     /**
      * Display the specified resource.
      *
+     * @param array<string,string> $args
+     *
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function show(Request $request, Response $response, $args) {
-        $payload = json_encode(Release::query()->where([['slug', $args['slug']]])->first());
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Release::query()->where([['slug', $args['slug']]]);
+        $payload = (string) json_encode($query->first());
 
         $response->getBody()->write($payload);
 
@@ -76,20 +81,25 @@ class ReleaseController extends Controller {
     /**
      * Update the specified resource in storage.
      *
+     * @param array<string,string> $args
+     *
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function update(Request $request, Response $response, $args) {
         if (($perm_check = $this->can('edit-releases')) !== null) {
             return $perm_check;
         }
-        $data = $request->getParsedBody();
+        $data = (array) $request->getParsedBody();
 
-        $release = Release::query()->where([['slug', $args['slug']]])->first();
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Release::query()->where([['slug', $args['slug']]]);
+        /** @var \Shipyard\Models\Release $release */
+        $release = $query->first();
         $release->slug = $data['slug'];
         $release->label = $data['label'];
         $release->save();
 
-        $payload = json_encode($release);
+        $payload = (string) json_encode($release);
 
         $response->getBody()->write($payload);
 
@@ -100,16 +110,21 @@ class ReleaseController extends Controller {
     /**
      * Remove the specified resource from storage.
      *
+     * @param array<string,string> $args
+     *
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function destroy(Request $request, Response $response, $args) {
         if (($perm_check = $this->can('delete-releases')) !== null) {
             return $perm_check;
         }
-        $release = Release::query()->where([['slug', $args['slug']]])->first();
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Release::query()->where([['slug', $args['slug']]]);
+        /** @var \Shipyard\Models\Release $release */
+        $release = $query->first();
         $release->delete();
 
-        $payload = json_encode(['message' => 'successful']);
+        $payload = (string) json_encode(['message' => 'successful']);
 
         $response->getBody()->write($payload);
 

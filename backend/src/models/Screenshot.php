@@ -15,7 +15,7 @@ class Screenshot extends Model {
     /**
      * The attributes that are mass assignable.
      *
-     * @var array
+     * @var string[]
      */
     protected $fillable = [
         'ref', 'file_path', 'description', 'primary',
@@ -24,7 +24,7 @@ class Screenshot extends Model {
     /**
      * The attributes that are casted.
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $casts = [
         'primary' => 'boolean',
@@ -33,7 +33,7 @@ class Screenshot extends Model {
     /**
      * The attributes that should be hidden for arrays.
      *
-     * @var array
+     * @var string[]
      */
     protected $hidden = [
         'id', 'file_path',
@@ -66,6 +66,13 @@ class Screenshot extends Model {
         return $this->retrieve_type(Challenge::class);
     }
 
+    /**
+     * Retrieve screenshots from items of a specific class.
+     *
+     * @param class-string $class
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function retrieve_type($class) {
         return $this->belongsToMany($class, 'item_screenshots', 'screenshot_id', 'item_id')->wherePivot('type', '=', $class::$tag_label);
     }
@@ -73,9 +80,12 @@ class Screenshot extends Model {
     /**
      * Create or add on to a validator.
      *
-     * @return Validator
+     * @param mixed                    $data
+     * @param \Valitron\Validator|null $v
+     *
+     * @return \Valitron\Validator
      */
-    public static function validator(array $data, Validator $v = null) {
+    public static function validator($data, $v = null) {
         if ($v === null) {
             $v = new Validator($data);
         }

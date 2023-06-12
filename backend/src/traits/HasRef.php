@@ -5,7 +5,9 @@ namespace Shipyard\Traits;
 use Valitron\Validator;
 
 /**
- * @method Model|static whereRef(string $ref)
+ * @property string $ref
+ *
+ * @method \Shipyard\Models\Model|\Illuminate\Database\Eloquent\Builder|static whereRef(string $ref)
  */
 trait HasRef {
     use CreatesUniqueIDs;
@@ -13,9 +15,12 @@ trait HasRef {
     /**
      * Create or add on to a validator.
      *
+     * @param mixed[]                  $data
+     * @param \Valitron\Validator|null $v
+     *
      * @return Validator
      */
-    protected static function ref_validator(array $data, Validator $v = null) {
+    protected static function ref_validator($data, $v = null) {
         if ($v === null) {
             $v = new Validator($data);
         }
@@ -40,6 +45,10 @@ trait HasRef {
      * slug.
      *
      * @todo remove special characters from slugs
+     *
+     * @param mixed[] $options
+     *
+     * @return bool
      */
     public function save(array $options = []) {
         if (!isset($this->attributes['ref'])) {

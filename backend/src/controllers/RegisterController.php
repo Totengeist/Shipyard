@@ -35,11 +35,16 @@ class RegisterController extends Controller {
     /**
      * Create or add on to a validator.
      *
-     * @return Validator
+     * @param mixed[] $data
+     * @param bool    $optional
+     *
+     * @return \Valitron\Validator
      */
-    protected function validator(array $data, $optional = false) {
+    protected function validator($data, $optional = false) {
         Validator::addRule('unique', function ($field, $value, array $params, array $fields) {
-            if (User::query()->where('email', $fields['email'])->get()->isEmpty()) {
+            /** @var \Illuminate\Database\Eloquent\Builder $query */
+            $query = User::query()->where('email', $fields['email']);
+            if ($query->get()->isEmpty()) {
                 return true;
             }
 
@@ -107,14 +112,19 @@ class RegisterController extends Controller {
     /**
      * Create a new user instance after a valid registration.
      *
+     * @param array<string, string> $data
+     *
      * @return \Shipyard\Models\User
      */
     protected function create(array $data) {
-        return User::query()->create([
+        /** @var \Shipyard\Models\User $user */
+        $user = User::query()->create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => password_hash($data['password'], PASSWORD_BCRYPT),
         ]);
+
+        return $user;
     }
 
     /**
@@ -124,12 +134,13 @@ class RegisterController extends Controller {
      *
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function register(Request $request, Response $response, $args) {
-        $data = $request->getParsedBody();
+    public function register(Request $request, Response $response) {
+        $data = (array) $request->getParsedBody();
+        /** @var string[] $errors */
         $errors = $this->validator($data)->errors();
 
         if (count($errors)) {
-            $payload = json_encode(['errors' => $errors]);
+            $payload = (string) json_encode(['errors' => $errors]);
 
             $response->getBody()->write($payload);
 
@@ -142,7 +153,7 @@ class RegisterController extends Controller {
         $user = $this->create($subdata);
         $user->create_activation();
 
-        $payload = json_encode(['user' => $user]);
+        $payload = (string) json_encode(['user' => $user]);
 
         $response->getBody()->write($payload);
 
@@ -153,19 +164,24 @@ class RegisterController extends Controller {
     /**
      * Handle an activation request for the application.
      *
-     * @override
+     * @param array<string,string> $args
      *
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function activate(Request $request, Response $response, $args) {
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = UserActivation::query()->where('token', $args['token']);
         /** @var \Shipyard\Models\UserActivation $activation */
-        $activation = UserActivation::query()->where('token', $args['token'])->firstOrFail();
-        $user = User::query()->where('email', $activation->email)->first();
+        $activation = $query->firstOrFail();
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = User::query()->where('email', $activation->email);
+        /** @var \Shipyard\Models\User $user */
+        $user = $query->first();
         $user->activate();
 
         Auth::login($user);
 
-        $payload = json_encode($user);
+        $payload = (string) json_encode($user);
 
         $response->getBody()->write($payload);
 
@@ -176,23 +192,27 @@ class RegisterController extends Controller {
     /**
      * Remove the specified resource from storage.
      *
+     * @param array<string,string> $args
+     *
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function destroy(Request $request, Response $response, $args) {
-        $id = $args['userid'];
+        $id = (int) $args['user_id'];
         if (($perm_check = $this->isOrCan($id, 'delete-users')) !== null) {
             return $perm_check;
         }
         /** @var \Shipyard\Models\User $user */
         $user = User::query()->find($id);
 
-        $activations = UserActivation::query()->where('email', $user->email)->get();
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = UserActivation::query()->where('email', $user->email);
+        $activations = $query->get();
         foreach ($activations as $activation) {
             $activation->delete();
         }
         $user->delete();
 
-        $payload = json_encode(['message' => 'successful']);
+        $payload = (string) json_encode(['message' => 'successful']);
 
         $response->getBody()->write($payload);
 
@@ -203,25 +223,31 @@ class RegisterController extends Controller {
     /**
      * Update the specified resource in storage.
      *
+     * @param array<string,string> $args
+     *
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function update(Request $request, Response $response, $args) {
-        $id = $args['user_id'];
+        $id = (int) $args['user_id'];
         if (($perm_check = $this->isOrCan($id, 'edit-users')) !== null) {
             return $perm_check;
         }
-        $data = $request->getParsedBody();
+        $data = (array) $request->getParsedBody();
 
-        $subdata = array_intersect_key($data, array_flip((array) ['name', 'email', 'password', 'password_confirmation']));
+        $subdata = array_intersect_key($data, array_flip(['name', 'email', 'password', 'password_confirmation']));
+        /** @var string[] $errors */
         $errors = $this->validator($subdata, true)->errors();
         if (count($errors)) {
-            $response->getBody()->write(['errors' => $errors]);
+            $response->getBody()->write((string) json_encode(['errors' => $errors]));
 
             return $response
                 ->withHeader('Content-Type', 'application/json');
         }
 
-        $user = User::query()->where('id', $id)->first();
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = User::query()->where('id', $id);
+        /** @var \Shipyard\Models\User $user */
+        $user = $query->first();
 
         if (isset($subdata['name'])) {
             $user->name = $subdata['name'];
@@ -235,7 +261,7 @@ class RegisterController extends Controller {
 
         $user->save();
 
-        $payload = json_encode(['user' => $user]);
+        $payload = (string) json_encode(['user' => $user]);
 
         $response->getBody()->write($payload);
 

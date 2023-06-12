@@ -82,6 +82,7 @@ class TagModelTest extends TestCase {
             $challenges[$i]->save();
         }
 
+        /** @var \Shipyard\Models\Tag $tag */
         $tag = Tag::query()->where('slug', $tag->slug)->with(['ships', 'saves', 'challenges'])->first();
 
         $this->assertEquals(4, count($tag->ships), "Failed to find 4 ships with tag '{$tag->label}'. Found " . count($tag->ships));

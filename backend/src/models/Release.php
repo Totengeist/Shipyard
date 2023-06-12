@@ -9,7 +9,7 @@ class Release extends Model {
     /**
      * The attributes that are mass assignable.
      *
-     * @var array
+     * @var string[]
      */
     protected $fillable = [
         'slug', 'label',
@@ -18,7 +18,7 @@ class Release extends Model {
     /**
      * The attributes that should be hidden for arrays.
      *
-     * @var array
+     * @var string[]
      */
     protected $hidden = [
         'id',
@@ -53,6 +53,8 @@ class Release extends Model {
 
     /**
      * A base function to handle picking the correct type.
+     *
+     * @param class-string $class
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */

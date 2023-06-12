@@ -9,10 +9,15 @@ class Auth {
     /**
      * The active session.
      *
-     * @var \SlimSession\Helper
+     * @var \SlimSession\Helper<mixed>
      */
     public static $session;
 
+    /**
+     * @param \Shipyard\Models\User $user
+     *
+     * @return void
+     */
     public static function login($user) {
         if (static::$session === null) {
             static::$session = new SessionHelper();
@@ -21,6 +26,9 @@ class Auth {
         static::$session->set('user', $user);
     }
 
+    /**
+     * @return void
+     */
     public static function logout() {
         if (static::$session === null) {
             static::$session = new SessionHelper();
@@ -29,6 +37,9 @@ class Auth {
         static::$session->destroy();
     }
 
+    /**
+     * @return \Shipyard\Models\User
+     */
     public static function user() {
         if (static::$session === null) {
             static::$session = new SessionHelper();
@@ -37,6 +48,9 @@ class Auth {
         return static::$session->get('user');
     }
 
+    /**
+     * @return bool
+     */
     public static function check() {
         if (static::$session === null) {
             static::$session = new SessionHelper();
@@ -45,6 +59,12 @@ class Auth {
         return static::$session->exists('user');
     }
 
+    /**
+     * @param int    $code
+     * @param string $message
+     *
+     * @return \Psr\Http\Message\ResponseInterface
+     */
     public static function abort($code, $message) {
         $factory = new ResponseFactory();
         $response = $factory->createResponse($code, $message);

@@ -17,12 +17,12 @@ class RoleController extends Controller {
      *
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function index(Request $request, Response $response, $args) {
+    public function index(Request $request, Response $response) {
         if (($perm_check = $this->can('view-roles')) !== null) {
             return $perm_check;
         }
 
-        $payload = json_encode(Role::all());
+        $payload = (string) json_encode(Role::all());
         $response->getBody()->write($payload);
 
         return $response
@@ -34,7 +34,7 @@ class RoleController extends Controller {
      *
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function store(Request $request, Response $response, $args) {
+    public function store(Request $request, Response $response) {
         if (($perm_check = $this->can('create-roles')) !== null) {
             return $perm_check;
         }
@@ -44,10 +44,11 @@ class RoleController extends Controller {
         }
         $validator = $this->slug_validator($data);
         $validator->validate();
+        /** @var string[] $errors */
         $errors = $validator->errors();
 
         if (count($errors)) {
-            $payload = json_encode(['errors' => $errors]);
+            $payload = (string) json_encode(['errors' => $errors]);
 
             $response->getBody()->write($payload);
 
@@ -55,7 +56,7 @@ class RoleController extends Controller {
               ->withStatus(401)
               ->withHeader('Content-Type', 'application/json');
         }
-        $payload = json_encode(Role::query()->create($data));
+        $payload = (string) json_encode(Role::query()->create($data));
 
         $response->getBody()->write($payload);
 
@@ -66,6 +67,8 @@ class RoleController extends Controller {
     /**
      * Display the specified resource.
      *
+     * @param array<string,string> $args
+     *
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function show(Request $request, Response $response, $args) {
@@ -73,7 +76,9 @@ class RoleController extends Controller {
             return $perm_check;
         }
 
-        $payload = json_encode(Role::query()->where([['slug', $args['slug']]])->first());
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Role::query()->where([['slug', $args['slug']]]);
+        $payload = (string) json_encode($query->first());
 
         $response->getBody()->write($payload);
 
@@ -84,20 +89,25 @@ class RoleController extends Controller {
     /**
      * Update the specified resource in storage.
      *
+     * @param array<string,string> $args
+     *
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function update(Request $request, Response $response, $args) {
         if (($perm_check = $this->can('edit-roles')) !== null) {
             return $perm_check;
         }
-        $data = $request->getParsedBody();
+        $data = (array) $request->getParsedBody();
 
-        $role = Role::query()->where([['slug', $args['slug']]])->first();
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Role::query()->where([['slug', $args['slug']]]);
+        /** @var \Shipyard\Models\Role $role */
+        $role = $query->first();
         $role->slug = $data['slug'];
         $role->label = $data['label'];
         $role->save();
 
-        $payload = json_encode($role);
+        $payload = (string) json_encode($role);
 
         $response->getBody()->write($payload);
 
@@ -108,16 +118,21 @@ class RoleController extends Controller {
     /**
      * Remove the specified resource from storage.
      *
+     * @param array<string,string> $args
+     *
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function destroy(Request $request, Response $response, $args) {
         if (($perm_check = $this->can('delete-roles')) !== null) {
             return $perm_check;
         }
-        $role = Role::query()->where([['slug', $args['slug']]])->first();
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Role::query()->where([['slug', $args['slug']]]);
+        /** @var \Shipyard\Models\Role $role */
+        $role = $query->first();
         $role->delete();
 
-        $payload = json_encode(['message' => 'successful']);
+        $payload = (string) json_encode(['message' => 'successful']);
 
         $response->getBody()->write($payload);
 

@@ -30,18 +30,23 @@ class LoginController extends Controller {
 
         $email = (string) ($data['email'] ?? '');
         $password = (string) ($data['password'] ?? '');
-        $user = User::query()->where('email', $email)->with(['roles', 'roles.permissions'])->first();
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = User::query()->where('email', $email)->with(['roles', 'roles.permissions']);
+        /** @var \Shipyard\Models\User $user */
+        $user = $query->first();
 
-        if ($user === null || !password_verify($password, $user->password)) {
-            $response->getBody()->write(json_encode(['message' => 'These credentials do not match our records.']));
+        if ($user == null || !password_verify($password, $user->password)) {
+            $response->getBody()->write((string) (string) json_encode(['message' => 'These credentials do not match our records.']));
 
             return $response
                 ->withHeader('Content-Type', 'application/json')
                 ->withStatus(401, 'Unauthorized');
         }
 
-        if (!UserActivation::query()->where('email', $user->email)->get()->isEmpty()) {
-            $response->getBody()->write(json_encode(['message' => 'This account has not been activated. Please check your email.']));
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = UserActivation::query()->where('email', $user->email);
+        if (!$query->get()->isEmpty()) {
+            $response->getBody()->write((string) (string) json_encode(['message' => 'This account has not been activated. Please check your email.']));
 
             return $response
                 ->withHeader('Content-Type', 'application/json')
@@ -51,7 +56,7 @@ class LoginController extends Controller {
         Auth::login($user);
         $data = Auth::user();
 
-        $response->getBody()->write(json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+        $response->getBody()->write((string) (string) json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
 
         return $response
             ->withHeader('Content-Type', 'application/json')
@@ -64,7 +69,7 @@ class LoginController extends Controller {
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function me(Request $request, Response $response) {
-        $payload = json_encode(Auth::user());
+        $payload = (string) (string) json_encode(Auth::user());
 
         $response->getBody()->write($payload);
 
@@ -73,10 +78,15 @@ class LoginController extends Controller {
             ->withStatus(200);
     }
 
+    /**
+     * Handle a request for logging a user out of the application.
+     *
+     * @return \Psr\Http\Message\ResponseInterface
+     */
     public function logout(Request $request, Response $response) {
         Auth::logout();
 
-        $response->getBody()->write(json_encode(['message' => 'You have been logged out.']));
+        $response->getBody()->write((string) (string) json_encode(['message' => 'You have been logged out.']));
 
         return $response
             ->withHeader('Content-Type', 'application/json')

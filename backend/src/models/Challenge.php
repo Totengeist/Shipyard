@@ -7,6 +7,14 @@ use Shipyard\Traits\HasReleases;
 use Shipyard\Traits\HasScreenshots;
 use Shipyard\Traits\HasTags;
 
+/**
+ * @property string $file_path
+ * @property string $title
+ * @property string $description
+ * @property int    $user_id
+ * @property int    $save_id
+ * @property int    $downloads
+ */
 class Challenge extends Model {
     use HasTags;
     use HasReleases;
@@ -16,13 +24,13 @@ class Challenge extends Model {
     /**
      * Label to use for tag table.
      *
-     * @str
+     * @var string
      */
     public static $tag_label = 'challenge';
     /**
      * The attributes that are mass assignable.
      *
-     * @var array
+     * @var string[]
      */
     protected $fillable = [
         'ref', 'user_id', 'title', 'description',
@@ -31,7 +39,7 @@ class Challenge extends Model {
     /**
      * The attributes that should be hidden for arrays.
      *
-     * @var array
+     * @var string[]
      */
     protected $hidden = ['id', 'file_path', 'user_id', 'save_id'];
 

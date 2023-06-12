@@ -4,7 +4,7 @@ require __DIR__ . '/../vendor/autoload.php';
 use Dotenv\Dotenv;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
-$dotenv = Dotenv::createMutable(realpath(dirname(__DIR__)));
+$dotenv = Dotenv::createMutable((string) realpath(dirname(__DIR__)));
 if (getenv('APP_ENV') == 'development') {
     $dotenv->load();
 }

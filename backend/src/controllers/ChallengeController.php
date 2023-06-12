@@ -17,8 +17,8 @@ class ChallengeController extends Controller {
      *
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function index(Request $request, Response $response, $args) {
-        $payload = json_encode(Challenge::all());
+    public function index(Request $request, Response $response) {
+        $payload = (string) json_encode(Challenge::all());
         $response->getBody()->write($payload);
 
         return $response
@@ -30,17 +30,15 @@ class ChallengeController extends Controller {
      *
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function store(Request $request, Response $response, $args) {
+    public function store(Request $request, Response $response) {
         $data = (array) $request->getParsedBody();
-        if (!array_key_exists('slug', $data) || $data['slug'] === null || $data['slug'] === '') {
-            $data['slug'] = self::slugify($data['label']);
-        }
         $validator = self::slug_validator($data);
         $validator->validate();
+        /** @var string[] $errors */
         $errors = $validator->errors();
 
         if (count($errors)) {
-            $payload = json_encode(['errors' => $errors]);
+            $payload = (string) json_encode(['errors' => $errors]);
 
             $response->getBody()->write($payload);
 
@@ -48,7 +46,7 @@ class ChallengeController extends Controller {
               ->withStatus(401)
               ->withHeader('Content-Type', 'application/json');
         }
-        $payload = json_encode(Challenge::query()->create($data));
+        $payload = (string) json_encode(Challenge::query()->create($data));
 
         $response->getBody()->write($payload);
 
@@ -59,10 +57,14 @@ class ChallengeController extends Controller {
     /**
      * Display the specified resource.
      *
+     * @param array<string,string> $args
+     *
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function show(Request $request, Response $response, $args) {
-        $payload = json_encode(Challenge::query()->where([['slug', $args['slug']]])->first());
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Challenge::query()->where([['ref', $args['ref']]]);
+        $payload = (string) json_encode($query->first());
 
         $response->getBody()->write($payload);
 
@@ -73,19 +75,26 @@ class ChallengeController extends Controller {
     /**
      * Update the specified resource in storage.
      *
+     * @param array<string,string> $args
+     *
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function update(Request $request, Response $response, $args) {
-        $data = $request->getParsedBody();
+        $data = (array) $request->getParsedBody();
 
-        $permission = Challenge::query()->where([['slug', $args['slug']]])->first();
-        if (array_key_exists('slug', $data) && $data['slug'] !== null && $data['slug'] !== '') {
-            $permission->slug = $data['slug'];
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Challenge::query()->where([['ref', $args['ref']]]);
+        /** @var \Shipyard\Models\Challenge $challenge */
+        $challenge = $query->first();
+        if (isset($data['title'])) {
+            $challenge->title = $data['title'];
         }
-        $permission->label = $data['label'];
-        $permission->save();
+        if (isset($data['description'])) {
+            $challenge->description = $data['description'];
+        }
+        $challenge->save();
 
-        $payload = json_encode($permission);
+        $payload = (string) json_encode($challenge);
 
         $response->getBody()->write($payload);
 
@@ -96,13 +105,18 @@ class ChallengeController extends Controller {
     /**
      * Remove the specified resource from storage.
      *
+     * @param array<string,string> $args
+     *
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function destroy(Request $request, Response $response, $args) {
-        $role = Challenge::query()->where([['slug', $args['slug']]])->first();
-        $role->delete();
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Challenge::query()->where([['ref', $args['ref']]]);
+        /** @var \Shipyard\Models\Challenge $challenge */
+        $challenge = $query->first();
+        $challenge->delete();
 
-        $payload = json_encode(['message' => 'successful']);
+        $payload = (string) json_encode(['message' => 'successful']);
 
         $response->getBody()->write($payload);
 

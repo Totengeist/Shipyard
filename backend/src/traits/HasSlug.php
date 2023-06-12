@@ -6,7 +6,7 @@ namespace Shipyard\Traits;
  * @property string $label
  * @property string $slug
  *
- * @method Model|static whereSlug(string $slug)
+ * @method \Shipyard\Models\Model|\Illuminate\Database\Eloquent\Builder|static whereSlug(string $slug)
  */
 trait HasSlug {
     use ProcessesSlugs;
@@ -14,6 +14,8 @@ trait HasSlug {
     /**
      * Clean a slug if it is dirty. If no slug is
      * specified, use the name field by default.
+     *
+     * @return void
      */
     protected function cleanSlug() {
         if (!isset($this->slug) || $this->slug == '') {
@@ -27,6 +29,10 @@ trait HasSlug {
      * slug.
      *
      * @todo remove special characters from slugs
+     *
+     * @param mixed[] $options
+     *
+     * return bool
      */
     public function save(array $options = []) {
         $this->cleanSlug();

@@ -17,12 +17,12 @@ class PermissionController extends Controller {
      *
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function index(Request $request, Response $response, $args) {
+    public function index(Request $request, Response $response) {
         if (($perm_check = $this->can('view-permissions')) !== null) {
             return $perm_check;
         }
 
-        $payload = json_encode(Permission::all());
+        $payload = (string) json_encode(Permission::all());
         $response->getBody()->write($payload);
 
         return $response
@@ -34,7 +34,7 @@ class PermissionController extends Controller {
      *
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function store(Request $request, Response $response, $args) {
+    public function store(Request $request, Response $response) {
         if (($perm_check = $this->can('create-permissions')) !== null) {
             return $perm_check;
         }
@@ -44,10 +44,11 @@ class PermissionController extends Controller {
         }
         $validator = $this->slug_validator($data);
         $validator->validate();
+        /** @var string[] $errors */
         $errors = $validator->errors();
 
         if (count($errors)) {
-            $payload = json_encode(['errors' => $errors]);
+            $payload = (string) json_encode(['errors' => $errors]);
 
             $response->getBody()->write($payload);
 
@@ -55,7 +56,7 @@ class PermissionController extends Controller {
               ->withStatus(401)
               ->withHeader('Content-Type', 'application/json');
         }
-        $payload = json_encode(Permission::query()->create($data));
+        $payload = (string) json_encode(Permission::query()->create($data));
 
         $response->getBody()->write($payload);
 
@@ -66,6 +67,8 @@ class PermissionController extends Controller {
     /**
      * Display the specified resource.
      *
+     * @param array<string,string> $args
+     *
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function show(Request $request, Response $response, $args) {
@@ -73,7 +76,9 @@ class PermissionController extends Controller {
             return $perm_check;
         }
 
-        $payload = json_encode(Permission::query()->where([['slug', $args['slug']]])->first());
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Permission::query()->where([['slug', $args['slug']]]);
+        $payload = (string) json_encode($query->first());
 
         $response->getBody()->write($payload);
 
@@ -84,22 +89,27 @@ class PermissionController extends Controller {
     /**
      * Update the specified resource in storage.
      *
+     * @param array<string,string> $args
+     *
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function update(Request $request, Response $response, $args) {
         if (($perm_check = $this->can('edit-permissions')) !== null) {
             return $perm_check;
         }
-        $data = $request->getParsedBody();
+        $data = (array) $request->getParsedBody();
 
-        $permission = Permission::query()->where([['slug', $args['slug']]])->first();
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Permission::query()->where([['slug', $args['slug']]]);
+        /** @var \Shipyard\Models\Permission $permission */
+        $permission = $query->first();
         if (array_key_exists('slug', $data) && $data['slug'] !== null && $data['slug'] !== '') {
             $permission->slug = $data['slug'];
         }
         $permission->label = $data['label'];
         $permission->save();
 
-        $payload = json_encode($permission);
+        $payload = (string) json_encode($permission);
 
         $response->getBody()->write($payload);
 
@@ -110,16 +120,21 @@ class PermissionController extends Controller {
     /**
      * Remove the specified resource from storage.
      *
+     * @param array<string,string> $args
+     *
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function destroy(Request $request, Response $response, $args) {
         if (($perm_check = $this->can('delete-permissions')) !== null) {
             return $perm_check;
         }
-        $role = Permission::query()->where([['slug', $args['slug']]])->first();
-        $role->delete();
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Permission::query()->where([['slug', $args['slug']]]);
+        /** @var \Shipyard\Models\Permission $permission */
+        $permission = $query->first();
+        $permission->delete();
 
-        $payload = json_encode(['message' => 'successful']);
+        $payload = (string) json_encode(['message' => 'successful']);
 
         $response->getBody()->write($payload);
 

@@ -15,16 +15,18 @@ class ScreenshotController extends Controller {
     /**
      * Display a listing of the resource.
      *
-     * @todo Expand screenshots to items other than ships (item_ref and tag_label?)
+     * @todo expand screenshots to items other than ships (item_ref and tag_label?)
+     *
+     * @param array<string,string> $args
      *
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function index(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
-        $query = Ship::query()->whereRef($args['ship_ref']);
+        $query = Ship::query()->where('ref', '=', $args['ship_ref']);
         /** @var \Shipyard\Models\Ship $ship */
         $ship = $query->firstOrFail();
-        $payload = json_encode($ship->screenshots()->get());
+        $payload = (string) json_encode($ship->screenshots()->get());
         $response->getBody()->write($payload);
 
         return $response
@@ -34,11 +36,13 @@ class ScreenshotController extends Controller {
     /**
      * Store a newly created resource in storage.
      *
+     * @param array<string,string> $args
+     *
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function store(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
-        $query = Ship::query()->whereRef($args['ship_ref']);
+        $query = Ship::query()->where('ref', '=', $args['ship_ref']);
         /** @var \Shipyard\Models\Ship $ship */
         $ship = $query->firstOrFail();
         $user_id = $ship->user_id;
@@ -53,7 +57,7 @@ class ScreenshotController extends Controller {
             $validator = Screenshot::validator([]);
             $validator->validate();
             $errors = $validator->errors();
-            $payload = json_encode(['errors' => $errors]);
+            $payload = (string) json_encode(['errors' => $errors]);
 
             $response->getBody()->write($payload);
 
@@ -69,10 +73,11 @@ class ScreenshotController extends Controller {
             }
             $validator = Screenshot::validator($screen_data);
             $validator->validate();
+            /** @var string[] $errors */
             $errors = $validator->errors();
 
             if (count($errors)) {
-                $payload = json_encode(['errors' => $errors]);
+                $payload = (string) json_encode(['errors' => $errors]);
 
                 $response->getBody()->write($payload);
 
@@ -90,7 +95,7 @@ class ScreenshotController extends Controller {
             $ship->assignScreenshot($screenshot);
         }
 
-        $payload = json_encode($ship->screenshots()->get());
+        $payload = (string) json_encode($ship->screenshots()->get());
 
         $response->getBody()->write($payload);
 
@@ -101,10 +106,14 @@ class ScreenshotController extends Controller {
     /**
      * Display the specified resource.
      *
+     * @param array<string,string> $args
+     *
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function show(Request $request, Response $response, $args) {
-        $payload = json_encode(Screenshot::query()->where([['ref', $args['ref']]])->first());
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Screenshot::query()->where([['ref', $args['ref']]]);
+        $payload = (string) json_encode($query->first());
 
         $response->getBody()->write($payload);
 
@@ -115,19 +124,24 @@ class ScreenshotController extends Controller {
     /**
      * Update the specified resource in storage.
      *
+     * @param array<string,string> $args
+     *
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function update(Request $request, Response $response, $args) {
         if (($perm_check = $this->can('edit-screenshots')) !== null) {
             return $perm_check;
         }
-        $data = $request->getParsedBody();
+        $data = (array) $request->getParsedBody();
 
-        $screenshot = Screenshot::query()->where([['ref', $args['ref']]])->first();
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Screenshot::query()->where([['ref', $args['ref']]]);
+        /** @var \Shipyard\Models\Screenshot $screenshot */
+        $screenshot = $query->first();
         $screenshot->description = $data['description'];
         $screenshot->save();
 
-        $payload = json_encode($screenshot);
+        $payload = (string) json_encode($screenshot);
 
         $response->getBody()->write($payload);
 
@@ -138,16 +152,21 @@ class ScreenshotController extends Controller {
     /**
      * Remove the specified resource from storage.
      *
+     * @param array<string,string> $args
+     *
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function destroy(Request $request, Response $response, $args) {
         if (($perm_check = $this->can('delete-screenshots')) !== null) {
             return $perm_check;
         }
-        $screenshot = Screenshot::query()->where([['ref', $args['ref']]])->first();
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Screenshot::query()->where([['ref', $args['ref']]]);
+        /** @var \Shipyard\Models\Screenshot $screenshot */
+        $screenshot = $query->first();
         $screenshot->delete();
 
-        $payload = json_encode(['message' => 'successful']);
+        $payload = (string) json_encode(['message' => 'successful']);
 
         $response->getBody()->write($payload);
 

@@ -1,11 +1,23 @@
 parameters:
-	level: 3
+	level: 7
 	paths:
 		- src
 		- tests
 	ignoreErrors:
 		-
+			message: '#^Method Tests\\[^\:]+\:\:test[^\(]+\(\) has no return type specified\.$#'
+			path: tests/*
+		-
 			message: '#^Variable \$(faker|factory) might not be defined.#'
+			path: tests/*
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder|Shipyard\\Models\\Screenshot\:\:#'
+			path: tests/*
+		-
+			message: '#^Call to an undefined method object\:\:toJson\(\).#'
+			path: tests/*
+		-
+			message: '#^Access to an undefined property#'
 			path: tests/*
 		-
 			message: '#^Variable \$app might not be defined.#'

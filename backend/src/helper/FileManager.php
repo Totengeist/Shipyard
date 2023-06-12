@@ -27,6 +27,11 @@ class FileManager {
         return $fullpath;
     }
 
+    /**
+     * @param string $hash
+     *
+     * @return string
+     */
     public static function getStorageDirectory($hash) {
         $dir = dirname(__DIR__) . '/public/storage/' . $hash[0] . '/' . $hash[1] . '/' . $hash . '/';
         if (!is_dir($dir)) {

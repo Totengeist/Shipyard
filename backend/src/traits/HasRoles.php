@@ -7,6 +7,8 @@ use Shipyard\Models\Role;
 
 /**
  * @property \Illuminate\Database\Eloquent\Collection $roles
+ *
+ * @todo check for attempting to assign non-existent permission
  */
 trait HasRoles {
     /**
@@ -21,14 +23,15 @@ trait HasRoles {
     /**
      * Assign the given role to an item.
      *
-     * @param string $role
+     * @param \Shipyard\Models\Role|string $role
      *
-     * @return mixed
+     * @return \Illuminate\Database\Eloquent\Model
      */
     public function assignRole($role) {
         if (is_string($role)) {
             /** @var \Illuminate\Database\Eloquent\Builder $query */
-            $query = Role::query()->whereSlug($role);
+            $query = Role::query()->where('slug', '=', $role);
+            /** @var \Shipyard\Models\Role $role */
             $role = $query->firstOrFail();
         }
 
@@ -41,14 +44,14 @@ trait HasRoles {
     /**
      * Remove the given role from an item.
      *
-     * @param string $role
+     * @param \Shipyard\Models\Role|string $role
      *
-     * @return mixed
+     * @return int
      */
     public function removeRole($role) {
         if (is_string($role)) {
             /** @var \Illuminate\Database\Eloquent\Builder $query */
-            $query = Role::query()->whereSlug($role);
+            $query = Role::query()->where('slug', '=', $role);
             /** @var \Shipyard\Models\Role $role */
             $role = $query->firstOrFail();
         }
@@ -62,7 +65,7 @@ trait HasRoles {
     /**
      * Determine if the user has the given role.
      *
-     * @param mixed $role
+     * @param \Illuminate\Database\Eloquent\Collection|string $role
      *
      * @return bool
      */
@@ -77,28 +80,27 @@ trait HasRoles {
     /**
      * Alias for hasPermission.
      *
-     * @param mixed $permission
+     * @param \Shipyard\Models\Permission|string $permission
      *
      * @return bool
      */
     public function can($permission) {
-        if (is_string($permission)) {
-            $permission = Permission::query()->where('slug', $permission)->first();
-        }
-
         return $this->hasPermission($permission);
     }
 
     /**
      * Determine if the user has permission to perform the given task.
      *
-     * @param mixed $permission
+     * @param \Shipyard\Models\Permission|string $permission
      *
      * @return bool
      */
     public function hasPermission($permission) {
         if (is_string($permission)) {
-            $permission = Permission::query()->where('slug', $permission)->first();
+            /** @var \Illuminate\Database\Eloquent\Builder $query */
+            $query = Permission::query()->where('slug', $permission);
+            /** @var \Shipyard\Models\Permission $permission */
+            $permission = $query->first();
         }
 
         return $this->hasRole($permission->roles);

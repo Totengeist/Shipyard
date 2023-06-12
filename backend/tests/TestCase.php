@@ -6,14 +6,21 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 
+/**
+ * @property int $id
+ */
 class TestCase extends BaseTestCase {
-    protected $http = null;
-
-    public function assertJsonFragment(array $dataExpected, array $dataActual, $negate = false) {
-        $actual = substr(json_encode(Arr::sortRecursive($dataActual)), 1, -1);
+    /**
+     * @param mixed[] $dataExpected
+     * @param mixed[] $dataActual
+     *
+     * @return $this
+     */
+    public function assertJsonFragment(array $dataExpected, array $dataActual, bool $negate = false) {
+        $actual = substr((string) json_encode(Arr::sortRecursive($dataActual)), 1, -1);
 
         foreach (Arr::sortRecursive($dataExpected) as $key => $value) {
-            $expected = substr(json_encode([$key => $value]), 1, -1);
+            $expected = substr((string) json_encode([$key => $value]), 1, -1);
 
             if ($negate) {
                 BaseTestCase::assertFalse(
