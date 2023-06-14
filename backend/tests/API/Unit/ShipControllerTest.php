@@ -142,7 +142,7 @@ class ShipControllerTest extends APITestCase {
         /** @var \Shipyard\Models\Role $role */
         $role = Role::query()->create(['slug' => $role_name, 'label' => $faker->name]);
         /** @var \Illuminate\Database\Eloquent\Builder $query */
-        $query = Permission::query()->whereSlug('edit-ships');
+        $query = Permission::query()->where('slug', 'edit-ships');
         /** @var \Shipyard\Models\Permission $permission */
         $permission = $query->first();
         $role->givePermissionTo($permission);
@@ -237,7 +237,7 @@ class ShipControllerTest extends APITestCase {
         /** @var \Shipyard\Models\Role $role */
         $role = Role::query()->create(['slug' => $role_name, 'label' => $faker->name]);
         /** @var \Illuminate\Database\Eloquent\Builder $query */
-        $query = Permission::query()->whereSlug('delete-ships');
+        $query = Permission::query()->where('slug', 'delete-ships');
         /** @var \Shipyard\Models\Permission $permission */
         $permission = $query->first();
         $role->givePermissionTo($permission);

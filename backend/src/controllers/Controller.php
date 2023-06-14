@@ -10,6 +10,9 @@ class Controller {
 
     // constructor receives container instance
     public function __construct(ContainerInterface $container = null) {
+        if ($container === null) {
+            return;
+        }
         $this->container = $container;
     }
 }

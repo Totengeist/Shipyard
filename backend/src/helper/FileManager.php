@@ -17,7 +17,7 @@ class FileManager {
      * @return string filename of moved file
      */
     public static function moveUploadedFile(UploadedFile $uploadedFile) {
-        $extension = pathinfo($uploadedFile->getClientFilename(), PATHINFO_EXTENSION);
+        $extension = pathinfo((string) $uploadedFile->getClientFilename(), PATHINFO_EXTENSION);
         $basename = self::get_guid();
         $filename = sprintf('%s.%0.8s', $basename, $extension);
         $fullpath = self::getStorageDirectory($basename) . $filename;

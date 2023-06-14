@@ -16,12 +16,12 @@ ob_start();
 class APITestCase extends TestCase {
     use CreatesUniqueIDs;
 
-    /** @var int|null */
-    protected $statusCode = null;
+    /** @var int */
+    protected $statusCode = 0;
     /** @var \Psr\Http\Message\ResponseInterface|null */
     protected $response = null;
-    /** @var \Slim\App|null */
-    protected $app = null;
+    /** @var \Slim\App */
+    protected $app;
 
     public function setUp(): void {
         parent::setUp();
@@ -88,7 +88,7 @@ class APITestCase extends TestCase {
      */
     public function get($route, $headers) {
         $this->response = null;
-        $this->statusCode = null;
+        $this->statusCode = 0;
         $request = $this->createRequest('GET', $route, $headers);
         $this->response = $this->app->handle($request);
         $this->statusCode = $this->response->getStatusCode();
@@ -106,7 +106,7 @@ class APITestCase extends TestCase {
      */
     public function post($route, $args, $headers, $uploadedFiles = []) {
         $this->response = null;
-        $this->statusCode = null;
+        $this->statusCode = 0;
         $request = $this->createRequest('POST', $route, $headers, [], [], $uploadedFiles)->withParsedBody($args);
         $this->response = $this->app->handle($request);
         $this->statusCode = $this->response->getStatusCode();
@@ -123,7 +123,7 @@ class APITestCase extends TestCase {
      */
     public function put($route, $args, $headers) {
         $this->response = null;
-        $this->statusCode = null;
+        $this->statusCode = 0;
         $request = $this->createRequest('PUT', $route, $headers)->withParsedBody($args);
         $this->response = $this->app->handle($request);
         $this->statusCode = $this->response->getStatusCode();
@@ -139,7 +139,7 @@ class APITestCase extends TestCase {
      */
     public function delete($route, $headers) {
         $this->response = null;
-        $this->statusCode = null;
+        $this->statusCode = 0;
         $request = $this->createRequest('DELETE', $route, $headers);
         $this->response = $this->app->handle($request);
         $this->statusCode = $this->response->getStatusCode();
