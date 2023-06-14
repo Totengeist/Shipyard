@@ -2,7 +2,6 @@
 
 namespace Shipyard\Models;
 
-use Shipyard\Traits\CreatesUniqueIDs;
 use Shipyard\Traits\HasRef;
 use Shipyard\Traits\HasRoles;
 
@@ -15,7 +14,6 @@ use Shipyard\Traits\HasRoles;
 class User extends Model {
     use HasRoles;
     use HasRef;
-    use CreatesUniqueIDs;
 
     /**
      * The attributes that are mass assignable.

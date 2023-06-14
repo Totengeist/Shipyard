@@ -52,7 +52,12 @@ trait HasRef {
      */
     public function save(array $options = []) {
         if (!isset($this->attributes['ref'])) {
-            $this->setAttribute('ref', self::get_guid());
+            do {
+                $ref = self::get_guid(9);
+                /** @var \Illuminate\Database\Eloquent\Builder $query */
+                $query = static::where('ref', $ref);
+            } while ($query->get()->count() != 0);
+            $this->setAttribute('ref', $ref);
         }
 
         return parent::save($options);

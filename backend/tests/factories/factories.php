@@ -2,7 +2,6 @@
 
 $factory('Shipyard\Models\User', [
     'name' => $faker->name,
-    'ref' => $faker->md5(),
     'email' => $faker->unique()->safeEmail,
     'password' => password_hash('secret', PASSWORD_BCRYPT),
 ]);
@@ -17,7 +16,6 @@ $factory('Shipyard\Models\Permission', [
 
 $factory('Shipyard\Models\Ship', [
     'user_id' => $faker->randomDigit(),
-    'ref' => $faker->md5(),
     'title' => $faker->words(3, true),
     'description' => $faker->paragraph(),
     'file_path' => realpath(__DIR__ . '/../assets/science-vessel.ship'),
@@ -25,7 +23,6 @@ $factory('Shipyard\Models\Ship', [
 ]);
 $factory('Shipyard\Models\Save', [
     'user_id' => $faker->randomDigit(),
-    'ref' => $faker->md5(),
     'title' => $faker->words(3, true),
     'description' => $faker->paragraph(),
     'file_path' => realpath(__DIR__ . '/../assets/Battle.space'),
@@ -33,7 +30,6 @@ $factory('Shipyard\Models\Save', [
 $factory('Shipyard\Models\Challenge', [
     'user_id' => $faker->randomDigit(),
     'save_id' => $faker->randomDigit(),
-    'ref' => $faker->md5(),
     'title' => $faker->words(3, true),
     'description' => $faker->paragraph(),
 ]);
@@ -51,7 +47,6 @@ $factory('Shipyard\Models\Release', [
 ]);
 
 $factory('Shipyard\Models\Screenshot', [
-    'ref' => $faker->md5(),
     'description' => $faker->paragraph(),
     'primary' => false,
     'file_path' => realpath(__DIR__ . '/../assets/science-vessel.png'),
