@@ -1,14 +1,13 @@
 {
-    "name": "***REMOVED***/shipyard",
+    "name": "totengeist/shipyard",
     "description": "TLS Shipyard",
     "type": "project",
     "license": "GPL-3.0-or-later",
-    "homepage": "https://***REMOVED***.com",
+    "license": "MIT",
     "authors": [
         {
-            "name": "***REMOVED***",
-            "email": "me@***REMOVED***.com",
-            "homepage": "https://***REMOVED***.com/"
+            "name": "Totengeist",
+            "email": "me@totengeist.com"
         }
     ],
     "require": {
@@ -25,7 +24,6 @@
         "totengeist/iv-parsers": "^0.1.0"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "3.4.0||^2.2.20",
         "phpunit/phpunit": "^9.4||^8.5",
         "fakerphp/faker": "^1.9",
         "laracasts/testdummy": "^2.4",
@@ -36,7 +34,7 @@
             "src"
         ],
         "psr-4": {
-            "***REMOVED***\\Shipyard\\": "src/"
+            "Totengeist\\Shipyard\\": "src/"
         }
     },
     "autoload-dev": {

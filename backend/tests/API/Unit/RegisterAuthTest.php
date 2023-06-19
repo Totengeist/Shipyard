@@ -123,7 +123,7 @@ class UserControllerTest extends APITestCase {
         $real_user = User::query()->findOrFail($user->id);
         $this->assertTrue($real_user->active());
 
-        $activation = !(UserActivation::query()->where('email', $user->email)->get()->isEmpty());
+        $activation = !UserActivation::query()->where('email', $user->email)->get()->isEmpty();
         $this->assertFalse($activation);
         $this->assertTrue($real_user->id == $user->id);
     }

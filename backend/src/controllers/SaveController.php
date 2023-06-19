@@ -71,7 +71,7 @@ class SaveController extends Controller {
         $validator->validate();
         /** @var string[] $errors */
         $errors = $validator->errors();
-        if ((!file_exists($data['file_path']) || is_dir($data['file_path']))) {
+        if (!file_exists($data['file_path']) || is_dir($data['file_path'])) {
             $errors = array_merge_recursive($errors, ['errors' => ['file_path' => 'File Path is missing or incorrect.']]);
         }
 

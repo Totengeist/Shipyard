@@ -26,10 +26,10 @@ class App {
         $this->app = $app;
 
         $app->add(
-          new \Slim\Middleware\Session([
-            'autorefresh' => true,
-            'lifetime' => '1 hour',
-          ])
+            new \Slim\Middleware\Session([
+              'autorefresh' => true,
+              'lifetime' => '1 hour',
+            ])
         );
     }
 

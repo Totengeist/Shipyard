@@ -19,7 +19,7 @@ class APITestCase extends TestCase {
     /** @var int */
     protected $statusCode = 0;
     /** @var \Psr\Http\Message\ResponseInterface|null */
-    protected $response = null;
+    protected $response;
     /** @var \Slim\App */
     protected $app;
 
