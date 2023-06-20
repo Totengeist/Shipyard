@@ -3,7 +3,6 @@
 namespace Tests\Unit\API;
 
 use Laracasts\TestDummy\Factory;
-use Shipyard\Models\Ship;
 use Shipyard\Traits\ProcessesSlugs;
 use Tests\APITestCase;
 

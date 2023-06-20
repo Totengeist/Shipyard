@@ -3,7 +3,6 @@
     "description": "TLS Shipyard",
     "type": "project",
     "license": "GPL-3.0-or-later",
-    "license": "MIT",
     "authors": [
         {
             "name": "Totengeist",
