@@ -26,6 +26,7 @@ $factory('Shipyard\Models\Save', [
     'title' => $faker->words(3, true),
     'description' => $faker->paragraph(),
     'file_path' => realpath(__DIR__ . '/../assets/Battle.space'),
+    'downloads' => $faker->randomNumber(5, false),
 ]);
 $factory('Shipyard\Models\Challenge', [
     'user_id' => $faker->randomDigit(),

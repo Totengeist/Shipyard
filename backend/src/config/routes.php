@@ -28,6 +28,7 @@ $app->group($_SERVER['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $gro
 
         $group->get('/save', 'Shipyard\Controllers\SaveController:index');
         $group->get('/save/{ref}', 'Shipyard\Controllers\SaveController:show');
+        $group->get('/save/{ref}/download', 'Shipyard\Controllers\SaveController:download');
 
         $group->get('/challenge', 'Shipyard\Controllers\ChallengeController:index');
         $group->get('/challenge/{ref}', 'Shipyard\Controllers\ChallengeController:show');

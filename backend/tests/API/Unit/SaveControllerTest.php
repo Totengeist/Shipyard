@@ -58,7 +58,7 @@ class SaveControllerTest extends APITestCase {
         $title = $faker->words(3, true);
         $description = $faker->paragraph();
 
-        $this->post('api/v1/save', ['user_ref' => $user->ref, 'title' => $title, 'description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => $this->createSampleUpload('test.save')])
+        $this->post('api/v1/save', ['user_ref' => $user->ref, 'title' => $title, 'description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => $this->createSampleUpload('Battle.space')])
              ->assertJsonResponse([
             'title' => $title,
             'description' => $description,

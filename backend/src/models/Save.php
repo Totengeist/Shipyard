@@ -43,6 +43,11 @@ class Save extends Model {
      */
     protected $hidden = ['id', 'file_path', 'user_id'];
 
+    /** @return string|false */
+    public function file_contents() {
+        return file_get_contents($this->file_path);
+    }
+
     /**
      * A save can belong to a user.
      *

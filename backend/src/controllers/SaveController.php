@@ -8,9 +8,11 @@ use Shipyard\FileManager;
 use Shipyard\Models\Save;
 use Shipyard\Models\User;
 use Shipyard\Traits\ChecksPermissions;
+use Shipyard\Traits\ProcessesSlugs;
 
 class SaveController extends Controller {
     use ChecksPermissions;
+    use ProcessesSlugs;
 
     /**
      * Display a listing of the resource.
@@ -109,6 +111,37 @@ class SaveController extends Controller {
 
         return $response
           ->withHeader('Content-Type', 'application/json');
+    }
+
+    /**
+     * Download the specified resource.
+     *
+     * @todo test with missing file
+     *
+     * @param array<string,string> $args
+     *
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function download(Request $request, Response $response, $args) {
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Save::query()->where([['ref', $args['ref']]]);
+        /** @var \Shipyard\Models\Save $save */
+        $save = $query->first();
+
+        if (file_exists($save->file_path) === false) {
+            $response->getBody()->write((string) json_encode(['error' => 'file does not exist']));
+
+            return $response
+              ->withHeader('Content-Type', 'application/json');
+        }
+
+        $response->getBody()->write((string) $save->file_contents());
+        $save->downloads++;
+        $save->save();
+
+        return $response
+          ->withHeader('Content-Disposition', 'attachment; filename="' . self::slugify($save->title) . '.space"')
+          ->withHeader('Content-Type', 'text/plain');
     }
 
     /**

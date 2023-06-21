@@ -35,9 +35,9 @@ $config
             'allow_single_line_empty_anonymous_classes' => true,
             'allow_single_line_anonymous_functions' => true,
         ],
-        
+
         'no_superfluous_phpdoc_tags' => [
-        	'allow_mixed' => true,
+            'allow_mixed' => true,
         ]
     ))
     ->setIndent("    ")

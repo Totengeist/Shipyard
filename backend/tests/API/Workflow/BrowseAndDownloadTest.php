@@ -10,7 +10,7 @@ class BrowseAndDownloadWorkflowTest extends APITestCase {
     use ProcessesSlugs;
 
     /**
-     * Test all API calls neede when a user browses for and downloads a ship (without searching).
+     * Test all API calls needed when a user browses for and downloads a ship (without searching).
      *
      * Workflow:
      *  1. Visit homepage
@@ -22,7 +22,6 @@ class BrowseAndDownloadWorkflowTest extends APITestCase {
      */
     public function testCanBrowseToAndDownloadAShip() {
         // Create a user and assign 5 ships to them to populate the ship list.
-        $faker = \Faker\Factory::create();
         $user = Factory::create('Shipyard\Models\User');
         $ships = [];
         for ($i = 0; $i < 5; $i++) {
@@ -53,6 +52,52 @@ class BrowseAndDownloadWorkflowTest extends APITestCase {
             'ref' => $chosen_ship->ref,
             'title' => $chosen_ship->title,
             'downloads' => $chosen_ship->downloads+1,
+        ]);
+    }
+
+    /**
+     * Test all API calls needed when a user browses for and downloads a save (without searching).
+     *
+     * Workflow:
+     *  1. Visit homepage
+     *  2. Choose a save
+     *  3. Download the save (increment download counter)
+     *  4. Follow instructions to install the save
+     *
+     * @return void
+     */
+    public function testCanBrowseToAndDownloadASave() {
+        // Create a user and assign 5 saves to them to populate the save list.
+        $user = Factory::create('Shipyard\Models\User');
+        $saves = [];
+        for ($i = 0; $i < 5; $i++) {
+            $saves[$i] = Factory::create('Shipyard\Models\Save', ['user_id' => $user->id]);
+        }
+
+        $chosen_save = $saves[rand(0, 4)];
+
+        $this->get('api/v1/save', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertJsonResponse([
+            'title' => $saves[0]->title,
+        ]);
+
+        $this->get('api/v1/save/' . $chosen_save->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertJsonResponse([
+            'ref' => $chosen_save->ref,
+            'title' => $chosen_save->title,
+        ]);
+
+        $this->get('api/v1/save/' . $chosen_save->ref . '/download', ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
+
+        $this->assertNotEquals((string) $this->response->getBody(), '');
+        $this->assertEquals((string) $this->response->getBody(), $chosen_save->file_contents());
+        $this->assertEquals($this->response->getHeader('Content-Disposition')[0], 'attachment; filename="' . self::slugify($chosen_save->title) . '.space"');
+
+        $this->get('api/v1/save/' . $chosen_save->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertJsonResponse([
+            'ref' => $chosen_save->ref,
+            'title' => $chosen_save->title,
+            'downloads' => $chosen_save->downloads+1,
         ]);
     }
 }
