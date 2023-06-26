@@ -26,13 +26,13 @@ $factory('Shipyard\Models\Ship', function ($faker) {
     ];
 });
 $factory('Shipyard\Models\Save', function ($faker) {
-    $file_path = \Shipyard\FileManager::moveUploadedFile(\Tests\APITestCase::createSampleUpload());
+    $file_path = \Shipyard\FileManager::moveUploadedFile(\Tests\APITestCase::createSampleUpload('Battle.space'));
 
     return [
     'user_id' => $faker->randomDigit(),
     'title' => $faker->words(3, true),
     'description' => $faker->paragraph(),
-    'file_path' => \Shipyard\FileManager::moveUploadedFile(\Tests\APITestCase::createSampleUpload('Battle.space')),
+    'file_path' => $file_path,
     'downloads' => $faker->randomNumber(5, false),
     ];
 });
@@ -56,11 +56,11 @@ $factory('Shipyard\Models\Release', [
 ]);
 
 $factory('Shipyard\Models\Screenshot', function ($faker) {
-    $file_path = \Shipyard\FileManager::moveUploadedFile(\Tests\APITestCase::createSampleUpload());
+    $file_path = \Shipyard\FileManager::moveUploadedFile(\Tests\APITestCase::createSampleUpload('science-vessel.png'));
 
     return [
         'description' => $faker->paragraph(),
         'primary' => false,
-        'file_path' => \Shipyard\FileManager::moveUploadedFile(\Tests\APITestCase::createSampleUpload('science-vessel.png')),
+        'file_path' => $file_path,
     ];
 });
