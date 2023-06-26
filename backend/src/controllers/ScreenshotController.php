@@ -164,6 +164,7 @@ class ScreenshotController extends Controller {
         $query = Screenshot::query()->where([['ref', $args['ref']]]);
         /** @var \Shipyard\Models\Screenshot $screenshot */
         $screenshot = $query->first();
+        unlink($screenshot->file_path);
         $screenshot->delete();
 
         $payload = (string) json_encode(['message' => 'successful']);

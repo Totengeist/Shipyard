@@ -10,8 +10,6 @@ use Tests\APITestCase;
 
 class PermissionControllerTest extends APITestCase {
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testUserCannotListPermissions() {
@@ -31,8 +29,6 @@ class PermissionControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testAdminCanListPermissions() {
@@ -50,8 +46,6 @@ class PermissionControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testUserCannotCreatePermissions() {
@@ -75,8 +69,6 @@ class PermissionControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testAdminCanCreatePermissions() {
@@ -103,8 +95,6 @@ class PermissionControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testAdminCannotCreateEmptyPermissions() {
@@ -124,8 +114,6 @@ class PermissionControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testUserCannotEditPermissions() {
@@ -150,8 +138,6 @@ class PermissionControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testAdminCanEditPermissions() {
@@ -179,8 +165,6 @@ class PermissionControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testUserCannotDeletePermissions() {
@@ -202,8 +186,6 @@ class PermissionControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testAdminCanDeletePermissions() {
@@ -226,8 +208,6 @@ class PermissionControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testUserCannotViewAPermission() {
@@ -249,8 +229,6 @@ class PermissionControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testAdminCanViewAPermission() {

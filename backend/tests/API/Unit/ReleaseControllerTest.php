@@ -10,8 +10,6 @@ use Tests\APITestCase;
 
 class ReleaseControllerTest extends APITestCase {
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testCanListReleases() {
@@ -26,8 +24,6 @@ class ReleaseControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testUserCannotCreateReleases() {
@@ -51,8 +47,6 @@ class ReleaseControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testAdminCanCreateReleases() {
@@ -79,8 +73,6 @@ class ReleaseControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testAdminCannotCreateEmptyReleases() {
@@ -100,8 +92,6 @@ class ReleaseControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testUserCannotEditReleases() {
@@ -126,8 +116,6 @@ class ReleaseControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testAdminCanEditReleases() {
@@ -155,8 +143,6 @@ class ReleaseControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testUserCannotDeleteReleases() {
@@ -178,8 +164,6 @@ class ReleaseControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testAdminCanDeleteReleases() {
@@ -202,8 +186,6 @@ class ReleaseControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testUserCanViewARelease() {
@@ -217,8 +199,6 @@ class ReleaseControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testAdminCanViewARelease() {

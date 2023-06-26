@@ -15,8 +15,6 @@ class ShipControllerTest extends APITestCase {
     use ProcessesSlugs;
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testCanListShips() {
@@ -28,8 +26,6 @@ class ShipControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testCannotCreateShipsFromLocalFile() {
@@ -47,8 +43,6 @@ class ShipControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testCanCreateShipsFromUploadedFile() {
@@ -59,7 +53,7 @@ class ShipControllerTest extends APITestCase {
         $title = $faker->words(3, true);
         $description = $faker->paragraph();
 
-        $this->post('api/v1/ship', ['user_ref' => $user->ref, 'title' => $title, 'description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => $this->createSampleUpload()])
+        $this->post('api/v1/ship', ['user_ref' => $user->ref, 'title' => $title, 'description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => self::createSampleUpload()])
              ->assertJsonResponse([
             'title' => $title,
             'description' => $description,
@@ -73,8 +67,6 @@ class ShipControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testCanEditOwnShips() {
@@ -82,9 +74,7 @@ class ShipControllerTest extends APITestCase {
         $user->activate();
         Auth::login($user);
         $faker = \Faker\Factory::create();
-        $ship = Factory::create('Shipyard\Models\Ship');
-        $ship->user_id = $user->id;
-        $ship->save();
+        $ship = Factory::create('Shipyard\Models\Ship', ['user_id' => $user->id]);
 
         $faker = \Faker\Factory::create();
         $title = $faker->words(3, true);
@@ -101,8 +91,6 @@ class ShipControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testCannotEditOtherShips() {
@@ -112,9 +100,7 @@ class ShipControllerTest extends APITestCase {
         $faker = \Faker\Factory::create();
 
         $user1 = Factory::create('Shipyard\Models\User');
-        $ship = Factory::create('Shipyard\Models\Ship');
-        $ship->user_id = $user1->id;
-        $ship->save();
+        $ship = Factory::create('Shipyard\Models\Ship', ['user_id' => $user1->id]);
 
         $faker = \Faker\Factory::create();
         $oldtitle = $ship->title;
@@ -130,8 +116,6 @@ class ShipControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testCanEditShipsWithRole() {
@@ -151,9 +135,7 @@ class ShipControllerTest extends APITestCase {
         Auth::login($user);
 
         $user1 = Factory::create('Shipyard\Models\User');
-        $ship = Factory::create('Shipyard\Models\Ship');
-        $ship->user_id = $user1->id;
-        $ship->save();
+        $ship = Factory::create('Shipyard\Models\Ship', ['user_id' => $user1->id]);
 
         $title = $faker->words(3, true);
         $description = $faker->paragraph;
@@ -172,8 +154,6 @@ class ShipControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testCanDeleteOwnShips() {
@@ -181,9 +161,7 @@ class ShipControllerTest extends APITestCase {
         $user->activate();
         Auth::login($user);
         $faker = \Faker\Factory::create();
-        $ship = Factory::create('Shipyard\Models\Ship');
-        $ship->user_id = $user->id;
-        $ship->save();
+        $ship = Factory::create('Shipyard\Models\Ship', ['user_id' => $user->id]);
 
         $this->assertEquals($ship->ref, Ship::query()->where([['ref', $ship->ref]])->first()->ref);
         $this->delete('api/v1/ship/' . $ship->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
@@ -196,8 +174,6 @@ class ShipControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testCannnotDeleteOtherShips() {
@@ -207,9 +183,7 @@ class ShipControllerTest extends APITestCase {
         $faker = \Faker\Factory::create();
 
         $user1 = Factory::create('Shipyard\Models\User');
-        $ship = Factory::create('Shipyard\Models\Ship');
-        $ship->user_id = $user1->id;
-        $ship->save();
+        $ship = Factory::create('Shipyard\Models\Ship', ['user_id' => $user1->id]);
 
         $title = $ship->title;
         $description = $ship->description;
@@ -225,8 +199,6 @@ class ShipControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testCanDeleteShipsWithRole() {
@@ -246,9 +218,7 @@ class ShipControllerTest extends APITestCase {
         Auth::login($user);
 
         $user1 = Factory::create('Shipyard\Models\User');
-        $ship = Factory::create('Shipyard\Models\Ship');
-        $ship->user_id = $user1->id;
-        $ship->save();
+        $ship = Factory::create('Shipyard\Models\Ship', ['user_id' => $user1->id]);
 
         $this->assertEquals($ship->ref, Ship::query()->where([['ref', $ship->ref]])->first()->ref);
         $this->delete('api/v1/ship/' . $ship->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
@@ -261,8 +231,6 @@ class ShipControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testCanViewShips() {
@@ -275,8 +243,6 @@ class ShipControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testCanDownloadShips() {

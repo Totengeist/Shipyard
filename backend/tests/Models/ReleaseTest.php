@@ -8,8 +8,6 @@ use Tests\TestCase;
 
 class ReleaseModelTest extends TestCase {
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testCanCreatRelease() {

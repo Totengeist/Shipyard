@@ -117,6 +117,7 @@ class ShipController extends Controller {
      * Download the specified resource.
      *
      * @todo test with missing file
+     * @todo zip up ship file and screenshot
      *
      * @param array<string,string> $args
      *
@@ -157,7 +158,7 @@ class ShipController extends Controller {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Ship::query()->where([['ref', $args['ref']]]);
         /** @var \Shipyard\Models\Ship $ship */
-        $ship = $query->first();
+        $ship = $query->firstOrFail();
         $abort = $this->isOrCan($ship->user_id, 'edit-ships');
         if ($abort !== null) {
             return $abort;
@@ -202,6 +203,7 @@ class ShipController extends Controller {
         if ($abort !== null) {
             return $abort;
         }
+        unlink($ship->file_path);
         $ship->delete();
 
         $payload = (string) json_encode(['message' => 'successful']);

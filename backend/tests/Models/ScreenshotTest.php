@@ -8,8 +8,6 @@ use Tests\TestCase;
 
 class ScreenshotModelTest extends TestCase {
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testCanCreateScreenshot() {

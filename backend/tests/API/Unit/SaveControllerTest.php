@@ -12,8 +12,6 @@ use Tests\APITestCase;
 
 class SaveControllerTest extends APITestCase {
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testCanListSaves() {
@@ -25,8 +23,6 @@ class SaveControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testCannotCreateSavesFromLocalFile() {
@@ -46,8 +42,6 @@ class SaveControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testCanCreateSavesFromUploadedFile() {
@@ -58,7 +52,7 @@ class SaveControllerTest extends APITestCase {
         $title = $faker->words(3, true);
         $description = $faker->paragraph();
 
-        $this->post('api/v1/save', ['user_ref' => $user->ref, 'title' => $title, 'description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => $this->createSampleUpload('Battle.space')])
+        $this->post('api/v1/save', ['user_ref' => $user->ref, 'title' => $title, 'description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => self::createSampleUpload('Battle.space')])
              ->assertJsonResponse([
             'title' => $title,
             'description' => $description,
@@ -72,8 +66,6 @@ class SaveControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testCanEditOwnSaves() {
@@ -100,8 +92,6 @@ class SaveControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testCannotEditOtherSaves() {
@@ -129,8 +119,6 @@ class SaveControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testCanEditSavesWithRole() {
@@ -171,8 +159,6 @@ class SaveControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testCanDeleteOwnSaves() {
@@ -195,8 +181,6 @@ class SaveControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testCannnotDeleteOtherSaves() {
@@ -224,8 +208,6 @@ class SaveControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testCanDeleteSavesWithRole() {
@@ -260,8 +242,6 @@ class SaveControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testCanViewSaves() {

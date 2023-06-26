@@ -10,8 +10,6 @@ use Tests\APITestCase;
 
 class TagControllerTest extends APITestCase {
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testCanListTags() {
@@ -24,8 +22,6 @@ class TagControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testUserCannotCreateTags() {
@@ -49,8 +45,6 @@ class TagControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testAdminCanCreateTags() {
@@ -77,8 +71,6 @@ class TagControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testAdminCannotCreateEmptyTags() {
@@ -98,8 +90,6 @@ class TagControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testUserCannotEditTags() {
@@ -124,8 +114,6 @@ class TagControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testAdminCanEditTags() {
@@ -153,8 +141,6 @@ class TagControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testUserCannotDeleteTags() {
@@ -176,8 +162,6 @@ class TagControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testAdminCanDeleteTags() {
@@ -200,8 +184,6 @@ class TagControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testUserCanViewATag() {
@@ -215,8 +197,6 @@ class TagControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testAdminCanViewATag() {

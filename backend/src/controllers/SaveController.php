@@ -202,6 +202,7 @@ class SaveController extends Controller {
         if ($abort !== null) {
             return $abort;
         }
+        unlink($save->file_path);
         $save->delete();
 
         $payload = (string) json_encode(['message' => 'successful']);

@@ -10,8 +10,6 @@ use Tests\APITestCase;
 
 class RoleControllerTest extends APITestCase {
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testUserCannotListRoles() {
@@ -31,8 +29,6 @@ class RoleControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testAdminCanListRoles() {
@@ -50,8 +46,6 @@ class RoleControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testUserCannotCreateRoles() {
@@ -75,8 +69,6 @@ class RoleControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testAdminCanCreateRoles() {
@@ -103,8 +95,6 @@ class RoleControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testAdminCannotCreateEmptyRoles() {
@@ -124,8 +114,6 @@ class RoleControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testUserCannotEditRoles() {
@@ -150,8 +138,6 @@ class RoleControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testAdminCanEditRoles() {
@@ -179,8 +165,6 @@ class RoleControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testUserCannotDeleteRoles() {
@@ -202,8 +186,6 @@ class RoleControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testAdminCanDeleteRoles() {
@@ -226,8 +208,6 @@ class RoleControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testUserCannotViewARole() {
@@ -249,8 +229,6 @@ class RoleControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testAdminCanViewARole() {

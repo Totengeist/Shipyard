@@ -14,20 +14,28 @@ $factory('Shipyard\Models\Permission', [
     'label' => $faker->words(3, true),
 ]);
 
-$factory('Shipyard\Models\Ship', [
+$factory('Shipyard\Models\Ship', function ($faker) {
+    $file_path = \Shipyard\FileManager::moveUploadedFile(\Tests\APITestCase::createSampleUpload());
+
+    return [
+        'user_id' => $faker->randomDigit(),
+        'title' => $faker->words(3, true),
+        'description' => $faker->paragraph(),
+        'file_path' => $file_path,
+        'downloads' => $faker->randomNumber(5, false),
+    ];
+});
+$factory('Shipyard\Models\Save', function ($faker) {
+    $file_path = \Shipyard\FileManager::moveUploadedFile(\Tests\APITestCase::createSampleUpload());
+
+    return [
     'user_id' => $faker->randomDigit(),
     'title' => $faker->words(3, true),
     'description' => $faker->paragraph(),
-    'file_path' => realpath(__DIR__ . '/../assets/science-vessel.ship'),
+    'file_path' => \Shipyard\FileManager::moveUploadedFile(\Tests\APITestCase::createSampleUpload('Battle.space')),
     'downloads' => $faker->randomNumber(5, false),
-]);
-$factory('Shipyard\Models\Save', [
-    'user_id' => $faker->randomDigit(),
-    'title' => $faker->words(3, true),
-    'description' => $faker->paragraph(),
-    'file_path' => realpath(__DIR__ . '/../assets/Battle.space'),
-    'downloads' => $faker->randomNumber(5, false),
-]);
+    ];
+});
 $factory('Shipyard\Models\Challenge', [
     'user_id' => $faker->randomDigit(),
     'save_id' => $faker->randomDigit(),
@@ -47,8 +55,12 @@ $factory('Shipyard\Models\Release', [
     'description' => $faker->paragraph(),
 ]);
 
-$factory('Shipyard\Models\Screenshot', [
-    'description' => $faker->paragraph(),
-    'primary' => false,
-    'file_path' => realpath(__DIR__ . '/../assets/science-vessel.png'),
-]);
+$factory('Shipyard\Models\Screenshot', function ($faker) {
+    $file_path = \Shipyard\FileManager::moveUploadedFile(\Tests\APITestCase::createSampleUpload());
+
+    return [
+        'description' => $faker->paragraph(),
+        'primary' => false,
+        'file_path' => \Shipyard\FileManager::moveUploadedFile(\Tests\APITestCase::createSampleUpload('science-vessel.png')),
+    ];
+});

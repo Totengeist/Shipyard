@@ -13,14 +13,24 @@ class FileManager {
      * to avoid overwriting an existing uploaded file.
      *
      * @param UploadedFile $uploadedFile file uploaded file to move
+     * @param int          $attempts     the number of attempts (in the event of collision)
      *
      * @return string filename of moved file
      */
-    public static function moveUploadedFile(UploadedFile $uploadedFile) {
+    public static function moveUploadedFile(UploadedFile $uploadedFile, $attempts = 0) {
         $extension = pathinfo((string) $uploadedFile->getClientFilename(), PATHINFO_EXTENSION);
-        $basename = self::get_guid();
+        $basename = self::get_guid(32);
         $filename = sprintf('%s.%0.8s', $basename, $extension);
         $fullpath = self::getStorageDirectory($basename) . $filename;
+
+        if (file_exists($fullpath)) {
+            if ($attempts > 10) {
+                throw new \Exception('We have attempted to save a file 10 times and run into naming conflicts each time. Please report this to your administrator.');
+            }
+            usleep(30000);
+
+            return self::moveUploadedFile($uploadedFile, $attempts++);
+        }
 
         $uploadedFile->moveTo($fullpath);
 

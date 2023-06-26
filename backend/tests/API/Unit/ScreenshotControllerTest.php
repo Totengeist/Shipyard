@@ -11,8 +11,6 @@ use Tests\APITestCase;
 
 class ScreenshotControllerTest extends APITestCase {
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testCanListScreenshots() {
@@ -34,8 +32,6 @@ class ScreenshotControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testOwnerCanCreateScreenshots() {
@@ -46,7 +42,7 @@ class ScreenshotControllerTest extends APITestCase {
         $user->activate();
         Auth::login($user);
 
-        $return = $this->post('api/v1/screenshots/' . $ship->ref, ['description' => [$description]], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => [$this->createSampleUpload('science-vessel.png')]])
+        $return = $this->post('api/v1/screenshots/' . $ship->ref, ['description' => [$description]], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => [self::createSampleUpload('science-vessel.png')]])
              ->assertJsonResponse([
             'description' => $description,
         ]);
@@ -60,8 +56,6 @@ class ScreenshotControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testAdminCanCreateScreenshots() {
@@ -74,7 +68,7 @@ class ScreenshotControllerTest extends APITestCase {
         $ship = Factory::create('Shipyard\Models\Ship');
         $description = $faker->paragraph();
 
-        $this->post('api/v1/screenshots/' . $ship->ref, ['description' => [$description]], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => [$this->createSampleUpload('science-vessel.png')]])
+        $this->post('api/v1/screenshots/' . $ship->ref, ['description' => [$description]], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => [self::createSampleUpload('science-vessel.png')]])
              ->assertJsonResponse([
             'description' => $description,
         ]);
@@ -88,8 +82,6 @@ class ScreenshotControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testNonOwnerCannotCreateScreenshots() {
@@ -101,7 +93,7 @@ class ScreenshotControllerTest extends APITestCase {
         $user2->activate();
         Auth::login($user2);
 
-        $return = $this->post('api/v1/screenshots/' . $ship->ref, ['description' => [$description]], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => [$this->createSampleUpload('science-vessel.png')]])
+        $return = $this->post('api/v1/screenshots/' . $ship->ref, ['description' => [$description]], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => [self::createSampleUpload('science-vessel.png')]])
              ->assertStatus(403);
 
         $screenshot = Screenshot::query()->whereHas('ships', function ($q) use ($ship) {
@@ -111,8 +103,6 @@ class ScreenshotControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testAdminCanCreateEmptyScreenshots() {
@@ -126,15 +116,13 @@ class ScreenshotControllerTest extends APITestCase {
         $slug = $faker->slug;
         $label = '';
 
-        $this->post('api/v1/screenshots/' . $ship->ref, [], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => [$this->createSampleUpload('science-vessel.png')]])
+        $this->post('api/v1/screenshots/' . $ship->ref, [], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => [self::createSampleUpload('science-vessel.png')]])
              ->assertJsonResponse([
             'description' => null,
         ]);
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testUserCannotEditScreenshots() {
@@ -157,13 +145,11 @@ class ScreenshotControllerTest extends APITestCase {
 
         $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(200);
-        $this->post('api/v1/screenshot/' . $screenshot->ref, ['description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => [$this->createSampleUpload('science-vessel.png')]])
+        $this->post('api/v1/screenshot/' . $screenshot->ref, ['description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => [self::createSampleUpload('science-vessel.png')]])
              ->assertStatus(403);
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testAdminCanEditScreenshots() {
@@ -188,8 +174,6 @@ class ScreenshotControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testUserCannotDeleteScreenshots() {
@@ -211,8 +195,6 @@ class ScreenshotControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testAdminCanDeleteScreenshots() {
@@ -235,8 +217,6 @@ class ScreenshotControllerTest extends APITestCase {
     }
 
     /**
-     * A basic test example.
-     *
      * @return void
      */
     public function testGuestCanViewAScreenshot() {
