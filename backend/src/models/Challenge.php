@@ -33,7 +33,7 @@ class Challenge extends Model {
      * @var string[]
      */
     protected $fillable = [
-        'ref', 'user_id', 'title', 'description',
+        'ref', 'user_id', 'parent_id', 'file_path', 'title', 'description',
     ];
 
     /**
@@ -41,7 +41,7 @@ class Challenge extends Model {
      *
      * @var string[]
      */
-    protected $hidden = ['id', 'file_path', 'user_id', 'save_id'];
+    protected $hidden = ['id', 'user_id', 'parent_id', 'file_path', 'save_id'];
 
     /**
      * A challenge can belong to a user.
@@ -50,6 +50,24 @@ class Challenge extends Model {
      */
     public function user() {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * A challenge can have a parent.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function parent() {
+        return $this->hasOne(Challenge::class, 'id', 'parent_id');
+    }
+
+    /**
+     * A challenge can have a child.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function child() {
+        return $this->hasOne(Challenge::class, 'parent_id', 'id');
     }
 
     /**

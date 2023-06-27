@@ -110,6 +110,7 @@ Capsule::schema()->create('role_user', function ($table) {
 echo "Creating ships table.<br>\n";
 Capsule::schema()->create('ships', function ($table) {
     $table->increments('id')->unsigned();
+    $table->bigInteger('parent_id')->unsigned()->nullable();
     $table->string('ref')->unique();
     $table->bigInteger('user_id')->unsigned()->nullable();
     $table->string('title')->default(false);
@@ -121,6 +122,7 @@ Capsule::schema()->create('ships', function ($table) {
 echo "Creating saves table.<br>\n";
 Capsule::schema()->create('saves', function ($table) {
     $table->increments('id')->unsigned();
+    $table->bigInteger('parent_id')->unsigned()->nullable();
     $table->string('ref')->unique();
     $table->bigInteger('user_id')->unsigned()->nullable();
     $table->string('title')->default(false);
@@ -132,6 +134,7 @@ Capsule::schema()->create('saves', function ($table) {
 echo "Creating challenges table.<br>\n";
 Capsule::schema()->create('challenges', function ($table) {
     $table->increments('id')->unsigned();
+    $table->bigInteger('parent_id')->unsigned()->nullable();
     $table->string('ref')->unique();
     $table->bigInteger('user_id')->unsigned()->nullable();
     $table->bigInteger('save_id')->unsigned()->nullable();

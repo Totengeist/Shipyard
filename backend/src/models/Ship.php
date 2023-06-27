@@ -13,6 +13,7 @@ use Valitron\Validator;
  * @property string $title
  * @property string $description
  * @property int    $user_id
+ * @property int    $parent_id
  * @property int    $downloads
  */
 class Ship extends Model {
@@ -33,7 +34,7 @@ class Ship extends Model {
      * @var string[]
      */
     protected $fillable = [
-        'ref', 'user_id', 'file_path', 'title', 'description', 'downloads',
+        'ref', 'user_id', 'parent_id', 'file_path', 'title', 'description', 'downloads',
     ];
 
     /**
@@ -41,7 +42,7 @@ class Ship extends Model {
      *
      * @var string[]
      */
-    protected $hidden = ['id', 'file_path', 'user_id'];
+    protected $hidden = ['id', 'user_id', 'parent_id', 'file_path'];
 
     /** @return string|false */
     public function file_contents() {
@@ -55,6 +56,24 @@ class Ship extends Model {
      */
     public function user() {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * A ship can have a parent.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function parent() {
+        return $this->hasOne(Ship::class, 'id', 'parent_id');
+    }
+
+    /**
+     * A ship can have a child.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function child() {
+        return $this->hasOne(Ship::class, 'parent_id', 'id');
     }
 
     /**
