@@ -9,7 +9,6 @@ use Shipyard\Models\Permission;
 use Tests\APITestCase;
 
 class BaseAPITest extends APITestCase {
-
     /**
      * Insert a user item without a custom slug.
      *
