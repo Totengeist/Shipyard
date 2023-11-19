@@ -188,6 +188,26 @@ class ShipController extends Controller {
     }
 
     /**
+     * Add a new version of an existing ship.
+     *
+     * @param array<string,string> $args
+     *
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function upgrade(Request $request, Response $response, $args) {
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Ship::query()->where([['ref', $args['ref']]]);
+        /** @var \Shipyard\Models\Ship $parent_ship */
+        $parent_ship = $query->firstOrFail();
+
+        $requestbody = (array) $request->getParsedBody();
+        $requestbody['parent_id'] = $parent_ship->id;
+        $request = $request->withParsedBody($requestbody);
+
+        return $this->store($request, $response);
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param array<string,string> $args
@@ -203,6 +223,14 @@ class ShipController extends Controller {
         if ($abort !== null) {
             return $abort;
         }
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Ship::query()->where([['parent_id', $ship->id]]);
+        $children = $query->get();
+        $children->each(function ($child, $key) use ($ship) {
+            /* @var \Shipyard\Models\Ship $child */
+            /* @var \Shipyard\Models\Ship $ship */
+            $child->update(['parent_id' => $ship->parent_id]);
+        });
         unlink($ship->file_path);
         $ship->delete();
 

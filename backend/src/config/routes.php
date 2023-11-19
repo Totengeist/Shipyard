@@ -63,6 +63,7 @@ $app->group($_SERVER['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $gro
 
         $group->post('/ship', 'Shipyard\Controllers\ShipController:store');
         $group->post('/ship/{ref}', 'Shipyard\Controllers\ShipController:update');
+        $group->post('/ship/{ref}/upgrade', 'Shipyard\Controllers\ShipController:upgrade');
         $group->delete('/ship/{ref}', 'Shipyard\Controllers\ShipController:destroy');
 
         $group->post('/save', 'Shipyard\Controllers\SaveController:store');

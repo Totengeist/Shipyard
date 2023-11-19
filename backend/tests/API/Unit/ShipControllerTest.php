@@ -261,4 +261,76 @@ class ShipControllerTest extends APITestCase {
             'downloads' => $ship->downloads+1,
         ]);
     }
+
+    /**
+     * @return void
+     */
+    public function testCanUpgradeShip() {
+        $user = Factory::create('Shipyard\Models\User');
+        $user->activate();
+        Auth::login($user);
+        $faker = \Faker\Factory::create();
+        $ship = Factory::create('Shipyard\Models\Ship', ['user_id' => $user->id]);
+
+        $faker = \Faker\Factory::create();
+        $title = $faker->words(3, true);
+        $description = $faker->paragraph(3, true);
+
+        $this->post('api/v1/ship/' . $ship->ref . '/upgrade', ['user_ref' => $user->ref, 'title' => $title, 'description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => self::createSampleUpload()])
+             ->assertJsonResponse([
+            'title' => $title,
+            'description' => $description,
+        ]);
+
+        $ship2_json = json_decode((string) $this->response->getBody(), true);
+        $ship2_object = Ship::query()->where([['ref', $ship2_json['ref']]])->firstOrFail();
+        $this->assertJsonFragment([
+            'title' => $title,
+            'description' => $description,
+        ], $ship2_json);
+        $this->assertEquals($ship2_object->parent->ref, $ship->ref);
+    }
+
+    /**
+     * @return void
+     */
+    public function testCanDeleteShipVersion() {
+        $user = Factory::create('Shipyard\Models\User');
+        $faker = \Faker\Factory::create();
+        $role_name = $faker->slug;
+        /** @var \Shipyard\Models\Role $role */
+        $role = Role::query()->create(['slug' => $role_name, 'label' => $faker->name]);
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Permission::query()->where('slug', 'delete-ships');
+        /** @var \Shipyard\Models\Permission $permission */
+        $permission = $query->first();
+        $role->givePermissionTo($permission);
+        $user->assignRole($role_name);
+        $user->activate();
+        Auth::login($user);
+
+        $ship1 = Factory::create('Shipyard\Models\Ship');
+        $ship2 = Factory::create('Shipyard\Models\Ship', ['parent_id' => $ship1->id]);
+        $ship3 = Factory::create('Shipyard\Models\Ship', ['parent_id' => $ship2->id]);
+        $ship4 = Factory::create('Shipyard\Models\Ship', ['parent_id' => $ship3->id]);
+        $ship5 = Factory::create('Shipyard\Models\Ship', ['parent_id' => $ship4->id]);
+
+        // delete first
+        $this->delete('api/v1/ship/' . $ship1->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
+        $this->assertEquals($ship5->parent->parent->parent->parent, null);
+        $this->assertEquals($ship5->parent->parent->parent->parent_id, null);
+
+        // delete middle
+        $ship5 = Ship::query()->where([['ref', $ship5->ref]])->firstOrFail();
+        $this->delete('api/v1/ship/' . $ship3->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
+        $this->assertEquals($ship5->parent->parent->getKey(), $ship2->getKey());
+        $this->assertEquals($ship5->parent->parent->child->getKey(), $ship4->getKey());
+        $this->assertEquals($ship5->parent->parent_id, $ship2->id);
+
+        // delete last
+        $ship5 = Ship::query()->where([['ref', $ship5->ref]])->firstOrFail();
+        $this->delete('api/v1/ship/' . $ship5->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
+        $this->assertEquals($ship5->parent->parent->getKey(), $ship2->getKey());
+        $this->assertEquals($ship5->parent->parent_id, $ship2->id);
+    }
 }
