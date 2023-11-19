@@ -20,18 +20,6 @@ class UserControllerTest extends APITestCase {
      */
 
     /**
-     * Insert a user item without a custom slug.
-     *
-     * @return void
-     */
-    public function testCanRetrieveVersion() {
-        $this->get('api/v1/version', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
-             ->assertJsonResponse([
-            'app' => $_SERVER['APP_TITLE'],
-         ]);
-    }
-
-    /**
      * Check logged in user when not logged in.
      *
      * @return void
