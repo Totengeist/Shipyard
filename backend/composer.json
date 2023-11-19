@@ -17,7 +17,7 @@
         "bryanjhv/slim-session": "~4.0",
         "vlucas/phpdotenv": "^5.0",
         "vlucas/valitron": "^1.4",
-        "cocur/slugify": "^4.0",
+        "cocur/slugify": "^4.0 <=4.3.0",
         "nesbot/carbon": "^2.50",
         "php-di/slim-bridge": "^3.2",
         "totengeist/iv-parsers": "^0.1.0"
