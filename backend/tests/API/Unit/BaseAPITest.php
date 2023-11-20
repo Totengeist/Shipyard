@@ -2,10 +2,6 @@
 
 namespace Tests\Unit\API;
 
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Laracasts\TestDummy\Factory;
-use Shipyard\Auth;
-use Shipyard\Models\Permission;
 use Tests\APITestCase;
 
 class BaseAPITest extends APITestCase {
