@@ -26,6 +26,7 @@ class APITestCase extends TestCase {
     public function setUp(): void {
         parent::setUp();
         $this->app = (new App())->get();
+        $_SERVER['DISABLE_PAGINATION'] = true;
         session_start();
     }
 

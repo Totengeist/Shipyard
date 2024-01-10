@@ -18,7 +18,7 @@ class TagController extends Controller {
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function index(Request $request, Response $response) {
-        $payload = (string) json_encode(Tag::all());
+        $payload = (string) json_encode($this->paginate(Tag::query()));
         $response->getBody()->write($payload);
 
         return $response

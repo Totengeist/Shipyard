@@ -20,7 +20,7 @@ class ShipController extends Controller {
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function index(Request $request, Response $response) {
-        $payload = (string) json_encode(Ship::with('user'));
+        $payload = (string) json_encode($this->paginate(Ship::with('user')));
         $response->getBody()->write($payload);
 
         return $response

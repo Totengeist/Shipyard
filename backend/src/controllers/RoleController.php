@@ -22,7 +22,7 @@ class RoleController extends Controller {
             return $perm_check;
         }
 
-        $payload = (string) json_encode(Role::all());
+        $payload = (string) json_encode($this->paginate(Role::query()));
         $response->getBody()->write($payload);
 
         return $response
