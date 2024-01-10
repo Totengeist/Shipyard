@@ -204,7 +204,7 @@ class ScreenshotControllerTest extends APITestCase {
         $admin->assignRole('administrator');
         Auth::login($admin);
 
-        /** @var \Shipyard\Models\Screenshot $dbScreenshot */
+        /** @var Screenshot $dbScreenshot */
         $dbScreenshot = Screenshot::query()->find($screenshot->id);
         $this->assertEquals($screenshot->id, $dbScreenshot->id);
         $this->delete('api/v1/screenshot/' . $screenshot->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])

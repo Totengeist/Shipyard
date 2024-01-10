@@ -15,10 +15,12 @@ class ReleaseController extends Controller {
     /**
      * Display a listing of the resource.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function index(Request $request, Response $response) {
-        $payload = (string) json_encode($this->paginate(Release::query()));
+        /** @var \Illuminate\Database\Eloquent\Builder $builder */
+        $builder = Release::query();
+        $payload = (string) json_encode($this->paginate($builder));
         $response->getBody()->write($payload);
 
         return $response
@@ -28,7 +30,7 @@ class ReleaseController extends Controller {
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function store(Request $request, Response $response) {
         if (($perm_check = $this->can('create-releases')) !== null) {
@@ -65,7 +67,7 @@ class ReleaseController extends Controller {
      *
      * @param array<string,string> $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function show(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
@@ -83,7 +85,7 @@ class ReleaseController extends Controller {
      *
      * @param array<string,string> $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function update(Request $request, Response $response, $args) {
         if (($perm_check = $this->can('edit-releases')) !== null) {
@@ -93,7 +95,7 @@ class ReleaseController extends Controller {
 
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Release::query()->where([['slug', $args['slug']]]);
-        /** @var \Shipyard\Models\Release $release */
+        /** @var Release $release */
         $release = $query->first();
         $release->slug = $data['slug'];
         $release->label = $data['label'];
@@ -112,7 +114,7 @@ class ReleaseController extends Controller {
      *
      * @param array<string,string> $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function destroy(Request $request, Response $response, $args) {
         if (($perm_check = $this->can('delete-releases')) !== null) {
@@ -120,7 +122,7 @@ class ReleaseController extends Controller {
         }
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Release::query()->where([['slug', $args['slug']]]);
-        /** @var \Shipyard\Models\Release $release */
+        /** @var Release $release */
         $release = $query->first();
         $release->delete();
 

@@ -195,7 +195,7 @@ class PermissionControllerTest extends APITestCase {
         $admin->assignRole('administrator');
         Auth::login($admin);
 
-        /** @var \Shipyard\Models\Permission $dbPermission */
+        /** @var Permission $dbPermission */
         $dbPermission = Permission::query()->find($permission->id);
         $this->assertEquals($permission->id, $dbPermission->id);
         $this->delete('api/v1/permission/' . $permission->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])

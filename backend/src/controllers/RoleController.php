@@ -15,14 +15,16 @@ class RoleController extends Controller {
     /**
      * Display a listing of the resource.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function index(Request $request, Response $response) {
         if (($perm_check = $this->can('view-roles')) !== null) {
             return $perm_check;
         }
 
-        $payload = (string) json_encode($this->paginate(Role::query()));
+        /** @var \Illuminate\Database\Eloquent\Builder $builder */
+        $builder = Role::query();
+        $payload = (string) json_encode($this->paginate($builder));
         $response->getBody()->write($payload);
 
         return $response
@@ -32,7 +34,7 @@ class RoleController extends Controller {
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function store(Request $request, Response $response) {
         if (($perm_check = $this->can('create-roles')) !== null) {
@@ -69,7 +71,7 @@ class RoleController extends Controller {
      *
      * @param array<string,string> $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function show(Request $request, Response $response, $args) {
         if (($perm_check = $this->can('view-roles')) !== null) {
@@ -91,7 +93,7 @@ class RoleController extends Controller {
      *
      * @param array<string,string> $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function update(Request $request, Response $response, $args) {
         if (($perm_check = $this->can('edit-roles')) !== null) {
@@ -101,7 +103,7 @@ class RoleController extends Controller {
 
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Role::query()->where([['slug', $args['slug']]]);
-        /** @var \Shipyard\Models\Role $role */
+        /** @var Role $role */
         $role = $query->first();
         $role->slug = $data['slug'];
         $role->label = $data['label'];
@@ -120,7 +122,7 @@ class RoleController extends Controller {
      *
      * @param array<string,string> $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function destroy(Request $request, Response $response, $args) {
         if (($perm_check = $this->can('delete-roles')) !== null) {
@@ -128,7 +130,7 @@ class RoleController extends Controller {
         }
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Role::query()->where([['slug', $args['slug']]]);
-        /** @var \Shipyard\Models\Role $role */
+        /** @var Role $role */
         $role = $query->first();
         $role->delete();
 

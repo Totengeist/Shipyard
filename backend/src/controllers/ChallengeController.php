@@ -15,10 +15,12 @@ class ChallengeController extends Controller {
     /**
      * Display a listing of the resource.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function index(Request $request, Response $response) {
-        $payload = (string) json_encode($this->paginate(Challenge::query()));
+        /** @var \Illuminate\Database\Eloquent\Builder $builder */
+        $builder = Challenge::query();
+        $payload = (string) json_encode($this->paginate($builder));
         $response->getBody()->write($payload);
 
         return $response
@@ -28,7 +30,7 @@ class ChallengeController extends Controller {
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function store(Request $request, Response $response) {
         $data = (array) $request->getParsedBody();
@@ -59,7 +61,7 @@ class ChallengeController extends Controller {
      *
      * @param array<string,string> $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function show(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
@@ -77,14 +79,14 @@ class ChallengeController extends Controller {
      *
      * @param array<string,string> $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function update(Request $request, Response $response, $args) {
         $data = (array) $request->getParsedBody();
 
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Challenge::query()->where([['ref', $args['ref']]]);
-        /** @var \Shipyard\Models\Challenge $challenge */
+        /** @var Challenge $challenge */
         $challenge = $query->first();
         if (isset($data['title'])) {
             $challenge->title = $data['title'];
@@ -107,12 +109,12 @@ class ChallengeController extends Controller {
      *
      * @param array<string,string> $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function destroy(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Challenge::query()->where([['ref', $args['ref']]]);
-        /** @var \Shipyard\Models\Challenge $challenge */
+        /** @var Challenge $challenge */
         $challenge = $query->first();
         $challenge->delete();
 

@@ -23,7 +23,7 @@ class LoginController extends Controller {
     /**
      * Handle a login request to the application.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function login(Request $request, Response $response) {
         $data = (array) $request->getParsedBody();
@@ -32,7 +32,7 @@ class LoginController extends Controller {
         $password = (string) ($data['password'] ?? '');
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = User::query()->where('email', $email)->with(['roles', 'roles.permissions']);
-        /** @var \Shipyard\Models\User $user */
+        /** @var User $user */
         $user = $query->first();
 
         if ($user == null || !password_verify($password, $user->password)) {
@@ -66,7 +66,7 @@ class LoginController extends Controller {
     /**
      * Handle a request for authenticated user information to the application.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function me(Request $request, Response $response) {
         $payload = (string) (string) json_encode(Auth::user()->makeVisible(['email', 'created_at', 'updated_at']));
@@ -81,7 +81,7 @@ class LoginController extends Controller {
     /**
      * Handle a request for logging a user out of the application.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function logout(Request $request, Response $response) {
         Auth::logout();

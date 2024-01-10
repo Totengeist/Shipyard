@@ -126,11 +126,11 @@ class SaveControllerTest extends APITestCase {
 
         $user = Factory::create('Shipyard\Models\User');
         $role_name = $faker->slug;
-        /** @var \Shipyard\Models\Role $role */
+        /** @var Role $role */
         $role = Role::query()->create(['slug' => $role_name, 'label' => $faker->name]);
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Permission::query()->where('slug', 'edit-saves');
-        /** @var \Shipyard\Models\Permission $permission */
+        /** @var Permission $permission */
         $permission = $query->first();
         $role->givePermissionTo($permission);
         $user->assignRole($role_name);
@@ -215,11 +215,11 @@ class SaveControllerTest extends APITestCase {
 
         $user = Factory::create('Shipyard\Models\User');
         $role_name = $faker->slug;
-        /** @var \Shipyard\Models\Role $role */
+        /** @var Role $role */
         $role = Role::query()->create(['slug' => $role_name, 'label' => $faker->name]);
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Permission::query()->where('slug', 'delete-saves');
-        /** @var \Shipyard\Models\Permission $permission */
+        /** @var Permission $permission */
         $permission = $query->first();
         $role->givePermissionTo($permission);
         $user->assignRole($role_name);

@@ -17,10 +17,12 @@ class SaveController extends Controller {
     /**
      * Display a listing of the resource.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function index(Request $request, Response $response) {
-        $payload = (string) json_encode($this->paginate(Save::query()));
+        /** @var \Illuminate\Database\Eloquent\Builder $builder */
+        $builder = Save::query();
+        $payload = (string) json_encode($this->paginate($builder));
         $response->getBody()->write($payload);
 
         return $response
@@ -30,7 +32,7 @@ class SaveController extends Controller {
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function store(Request $request, Response $response) {
         $data = (array) $request->getParsedBody();
@@ -40,7 +42,7 @@ class SaveController extends Controller {
         if (isset($data['user_ref'])) {
             /** @var \Illuminate\Database\Eloquent\Builder $query */
             $query = User::query()->where([['ref', $data['user_ref']]]);
-            /** @var \Shipyard\Models\User $user */
+            /** @var User $user */
             $user = $query->first();
             $data['user_id'] = $user->id;
         }
@@ -100,7 +102,7 @@ class SaveController extends Controller {
      *
      * @param array<string,string> $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function show(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
@@ -120,12 +122,12 @@ class SaveController extends Controller {
      *
      * @param array<string,string> $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function download(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Save::query()->where([['ref', $args['ref']]]);
-        /** @var \Shipyard\Models\Save $save */
+        /** @var Save $save */
         $save = $query->first();
 
         if (file_exists($save->file_path) === false) {
@@ -149,14 +151,14 @@ class SaveController extends Controller {
      *
      * @param array<string,string> $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function update(Request $request, Response $response, $args) {
         $data = $request->getParsedBody();
 
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Save::query()->where([['ref', $args['ref']]]);
-        /** @var \Shipyard\Models\Save $save */
+        /** @var Save $save */
         $save = $query->first();
         $abort = $this->isOrCan($save->user_id, 'edit-saves');
         if ($abort !== null) {
@@ -191,12 +193,12 @@ class SaveController extends Controller {
      *
      * @param array<string,string> $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function destroy(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Save::query()->where([['ref', $args['ref']]]);
-        /** @var \Shipyard\Models\Save $save */
+        /** @var Save $save */
         $save = $query->first();
         $abort = $this->isOrCan($save->user_id, 'delete-saves');
         if ($abort !== null) {

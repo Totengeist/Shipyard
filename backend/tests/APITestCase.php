@@ -71,7 +71,7 @@ class APITestCase extends TestCase {
     /**
      * @param string $name
      *
-     * @return \Slim\Psr7\UploadedFile
+     * @return UploadedFile
      */
     public static function createSampleUpload($name = 'science-vessel.ship') {
         $filepath = (string) realpath(__DIR__ . '/assets/' . $name);

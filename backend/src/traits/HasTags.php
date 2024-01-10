@@ -28,7 +28,7 @@ trait HasTags {
         if (is_string($tag)) {
             /** @var \Illuminate\Database\Eloquent\Builder $query */
             $query = Tag::query()->where('slug', '=', $tag);
-            /** @var \Shipyard\Models\Tag $tag */
+            /** @var Tag $tag */
             $tag = $query->firstOrFail();
         }
 
@@ -49,7 +49,7 @@ trait HasTags {
         if (is_string($tag)) {
             /** @var \Illuminate\Database\Eloquent\Builder $query */
             $query = Tag::query()->where('slug', '=', $tag);
-            /** @var \Shipyard\Models\Tag $tag */
+            /** @var Tag $tag */
             $tag = $query->firstOrFail();
         }
 

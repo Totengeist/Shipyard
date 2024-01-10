@@ -28,7 +28,7 @@ trait HasReleases {
         if (is_string($release)) {
             /** @var \Illuminate\Database\Eloquent\Builder $query */
             $query = Release::query()->where('slug', '=', $release);
-            /** @var \Shipyard\Models\Release $release */
+            /** @var Release $release */
             $release = $query->firstOrFail();
         }
 
@@ -49,7 +49,7 @@ trait HasReleases {
         if (is_string($release)) {
             /** @var \Illuminate\Database\Eloquent\Builder $query */
             $query = Release::query()->where('slug', '=', $release);
-            /** @var \Shipyard\Models\Release $release */
+            /** @var Release $release */
             $release = $query->firstOrFail();
         }
 

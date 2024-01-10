@@ -83,7 +83,7 @@ class Screenshot extends Model {
      * @param mixed                    $data
      * @param \Valitron\Validator|null $v
      *
-     * @return \Valitron\Validator
+     * @return Validator
      */
     public static function validator($data, $v = null) {
         if ($v === null) {

@@ -201,10 +201,10 @@ Capsule::table('meta')->insert(
 /**
  * @param array<string, string> $params
  *
- * @return \Shipyard\Models\Permission
+ * @return Permission
  */
 function create_permission($params) {
-    /** @var \Shipyard\Models\Permission $return */
+    /** @var Permission $return */
     $return = Permission::query()->create($params);
 
     return $return;

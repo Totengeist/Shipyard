@@ -14,7 +14,7 @@ class Auth {
     public static $session;
 
     /**
-     * @param \Shipyard\Models\User $user
+     * @param Models\User $user
      *
      * @return void
      */
@@ -38,7 +38,7 @@ class Auth {
     }
 
     /**
-     * @return \Shipyard\Models\User
+     * @return Models\User
      */
     public static function user() {
         if (static::$session === null) {

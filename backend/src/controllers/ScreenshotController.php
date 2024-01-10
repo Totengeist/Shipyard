@@ -19,12 +19,12 @@ class ScreenshotController extends Controller {
      *
      * @param array<string,string> $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function index(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Ship::query()->where('ref', '=', $args['ship_ref']);
-        /** @var \Shipyard\Models\Ship $ship */
+        /** @var Ship $ship */
         $ship = $query->firstOrFail();
         $payload = (string) json_encode($ship->screenshots()->get());
         $response->getBody()->write($payload);
@@ -38,12 +38,12 @@ class ScreenshotController extends Controller {
      *
      * @param array<string,string> $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function store(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Ship::query()->where('ref', '=', $args['ship_ref']);
-        /** @var \Shipyard\Models\Ship $ship */
+        /** @var Ship $ship */
         $ship = $query->firstOrFail();
         $user_id = $ship->user_id;
 
@@ -108,7 +108,7 @@ class ScreenshotController extends Controller {
      *
      * @param array<string,string> $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function show(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
@@ -126,7 +126,7 @@ class ScreenshotController extends Controller {
      *
      * @param array<string,string> $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function update(Request $request, Response $response, $args) {
         if (($perm_check = $this->can('edit-screenshots')) !== null) {
@@ -136,7 +136,7 @@ class ScreenshotController extends Controller {
 
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Screenshot::query()->where([['ref', $args['ref']]]);
-        /** @var \Shipyard\Models\Screenshot $screenshot */
+        /** @var Screenshot $screenshot */
         $screenshot = $query->first();
         $screenshot->description = $data['description'];
         $screenshot->save();
@@ -154,7 +154,7 @@ class ScreenshotController extends Controller {
      *
      * @param array<string,string> $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function destroy(Request $request, Response $response, $args) {
         if (($perm_check = $this->can('delete-screenshots')) !== null) {
@@ -162,7 +162,7 @@ class ScreenshotController extends Controller {
         }
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Screenshot::query()->where([['ref', $args['ref']]]);
-        /** @var \Shipyard\Models\Screenshot $screenshot */
+        /** @var Screenshot $screenshot */
         $screenshot = $query->first();
         unlink($screenshot->file_path);
         $screenshot->delete();

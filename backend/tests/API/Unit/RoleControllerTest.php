@@ -195,7 +195,7 @@ class RoleControllerTest extends APITestCase {
         $admin->assignRole('administrator');
         Auth::login($admin);
 
-        /** @var \Shipyard\Models\Role $dbRole */
+        /** @var Role $dbRole */
         $dbRole = Role::query()->find($role->id);
         $this->assertEquals($role->id, $dbRole->id);
         $this->delete('api/v1/role/' . $role->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])

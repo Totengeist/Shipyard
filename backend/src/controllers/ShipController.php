@@ -17,7 +17,7 @@ class ShipController extends Controller {
     /**
      * Display a listing of the resource.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function index(Request $request, Response $response) {
         $payload = (string) json_encode($this->paginate(Ship::with('user')));
@@ -30,7 +30,7 @@ class ShipController extends Controller {
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function store(Request $request, Response $response) {
         $data = (array) $request->getParsedBody();
@@ -40,7 +40,7 @@ class ShipController extends Controller {
         if (isset($data['user_ref'])) {
             /** @var \Illuminate\Database\Eloquent\Builder $query */
             $query = User::query()->where([['ref', $data['user_ref']]]);
-            /** @var \Shipyard\Models\User $user */
+            /** @var User $user */
             $user = $query->first();
             $data['user_id'] = $user->id;
         }
@@ -100,7 +100,7 @@ class ShipController extends Controller {
      *
      * @param array<string,string> $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function show(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
@@ -121,12 +121,12 @@ class ShipController extends Controller {
      *
      * @param array<string,string> $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function download(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Ship::query()->where([['ref', $args['ref']]]);
-        /** @var \Shipyard\Models\Ship $ship */
+        /** @var Ship $ship */
         $ship = $query->first();
 
         if (file_exists($ship->file_path) === false) {
@@ -150,14 +150,14 @@ class ShipController extends Controller {
      *
      * @param array<string,string> $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function update(Request $request, Response $response, $args) {
         $data = $request->getParsedBody();
 
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Ship::query()->where([['ref', $args['ref']]]);
-        /** @var \Shipyard\Models\Ship $ship */
+        /** @var Ship $ship */
         $ship = $query->firstOrFail();
         $abort = $this->isOrCan($ship->user_id, 'edit-ships');
         if ($abort !== null) {
@@ -192,12 +192,12 @@ class ShipController extends Controller {
      *
      * @param array<string,string> $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function upgrade(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Ship::query()->where([['ref', $args['ref']]]);
-        /** @var \Shipyard\Models\Ship $parent_ship */
+        /** @var Ship $parent_ship */
         $parent_ship = $query->firstOrFail();
 
         $requestbody = (array) $request->getParsedBody();
@@ -212,12 +212,12 @@ class ShipController extends Controller {
      *
      * @param array<string,string> $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function destroy(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Ship::query()->where([['ref', $args['ref']]]);
-        /** @var \Shipyard\Models\Ship $ship */
+        /** @var Ship $ship */
         $ship = $query->first();
         $abort = $this->isOrCan($ship->user_id, 'delete-ships');
         if ($abort !== null) {

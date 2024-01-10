@@ -5,15 +5,7 @@ namespace Shipyard\Controllers;
 use Psr\Container\ContainerInterface;
 
 class Controller {
-    /** @var \Psr\Container\ContainerInterface */
-
-    /**
-     * Create or add on to a validator.
-     *
-     * @param array<string, string> $data
-     *
-     * @return Validator
-     */
+    /** @var ContainerInterface */
     protected $container;
 
     // constructor receives container instance
@@ -24,6 +16,15 @@ class Controller {
         $this->container = $container;
     }
 
+    /**
+     * Paginate an Eloquent builder.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $builder
+     * @param int                                   $per_page the amount of items to return per page
+     * @param int                                   $page     the page number to return
+     *
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator|\Illuminate\Database\Eloquent\Collection
+     */
     public function paginate($builder, $per_page = 15, $page = 1) {
         if (isset($_SERVER['DISABLE_PAGINATION']) && $_SERVER['DISABLE_PAGINATION']) {
             return $builder->get();
@@ -32,6 +33,13 @@ class Controller {
         return $builder->paginate($this->get_per_page($per_page), ['*'], 'page', $this->get_page($page));
     }
 
+    /**
+     * Get the current page number of an API request.
+     *
+     * @param int $page
+     *
+     * @return int
+     */
     public function get_page($page = 1) {
         if (isset($_REQUEST['page'])) {
             $page = intval($_REQUEST['page']);
@@ -43,6 +51,13 @@ class Controller {
         return $page;
     }
 
+    /**
+     * Get the number of items to return per page.
+     *
+     * @param int $per_page
+     *
+     * @return int
+     */
     public function get_per_page($per_page = 15) {
         if (isset($_REQUEST['per_page'])) {
             $per_page = intval($_REQUEST['per_page']);

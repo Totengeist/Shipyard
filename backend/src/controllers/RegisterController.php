@@ -38,7 +38,7 @@ class RegisterController extends Controller {
      * @param mixed[] $data
      * @param bool    $optional
      *
-     * @return \Valitron\Validator
+     * @return Validator
      */
     protected function validator($data, $optional = false) {
         Validator::addRule('unique', function ($field, $value, array $params, array $fields) {
@@ -114,10 +114,10 @@ class RegisterController extends Controller {
      *
      * @param array<string, string> $data
      *
-     * @return \Shipyard\Models\User
+     * @return User
      */
     protected function create(array $data) {
-        /** @var \Shipyard\Models\User $user */
+        /** @var User $user */
         $user = User::query()->create([
             'name' => $data['name'],
             'email' => $data['email'],
@@ -132,7 +132,7 @@ class RegisterController extends Controller {
      *
      * @override
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function register(Request $request, Response $response) {
         $data = (array) $request->getParsedBody();
@@ -166,16 +166,16 @@ class RegisterController extends Controller {
      *
      * @param array<string,string> $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function activate(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = UserActivation::query()->where('token', $args['token']);
-        /** @var \Shipyard\Models\UserActivation $activation */
+        /** @var UserActivation $activation */
         $activation = $query->firstOrFail();
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = User::query()->where('email', $activation->email);
-        /** @var \Shipyard\Models\User $user */
+        /** @var User $user */
         $user = $query->first();
         $user->makeVisible(['email', 'created_at', 'updated_at']);
         $user->activate();
@@ -195,14 +195,14 @@ class RegisterController extends Controller {
      *
      * @param array<string,string> $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function destroy(Request $request, Response $response, $args) {
         $id = (int) $args['user_id'];
         if (($perm_check = $this->isOrCan($id, 'delete-users')) !== null) {
             return $perm_check;
         }
-        /** @var \Shipyard\Models\User $user */
+        /** @var User $user */
         $user = User::query()->find($id);
 
         /** @var \Illuminate\Database\Eloquent\Builder $query */
@@ -226,7 +226,7 @@ class RegisterController extends Controller {
      *
      * @param array<string,string> $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function update(Request $request, Response $response, $args) {
         $id = (int) $args['user_id'];
@@ -247,7 +247,7 @@ class RegisterController extends Controller {
 
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = User::query()->where('id', $id);
-        /** @var \Shipyard\Models\User $user */
+        /** @var User $user */
         $user = $query->first();
         $user->makeVisible(['email', 'created_at', 'updated_at']);
 

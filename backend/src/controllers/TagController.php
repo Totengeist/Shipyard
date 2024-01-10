@@ -15,10 +15,12 @@ class TagController extends Controller {
     /**
      * Display a listing of the resource.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function index(Request $request, Response $response) {
-        $payload = (string) json_encode($this->paginate(Tag::query()));
+        /** @var \Illuminate\Database\Eloquent\Builder $builder */
+        $builder = Tag::query();
+        $payload = (string) json_encode($this->paginate($builder));
         $response->getBody()->write($payload);
 
         return $response
@@ -28,7 +30,7 @@ class TagController extends Controller {
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function store(Request $request, Response $response) {
         if (($perm_check = $this->can('create-tags')) !== null) {
@@ -65,7 +67,7 @@ class TagController extends Controller {
      *
      * @param array<string,string> $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function show(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
@@ -83,7 +85,7 @@ class TagController extends Controller {
      *
      * @param array<string,string> $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function update(Request $request, Response $response, $args) {
         if (($perm_check = $this->can('edit-tags')) !== null) {
@@ -93,7 +95,7 @@ class TagController extends Controller {
 
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Tag::query()->where([['slug', $args['slug']]]);
-        /** @var \Shipyard\Models\Tag $tag */
+        /** @var Tag $tag */
         $tag = $query->first();
         $tag->slug = $data['slug'];
         $tag->label = $data['label'];
@@ -112,7 +114,7 @@ class TagController extends Controller {
      *
      * @param array<string,string> $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function destroy(Request $request, Response $response, $args) {
         if (($perm_check = $this->can('delete-tags')) !== null) {
@@ -120,7 +122,7 @@ class TagController extends Controller {
         }
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Tag::query()->where([['slug', $args['slug']]]);
-        /** @var \Shipyard\Models\Tag $tag */
+        /** @var Tag $tag */
         $tag = $query->first();
         $tag->delete();
 

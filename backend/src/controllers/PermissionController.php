@@ -15,7 +15,7 @@ class PermissionController extends Controller {
     /**
      * Display a listing of the resource.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function index(Request $request, Response $response) {
         if (($perm_check = $this->can('view-permissions')) !== null) {
@@ -32,7 +32,7 @@ class PermissionController extends Controller {
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function store(Request $request, Response $response) {
         if (($perm_check = $this->can('create-permissions')) !== null) {
@@ -69,7 +69,7 @@ class PermissionController extends Controller {
      *
      * @param array<string,string> $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function show(Request $request, Response $response, $args) {
         if (($perm_check = $this->can('view-permissions')) !== null) {
@@ -91,7 +91,7 @@ class PermissionController extends Controller {
      *
      * @param array<string,string> $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function update(Request $request, Response $response, $args) {
         if (($perm_check = $this->can('edit-permissions')) !== null) {
@@ -101,7 +101,7 @@ class PermissionController extends Controller {
 
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Permission::query()->where([['slug', $args['slug']]]);
-        /** @var \Shipyard\Models\Permission $permission */
+        /** @var Permission $permission */
         $permission = $query->first();
         if (array_key_exists('slug', $data) && $data['slug'] !== null && $data['slug'] !== '') {
             $permission->slug = $data['slug'];
@@ -122,7 +122,7 @@ class PermissionController extends Controller {
      *
      * @param array<string,string> $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Response
      */
     public function destroy(Request $request, Response $response, $args) {
         if (($perm_check = $this->can('delete-permissions')) !== null) {
@@ -130,7 +130,7 @@ class PermissionController extends Controller {
         }
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Permission::query()->where([['slug', $args['slug']]]);
-        /** @var \Shipyard\Models\Permission $permission */
+        /** @var Permission $permission */
         $permission = $query->first();
         $permission->delete();
 

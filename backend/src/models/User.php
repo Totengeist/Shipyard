@@ -42,9 +42,9 @@ class User extends Model {
         'password', 'remember_token', 'activated', 'id', 'email', 'created_at', 'updated_at',
     ];
 
-    /** @return \Shipyard\Models\UserActivation */
+    /** @return UserActivation */
     public function create_activation() {
-        /** @var \Shipyard\Models\UserActivation $activation */
+        /** @var UserActivation $activation */
         $activation = UserActivation::query()->create([
             'email' => $this->email,
         ]);

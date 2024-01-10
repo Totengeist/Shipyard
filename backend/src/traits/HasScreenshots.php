@@ -28,7 +28,7 @@ trait HasScreenshots {
         if (is_string($screenshot)) {
             /** @var \Illuminate\Database\Eloquent\Builder $query */
             $query = Screenshot::query()->where('ref', '=', $screenshot);
-            /** @var \Shipyard\Models\Screenshot $screenshot */
+            /** @var Screenshot $screenshot */
             $screenshot = $query->firstOrFail();
         }
 
@@ -49,7 +49,7 @@ trait HasScreenshots {
         if (is_string($screenshot)) {
             /** @var \Illuminate\Database\Eloquent\Builder $query */
             $query = Screenshot::query()->where('ref', '=', $screenshot);
-            /** @var \Shipyard\Models\Screenshot $screenshot */
+            /** @var Screenshot $screenshot */
             $screenshot = $query->firstOrFail();
         }
 

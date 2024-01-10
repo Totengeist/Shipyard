@@ -123,11 +123,11 @@ class ShipControllerTest extends APITestCase {
 
         $user = Factory::create('Shipyard\Models\User');
         $role_name = $faker->slug;
-        /** @var \Shipyard\Models\Role $role */
+        /** @var Role $role */
         $role = Role::query()->create(['slug' => $role_name, 'label' => $faker->name]);
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Permission::query()->where('slug', 'edit-ships');
-        /** @var \Shipyard\Models\Permission $permission */
+        /** @var Permission $permission */
         $permission = $query->first();
         $role->givePermissionTo($permission);
         $user->assignRole($role_name);
@@ -206,11 +206,11 @@ class ShipControllerTest extends APITestCase {
 
         $user = Factory::create('Shipyard\Models\User');
         $role_name = $faker->slug;
-        /** @var \Shipyard\Models\Role $role */
+        /** @var Role $role */
         $role = Role::query()->create(['slug' => $role_name, 'label' => $faker->name]);
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Permission::query()->where('slug', 'delete-ships');
-        /** @var \Shipyard\Models\Permission $permission */
+        /** @var Permission $permission */
         $permission = $query->first();
         $role->givePermissionTo($permission);
         $user->assignRole($role_name);
@@ -298,11 +298,11 @@ class ShipControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\Models\User');
         $faker = \Faker\Factory::create();
         $role_name = $faker->slug;
-        /** @var \Shipyard\Models\Role $role */
+        /** @var Role $role */
         $role = Role::query()->create(['slug' => $role_name, 'label' => $faker->name]);
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Permission::query()->where('slug', 'delete-ships');
-        /** @var \Shipyard\Models\Permission $permission */
+        /** @var Permission $permission */
         $permission = $query->first();
         $role->givePermissionTo($permission);
         $user->assignRole($role_name);

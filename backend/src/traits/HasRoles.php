@@ -31,7 +31,7 @@ trait HasRoles {
         if (is_string($role)) {
             /** @var \Illuminate\Database\Eloquent\Builder $query */
             $query = Role::query()->where('slug', '=', $role);
-            /** @var \Shipyard\Models\Role $role */
+            /** @var Role $role */
             $role = $query->firstOrFail();
         }
 
@@ -52,7 +52,7 @@ trait HasRoles {
         if (is_string($role)) {
             /** @var \Illuminate\Database\Eloquent\Builder $query */
             $query = Role::query()->where('slug', '=', $role);
-            /** @var \Shipyard\Models\Role $role */
+            /** @var Role $role */
             $role = $query->firstOrFail();
         }
 
@@ -99,7 +99,7 @@ trait HasRoles {
         if (is_string($permission)) {
             /** @var \Illuminate\Database\Eloquent\Builder $query */
             $query = Permission::query()->where('slug', $permission);
-            /** @var \Shipyard\Models\Permission $permission */
+            /** @var Permission $permission */
             $permission = $query->first();
         }
 
