@@ -39,7 +39,7 @@ class User extends Model {
      * @var string[]
      */
     protected $hidden = [
-        'password', 'remember_token', 'activated', 'id',
+        'password', 'remember_token', 'activated', 'id', 'email', 'created_at', 'updated_at',
     ];
 
     /** @return \Shipyard\Models\UserActivation */

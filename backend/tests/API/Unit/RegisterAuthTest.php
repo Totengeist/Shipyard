@@ -51,6 +51,7 @@ class UserControllerTest extends APITestCase {
 
         /** @var \Shipyard\Models\User $user */
         $user = User::query()->where([['email', $email]])->first();
+        $user->makeVisible(['email']);
         $user_json = json_decode($user->toJson(), true);
         $this->assertJsonFragment([
             'name' => $name,
@@ -130,12 +131,12 @@ class UserControllerTest extends APITestCase {
             'password' => 'secret',
         ], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-                'email' => $user->email,
+                'name' => $user->name,
          ]);
 
         $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-                'email' => $user->email,
+                'name' => $user->name,
         ]);
     }
 
@@ -235,7 +236,7 @@ class UserControllerTest extends APITestCase {
             'email' => $newEmail,
         ]);
 
-        $user2 = json_decode(User::query()->where([['name', $user->name], ['email', $newEmail]])->first()->toJson(), true);
+        $user2 = json_decode(User::query()->where([['name', $user->name], ['email', $newEmail]])->first()->makeVisible(['email'])->toJson(), true);
         $this->assertJsonFragment([
             'name' => $user->name,
             'email' => $newEmail,
@@ -272,7 +273,7 @@ class UserControllerTest extends APITestCase {
             'email' => $newEmail,
         ]);
 
-        $user2 = json_decode(User::query()->where([['name', $user->name], ['email', $newEmail]])->first()->toJson(), true);
+        $user2 = json_decode(User::query()->where([['name', $user->name], ['email', $newEmail]])->first()->makeVisible(['email'])->toJson(), true);
         $this->assertJsonFragment([
             'name' => $user->name,
             'email' => $newEmail,
@@ -296,7 +297,7 @@ class UserControllerTest extends APITestCase {
         $this->post('api/v1/user/' . $user->id, ['name' => $newName], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
         ->assertStatus(403);
 
-        $user2 = json_decode(User::query()->where([['name', $user->name], ['email', $user->email]])->first()->toJson(), true);
+        $user2 = json_decode(User::query()->where([['name', $user->name], ['email', $user->email]])->first()->makeVisible(['email'])->toJson(), true);
         $this->assertJsonFragment([
             'name' => $user->name,
             'email' => $user->email,
@@ -362,7 +363,7 @@ class UserControllerTest extends APITestCase {
         $this->delete('api/v1/user/' . $user->id, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
         ->assertStatus(403);
 
-        $user2 = json_decode(User::query()->where([['name', $user->name], ['email', $user->email]])->first()->toJson(), true);
+        $user2 = json_decode(User::query()->where([['name', $user->name], ['email', $user->email]])->first()->makeVisible(['email'])->toJson(), true);
         $this->assertJsonFragment([
             'name' => $user->name,
             'email' => $user->email,

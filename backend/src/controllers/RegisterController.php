@@ -150,7 +150,7 @@ class RegisterController extends Controller {
         }
 
         $subdata = array_intersect_key($data, array_flip((array) ['name', 'email', 'password', 'password_confirmation']));
-        $user = $this->create($subdata);
+        $user = $this->create($subdata)->makeVisible(['email', 'created_at', 'updated_at']);
         $user->create_activation();
 
         $payload = (string) json_encode(['user' => $user]);
@@ -177,6 +177,7 @@ class RegisterController extends Controller {
         $query = User::query()->where('email', $activation->email);
         /** @var \Shipyard\Models\User $user */
         $user = $query->first();
+        $user->makeVisible(['email', 'created_at', 'updated_at']);
         $user->activate();
 
         Auth::login($user);
@@ -248,6 +249,7 @@ class RegisterController extends Controller {
         $query = User::query()->where('id', $id);
         /** @var \Shipyard\Models\User $user */
         $user = $query->first();
+        $user->makeVisible(['email', 'created_at', 'updated_at']);
 
         if (isset($subdata['name'])) {
             $user->name = $subdata['name'];

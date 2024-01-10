@@ -54,7 +54,7 @@ class LoginController extends Controller {
         }
 
         Auth::login($user);
-        $data = Auth::user();
+        $data = Auth::user()->makeVisible(['email', 'created_at', 'updated_at']);
 
         $response->getBody()->write((string) (string) json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
 
@@ -69,7 +69,7 @@ class LoginController extends Controller {
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function me(Request $request, Response $response) {
-        $payload = (string) (string) json_encode(Auth::user());
+        $payload = (string) (string) json_encode(Auth::user()->makeVisible(['email', 'created_at', 'updated_at']));
 
         $response->getBody()->write($payload);
 
