@@ -36,7 +36,7 @@ class Screenshot extends Model {
      * @var string[]
      */
     protected $hidden = [
-        'id', 'file_path',
+        'id', 'file_path', 'pivot',
     ];
 
     /**
