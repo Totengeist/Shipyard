@@ -6,6 +6,7 @@ use Shipyard\Models\Screenshot;
 
 /**
  * @property \Illuminate\Database\Eloquent\Collection $screenshots
+ * @property \Illuminate\Database\Eloquent\Collection $primary_screenshot
  */
 trait HasScreenshots {
     /**
@@ -18,13 +19,26 @@ trait HasScreenshots {
     }
 
     /**
+     * An item with screenshots should have a primary screenshot.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function primary_screenshot() {
+        return $this->belongsToMany(Screenshot::class, 'item_screenshots', 'item_id', 'screenshot_id')->wherePivot('type', '=', self::$tag_label)->wherePivot('primary', '=', true);
+    }
+
+    /**
      * Assign the given screenshot to the item.
      *
      * @param string $screenshot
+     * @param bool   $primary
      *
      * @return mixed
      */
-    public function assignScreenshot($screenshot) {
+    public function assignScreenshot($screenshot, $primary = false) {
+        if (!$primary) {
+            $primary = !$this->hasScreenshot();
+        }
         if (is_string($screenshot)) {
             /** @var \Illuminate\Database\Eloquent\Builder $query */
             $query = Screenshot::query()->where('ref', '=', $screenshot);
@@ -32,8 +46,14 @@ trait HasScreenshots {
             $screenshot = $query->firstOrFail();
         }
 
-        $return = $this->screenshots()->save($screenshot, ['type' => self::$tag_label]);
+        if ($primary) {
+            foreach ($this->primary_screenshot as $old_primary) {
+                $this->screenshots()->updateExistingPivot($old_primary->id, ['primary' => false]);
+            }
+        }
+        $return = $this->screenshots()->save($screenshot, ['type' => self::$tag_label, 'primary' => $primary]);
         unset($this->screenshots);
+        unset($this->primary_screenshot);
 
         return $return;
     }
@@ -55,6 +75,7 @@ trait HasScreenshots {
 
         $return = $this->screenshots()->detach($screenshot->id);
         unset($this->screenshots);
+        unset($this->primary_screenshot);
 
         return $return;
     }
@@ -66,8 +87,10 @@ trait HasScreenshots {
      *
      * @return bool
      */
-    public function hasScreenshot($screenshots) {
-        if (is_string($screenshots)) {
+    public function hasScreenshot($screenshots = null) {
+        if (is_null($screenshots)) {
+            return (bool) empty($this->screenshots);
+        } elseif (is_string($screenshots)) {
             return $this->screenshots->contains('ref', $screenshots);
         }
 

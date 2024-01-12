@@ -178,7 +178,6 @@ Capsule::schema()->create('screenshots', function ($table) {
     $table->string('ref')->unique();
     $table->text('description')->nullable();
     $table->string('file_path');
-    $table->boolean('primary')->default(false);
     $table->timestamps();
 });
 echo "Creating link table between items and tags table.<br>\n";
@@ -186,6 +185,7 @@ Capsule::schema()->create('item_screenshots', function ($table) {
     $table->integer('screenshot_id')->unsigned();
     $table->integer('item_id')->unsigned();
     $table->string('type');
+    $table->boolean('primary')->default(false);
     $table->foreign('screenshot_id')
           ->references('id')
           ->on('screenshots')

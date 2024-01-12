@@ -22,15 +22,6 @@ class Screenshot extends Model {
     ];
 
     /**
-     * The attributes that are casted.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'primary' => 'boolean',
-    ];
-
-    /**
      * The attributes that should be hidden for arrays.
      *
      * @var string[]

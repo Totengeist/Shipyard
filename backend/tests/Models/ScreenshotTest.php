@@ -30,13 +30,39 @@ class ScreenshotModelTest extends TestCase {
         $challenge = Factory::create('Shipyard\Models\Challenge');
 
         $ship->assignScreenshot($screenshot->ref);
-        $this->assertTrue($ship->hasScreenshot($screenshot->ref), 'Failed to assert that a ship has the screenshot ' . $screenshot->label . '.');
+        $this->assertTrue($ship->hasScreenshot($screenshot->ref), 'Failed to assert that a ship has the screenshot ' . $screenshot->ref . '.');
 
         $save->assignScreenshot($screenshot->ref);
-        $this->assertTrue($save->hasScreenshot($screenshot->ref), 'Failed to assert that a save has the screenshot ' . $screenshot->label . '.');
+        $this->assertTrue($save->hasScreenshot($screenshot->ref), 'Failed to assert that a save has the screenshot ' . $screenshot->ref . '.');
 
         $challenge->assignScreenshot($screenshot->ref);
-        $this->assertTrue($challenge->hasScreenshot($screenshot->ref), 'Failed to assert that a challenge has the screenshot ' . $screenshot->label . '.');
+        $this->assertTrue($challenge->hasScreenshot($screenshot->ref), 'Failed to assert that a challenge has the screenshot ' . $screenshot->ref . '.');
+    }
+
+    /**
+     * @return void
+     */
+    public function testFirstScreenshotBecomesPrimary() {
+        $screenshot = Factory::create('Shipyard\Models\Screenshot');
+        $ship = Factory::create('Shipyard\Models\Ship');
+
+        $ship->assignScreenshot($screenshot->ref);
+        $this->assertEquals(1, count($ship->primary_screenshot));
+        $this->assertEquals($screenshot->description, $ship->primary_screenshot[0]->description);
+    }
+
+    /**
+     * @return void
+     */
+    public function testCanSetFutureScreenshotPrimary() {
+        $screenshot = Factory::create('Shipyard\Models\Screenshot');
+        $screenshot2 = Factory::create('Shipyard\Models\Screenshot');
+        $ship = Factory::create('Shipyard\Models\Ship');
+
+        $ship->assignScreenshot($screenshot->ref);
+        $ship->assignScreenshot($screenshot2->ref, true);
+        $this->assertEquals(1, count($ship->primary_screenshot));
+        $this->assertEquals($screenshot2->description, $ship->primary_screenshot[0]->description);
     }
 
     /**
@@ -53,13 +79,13 @@ class ScreenshotModelTest extends TestCase {
         $challenge->assignScreenshot($screenshot->ref);
 
         $ship->removeScreenshot($screenshot);
-        $this->assertFalse($ship->hasScreenshot($screenshot->ref), 'Failed to assert that a ship does not have the screenshot ' . $screenshot->label . '.');
+        $this->assertFalse($ship->hasScreenshot($screenshot->ref), 'Failed to assert that a ship does not have the screenshot ' . $screenshot->ref . '.');
 
         $save->removeScreenshot($screenshot->ref);
-        $this->assertFalse($save->hasScreenshot($screenshot->ref), 'Failed to assert that a save does not have the screenshot ' . $screenshot->label . '.');
+        $this->assertFalse($save->hasScreenshot($screenshot->ref), 'Failed to assert that a save does not have the screenshot ' . $screenshot->ref . '.');
 
         $challenge->removeScreenshot($screenshot->ref);
-        $this->assertFalse($challenge->hasScreenshot($screenshot->ref), 'Failed to assert that a challenge does not have the screenshot ' . $screenshot->label . '.');
+        $this->assertFalse($challenge->hasScreenshot($screenshot->ref), 'Failed to assert that a challenge does not have the screenshot ' . $screenshot->ref . '.');
     }
 
     public function testCanGetScreenshotItems() {
@@ -84,8 +110,8 @@ class ScreenshotModelTest extends TestCase {
         /** @var Screenshot $screenshot */
         $screenshot = Screenshot::query()->where('ref', $screenshot->ref)->with(['ships', 'saves', 'challenges'])->first();
 
-        $this->assertEquals(4, count($screenshot->ships), "Failed to find 4 ships with screenshot '{$screenshot->label}'. Found " . count($screenshot->ships));
-        $this->assertEquals(4, count($screenshot->saves), "Failed to find 4 saves with screenshot '{$screenshot->label}'. Found " . count($screenshot->ships));
-        $this->assertEquals(4, count($screenshot->challenges), "Failed to find 4 challenges with screenshot '{$screenshot->label}'. Found " . count($screenshot->ships));
+        $this->assertEquals(4, count($screenshot->ships), "Failed to find 4 ships with screenshot '{$screenshot->ref}'. Found " . count($screenshot->ships));
+        $this->assertEquals(4, count($screenshot->saves), "Failed to find 4 saves with screenshot '{$screenshot->ref}'. Found " . count($screenshot->ships));
+        $this->assertEquals(4, count($screenshot->challenges), "Failed to find 4 challenges with screenshot '{$screenshot->ref}'. Found " . count($screenshot->ships));
     }
 }

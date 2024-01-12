@@ -60,7 +60,6 @@ $factory('Shipyard\Models\Screenshot', function ($faker) {
 
     return [
         'description' => $faker->paragraph(),
-        'primary' => false,
         'file_path' => $file_path,
     ];
 });
