@@ -10,7 +10,7 @@ class ReleaseModelTest extends TestCase {
     /**
      * @return void
      */
-    public function testCanCreatRelease() {
+    public function testCanCreateRelease() {
         $faker = \Faker\Factory::create();
         /** @var Release $release1 */
         $release1 = Release::query()->create([
