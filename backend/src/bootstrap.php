@@ -5,7 +5,7 @@ use Dotenv\Dotenv;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
 $dotenv = Dotenv::createMutable((string) realpath(dirname(__DIR__)));
-if (getenv('APP_ENV') == 'development') {
+if (!getenv('DB_HOST')) {
     $dotenv->load();
 }
 $dotenv->required([
