@@ -1,3 +1,3 @@
 <li *ngFor="let release of releases">
-  <a href="/release/{{ release.ref }}" routerLink="/release/{{ release.ref }}">{{ release.title }}</a>
+  <a href="/release/{{ release.slug }}" routerLink="/release/{{ release.slug }}">{{ release.label }}</a>
 </li>

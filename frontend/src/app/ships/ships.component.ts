@@ -18,7 +18,7 @@ export class ShipsComponent implements OnInit {
   ngOnInit(): void {
       this.getShips().subscribe(
       data => {
-        data.forEach((element: any) => {
+        data.data.forEach((element: any) => {
             this.ships.push({title: element.title, ref: element.ref});
         });
       },

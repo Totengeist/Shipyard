@@ -1,3 +1,3 @@
 <li *ngFor="let ship of ships">
-  <a href="/ship/{{ ship.ref }}" routerLink="/ship/{{ ship.ref }}">{{ ship.title }}</a>
+  <a href="/ship/{{ ship.ref }}" routerLink="/ship/{{ ship.ref }}">{{ ship.title }}</a> by {{ship.user?.name}}
 </li>

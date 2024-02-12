@@ -18,7 +18,7 @@ export class ReleasesComponent implements OnInit {
   ngOnInit(): void {
       this.getReleases().subscribe(
       data => {
-        data.forEach((element: any) => {
+        data.data.forEach((element: any) => {
             this.releases.push({label: element.label, slug: element.slug});
         });
       },
