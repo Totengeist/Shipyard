@@ -10,7 +10,7 @@ Capsule::schema()->dropIfExists('screenshots');
 Capsule::schema()->dropIfExists('item_tags');
 Capsule::schema()->dropIfExists('tags');
 Capsule::schema()->dropIfExists('item_releases');
-Capsule::schema()->dropIfExists('challenges');
+Capsule::schema()->dropIfExists('modifications');
 Capsule::schema()->dropIfExists('saves');
 Capsule::schema()->dropIfExists('ships');
 Capsule::schema()->dropIfExists('role_user');
@@ -131,8 +131,8 @@ Capsule::schema()->create('saves', function ($table) {
     $table->bigInteger('downloads')->unsigned()->nullable(false)->default('0');
     $table->timestamps();
 });
-echo "Creating challenges table.<br>\n";
-Capsule::schema()->create('challenges', function ($table) {
+echo "Creating modifications table.<br>\n";
+Capsule::schema()->create('modifications', function ($table) {
     $table->increments('id')->unsigned();
     $table->bigInteger('parent_id')->unsigned()->nullable();
     $table->string('ref')->unique();
@@ -215,8 +215,8 @@ $edit_ships = create_permission(['slug' => 'edit-ships', 'label' => 'edit ships'
 $delete_ships = create_permission(['slug' => 'delete-ships', 'label' => 'delete ships']);
 $edit_saves = create_permission(['slug' => 'edit-saves', 'label' => 'edit saves']);
 $delete_saves = create_permission(['slug' => 'delete-saves', 'label' => 'delete saves']);
-$edit_challenges = create_permission(['slug' => 'edit-challenges', 'label' => 'edit challenges']);
-$delete_challenges = create_permission(['slug' => 'delete-challenges', 'label' => 'delete challenges']);
+$edit_modifications = create_permission(['slug' => 'edit-modifications', 'label' => 'edit modifications']);
+$delete_modifications = create_permission(['slug' => 'delete-modifications', 'label' => 'delete modifications']);
 
 // users
 $delete_users = create_permission(['slug' => 'delete-users', 'label' => 'delete users']);
@@ -256,7 +256,7 @@ $delete_screenshots  = create_permission(['slug' => 'delete-screenshots', 'label
 $admin = Role::query()->create(['slug' => 'administrator', 'label' => 'Administrator']);
 $admin->givePermissionTo($edit_ships);
 $admin->givePermissionTo($edit_saves);
-$admin->givePermissionTo($edit_challenges);
+$admin->givePermissionTo($edit_modifications);
 $admin->givePermissionTo($delete_users);
 $admin->givePermissionTo($edit_users);
 $admin->givePermissionTo($view_roles);

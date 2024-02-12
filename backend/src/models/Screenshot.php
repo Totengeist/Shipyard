@@ -49,12 +49,12 @@ class Screenshot extends Model {
     }
 
     /**
-     * Retrieve challenges with this tag.
+     * Retrieve modifications with this tag.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function challenges() {
-        return $this->retrieve_type(Challenge::class);
+    public function modifications() {
+        return $this->retrieve_type(Modification::class);
     }
 
     /**

@@ -43,12 +43,12 @@ class Release extends Model {
     }
 
     /**
-     * Retrieve challenges compatible with this release.
+     * Retrieve modifications compatible with this release.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function challenges() {
-        return $this->retrieve_type(Challenge::class);
+    public function modifications() {
+        return $this->retrieve_type(Modification::class);
     }
 
     /**

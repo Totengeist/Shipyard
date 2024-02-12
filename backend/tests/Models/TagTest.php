@@ -26,7 +26,7 @@ class TagModelTest extends TestCase {
         $tag = Factory::create('Shipyard\Models\Tag');
         $ship = Factory::create('Shipyard\Models\Ship');
         $save = Factory::create('Shipyard\Models\Save');
-        $challenge = Factory::create('Shipyard\Models\Challenge');
+        $modification = Factory::create('Shipyard\Models\Modification');
 
         $ship->assignTag($tag->slug);
         $this->assertTrue($ship->hasTag($tag->slug), 'Failed to assert that a ship has the tag ' . $tag->label . '.');
@@ -34,8 +34,8 @@ class TagModelTest extends TestCase {
         $save->assignTag($tag->slug);
         $this->assertTrue($save->hasTag($tag->slug), 'Failed to assert that a save has the tag ' . $tag->label . '.');
 
-        $challenge->assignTag($tag->slug);
-        $this->assertTrue($challenge->hasTag($tag->slug), 'Failed to assert that a challenge has the tag ' . $tag->label . '.');
+        $modification->assignTag($tag->slug);
+        $this->assertTrue($modification->hasTag($tag->slug), 'Failed to assert that a modification has the tag ' . $tag->label . '.');
     }
 
     /**
@@ -45,11 +45,11 @@ class TagModelTest extends TestCase {
         $tag = Factory::create('Shipyard\Models\Tag');
         $ship = Factory::create('Shipyard\Models\Ship');
         $save = Factory::create('Shipyard\Models\Save');
-        $challenge = Factory::create('Shipyard\Models\Challenge');
+        $modification = Factory::create('Shipyard\Models\Modification');
 
         $ship->assignTag($tag->slug);
         $save->assignTag($tag->slug);
-        $challenge->assignTag($tag->slug);
+        $modification->assignTag($tag->slug);
 
         $ship->removeTag($tag);
         $this->assertFalse($ship->hasTag($tag->slug), 'Failed to assert that a ship does not have the tag ' . $tag->label . '.');
@@ -57,8 +57,8 @@ class TagModelTest extends TestCase {
         $save->removeTag($tag->slug);
         $this->assertFalse($save->hasTag($tag->slug), 'Failed to assert that a save does not have the tag ' . $tag->label . '.');
 
-        $challenge->removeTag($tag->slug);
-        $this->assertFalse($challenge->hasTag($tag->slug), 'Failed to assert that a challenge does not have the tag ' . $tag->label . '.');
+        $modification->removeTag($tag->slug);
+        $this->assertFalse($modification->hasTag($tag->slug), 'Failed to assert that a modification does not have the tag ' . $tag->label . '.');
     }
 
     public function testCanGetTagItems() {
@@ -66,7 +66,7 @@ class TagModelTest extends TestCase {
 
         $ships = [];
         $saves = [];
-        $challenges = [];
+        $modifications = [];
 
         for ($i = 0; $i < 4; $i++) {
             $ships[$i] = Factory::create('Shipyard\Models\Ship');
@@ -75,16 +75,16 @@ class TagModelTest extends TestCase {
             $saves[$i] = Factory::create('Shipyard\Models\Save');
             $saves[$i]->assignTag($tag->slug);
             $saves[$i]->save();
-            $challenges[$i] = Factory::create('Shipyard\Models\Challenge');
-            $challenges[$i]->assignTag($tag->slug);
-            $challenges[$i]->save();
+            $modifications[$i] = Factory::create('Shipyard\Models\Modification');
+            $modifications[$i]->assignTag($tag->slug);
+            $modifications[$i]->save();
         }
 
         /** @var Tag $tag */
-        $tag = Tag::query()->where('slug', $tag->slug)->with(['ships', 'saves', 'challenges'])->first();
+        $tag = Tag::query()->where('slug', $tag->slug)->with(['ships', 'saves', 'modifications'])->first();
 
         $this->assertEquals(4, count($tag->ships), "Failed to find 4 ships with tag '{$tag->label}'. Found " . count($tag->ships));
         $this->assertEquals(4, count($tag->saves), "Failed to find 4 saves with tag '{$tag->label}'. Found " . count($tag->ships));
-        $this->assertEquals(4, count($tag->challenges), "Failed to find 4 challenges with tag '{$tag->label}'. Found " . count($tag->ships));
+        $this->assertEquals(4, count($tag->modifications), "Failed to find 4 modifications with tag '{$tag->label}'. Found " . count($tag->ships));
     }
 }

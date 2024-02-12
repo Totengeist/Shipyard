@@ -26,7 +26,7 @@ class ReleaseModelTest extends TestCase {
         $release = Factory::create('Shipyard\Models\Release');
         $ship = Factory::create('Shipyard\Models\Ship');
         $save = Factory::create('Shipyard\Models\Save');
-        $challenge = Factory::create('Shipyard\Models\Challenge');
+        $modification = Factory::create('Shipyard\Models\Modification');
 
         $ship->assignRelease($release->slug);
         $this->assertTrue($ship->hasRelease($release->slug), 'Failed to assert that a ship has the release ' . $release->label . '.');
@@ -34,8 +34,8 @@ class ReleaseModelTest extends TestCase {
         $save->assignRelease($release->slug);
         $this->assertTrue($save->hasRelease($release->slug), 'Failed to assert that a save has the release ' . $release->label . '.');
 
-        $challenge->assignRelease($release->slug);
-        $this->assertTrue($challenge->hasRelease($release->slug), 'Failed to assert that a challenge has the release ' . $release->label . '.');
+        $modification->assignRelease($release->slug);
+        $this->assertTrue($modification->hasRelease($release->slug), 'Failed to assert that a modification has the release ' . $release->label . '.');
     }
 
     /**
@@ -45,11 +45,11 @@ class ReleaseModelTest extends TestCase {
         $release = Factory::create('Shipyard\Models\Release');
         $ship = Factory::create('Shipyard\Models\Ship');
         $save = Factory::create('Shipyard\Models\Save');
-        $challenge = Factory::create('Shipyard\Models\Challenge');
+        $modification = Factory::create('Shipyard\Models\Modification');
 
         $ship->assignRelease($release->slug);
         $save->assignRelease($release->slug);
-        $challenge->assignRelease($release->slug);
+        $modification->assignRelease($release->slug);
 
         $ship->removeRelease($release);
         $this->assertFalse($ship->hasRelease($release), 'Failed to assert that a ship does not have the release ' . $release->label . '.');
@@ -57,8 +57,8 @@ class ReleaseModelTest extends TestCase {
         $save->removeRelease($release->slug);
         $this->assertFalse($save->hasRelease($release->slug), 'Failed to assert that a save does not have the release ' . $release->label . '.');
 
-        $challenge->removeRelease($release->slug);
-        $this->assertFalse($challenge->hasRelease($release->slug), 'Failed to assert that a challenge does not have the release ' . $release->label . '.');
+        $modification->removeRelease($release->slug);
+        $this->assertFalse($modification->hasRelease($release->slug), 'Failed to assert that a modification does not have the release ' . $release->label . '.');
     }
 
     public function testCanGetReleaseItems() {
@@ -66,7 +66,7 @@ class ReleaseModelTest extends TestCase {
 
         $ships = [];
         $saves = [];
-        $challenges = [];
+        $modifications = [];
 
         for ($i = 0; $i < 4; $i++) {
             $ships[$i] = Factory::create('Shipyard\Models\Ship');
@@ -75,16 +75,16 @@ class ReleaseModelTest extends TestCase {
             $saves[$i] = Factory::create('Shipyard\Models\Save');
             $saves[$i]->assignRelease($release->slug);
             $saves[$i]->save();
-            $challenges[$i] = Factory::create('Shipyard\Models\Challenge');
-            $challenges[$i]->assignRelease($release->slug);
-            $challenges[$i]->save();
+            $modifications[$i] = Factory::create('Shipyard\Models\Modification');
+            $modifications[$i]->assignRelease($release->slug);
+            $modifications[$i]->save();
         }
 
         /** @var Release $release */
-        $release = Release::query()->where('slug', $release->slug)->with(['ships', 'saves', 'challenges'])->first();
+        $release = Release::query()->where('slug', $release->slug)->with(['ships', 'saves', 'modifications'])->first();
 
         $this->assertEquals(4, count($release->ships), "Failed to find 4 ships with release '{$release->label}'. Found " . count($release->ships));
         $this->assertEquals(4, count($release->saves), "Failed to find 4 saves with release '{$release->label}'. Found " . count($release->ships));
-        $this->assertEquals(4, count($release->challenges), "Failed to find 4 challenges with release '{$release->label}'. Found " . count($release->ships));
+        $this->assertEquals(4, count($release->modifications), "Failed to find 4 modifications with release '{$release->label}'. Found " . count($release->ships));
     }
 }

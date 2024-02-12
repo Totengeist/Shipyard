@@ -4,11 +4,11 @@ namespace Shipyard\Controllers;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Shipyard\Models\Challenge;
+use Shipyard\Models\Modification;
 use Shipyard\Traits\ChecksPermissions;
 use Shipyard\Traits\ProcessesSlugs;
 
-class ChallengeController extends Controller {
+class ModificationController extends Controller {
     use ChecksPermissions;
     use ProcessesSlugs;
 
@@ -19,7 +19,7 @@ class ChallengeController extends Controller {
      */
     public function index(Request $request, Response $response) {
         /** @var \Illuminate\Database\Eloquent\Builder $builder */
-        $builder = Challenge::query();
+        $builder = Modification::query();
         $payload = (string) json_encode($this->paginate($builder));
         $response->getBody()->write($payload);
 
@@ -48,7 +48,7 @@ class ChallengeController extends Controller {
               ->withStatus(401)
               ->withHeader('Content-Type', 'application/json');
         }
-        $payload = (string) json_encode(Challenge::query()->create($data));
+        $payload = (string) json_encode(Modification::query()->create($data));
 
         $response->getBody()->write($payload);
 
@@ -65,7 +65,7 @@ class ChallengeController extends Controller {
      */
     public function show(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
-        $query = Challenge::query()->where([['ref', $args['ref']]]);
+        $query = Modification::query()->where([['ref', $args['ref']]]);
         $payload = (string) json_encode($query->first());
 
         $response->getBody()->write($payload);
@@ -85,18 +85,18 @@ class ChallengeController extends Controller {
         $data = (array) $request->getParsedBody();
 
         /** @var \Illuminate\Database\Eloquent\Builder $query */
-        $query = Challenge::query()->where([['ref', $args['ref']]]);
-        /** @var Challenge $challenge */
-        $challenge = $query->first();
+        $query = Modification::query()->where([['ref', $args['ref']]]);
+        /** @var Modification $modification */
+        $modification = $query->first();
         if (isset($data['title'])) {
-            $challenge->title = $data['title'];
+            $modification->title = $data['title'];
         }
         if (isset($data['description'])) {
-            $challenge->description = $data['description'];
+            $modification->description = $data['description'];
         }
-        $challenge->save();
+        $modification->save();
 
-        $payload = (string) json_encode($challenge);
+        $payload = (string) json_encode($modification);
 
         $response->getBody()->write($payload);
 
@@ -113,10 +113,10 @@ class ChallengeController extends Controller {
      */
     public function destroy(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
-        $query = Challenge::query()->where([['ref', $args['ref']]]);
-        /** @var Challenge $challenge */
-        $challenge = $query->first();
-        $challenge->delete();
+        $query = Modification::query()->where([['ref', $args['ref']]]);
+        /** @var Modification $modification */
+        $modification = $query->first();
+        $modification->delete();
 
         $payload = (string) json_encode(['message' => 'successful']);
 

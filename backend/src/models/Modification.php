@@ -15,7 +15,7 @@ use Shipyard\Traits\HasTags;
  * @property int    $save_id
  * @property int    $downloads
  */
-class Challenge extends Model {
+class Modification extends Model {
     use HasTags;
     use HasReleases;
     use HasScreenshots;
@@ -26,7 +26,7 @@ class Challenge extends Model {
      *
      * @var string
      */
-    public static $tag_label = 'challenge';
+    public static $tag_label = 'modification';
     /**
      * The attributes that are mass assignable.
      *
@@ -44,7 +44,7 @@ class Challenge extends Model {
     protected $hidden = ['id', 'user_id', 'parent_id', 'file_path', 'save_id'];
 
     /**
-     * A challenge can belong to a user.
+     * A modification can belong to a user.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -53,25 +53,25 @@ class Challenge extends Model {
     }
 
     /**
-     * A challenge can have a parent.
+     * A modification can have a parent.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function parent() {
-        return $this->hasOne(Challenge::class, 'id', 'parent_id');
+        return $this->hasOne(Modification::class, 'id', 'parent_id');
     }
 
     /**
-     * A challenge can have a child.
+     * A modification can have a child.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function child() {
-        return $this->hasOne(Challenge::class, 'parent_id', 'id');
+        return $this->hasOne(Modification::class, 'parent_id', 'id');
     }
 
     /**
-     * A challenge has a save.
+     * A modification has a save.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */

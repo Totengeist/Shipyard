@@ -36,7 +36,7 @@ $factory('Shipyard\Models\Save', function ($faker) {
     'downloads' => $faker->randomNumber(5, false),
     ];
 });
-$factory('Shipyard\Models\Challenge', [
+$factory('Shipyard\Models\Modification', [
     'user_id' => $faker->randomDigit(),
     'save_id' => $faker->randomDigit(),
     'title' => $faker->words(3, true),
