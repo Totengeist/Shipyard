@@ -21,6 +21,7 @@ $config
         'trailing_comma_in_multiline' => false,
         'yoda_style' => false,
         'indentation_type' => true,
+        'nullable_type_declaration_for_default_null_value' => ['use_nullable_type_declaration' => false],
 
         'phpdoc_no_package' => false,
         'phpdoc_order' => true,
