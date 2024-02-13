@@ -30,8 +30,8 @@ $app->group($_SERVER['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $gro
         $group->get('/save/{ref}', 'Shipyard\Controllers\SaveController:show');
         $group->get('/save/{ref}/download', 'Shipyard\Controllers\SaveController:download');
 
-        $group->get('/challenge', 'Shipyard\Controllers\ChallengeController:index');
-        $group->get('/challenge/{ref}', 'Shipyard\Controllers\ChallengeController:show');
+        $group->get('/modification', 'Shipyard\Controllers\ModificationController:index');
+        $group->get('/modification/{ref}', 'Shipyard\Controllers\ModificationController:show');
 
         $group->get('/tag', 'Shipyard\Controllers\TagController:index');
         $group->get('/tag/{slug}', 'Shipyard\Controllers\TagController:show');
@@ -70,9 +70,9 @@ $app->group($_SERVER['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $gro
         $group->post('/save/{ref}', 'Shipyard\Controllers\SaveController:update');
         $group->delete('/save/{ref}', 'Shipyard\Controllers\SaveController:destroy');
 
-        $group->post('/challenge', 'Shipyard\Controllers\ChallengeController:store');
-        $group->post('/challenge/{ref}', 'Shipyard\Controllers\ChallengeController:update');
-        $group->delete('/challenge/{ref}', 'Shipyard\Controllers\ChallengeController:destroy');
+        $group->post('/modification', 'Shipyard\Controllers\ModificationController:store');
+        $group->post('/modification/{ref}', 'Shipyard\Controllers\ModificationController:update');
+        $group->delete('/modification/{ref}', 'Shipyard\Controllers\ModificationController:destroy');
 
         $group->post('/tag', 'Shipyard\Controllers\TagController:store');
         $group->post('/tag/{slug}', 'Shipyard\Controllers\TagController:update');
