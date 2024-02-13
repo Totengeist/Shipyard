@@ -37,10 +37,13 @@ $factory('Shipyard\Models\Save', function ($faker) {
     ];
 });
 $factory('Shipyard\Models\Modification', [
+    $file = Shipyard\FileManager::moveUploadedFile(Tests\APITestCase::createSampleUpload('Battle.space'));
+
     'user_id' => $faker->randomDigit(),
-    'save_id' => $faker->randomDigit(),
     'title' => $faker->words(3, true),
     'description' => $faker->paragraph(),
+    'file_id' => $file->id,
+    'downloads' => $faker->randomNumber(5, false),
 ]);
 
 $factory('Shipyard\Models\Tag', [
