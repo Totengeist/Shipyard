@@ -38,7 +38,7 @@ class ShipControllerTest extends APITestCase {
         $this->post('api/v1/ship', ['user_ref' => $user->ref, 'title' => $title, 'file_path' => 'tests/assets/science-vessel.ship'], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
 
-        $ship = Ship::query()->where([['user_id', $user->id], ['title', $title], ['file_path', 'tests/assets/science-vessel.ship']])->first();
+        $ship = Ship::query()->where([['user_id', $user->id], ['title', $title]])->first();
         $this->assertNull($ship);
     }
 
@@ -79,7 +79,7 @@ class ShipControllerTest extends APITestCase {
         $faker = \Faker\Factory::create();
         $title = $faker->words(3, true);
 
-        $this->post('api/v1/ship/' . $ship->ref, ['user_ref' => $user->ref, 'title' => $title, 'file_path' => '/'], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+        $this->post('api/v1/ship/' . $ship->ref, ['user_ref' => $user->ref, 'title' => $title], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
             'title' => $title,
         ]);
@@ -106,7 +106,7 @@ class ShipControllerTest extends APITestCase {
         $oldtitle = $ship->title;
         $title = $faker->words(3, true);
 
-        $this->post('api/v1/ship/' . $ship->ref, ['user_ref' => $user->ref, 'title' => $title, 'file_path' => '/'], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+        $this->post('api/v1/ship/' . $ship->ref, ['user_ref' => $user->ref, 'title' => $title], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(403);
 
         $ship = json_decode(Ship::query()->where([['ref', $ship->ref]])->first()->toJson(), true);
@@ -251,7 +251,7 @@ class ShipControllerTest extends APITestCase {
         $this->get('api/v1/ship/' . $ship->ref . '/download', ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
 
         $this->assertNotEquals((string) $this->response->getBody(), '');
-        $this->assertEquals((string) $this->response->getBody(), $ship->file_contents());
+        $this->assertEquals((string) $this->response->getBody(), $ship->file->file_contents());
         $this->assertEquals($this->response->getHeader('Content-Disposition')[0], 'attachment; filename="' . self::slugify($ship->title) . '.ship"');
 
         $this->get('api/v1/ship/' . $ship->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])

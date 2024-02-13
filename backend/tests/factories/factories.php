@@ -15,24 +15,24 @@ $factory('Shipyard\Models\Permission', [
 ]);
 
 $factory('Shipyard\Models\Ship', function ($faker) {
-    $file_path = Shipyard\FileManager::moveUploadedFile(Tests\APITestCase::createSampleUpload());
+    $file = Shipyard\FileManager::moveUploadedFile(Tests\APITestCase::createSampleUpload());
 
     return [
         'user_id' => $faker->randomDigit(),
         'title' => $faker->words(3, true),
         'description' => $faker->paragraph(),
-        'file_path' => $file_path,
+        'file_id' => $file->id,
         'downloads' => $faker->randomNumber(5, false),
     ];
 });
 $factory('Shipyard\Models\Save', function ($faker) {
-    $file_path = Shipyard\FileManager::moveUploadedFile(Tests\APITestCase::createSampleUpload('Battle.space'));
+    $file = Shipyard\FileManager::moveUploadedFile(Tests\APITestCase::createSampleUpload('Battle.space'));
 
     return [
     'user_id' => $faker->randomDigit(),
     'title' => $faker->words(3, true),
     'description' => $faker->paragraph(),
-    'file_path' => $file_path,
+    'file_id' => $file->id,
     'downloads' => $faker->randomNumber(5, false),
     ];
 });
@@ -56,10 +56,10 @@ $factory('Shipyard\Models\Release', [
 ]);
 
 $factory('Shipyard\Models\Screenshot', function ($faker) {
-    $file_path = Shipyard\FileManager::moveUploadedFile(Tests\APITestCase::createSampleUpload('science-vessel.png'));
+    $file = Shipyard\FileManager::moveUploadedFile(Tests\APITestCase::createSampleUpload('science-vessel.png'));
 
     return [
         'description' => $faker->paragraph(),
-        'file_path' => $file_path,
+        'file_id' => $file->id,
     ];
 });

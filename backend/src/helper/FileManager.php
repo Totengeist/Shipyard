@@ -2,6 +2,7 @@
 
 namespace Shipyard;
 
+use Shipyard\Models\File;
 use Shipyard\Traits\CreatesUniqueIDs;
 use Slim\Psr7\UploadedFile;
 
@@ -15,10 +16,12 @@ class FileManager {
      * @param UploadedFile $uploadedFile file uploaded file to move
      * @param int          $attempts     the number of attempts (in the event of collision)
      *
-     * @return string filename of moved file
+     * @return File the moved file
      */
     public static function moveUploadedFile(UploadedFile $uploadedFile, $attempts = 0) {
         $extension = pathinfo((string) $uploadedFile->getClientFilename(), PATHINFO_EXTENSION);
+        $media_type = $uploadedFile->getClientMediaType();
+        $original_filename = pathinfo((string) $uploadedFile->getClientFilename(), PATHINFO_FILENAME);
         $basename = self::get_guid(32);
         $filename = sprintf('%s.%0.8s', $basename, $extension);
         $fullpath = self::getStorageDirectory($basename) . $filename;
@@ -34,7 +37,16 @@ class FileManager {
 
         $uploadedFile->moveTo($fullpath);
 
-        return $fullpath;
+        /** @var File $file */
+        $file = File::query()->create([
+            'filename' => $original_filename,
+            'media_type' => $media_type,
+            'extension' => $extension,
+            'filepath' => $fullpath,
+            'compressed' => false
+        ]);
+
+        return $file;
     }
 
     /**

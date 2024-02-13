@@ -67,7 +67,8 @@ class ScreenshotController extends Controller {
         }
 
         for ($i = 0; $i < count($files); $i++) {
-            $screen_data = ['file_path' => FileManager::moveUploadedFile($files['file'][$i])];
+            $screenshot = FileManager::moveUploadedFile($files['file'][$i]);
+            $screen_data = ['file_id' => $screenshot->id];
             if (isset($data['description']) && isset($data['description'][$i])) {
                 $screen_data['description'] = $data['description'][$i];
             }
@@ -90,7 +91,7 @@ class ScreenshotController extends Controller {
             if (isset($screen_data['description'])) {
                 $screenshot->description = $screen_data['description'];
             }
-            $screenshot->file_path = $screen_data['file_path'];
+            $screenshot->file_id = $screen_data['file_id'];
             $screenshot->save();
             $ship->assignScreenshot($screenshot);
         }
@@ -164,7 +165,6 @@ class ScreenshotController extends Controller {
         $query = Screenshot::query()->where([['ref', $args['ref']]]);
         /** @var Screenshot $screenshot */
         $screenshot = $query->first();
-        unlink($screenshot->file_path);
         $screenshot->delete();
 
         $payload = (string) json_encode(['message' => 'successful']);

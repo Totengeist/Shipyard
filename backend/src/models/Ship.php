@@ -9,7 +9,8 @@ use Shipyard\Traits\HasTags;
 use Valitron\Validator;
 
 /**
- * @property string $file_path
+ * @property int    $file_id
+ * @property File   $file
  * @property string $title
  * @property string $description
  * @property int    $user_id
@@ -34,7 +35,7 @@ class Ship extends Model {
      * @var string[]
      */
     protected $fillable = [
-        'ref', 'user_id', 'parent_id', 'file_path', 'title', 'description', 'downloads',
+        'ref', 'user_id', 'parent_id', 'file_id', 'title', 'description', 'downloads',
     ];
 
     /**
@@ -42,12 +43,7 @@ class Ship extends Model {
      *
      * @var string[]
      */
-    protected $hidden = ['id', 'user_id', 'parent_id', 'file_path'];
-
-    /** @return string|false */
-    public function file_contents() {
-        return file_get_contents($this->file_path);
-    }
+    protected $hidden = ['id', 'user_id', 'parent_id', 'file_id'];
 
     /**
      * A ship can belong to a user.
@@ -77,6 +73,15 @@ class Ship extends Model {
     }
 
     /**
+     * A ship has a file.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function file() {
+        return $this->belongsTo(File::class);
+    }
+
+    /**
      * Create or add on to a validator.
      *
      * @param mixed                    $data
@@ -94,10 +99,14 @@ class Ship extends Model {
                 ['user_id'],
                 ['title'],
                 ['description'],
-                ['file_path']
+                ['file_id']
             ]
         ]);
 
         return $v;
+    }
+
+    public function delete() {
+        return $this->file->delete() && parent::delete();
     }
 }

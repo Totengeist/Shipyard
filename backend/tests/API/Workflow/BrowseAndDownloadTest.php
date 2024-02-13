@@ -44,7 +44,7 @@ class BrowseAndDownloadWorkflowTest extends APITestCase {
         $this->get('api/v1/ship/' . $chosen_ship->ref . '/download', ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
 
         $this->assertNotEquals((string) $this->response->getBody(), '');
-        $this->assertEquals((string) $this->response->getBody(), $chosen_ship->file_contents());
+        $this->assertEquals((string) $this->response->getBody(), $chosen_ship->file->file_contents());
         $this->assertEquals($this->response->getHeader('Content-Disposition')[0], 'attachment; filename="' . self::slugify($chosen_ship->title) . '.ship"');
 
         $this->get('api/v1/ship/' . $chosen_ship->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
@@ -90,7 +90,7 @@ class BrowseAndDownloadWorkflowTest extends APITestCase {
         $this->get('api/v1/save/' . $chosen_save->ref . '/download', ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
 
         $this->assertNotEquals((string) $this->response->getBody(), '');
-        $this->assertEquals((string) $this->response->getBody(), $chosen_save->file_contents());
+        $this->assertEquals((string) $this->response->getBody(), $chosen_save->file->file_contents());
         $this->assertEquals($this->response->getHeader('Content-Disposition')[0], 'attachment; filename="' . self::slugify($chosen_save->title) . '.space"');
 
         $this->get('api/v1/save/' . $chosen_save->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])

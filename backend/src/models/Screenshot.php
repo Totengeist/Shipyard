@@ -7,18 +7,26 @@ use Valitron\Validator;
 
 /**
  * @property string $description
- * @property string $file_path
+ * @property int    $file_id
+ * @property File   $file
  * @property bool   $primary
  */
 class Screenshot extends Model {
     use HasRef;
+
+    /**
+     * Label to use for tag table.
+     *
+     * @var string
+     */
+    public static $tag_label = 'screenshot';
     /**
      * The attributes that are mass assignable.
      *
      * @var string[]
      */
     protected $fillable = [
-        'ref', 'file_path', 'description', 'primary',
+        'ref', 'file_id', 'description', 'primary',
     ];
 
     /**
@@ -27,7 +35,7 @@ class Screenshot extends Model {
      * @var string[]
      */
     protected $hidden = [
-        'id', 'file_path', 'pivot',
+        'id', 'file_id', 'pivot',
     ];
 
     /**
@@ -69,6 +77,15 @@ class Screenshot extends Model {
     }
 
     /**
+     * A ship has a file.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function file() {
+        return $this->belongsTo(File::class);
+    }
+
+    /**
      * Create or add on to a validator.
      *
      * @param mixed                    $data
@@ -83,10 +100,14 @@ class Screenshot extends Model {
 
         $v->rules([
             'required' => [
-                ['file_path']
+                ['file_id']
             ]
         ]);
 
         return $v;
+    }
+
+    public function delete() {
+        return $this->file->delete() && parent::delete();
     }
 }

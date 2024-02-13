@@ -8,7 +8,7 @@ use Shipyard\Traits\HasScreenshots;
 use Shipyard\Traits\HasTags;
 
 /**
- * @property string $file_path
+ * @property string $file_id
  * @property string $title
  * @property string $description
  * @property int    $user_id
@@ -33,7 +33,7 @@ class Modification extends Model {
      * @var string[]
      */
     protected $fillable = [
-        'ref', 'user_id', 'parent_id', 'file_path', 'title', 'description',
+        'ref', 'user_id', 'parent_id', 'file_id', 'title', 'description',
     ];
 
     /**
@@ -41,7 +41,7 @@ class Modification extends Model {
      *
      * @var string[]
      */
-    protected $hidden = ['id', 'user_id', 'parent_id', 'file_path', 'save_id'];
+    protected $hidden = ['id', 'user_id', 'parent_id', 'file_id', 'save_id'];
 
     /**
      * A modification can belong to a user.
@@ -71,11 +71,11 @@ class Modification extends Model {
     }
 
     /**
-     * A modification has a save.
+     * A save has a file.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function saveFile() {
-        return $this->hasOne(Save::class);
+    public function file() {
+        return $this->belongsTo(File::class);
     }
 }

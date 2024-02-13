@@ -37,7 +37,7 @@ class SaveControllerTest extends APITestCase {
         $this->post('api/v1/save', ['user_ref' => $user->ref, 'title' => $title, 'file_path' => 'tests/test.sav'], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
 
-        $save = Save::query()->where([['user_id', $user->id], ['title', $title], ['file_path', 'tests/test.sav']])->first();
+        $save = Save::query()->where([['user_id', $user->id], ['title', $title]])->first();
         $this->assertNull($save);
     }
 
@@ -80,7 +80,7 @@ class SaveControllerTest extends APITestCase {
         $faker = \Faker\Factory::create();
         $title = $faker->words(3, true);
 
-        $this->post('api/v1/save/' . $save->ref, ['user_ref' => $user->ref, 'title' => $title, 'file_path' => '/'], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+        $this->post('api/v1/save/' . $save->ref, ['user_ref' => $user->ref, 'title' => $title], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
             'title' => $title,
         ]);
@@ -109,7 +109,7 @@ class SaveControllerTest extends APITestCase {
         $oldtitle = $save->title;
         $title = $faker->words(3, true);
 
-        $this->post('api/v1/save/' . $save->ref, ['user_ref' => $user->ref, 'title' => $title, 'file_path' => '/'], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+        $this->post('api/v1/save/' . $save->ref, ['user_ref' => $user->ref, 'title' => $title], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(403);
 
         $save = json_decode(Save::query()->where([['ref', $save->ref]])->first()->toJson(), true);

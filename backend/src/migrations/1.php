@@ -13,6 +13,7 @@ Capsule::schema()->dropIfExists('item_releases');
 Capsule::schema()->dropIfExists('modifications');
 Capsule::schema()->dropIfExists('saves');
 Capsule::schema()->dropIfExists('ships');
+Capsule::schema()->dropIfExists('files');
 Capsule::schema()->dropIfExists('role_user');
 Capsule::schema()->dropIfExists('permission_role');
 Capsule::schema()->dropIfExists('permissions');
@@ -107,6 +108,17 @@ Capsule::schema()->create('role_user', function ($table) {
     $table->primary(['role_id', 'user_id']);
 });
 
+echo "Creating files table.<br>\n";
+Capsule::schema()->create('files', function ($table) {
+    $table->increments('id')->unsigned();
+    $table->bigInteger('user_id')->unsigned()->nullable();
+    $table->string('filename');
+    $table->string('media_type')->default(null);
+    $table->string('extension');
+    $table->string('filepath');
+    $table->boolean('compressed')->default(false); // was it compressed by Shipyard?
+    $table->timestamps();
+});
 echo "Creating ships table.<br>\n";
 Capsule::schema()->create('ships', function ($table) {
     $table->increments('id')->unsigned();
@@ -115,7 +127,7 @@ Capsule::schema()->create('ships', function ($table) {
     $table->bigInteger('user_id')->unsigned()->nullable();
     $table->string('title')->default(false);
     $table->text('description');
-    $table->string('file_path');
+    $table->bigInteger('file_id');
     $table->bigInteger('downloads')->unsigned()->nullable(false)->default('0');
     $table->timestamps();
 });
@@ -127,7 +139,7 @@ Capsule::schema()->create('saves', function ($table) {
     $table->bigInteger('user_id')->unsigned()->nullable();
     $table->string('title')->default(false);
     $table->text('description');
-    $table->string('file_path');
+    $table->bigInteger('file_id');
     $table->bigInteger('downloads')->unsigned()->nullable(false)->default('0');
     $table->timestamps();
 });
@@ -140,6 +152,8 @@ Capsule::schema()->create('modifications', function ($table) {
     $table->bigInteger('save_id')->unsigned()->nullable();
     $table->string('title')->default(false);
     $table->text('description');
+    $table->bigInteger('file_id');
+    $table->bigInteger('downloads')->unsigned()->nullable(false)->default('0');
     $table->timestamps();
 });
 echo "Creating link table between items and releases table.<br>\n";
@@ -177,7 +191,7 @@ Capsule::schema()->create('screenshots', function ($table) {
     $table->increments('id')->unsigned();
     $table->string('ref')->unique();
     $table->text('description')->nullable();
-    $table->string('file_path');
+    $table->bigInteger('file_id');
     $table->timestamps();
 });
 echo "Creating link table between items and tags table.<br>\n";

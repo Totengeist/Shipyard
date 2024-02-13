@@ -47,13 +47,14 @@ class SaveController extends Controller {
             $data['user_id'] = $user->id;
         }
         unset($data['user_ref']);
-        unset($data['file_path']);
+        unset($data['file_id']);
 
         if (isset($files['file'])) {
             if (!is_array($files['file'])) {
-                $data['file_path'] = FileManager::moveUploadedFile($files['file']);
+                $upload = FileManager::moveUploadedFile($files['file']);
+                $data['file_id'] = $upload->id;
             } else {
-                $payload = (string) json_encode(['errors' => ['file' => 'Multiple file uploads are not allowsed.']]);
+                $payload = (string) json_encode(['errors' => ['file' => 'Multiple file uploads are not allowed.']]);
 
                 $response->getBody()->write($payload);
 
@@ -75,8 +76,8 @@ class SaveController extends Controller {
         $validator->validate();
         /** @var string[] $errors */
         $errors = $validator->errors();
-        if (!file_exists($data['file_path']) || is_dir($data['file_path'])) {
-            $errors = array_merge_recursive($errors, ['errors' => ['file_path' => 'File Path is missing or incorrect.']]);
+        if (!file_exists($upload->filepath) || is_dir($upload->filepath)) {
+            $errors = array_merge_recursive($errors, ['errors' => ['file_id' => 'File is missing or incorrect.']]);
         }
 
         if (count($errors)) {
@@ -130,14 +131,14 @@ class SaveController extends Controller {
         /** @var Save $save */
         $save = $query->first();
 
-        if (file_exists($save->file_path) === false) {
+        if (file_exists($save->file->filepath) === false) {
             $response->getBody()->write((string) json_encode(['error' => 'file does not exist']));
 
             return $response
               ->withHeader('Content-Type', 'application/json');
         }
 
-        $response->getBody()->write((string) $save->file_contents());
+        $response->getBody()->write((string) $save->file->file_contents());
         $save->downloads++;
         $save->save();
 
@@ -174,9 +175,6 @@ class SaveController extends Controller {
         if (isset($data['description'])) {
             $save->description = $data['description'];
         }
-        if (isset($data['file_path'])) {
-            $save->file_path = $data['file_path'];
-        }
 
         $save->save();
 
@@ -204,7 +202,6 @@ class SaveController extends Controller {
         if ($abort !== null) {
             return $abort;
         }
-        unlink($save->file_path);
         $save->delete();
 
         $payload = (string) json_encode(['message' => 'successful']);
