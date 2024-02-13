@@ -40,7 +40,7 @@ class FileManager {
         /** @var File $file */
         $file = File::query()->create([
             'filename' => $original_filename,
-            'media_type' => $media_type,
+            'media_type' => self::getMediaType($fullpath),
             'extension' => $extension,
             'filepath' => $fullpath,
             'compressed' => false
@@ -61,5 +61,21 @@ class FileManager {
         }
 
         return $dir;
+    }
+
+    /**
+     * @param string $filepath
+     *
+     * @return string
+     */
+    public static function getMediaType($filepath) {
+        $default_ftype = 'application/octet-stream';
+        $finfo = new \finfo(FILEINFO_MIME);
+        $determined_ftype = $finfo->file($filepath);
+        if (($determined_ftype !== false) && is_string($determined_ftype) && (strlen($determined_ftype)>0)) {
+            return $determined_ftype;
+        }
+
+        return $default_ftype;
     }
 }
