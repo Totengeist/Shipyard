@@ -15,7 +15,7 @@ class ScreenshotModelTest extends TestCase {
         /** @var Screenshot $screenshot1 */
         $screenshot1 = Screenshot::query()->create([
             'description' => $faker->words(5, true),
-            'file_path' => realpath(__DIR__ . '/../../assets/science-vessel.png'),
+            'file_id' => $faker->randomDigit(), /* @phpstan-ignore-line */
         ]);
 
         /** @var Screenshot $screenshot2 */

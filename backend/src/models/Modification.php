@@ -8,7 +8,7 @@ use Shipyard\Traits\HasScreenshots;
 use Shipyard\Traits\HasTags;
 
 /**
- * @property string $file_id
+ * @property int    $file_id
  * @property string $title
  * @property string $description
  * @property int    $user_id
