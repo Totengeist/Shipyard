@@ -111,7 +111,6 @@ Capsule::schema()->create('role_user', function ($table) {
 echo "Creating files table.<br>\n";
 Capsule::schema()->create('files', function ($table) {
     $table->increments('id')->unsigned();
-    $table->bigInteger('user_id')->unsigned()->nullable();
     $table->string('filename');
     $table->string('media_type')->default(null);
     $table->string('extension');
