@@ -21,24 +21,24 @@ class Log {
      * @return Logger
      */
     public static function instanciateLogger() {
-        if (!(isset($_ENV['LOG_LEVEL']) || isset($_ENV['LOG_FILE']))) {
+        if (!(isset($_SERVER['LOG_LEVEL']) || isset($_SERVER['LOG_FILE']))) {
             $log_level = 'OFF';
         } else {
-            $log_level = isset($_ENV['LOG_LEVEL']) ? strtoupper($_ENV['LOG_LEVEL']) : 'INFO';
+            $log_level = isset($_SERVER['LOG_LEVEL']) ? strtoupper($_SERVER['LOG_LEVEL']) : 'INFO';
             $log_level = \in_array($log_level, ['DEBUG', 'INFO', 'NOTICE', 'WARNING', 'ERROR', 'CRITICAL', 'ALERT', 'EMERGENCY', 'OFF']) ? $log_level : 'INFO';
         }
 
         if ($log_level == 'OFF') {
             $stream = new NullHandler();
         } else {
-            $log_file = isset($_ENV['LOG_FILE']) ? $_ENV['LOG_FILE'] : 'debug.log';
+            $log_file = isset($_SERVER['LOG_FILE']) ? $_SERVER['LOG_FILE'] : 'debug.log';
             $output = "%datetime%: [%channel%:%level_name%] > %message% %context% %extra%\n";
             $formatter = new LineFormatter($output, null, false, true);
             $stream = new StreamHandler($log_file, constant("\Monolog\Logger::$log_level"));
             $stream->setFormatter($formatter);
         }
 
-        $logger = new Logger($_ENV['APP_TITLE'] . ':main');
+        $logger = new Logger($_SERVER['APP_TITLE'] . ':main');
         $logger->pushHandler($stream);
         $logger->info("Logger initialized: {$log_level}");
 
@@ -133,6 +133,6 @@ class Log {
      * @return Logger
      */
     public static function channel(string $name) {
-        return self::$logger->withName($_ENV['APP_TITLE'] . ':' . $name);
+        return self::$logger->withName($_SERVER['APP_TITLE'] . ':' . $name);
     }
 }
