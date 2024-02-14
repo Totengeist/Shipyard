@@ -1,6 +1,7 @@
 .env
 .env.*.php
 .env.php
+*.log
 .php_cs
 .php_cs.cache
 .phpunit.result.cache

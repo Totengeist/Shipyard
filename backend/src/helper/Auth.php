@@ -23,6 +23,8 @@ class Auth {
             static::$session = new SessionHelper();
         }
 
+        $log_user = array_diff_key($user->attributesToArray(), ['email', 'created_at', 'updated_at']);
+        Log::channel('auth')->info('Logged in user.', $log_user);
         static::$session->set('user', $user);
     }
 
@@ -34,11 +36,16 @@ class Auth {
             static::$session = new SessionHelper();
         }
 
+        $log_user = [];
+        if (static::$session->get('user') !== null) {
+            $log_user = array_diff_key(static::$session->get('user')->attributesToArray(), ['email', 'created_at', 'updated_at']);
+        }
+        Log::channel('auth')->info('Logged out user.', $log_user);
         static::$session->destroy();
     }
 
     /**
-     * @return Models\User
+     * @return Models\User|null
      */
     public static function user() {
         if (static::$session === null) {

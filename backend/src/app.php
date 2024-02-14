@@ -10,7 +10,7 @@ class App {
      *
      * @var \Slim\App
      */
-    private $app;
+    private static $app;
 
     public function __construct() {
         $container = new \DI\Container();
@@ -19,11 +19,16 @@ class App {
         $container->set('session', function () {
             return new \SlimSession\Helper();
         });
+        $container->set('logger', function () {
+            return Log::instanciateLogger();
+        });
         AppFactory::setContainer($container);
 
         $app = AppFactory::create();
         require __DIR__ . '/config/routes.php';
-        $this->app = $app;
+        self::$app = $app;
+
+        $container->get('logger')->debug('App initialized.');
 
         $app->add(
             new \Slim\Middleware\Session([
@@ -38,7 +43,7 @@ class App {
      *
      * @return \Slim\App
      */
-    public function get() {
-        return $this->app;
+    public static function get() {
+        return self::$app;
     }
 }

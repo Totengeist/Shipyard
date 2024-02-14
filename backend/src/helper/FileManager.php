@@ -6,6 +6,14 @@ use Shipyard\Models\File;
 use Shipyard\Traits\CreatesUniqueIDs;
 use Slim\Psr7\UploadedFile;
 
+/**
+ * Performs standard file management functions.
+ *
+ * Processing uploaded files, moving files, and determining file types.
+ *
+ * @todo Implement virus scanning with clamav https://stackoverflow.com/q/7648623/9882907
+ * @todo Use IVParsers to implement custom internal media types
+ */
 class FileManager {
     use CreatesUniqueIDs;
 
@@ -28,8 +36,10 @@ class FileManager {
 
         if (file_exists($fullpath)) {
             if ($attempts > 10) {
+                Log::channel('files')->error('We have attempted to save a file 10 times and run into naming conflicts each time');
                 throw new \Exception('We have attempted to save a file 10 times and run into naming conflicts each time. Please report this to your administrator.');
             }
+
             usleep(30000);
 
             return self::moveUploadedFile($uploadedFile, $attempts++);
@@ -46,10 +56,20 @@ class FileManager {
             'compressed' => false
         ]);
 
+        Log::channel('files')->info('Saved file.', ['file' => $file->makeVisible('filepath')->attributesToArray(), 'user' => Auth::user()!==null ? Auth::user()->attributesToArray() : 'none']);
+
         return $file;
     }
 
     /**
+     * Get the storage directory for the file based on its hash.
+     *
+     * This creates a segmented directory structure for storage to reduce issues with file indexing
+     * on large directories. In theory, this will reduce the number of files per directory to n/256.
+     *
+     * Since the storage directory is stored, this should be arbitrarily alterable to support
+     * further segmenting in the future.
+     *
      * @param string $hash
      *
      * @return string
@@ -64,6 +84,11 @@ class FileManager {
     }
 
     /**
+     * Determine the media type of the file or fall back to application/octet-stream.
+     *
+     * UploadedFile seems to default to 'application/octet-stream' for most/all uploads, so this
+     * is a 'safe' backup media type.
+     *
      * @param string $filepath
      *
      * @return string
