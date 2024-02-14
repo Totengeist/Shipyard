@@ -5,6 +5,7 @@ namespace Shipyard;
 use Shipyard\Models\File;
 use Shipyard\Traits\CreatesUniqueIDs;
 use Slim\Psr7\UploadedFile;
+use Totengeist\IVParser\IVFile;
 
 /**
  * Performs standard file management functions.
@@ -84,7 +85,7 @@ class FileManager {
     }
 
     /**
-     * Determine the media type of the file or fall back to application/octet-stream.
+     * Determine the standard media type of the file or fall back to application/octet-stream.
      *
      * UploadedFile seems to default to 'application/octet-stream' for most/all uploads, so this
      * is a 'safe' backup media type.
@@ -93,7 +94,7 @@ class FileManager {
      *
      * @return string
      */
-    public static function getMediaType($filepath) {
+    public static function getBaseMediaType($filepath) {
         $default_ftype = 'application/octet-stream';
         $finfo = new \finfo(FILEINFO_MIME);
         $determined_ftype = $finfo->file($filepath);
@@ -102,5 +103,29 @@ class FileManager {
         }
 
         return $default_ftype;
+    }
+
+    /**
+     * Determine the media type of the file.
+     *
+     * Check the standard media type first. If it is a text file, check if it is a specific
+     * Introversion file.
+     *
+     * @param string $filepath
+     *
+     * @return string
+     */
+    public static function getMediaType($filepath) {
+        $base_type = self::getBaseMediaType($filepath);
+        if (explode(';', $base_type)[0] == 'text/plain') {
+            /** @var string $file_contents */
+            $file_contents = file_get_contents($filepath);
+            $iv_type = IVFile::check_file_type($file_contents);
+            if ($iv_type !== false) {
+                return (string) IVFile::check_file_type($file_contents);
+            }
+        }
+
+        return $base_type;
     }
 }
