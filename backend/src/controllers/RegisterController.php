@@ -179,7 +179,6 @@ class RegisterController extends Controller {
             /** @var User $user */
             $user = $query->first();
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $ex) {
-
             return $response
               ->withStatus(404)
               ->withHeader('Content-Type', 'application/json');

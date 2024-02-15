@@ -44,7 +44,7 @@ User Management
         }
       }
 
-   :query name: the username, whichhis can contain spaces and special characters.
+   :query name: the username, which can contain spaces and special characters.
    :query email: a valid email address to send the activation link to.
    :query password: a strong password
    :query password_confirmation: the same strong password, to verify it wasn't misspelled
