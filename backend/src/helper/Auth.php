@@ -56,11 +56,22 @@ class Auth {
     }
 
     /**
+     * @return string
+     */
+    public static function session_id() {
+        if (static::$session === null) {
+            static::$session = new SessionHelper();
+        }
+
+        return static::$session::id();
+    }
+
+    /**
      * @return bool
      */
     public static function check() {
         if (static::$session === null) {
-            static::$session = new SessionHelper();
+            return false;
         }
 
         return static::$session->exists('user');
@@ -78,5 +89,28 @@ class Auth {
         $response->withStatus($code, $message);
 
         return $response;
+    }
+
+    /**
+     * Reload a different session.
+     *
+     * Since creating a session is done often and slim-sessions doesn't handle reloading a session,
+     * we need to destroy the current one and open the requested one.
+     *
+     * @param string $session_id the ID of an existing session that should be resumed
+     *
+     * @return void
+     */
+    public static function load_session($session_id) {
+        if (static::$session !== null) {
+            static::$session->destroy();
+        }
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            $_SESSION = [];
+            session_destroy();
+        }
+        session_id($session_id);
+        session_start();
+        static::$session = new SessionHelper();
     }
 }

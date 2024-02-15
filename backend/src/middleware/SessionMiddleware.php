@@ -20,6 +20,14 @@ class SessionMiddleware implements MiddlewareInterface {
      */
     public function process(Request $request, Handler $handler): ResponseInterface {
         if (!Auth::check()) {
+            // Check for an existing session with a bearer token
+            if ($request->getHeader('Authorization') && preg_match('/Bearer ([0-9a-z]*)/', $request->getHeader('Authorization')[0], $token_check)) {
+                Auth::load_session($token_check[1]);
+                if (Auth::check()) { /* @phpstan-ignore-line */
+                    return $handler->handle($request);
+                }
+            }
+
             // Invalid authentication credentials
             return (new Response())
                 ->withHeader('Content-Type', 'application/json')

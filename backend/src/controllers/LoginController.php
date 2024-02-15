@@ -55,6 +55,7 @@ class LoginController extends Controller {
 
         Auth::login($user);
         $data = (Auth::user() !== null) ? Auth::user()->makeVisible(['email', 'created_at', 'updated_at']) : [];
+        $data['session_id'] = Auth::session_id();
 
         $response->getBody()->write((string) json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
 
@@ -69,9 +70,10 @@ class LoginController extends Controller {
      * @return Response
      */
     public function me(Request $request, Response $response) {
-        $payload = (string) json_encode((Auth::user() !== null) ? Auth::user()->makeVisible(['email', 'created_at', 'updated_at']) : []);
+        $data = (Auth::user() !== null) ? Auth::user()->makeVisible(['email', 'created_at', 'updated_at']) : [];
+        $data['session_id'] = Auth::session_id();
 
-        $response->getBody()->write($payload);
+        $response->getBody()->write((string) json_encode($data));
 
         return $response
             ->withHeader('Content-Type', 'application/json')
