@@ -21,7 +21,7 @@ class Role extends Model {
      * @var string[]
      */
     protected $hidden = [
-        'id',
+        'id', 'pivot', 'created_at', 'updated_at',
     ];
 
     /**

@@ -1,7 +1,7 @@
 # The Last Starship Shipyard
-[![Build Status](https://github.com/Totengeist/Shipyard/actions/workflows/tests.yml/badge.svg)](https://github.com/Totengeist/Shipyard/actions/workflows/tests.yml) [![codecov](https://codecov.io/gh/Totengeist/Shipyard/branch/main/graph/badge.svg?token=ECJQYDJRPX)](https://codecov.io/gh/Totengeist/Shipyard)
+[![Build Status](https://github.com/Totengeist/Shipyard/actions/workflows/tests.yml/badge.svg)](https://github.com/Totengeist/Shipyard/actions/workflows/tests.yml) [![codecov](https://codecov.io/gh/Totengeist/Shipyard/branch/main/graph/badge.svg?token=ECJQYDJRPX)](https://codecov.io/gh/Totengeist/Shipyard) [![Documentation Status](https://readthedocs.org/projects/shipyard/badge/?version=latest)](https://shipyard.readthedocs.io/en/latest/?badge=latest)
 
-[The Last Starship][1] Shipyard is a sharing system for player created ships, saves and challenges.
+Shipyard is a sharing system for player created ships, saves and mods for the Introversion game [The Last Starship][1].
 
 The system is managed by the community and is run by the [community wiki][4] staff. We are not affiliated with Introversion Software.
 

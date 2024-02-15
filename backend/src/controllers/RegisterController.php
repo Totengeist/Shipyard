@@ -145,7 +145,7 @@ class RegisterController extends Controller {
             $response->getBody()->write($payload);
 
             return $response
-              ->withStatus(401)
+              ->withStatus(422)
               ->withHeader('Content-Type', 'application/json');
         }
 
@@ -169,14 +169,21 @@ class RegisterController extends Controller {
      * @return Response
      */
     public function activate(Request $request, Response $response, $args) {
-        /** @var \Illuminate\Database\Eloquent\Builder $query */
-        $query = UserActivation::query()->where('token', $args['token']);
-        /** @var UserActivation $activation */
-        $activation = $query->firstOrFail();
-        /** @var \Illuminate\Database\Eloquent\Builder $query */
-        $query = User::query()->where('email', $activation->email);
-        /** @var User $user */
-        $user = $query->first();
+        try {
+            /** @var \Illuminate\Database\Eloquent\Builder $query */
+            $query = UserActivation::query()->where('token', $args['token']);
+            /** @var UserActivation $activation */
+            $activation = $query->firstOrFail();
+            /** @var \Illuminate\Database\Eloquent\Builder $query */
+            $query = User::query()->where('email', $activation->email);
+            /** @var User $user */
+            $user = $query->first();
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $ex) {
+
+            return $response
+              ->withStatus(404)
+              ->withHeader('Content-Type', 'application/json');
+        }
         $user->makeVisible(['email', 'created_at', 'updated_at']);
         $user->activate();
 
@@ -242,6 +249,7 @@ class RegisterController extends Controller {
             $response->getBody()->write((string) json_encode(['errors' => $errors]));
 
             return $response
+                ->withStatus(422)
                 ->withHeader('Content-Type', 'application/json');
         }
 
