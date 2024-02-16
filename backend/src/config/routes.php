@@ -25,13 +25,16 @@ $app->group($_SERVER['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $gro
         $group->get('/ship', 'Shipyard\Controllers\ShipController:index');
         $group->get('/ship/{ref}', 'Shipyard\Controllers\ShipController:show');
         $group->get('/ship/{ref}/download', 'Shipyard\Controllers\ShipController:download');
+        $group->get('/ship/{ref}/screenshots', 'Shipyard\Controllers\ShipController:index_screenshots');
 
         $group->get('/save', 'Shipyard\Controllers\SaveController:index');
         $group->get('/save/{ref}', 'Shipyard\Controllers\SaveController:show');
         $group->get('/save/{ref}/download', 'Shipyard\Controllers\SaveController:download');
+        $group->get('/save/{ref}/screenshots', 'Shipyard\Controllers\SaveController:index_screenshots');
 
         $group->get('/modification', 'Shipyard\Controllers\ModificationController:index');
         $group->get('/modification/{ref}', 'Shipyard\Controllers\ModificationController:show');
+        $group->get('/modification/{ref}/screenshots', 'Shipyard\Controllers\ModificationController:index_screenshots');
 
         $group->get('/tag', 'Shipyard\Controllers\TagController:index');
         $group->get('/tag/{slug}', 'Shipyard\Controllers\TagController:show');
@@ -39,7 +42,6 @@ $app->group($_SERVER['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $gro
         $group->get('/release', 'Shipyard\Controllers\ReleaseController:index');
         $group->get('/release/{slug}', 'Shipyard\Controllers\ReleaseController:show');
 
-        $group->get('/screenshots/{ship_ref}', 'Shipyard\Controllers\ScreenshotController:index');
         $group->get('/screenshot/{ref}', 'Shipyard\Controllers\ScreenshotController:show');
     });
 
@@ -64,14 +66,17 @@ $app->group($_SERVER['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $gro
         $group->post('/ship', 'Shipyard\Controllers\ShipController:store');
         $group->post('/ship/{ref}', 'Shipyard\Controllers\ShipController:update');
         $group->post('/ship/{ref}/upgrade', 'Shipyard\Controllers\ShipController:upgrade');
+        $group->post('/ship/{ref}/screenshots', 'Shipyard\Controllers\ShipController:store_screenshots');
         $group->delete('/ship/{ref}', 'Shipyard\Controllers\ShipController:destroy');
 
         $group->post('/save', 'Shipyard\Controllers\SaveController:store');
         $group->post('/save/{ref}', 'Shipyard\Controllers\SaveController:update');
+        $group->post('/save/{ref}/screenshots', 'Shipyard\Controllers\SaveController:store_screenshots');
         $group->delete('/save/{ref}', 'Shipyard\Controllers\SaveController:destroy');
 
         $group->post('/modification', 'Shipyard\Controllers\ModificationController:store');
         $group->post('/modification/{ref}', 'Shipyard\Controllers\ModificationController:update');
+        $group->post('/modification/{ref}/screenshots', 'Shipyard\Controllers\ModificationController:store_screenshots');
         $group->delete('/modification/{ref}', 'Shipyard\Controllers\ModificationController:destroy');
 
         $group->post('/tag', 'Shipyard\Controllers\TagController:store');
@@ -82,7 +87,6 @@ $app->group($_SERVER['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $gro
         $group->post('/release/{slug}', 'Shipyard\Controllers\ReleaseController:update');
         $group->delete('/release/{slug}', 'Shipyard\Controllers\ReleaseController:destroy');
 
-        $group->post('/screenshots/{ship_ref}', 'Shipyard\Controllers\ScreenshotController:store');
         $group->post('/screenshot/{ref}', 'Shipyard\Controllers\ScreenshotController:update');
         $group->delete('/screenshot/{ref}', 'Shipyard\Controllers\ScreenshotController:destroy');
     })->add(SessionMiddleware::class);

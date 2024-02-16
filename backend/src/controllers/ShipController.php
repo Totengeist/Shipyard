@@ -220,6 +220,52 @@ class ShipController extends Controller {
     }
 
     /**
+     * Add screenshots to a ship.
+     *
+     * @param array<string,string> $args
+     *
+     * @return Response
+     */
+    public function index_screenshots(Request $request, Response $response, $args) {
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Ship::query()->where([['ref', $args['ref']]]);
+        /** @var Ship $ship */
+        $ship = $query->first();
+        if ($ship == null) {
+            return $this->not_found_response('Ship');
+        }
+
+        $requestbody = (array) $request->getParsedBody();
+        $requestbody['item'] = $ship;
+        $request = $request->withParsedBody($requestbody);
+
+        return (new ScreenshotController())->index($request, $response);
+    }
+
+    /**
+     * Add screenshots to a ship.
+     *
+     * @param array<string,string> $args
+     *
+     * @return Response
+     */
+    public function store_screenshots(Request $request, Response $response, $args) {
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Ship::query()->where([['ref', $args['ref']]]);
+        /** @var Ship $ship */
+        $ship = $query->first();
+        if ($ship == null) {
+            return $this->not_found_response('Ship');
+        }
+
+        $requestbody = (array) $request->getParsedBody();
+        $requestbody['item'] = $ship;
+        $request = $request->withParsedBody($requestbody);
+
+        return (new ScreenshotController())->store($request, $response, $args);
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param array<string,string> $args

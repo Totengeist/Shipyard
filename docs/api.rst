@@ -442,6 +442,7 @@ Ship Management
    :statuscode 404: the ship does not exist
    :reqheader Authorization: optional bearer token to authenticate
 
+.. http:get:: /api/v1/ship/(ship_ref)/screenshots
 .. http:post:: /api/v1/ship/(ref)
 
    Edit an existing ship.
@@ -453,6 +454,13 @@ Ship Management
    Older versions will still be accessible. This allows users to upgrade ships to support new
    features added to The Last Starship. The ``(ref)`` will continue to point to the older version,
    but it's page will display a notice that it has been replaced.
+
+.. http:post:: /api/v1/ship/(ship_ref)/screenshots
+
+   Adds one or more screenshots to an existing ship.
+
+   :reqheader Authorization: optional bearer token to authenticate
+
 
 .. http:delete:: /api/v1/ship/(ref)
 
@@ -477,8 +485,15 @@ Save Management
    :statuscode 404: the save does not exist
 
 .. http:get:: /api/v1/save/(ref)/download
+.. http:get:: /api/v1/save/(ship_ref)/screenshots
 .. http:post:: /api/v1/save
 .. http:post:: /api/v1/save/(ref)
+.. http:post:: /api/v1/save/(ship_ref)/screenshots
+
+   Adds one or more screenshots to an existing save.
+
+   :reqheader Authorization: optional bearer token to authenticate
+
 .. http:delete:: /api/v1/save/(ref)
 
    Delete an existing save.
@@ -501,8 +516,15 @@ Mod Management
    :statuscode 200: no error
    :statuscode 404: the mod does not exist
 
+.. http:get:: /api/v1/modification/(ship_ref)/screenshots
 .. http:post:: /api/v1/modification
 .. http:post:: /api/v1/modification/(ref)
+.. http:post:: /api/v1/modification/(ship_ref)/screenshots
+
+   Adds one or more screenshots to an existing modification.
+
+   :reqheader Authorization: optional bearer token to authenticate
+
 .. http:delete:: /api/v1/modification/(ref)
 
    Delete an existing mod.
@@ -510,19 +532,12 @@ Mod Management
 Screenshot Management
 ---------------------
 
-.. http:get:: /api/v1/screenshots/(ship_ref)
 .. http:get:: /api/v1/screenshot/(ref)
 
    Information about a specific screenshot
 
    :statuscode 200: no error
    :statuscode 404: the screenshot (or the item it belongs to) does not exist
-
-.. http:post:: /api/v1/screenshots/(ship_ref)
-
-   Adds one or more screenshots to an existing ship.
-
-   :reqheader Authorization: optional bearer token to authenticate
 
 .. http:post:: /api/v1/screenshot/(ref)
 .. http:delete:: /api/v1/screenshot/(ref)

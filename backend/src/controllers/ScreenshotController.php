@@ -6,7 +6,6 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Shipyard\FileManager;
 use Shipyard\Models\Screenshot;
-use Shipyard\Models\Ship;
 use Shipyard\Traits\ChecksPermissions;
 
 class ScreenshotController extends Controller {
@@ -17,16 +16,12 @@ class ScreenshotController extends Controller {
      *
      * @todo expand screenshots to items other than ships (item_ref and tag_label?)
      *
-     * @param array<string,string> $args
-     *
      * @return Response
      */
-    public function index(Request $request, Response $response, $args) {
-        /** @var \Illuminate\Database\Eloquent\Builder $query */
-        $query = Ship::query()->where('ref', '=', $args['ship_ref']);
-        /** @var Ship $ship */
-        $ship = $query->firstOrFail();
-        $payload = (string) json_encode($ship->screenshots()->get());
+    public function index(Request $request, Response $response) {
+        $data = (array) $request->getParsedBody();
+        $item = $data['item'];
+        $payload = (string) json_encode($item->screenshots()->get());
         $response->getBody()->write($payload);
 
         return $response
@@ -41,16 +36,13 @@ class ScreenshotController extends Controller {
      * @return Response
      */
     public function store(Request $request, Response $response, $args) {
-        /** @var \Illuminate\Database\Eloquent\Builder $query */
-        $query = Ship::query()->where('ref', '=', $args['ship_ref']);
-        /** @var Ship $ship */
-        $ship = $query->firstOrFail();
-        $user_id = $ship->user_id;
+        $data = (array) $request->getParsedBody();
+        $item = $data['item'];
+        $user_id = $item->user_id;
 
         if (($perm_check = $this->isOrCan($user_id, 'create-screenshots')) !== null) {
             return $perm_check;
         }
-        $data = (array) $request->getParsedBody();
         $files = $request->getUploadedFiles();
 
         if (count($files) == 0) {
@@ -93,10 +85,10 @@ class ScreenshotController extends Controller {
             }
             $screenshot->file_id = $screen_data['file_id'];
             $screenshot->save();
-            $ship->assignScreenshot($screenshot);
+            $item->assignScreenshot($screenshot);
         }
 
-        $payload = (string) json_encode($ship->screenshots()->get());
+        $payload = (string) json_encode($item->screenshots()->get());
 
         $response->getBody()->write($payload);
 

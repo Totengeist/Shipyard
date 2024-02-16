@@ -13,7 +13,7 @@ class ScreenshotControllerTest extends APITestCase {
     /**
      * @return void
      */
-    public function testCanListScreenshots() {
+    public function testCanListShipScreenshots() {
         $ship1 = Factory::create('Shipyard\Models\Ship');
         $ship2 = Factory::create('Shipyard\Models\Ship');
         $screenshot1 = Factory::create('Shipyard\Models\Screenshot');
@@ -21,7 +21,7 @@ class ScreenshotControllerTest extends APITestCase {
         $ship1->assignScreenshot($screenshot1);
         $ship2->assignScreenshot($screenshot2);
 
-        $this->get('api/v1/screenshots/' . $ship1->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+        $this->get('api/v1/ship/' . $ship1->ref . '/screenshots', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
             'ref' => $screenshot1->ref,
             'description' => $screenshot1->description,
@@ -34,7 +34,49 @@ class ScreenshotControllerTest extends APITestCase {
     /**
      * @return void
      */
-    public function testOwnerCanCreateScreenshots() {
+    public function testCanListSaveScreenshots() {
+        $save1 = Factory::create('Shipyard\Models\Save');
+        $save2 = Factory::create('Shipyard\Models\Save');
+        $screenshot1 = Factory::create('Shipyard\Models\Screenshot');
+        $screenshot2 = Factory::create('Shipyard\Models\Screenshot');
+        $save1->assignScreenshot($screenshot1);
+        $save2->assignScreenshot($screenshot2);
+
+        $this->get('api/v1/save/' . $save1->ref . '/screenshots', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertJsonResponse([
+            'ref' => $screenshot1->ref,
+            'description' => $screenshot1->description,
+         ])->assertJsonResponse([
+            'ref' => $screenshot2->ref,
+            'description' => $screenshot2->description,
+         ], true);
+    }
+
+    /**
+     * @return void
+     */
+    public function testCanListModificationScreenshots() {
+        $modification1 = Factory::create('Shipyard\Models\Modification');
+        $modification2 = Factory::create('Shipyard\Models\Modification');
+        $screenshot1 = Factory::create('Shipyard\Models\Screenshot');
+        $screenshot2 = Factory::create('Shipyard\Models\Screenshot');
+        $modification1->assignScreenshot($screenshot1);
+        $modification2->assignScreenshot($screenshot2);
+
+        $this->get('api/v1/modification/' . $modification1->ref . '/screenshots', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertJsonResponse([
+            'ref' => $screenshot1->ref,
+            'description' => $screenshot1->description,
+         ])->assertJsonResponse([
+            'ref' => $screenshot2->ref,
+            'description' => $screenshot2->description,
+         ], true);
+    }
+
+    /**
+     * @return void
+     */
+    public function testOwnerCanCreateShipScreenshots() {
         $faker = \Faker\Factory::create();
         $user = Factory::create('Shipyard\Models\User');
         $ship = Factory::create('Shipyard\Models\Ship', ['user_id' => $user->id]);
@@ -42,7 +84,7 @@ class ScreenshotControllerTest extends APITestCase {
         $user->activate();
         Auth::login($user);
 
-        $return = $this->post('api/v1/screenshots/' . $ship->ref, ['description' => [$description]], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => [self::createSampleUpload('science-vessel.png')]])
+        $return = $this->post('api/v1/ship/' . $ship->ref . '/screenshots', ['description' => [$description]], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => [self::createSampleUpload('science-vessel.png')]])
              ->assertJsonResponse([
             'description' => $description,
         ]);
@@ -58,7 +100,7 @@ class ScreenshotControllerTest extends APITestCase {
     /**
      * @return void
      */
-    public function testAdminCanCreateScreenshots() {
+    public function testAdminCanCreateShipScreenshots() {
         $faker = \Faker\Factory::create();
         $admin = Factory::create('Shipyard\Models\User');
         $admin->activate();
@@ -68,13 +110,65 @@ class ScreenshotControllerTest extends APITestCase {
         $ship = Factory::create('Shipyard\Models\Ship');
         $description = $faker->paragraph();
 
-        $this->post('api/v1/screenshots/' . $ship->ref, ['description' => [$description]], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => [self::createSampleUpload('science-vessel.png')]])
+        $this->post('api/v1/ship/' . $ship->ref . '/screenshots', ['description' => [$description]], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => [self::createSampleUpload('science-vessel.png')]])
              ->assertJsonResponse([
             'description' => $description,
         ]);
 
         $screenshot = json_decode(Screenshot::query()->whereHas('ships', function ($q) use ($ship) {
             $q->where('id', $ship->id);
+        })->first()->toJson(), true);
+        $this->assertJsonFragment([
+            'description' => $description,
+        ], $screenshot);
+    }
+
+    /**
+     * @return void
+     */
+    public function testAdminCanCreateSaveScreenshots() {
+        $faker = \Faker\Factory::create();
+        $admin = Factory::create('Shipyard\Models\User');
+        $admin->activate();
+        $admin->assignRole('administrator');
+        Auth::login($admin);
+
+        $save = Factory::create('Shipyard\Models\Save');
+        $description = $faker->paragraph();
+
+        $this->post('api/v1/save/' . $save->ref . '/screenshots', ['description' => [$description]], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => [self::createSampleUpload('science-vessel.png')]])
+             ->assertJsonResponse([
+            'description' => $description,
+        ]);
+
+        $screenshot = json_decode(Screenshot::query()->whereHas('saves', function ($q) use ($save) {
+            $q->where('id', $save->id);
+        })->first()->toJson(), true);
+        $this->assertJsonFragment([
+            'description' => $description,
+        ], $screenshot);
+    }
+
+    /**
+     * @return void
+     */
+    public function testAdminCanCreateModScreenshots() {
+        $faker = \Faker\Factory::create();
+        $admin = Factory::create('Shipyard\Models\User');
+        $admin->activate();
+        $admin->assignRole('administrator');
+        Auth::login($admin);
+
+        $modification = Factory::create('Shipyard\Models\Modification');
+        $description = $faker->paragraph();
+
+        $this->post('api/v1/modification/' . $modification->ref . '/screenshots', ['description' => [$description]], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => [self::createSampleUpload('science-vessel.png')]])
+             ->assertJsonResponse([
+            'description' => $description,
+        ]);
+
+        $screenshot = json_decode(Screenshot::query()->whereHas('modifications', function ($q) use ($modification) {
+            $q->where('id', $modification->id);
         })->first()->toJson(), true);
         $this->assertJsonFragment([
             'description' => $description,
@@ -93,7 +187,7 @@ class ScreenshotControllerTest extends APITestCase {
         $user2->activate();
         Auth::login($user2);
 
-        $return = $this->post('api/v1/screenshots/' . $ship->ref, ['description' => [$description]], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => [self::createSampleUpload('science-vessel.png')]])
+        $return = $this->post('api/v1/ship/' . $ship->ref . '/screenshots', ['description' => [$description]], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => [self::createSampleUpload('science-vessel.png')]])
              ->assertStatus(403);
 
         $screenshot = Screenshot::query()->whereHas('ships', function ($q) use ($ship) {
@@ -116,7 +210,7 @@ class ScreenshotControllerTest extends APITestCase {
         $slug = $faker->slug;
         $label = '';
 
-        $this->post('api/v1/screenshots/' . $ship->ref, [], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => [self::createSampleUpload('science-vessel.png')]])
+        $this->post('api/v1/ship/' . $ship->ref . '/screenshots', [], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => [self::createSampleUpload('science-vessel.png')]])
              ->assertJsonResponse([
             'description' => null,
         ]);

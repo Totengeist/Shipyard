@@ -196,6 +196,52 @@ class SaveController extends Controller {
     }
 
     /**
+     * Add screenshots to a save.
+     *
+     * @param array<string,string> $args
+     *
+     * @return Response
+     */
+    public function index_screenshots(Request $request, Response $response, $args) {
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Save::query()->where([['ref', $args['ref']]]);
+        /** @var Save $save */
+        $save = $query->first();
+        if ($save == null) {
+            return $this->not_found_response('Save');
+        }
+
+        $requestbody = (array) $request->getParsedBody();
+        $requestbody['item'] = $save;
+        $request = $request->withParsedBody($requestbody);
+
+        return (new ScreenshotController())->index($request, $response);
+    }
+
+    /**
+     * Add screenshots to a save.
+     *
+     * @param array<string,string> $args
+     *
+     * @return Response
+     */
+    public function store_screenshots(Request $request, Response $response, $args) {
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Save::query()->where([['ref', $args['ref']]]);
+        /** @var Save $save */
+        $save = $query->first();
+        if ($save == null) {
+            return $this->not_found_response('Save');
+        }
+
+        $requestbody = (array) $request->getParsedBody();
+        $requestbody['item'] = $save;
+        $request = $request->withParsedBody($requestbody);
+
+        return (new ScreenshotController())->store($request, $response, $args);
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param array<string,string> $args

@@ -112,6 +112,52 @@ class ModificationController extends Controller {
     }
 
     /**
+     * Add screenshots to a modification.
+     *
+     * @param array<string,string> $args
+     *
+     * @return Response
+     */
+    public function index_screenshots(Request $request, Response $response, $args) {
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Modification::query()->where([['ref', $args['ref']]]);
+        /** @var Modification $modification */
+        $modification = $query->first();
+        if ($modification == null) {
+            return $this->not_found_response('Modification');
+        }
+
+        $requestbody = (array) $request->getParsedBody();
+        $requestbody['item'] = $modification;
+        $request = $request->withParsedBody($requestbody);
+
+        return (new ScreenshotController())->index($request, $response);
+    }
+
+    /**
+     * Add screenshots to a modification.
+     *
+     * @param array<string,string> $args
+     *
+     * @return Response
+     */
+    public function store_screenshots(Request $request, Response $response, $args) {
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Modification::query()->where([['ref', $args['ref']]]);
+        /** @var Modification $modification */
+        $modification = $query->first();
+        if ($modification == null) {
+            return $this->not_found_response('Modification');
+        }
+
+        $requestbody = (array) $request->getParsedBody();
+        $requestbody['item'] = $modification;
+        $request = $request->withParsedBody($requestbody);
+
+        return (new ScreenshotController())->store($request, $response, $args);
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param array<string,string> $args
