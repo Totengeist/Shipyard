@@ -14,7 +14,7 @@ $app->group($_SERVER['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $gro
     $group->get('/version', function (Request $request, Response $response, $args) {
         $raw_version = Capsule::table('meta')->where('name', '=', 'schema_version')->get()[0]; // 'select `default`,`value` from `meta` where `name` = ?', ['schema_version'])[0];
         $version = (empty($raw_version->value) ? $raw_version->default : $raw_version->value);
-        $payload = (string) json_encode(['app' => $_SERVER['APP_TITLE'], 'version' => 'alpha', 'schema' => $version]);
+        $payload = (string) json_encode(['app' => $_SERVER['APP_TITLE'], 'version' => 'alpha']);
         $response->getBody()->write($payload);
 
         return $response
