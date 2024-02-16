@@ -72,7 +72,11 @@ class TagController extends Controller {
     public function show(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Tag::query()->where([['slug', $args['slug']]]);
-        $payload = (string) json_encode($query->first());
+        $tag = $query->first();
+        if ($tag == null) {
+            return $this->not_found_response('Tag');
+        }
+        $payload = (string) json_encode($tag);
 
         $response->getBody()->write($payload);
 
@@ -97,6 +101,9 @@ class TagController extends Controller {
         $query = Tag::query()->where([['slug', $args['slug']]]);
         /** @var Tag $tag */
         $tag = $query->first();
+        if ($tag == null) {
+            return $this->not_found_response('Tag');
+        }
         $tag->slug = $data['slug'];
         $tag->label = $data['label'];
         $tag->save();
@@ -124,6 +131,9 @@ class TagController extends Controller {
         $query = Tag::query()->where([['slug', $args['slug']]]);
         /** @var Tag $tag */
         $tag = $query->first();
+        if ($tag == null) {
+            return $this->not_found_response('Tag');
+        }
         $tag->delete();
 
         $payload = (string) json_encode(['message' => 'successful']);

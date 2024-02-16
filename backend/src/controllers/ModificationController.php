@@ -66,7 +66,11 @@ class ModificationController extends Controller {
     public function show(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Modification::query()->where([['ref', $args['ref']]]);
-        $payload = (string) json_encode($query->first());
+        $modification = $query->first();
+        if ($modification == null) {
+            return $this->not_found_response('Modification');
+        }
+        $payload = (string) json_encode($modification);
 
         $response->getBody()->write($payload);
 
@@ -88,6 +92,9 @@ class ModificationController extends Controller {
         $query = Modification::query()->where([['ref', $args['ref']]]);
         /** @var Modification $modification */
         $modification = $query->first();
+        if ($modification == null) {
+            return $this->not_found_response('Modification');
+        }
         if (isset($data['title'])) {
             $modification->title = $data['title'];
         }
@@ -116,6 +123,9 @@ class ModificationController extends Controller {
         $query = Modification::query()->where([['ref', $args['ref']]]);
         /** @var Modification $modification */
         $modification = $query->first();
+        if ($modification == null) {
+            return $this->not_found_response('Modification');
+        }
         $modification->delete();
 
         $payload = (string) json_encode(['message' => 'successful']);

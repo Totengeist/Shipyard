@@ -80,7 +80,11 @@ class RoleController extends Controller {
 
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Role::query()->where([['slug', $args['slug']]]);
-        $payload = (string) json_encode($query->first());
+        $role = $query->first();
+        if ($role == null) {
+            return $this->not_found_response('Role');
+        }
+        $payload = (string) json_encode($role);
 
         $response->getBody()->write($payload);
 
@@ -105,6 +109,9 @@ class RoleController extends Controller {
         $query = Role::query()->where([['slug', $args['slug']]]);
         /** @var Role $role */
         $role = $query->first();
+        if ($role == null) {
+            return $this->not_found_response('Role');
+        }
         $role->slug = $data['slug'];
         $role->label = $data['label'];
         $role->save();
@@ -132,6 +139,9 @@ class RoleController extends Controller {
         $query = Role::query()->where([['slug', $args['slug']]]);
         /** @var Role $role */
         $role = $query->first();
+        if ($role == null) {
+            return $this->not_found_response('Role');
+        }
         $role->delete();
 
         $payload = (string) json_encode(['message' => 'successful']);

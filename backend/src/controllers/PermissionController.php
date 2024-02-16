@@ -78,7 +78,11 @@ class PermissionController extends Controller {
 
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Permission::query()->where([['slug', $args['slug']]]);
-        $payload = (string) json_encode($query->first());
+        $permission = $query->first();
+        if ($permission == null) {
+            return $this->not_found_response('Permission');
+        }
+        $payload = (string) json_encode($permission);
 
         $response->getBody()->write($payload);
 
@@ -103,6 +107,9 @@ class PermissionController extends Controller {
         $query = Permission::query()->where([['slug', $args['slug']]]);
         /** @var Permission $permission */
         $permission = $query->first();
+        if ($permission == null) {
+            return $this->not_found_response('Permission');
+        }
         if (array_key_exists('slug', $data) && $data['slug'] !== null && $data['slug'] !== '') {
             $permission->slug = $data['slug'];
         }
@@ -132,6 +139,9 @@ class PermissionController extends Controller {
         $query = Permission::query()->where([['slug', $args['slug']]]);
         /** @var Permission $permission */
         $permission = $query->first();
+        if ($permission == null) {
+            return $this->not_found_response('Permission');
+        }
         $permission->delete();
 
         $payload = (string) json_encode(['message' => 'successful']);

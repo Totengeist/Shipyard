@@ -114,7 +114,11 @@ class ScreenshotController extends Controller {
     public function show(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Screenshot::query()->where([['ref', $args['ref']]]);
-        $payload = (string) json_encode($query->first());
+        $screenshot = $query->first();
+        if ($screenshot == null) {
+            return $this->not_found_response('Screenshot');
+        }
+        $payload = (string) json_encode($screenshot);
 
         $response->getBody()->write($payload);
 
@@ -139,6 +143,9 @@ class ScreenshotController extends Controller {
         $query = Screenshot::query()->where([['ref', $args['ref']]]);
         /** @var Screenshot $screenshot */
         $screenshot = $query->first();
+        if ($screenshot == null) {
+            return $this->not_found_response('Screenshot');
+        }
         $screenshot->description = $data['description'];
         $screenshot->save();
 
@@ -165,6 +172,9 @@ class ScreenshotController extends Controller {
         $query = Screenshot::query()->where([['ref', $args['ref']]]);
         /** @var Screenshot $screenshot */
         $screenshot = $query->first();
+        if ($screenshot == null) {
+            return $this->not_found_response('Screenshot');
+        }
         $screenshot->delete();
 
         $payload = (string) json_encode(['message' => 'successful']);

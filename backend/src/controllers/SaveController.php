@@ -20,9 +20,7 @@ class SaveController extends Controller {
      * @return Response
      */
     public function index(Request $request, Response $response) {
-        /** @var \Illuminate\Database\Eloquent\Builder $builder */
-        $builder = Save::query();
-        $payload = (string) json_encode($this->paginate($builder));
+        $payload = (string) json_encode($this->paginate(Save::with('user')));
         $response->getBody()->write($payload);
 
         return $response
@@ -108,7 +106,11 @@ class SaveController extends Controller {
     public function show(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Save::query()->where([['ref', $args['ref']]])->with('user');
-        $payload = (string) json_encode($query->first());
+        $save = $query->first();
+        if ($save == null) {
+            return $this->not_found_response('Save');
+        }
+        $payload = (string) json_encode($save);
 
         $response->getBody()->write($payload);
 
@@ -131,11 +133,8 @@ class SaveController extends Controller {
         /** @var Save $save */
         $save = $query->first();
 
-        if (file_exists($save->file->filepath) === false) {
-            $response->getBody()->write((string) json_encode(['error' => 'file does not exist']));
-
-            return $response
-              ->withHeader('Content-Type', 'application/json');
+        if ($save == null || file_exists($save->file->filepath) === false) {
+            return $this->not_found_response('file', 'file does not exist');
         }
 
         $response->getBody()->write((string) $save->file->file_contents());
@@ -161,13 +160,23 @@ class SaveController extends Controller {
         $query = Save::query()->where([['ref', $args['ref']]]);
         /** @var Save $save */
         $save = $query->first();
+        if ($save == null) {
+            return $this->not_found_response('Save');
+        }
         $abort = $this->isOrCan($save->user_id, 'edit-saves');
         if ($abort !== null) {
             return $abort;
         }
 
-        if (isset($data['user_id'])) {
-            $save->user_id = $data['user_id'];
+        if (isset($data['user_ref'])) {
+            /** @var \Illuminate\Database\Eloquent\Builder $query */
+            $query = User::query()->where([['ref', $data['user_ref']]]);
+            /** @var User $user */
+            $user = $query->first();
+            if ($user == null) {
+                return $this->not_found_response('User');
+            }
+            $save->user_id = $user->id;
         }
         if (isset($data['title'])) {
             $save->title = $data['title'];
@@ -198,6 +207,9 @@ class SaveController extends Controller {
         $query = Save::query()->where([['ref', $args['ref']]]);
         /** @var Save $save */
         $save = $query->first();
+        if ($save == null) {
+            return $this->not_found_response('Save');
+        }
         $abort = $this->isOrCan($save->user_id, 'delete-saves');
         if ($abort !== null) {
             return $abort;

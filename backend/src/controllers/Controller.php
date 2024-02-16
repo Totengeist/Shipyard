@@ -3,6 +3,7 @@
 namespace Shipyard\Controllers;
 
 use Psr\Container\ContainerInterface;
+use Slim\Psr7\Factory\ResponseFactory;
 
 class Controller {
     /** @var ContainerInterface */
@@ -67,5 +68,24 @@ class Controller {
         }
 
         return $per_page;
+    }
+
+    /**
+     * @param string $type
+     * @param string $message
+     *
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public static function not_found_response($type, $message = null) {
+        $code = 404;
+        if ($message == null) {
+            $message = "$type not found";
+        }
+        $factory = new ResponseFactory();
+        $response = $factory->createResponse($code);
+        $response->getBody()->write((string) json_encode(['error' => $message]));
+        $response->withStatus($code, $message);
+
+        return $response;
     }
 }

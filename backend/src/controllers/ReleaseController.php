@@ -72,7 +72,11 @@ class ReleaseController extends Controller {
     public function show(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Release::query()->where([['slug', $args['slug']]]);
-        $payload = (string) json_encode($query->first());
+        $release = $query->first();
+        if ($release == null) {
+            return $this->not_found_response('Release');
+        }
+        $payload = (string) json_encode($release);
 
         $response->getBody()->write($payload);
 
@@ -97,6 +101,9 @@ class ReleaseController extends Controller {
         $query = Release::query()->where([['slug', $args['slug']]]);
         /** @var Release $release */
         $release = $query->first();
+        if ($release == null) {
+            return $this->not_found_response('Release');
+        }
         $release->slug = $data['slug'];
         $release->label = $data['label'];
         $release->save();
@@ -124,6 +131,9 @@ class ReleaseController extends Controller {
         $query = Release::query()->where([['slug', $args['slug']]]);
         /** @var Release $release */
         $release = $query->first();
+        if ($release == null) {
+            return $this->not_found_response('Release');
+        }
         $release->delete();
 
         $payload = (string) json_encode(['message' => 'successful']);

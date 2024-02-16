@@ -106,7 +106,11 @@ class ShipController extends Controller {
     public function show(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Ship::query()->where([['ref', $args['ref']]])->with('user');
-        $payload = (string) json_encode($query->first());
+        $ship = $query->first();
+        if ($ship == null) {
+            return $this->not_found_response('Ship');
+        }
+        $payload = (string) json_encode($ship);
 
         $response->getBody()->write($payload);
 
@@ -130,11 +134,8 @@ class ShipController extends Controller {
         /** @var Ship $ship */
         $ship = $query->first();
 
-        if (file_exists($ship->file->filepath) === false) {
-            $response->getBody()->write((string) json_encode(['error' => 'file does not exist']));
-
-            return $response
-              ->withHeader('Content-Type', 'application/json');
+        if ($ship == null || file_exists($ship->file->filepath) === false) {
+            return $this->not_found_response('file', 'file does not exist');
         }
 
         $response->getBody()->write((string) $ship->file->file_contents());
@@ -159,14 +160,24 @@ class ShipController extends Controller {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Ship::query()->where([['ref', $args['ref']]]);
         /** @var Ship $ship */
-        $ship = $query->firstOrFail();
+        $ship = $query->first();
+        if ($ship == null) {
+            return $this->not_found_response('Ship');
+        }
         $abort = $this->isOrCan($ship->user_id, 'edit-ships');
         if ($abort !== null) {
             return $abort;
         }
 
-        if (isset($data['user_id'])) {
-            $ship->user_id = $data['user_id'];
+        if (isset($data['user_ref'])) {
+            /** @var \Illuminate\Database\Eloquent\Builder $query */
+            $query = User::query()->where([['ref', $data['user_ref']]]);
+            /** @var User $user */
+            $user = $query->first();
+            if ($user == null) {
+                return $this->not_found_response('User');
+            }
+            $ship->user_id = $user->id;
         }
         if (isset($data['title'])) {
             $ship->title = $data['title'];
@@ -196,7 +207,10 @@ class ShipController extends Controller {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Ship::query()->where([['ref', $args['ref']]]);
         /** @var Ship $parent_ship */
-        $parent_ship = $query->firstOrFail();
+        $parent_ship = $query->first();
+        if ($parent_ship == null) {
+            return $this->not_found_response('Ship');
+        }
 
         $requestbody = (array) $request->getParsedBody();
         $requestbody['parent_id'] = $parent_ship->id;
@@ -217,6 +231,9 @@ class ShipController extends Controller {
         $query = Ship::query()->where([['ref', $args['ref']]]);
         /** @var Ship $ship */
         $ship = $query->first();
+        if ($ship == null) {
+            return $this->not_found_response('Ship');
+        }
         $abort = $this->isOrCan($ship->user_id, 'delete-ships');
         if ($abort !== null) {
             return $abort;

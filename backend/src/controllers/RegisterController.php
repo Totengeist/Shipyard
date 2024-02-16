@@ -210,6 +210,9 @@ class RegisterController extends Controller {
         }
         /** @var User $user */
         $user = User::query()->find($id);
+        if ($user == null) {
+            return $this->not_found_response('User');
+        }
 
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = UserActivation::query()->where('email', $user->email);
@@ -256,6 +259,9 @@ class RegisterController extends Controller {
         $query = User::query()->where('id', $id);
         /** @var User $user */
         $user = $query->first();
+        if ($user == null) {
+            return $this->not_found_response('User');
+        }
         $user->makeVisible(['email', 'created_at', 'updated_at']);
 
         if (isset($subdata['name'])) {
