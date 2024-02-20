@@ -189,7 +189,7 @@ Account Management
 
 .. http:get:: /api/v1/me
 
-   Information about the currently logged in user.
+   Information about the currently logged in user. Use this to check if your session is logged in.
 
    **Example request**:
 
@@ -443,6 +443,44 @@ Ship Management
    :reqheader Authorization: optional bearer token to authenticate
 
 .. http:get:: /api/v1/ship/(ship_ref)/screenshots
+
+   A list of screenshots for a ship.
+
+   **Example request**:
+
+   .. sourcecode:: http
+
+      POST /api/v1/ship/8ef20cff9 HTTP/1.1
+      Host: example.com
+      Accept: application/json, text/javascript
+
+   **Example response**:
+
+   .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      [
+        {
+          "ref": "6ddc196f9",
+          "description": "Similique amet nulla sed rem. Sunt quia voluptatem ut consequuntur commodi. Cupiditate ipsum dicta magni est labore recusandae.",
+          "created_at": "2024-02-17 00:22:52",
+          "updated_at": "2024-02-17 00:22:52",
+          "primary": 0
+        },
+        {
+          "ref": "8b198db69",
+          "description": "Tempore maiores ut repellendus iusto modi omnis non. Sapiente maxime assumenda dignissimos enim perferendis earum dolore. Deserunt beatae ducimus praesentium ipsum ut placeat error.",
+          "created_at": "2024-02-17 00:22:52",
+          "updated_at": "2024-02-17 00:22:52",
+          "primary": 1
+        }
+      ]
+
+   :statuscode 200: no error
+   :statuscode 404: the ship does not exist
+
 .. http:post:: /api/v1/ship/(ref)
 
    Edit an existing ship.
@@ -453,14 +491,46 @@ Ship Management
 
    Older versions will still be accessible. This allows users to upgrade ships to support new
    features added to The Last Starship. The ``(ref)`` will continue to point to the older version,
-   but it's page will display a notice that it has been replaced.
+   but it's page will display a notice that a newer version is available.
+
+   **Example request**:
+
+   .. sourcecode:: http
+
+      POST /api/v1/ship/19fb7fa39 HTTP/1.1
+      Host: example.com
+      Accept: application/json, text/javascript
+
+   **Example response**:
+
+   .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "ref": "19fb7fa39",
+        "title": "et ut voluptatem",
+        "description": "Ipsa eligendi quia dolorem sit amet illo. Magnam quae voluptas mollitia. Nemo et asperiores adipisci dolor cumque.",
+        "downloads": 19519,
+        "created_at": "2024-02-15 20:58:03",
+        "updated_at": "2024-02-15 20:58:03",
+        "user": {
+          "name": "Maxie Rice",
+          "ref": "01a8a22ec"
+        }
+      }
+
+   :statuscode 200: no error
+   :statuscode 401: not logged in or not the owner of the ship
+   :statuscode 404: the ship does not exist
+   :reqheader Authorization: optional bearer token to authenticate
 
 .. http:post:: /api/v1/ship/(ship_ref)/screenshots
 
    Adds one or more screenshots to an existing ship.
 
    :reqheader Authorization: optional bearer token to authenticate
-
 
 .. http:delete:: /api/v1/ship/(ref)
 
@@ -486,6 +556,12 @@ Save Management
 
 .. http:get:: /api/v1/save/(ref)/download
 .. http:get:: /api/v1/save/(ship_ref)/screenshots
+
+   A list of screenshots for a save.
+
+   :statuscode 200: no error
+   :statuscode 404: the save does not exist
+
 .. http:post:: /api/v1/save
 .. http:post:: /api/v1/save/(ref)
 .. http:post:: /api/v1/save/(ship_ref)/screenshots
@@ -517,6 +593,12 @@ Mod Management
    :statuscode 404: the mod does not exist
 
 .. http:get:: /api/v1/modification/(ship_ref)/screenshots
+
+   A list of screenshots for a mod.
+
+   :statuscode 200: no error
+   :statuscode 404: the mod does not exist
+
 .. http:post:: /api/v1/modification
 .. http:post:: /api/v1/modification/(ref)
 .. http:post:: /api/v1/modification/(ship_ref)/screenshots
