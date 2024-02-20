@@ -15,7 +15,7 @@ trait HasScreenshots {
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function screenshots() {
-        return $this->belongsToMany(Screenshot::class, 'item_screenshots', 'item_id', 'screenshot_id')->wherePivot('type', self::$tag_label);
+        return $this->belongsToMany(Screenshot::class, 'item_screenshots', 'item_id', 'screenshot_id')->wherePivot('type', self::$tag_label)->withPivot('primary');
     }
 
     /**

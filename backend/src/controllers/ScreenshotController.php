@@ -21,7 +21,15 @@ class ScreenshotController extends Controller {
     public function index(Request $request, Response $response) {
         $data = (array) $request->getParsedBody();
         $item = $data['item'];
-        $payload = (string) json_encode($item->screenshots()->get());
+        $screenshots = $item->screenshots()->get()->makeVisible(['pivot'])->toArray();
+        $shots = [];
+        foreach ($screenshots as $shot) {
+            $shot['primary'] = $shot['pivot']['primary'];
+            unset($shot['pivot']);
+            $shots[] = $shot;
+        }
+
+        $payload = (string) json_encode($shots);
         $response->getBody()->write($payload);
 
         return $response

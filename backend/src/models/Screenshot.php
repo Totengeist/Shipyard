@@ -26,7 +26,7 @@ class Screenshot extends Model {
      * @var string[]
      */
     protected $fillable = [
-        'ref', 'file_id', 'description', 'primary',
+        'ref', 'file_id', 'description',
     ];
 
     /**
