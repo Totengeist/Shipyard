@@ -4,6 +4,7 @@ namespace Shipyard\Controllers;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Shipyard\Auth;
 use Shipyard\FileManager;
 use Shipyard\Models\Save;
 use Shipyard\Models\User;
@@ -36,15 +37,13 @@ class SaveController extends Controller {
         $data = (array) $request->getParsedBody();
         $files = $request->getUploadedFiles();
 
-        unset($data['user_id']);
-        if (isset($data['user_ref'])) {
-            /** @var \Illuminate\Database\Eloquent\Builder $query */
-            $query = User::query()->where([['ref', $data['user_ref']]]);
-            /** @var User $user */
-            $user = $query->first();
-            $data['user_id'] = $user->id;
-        }
-        unset($data['user_ref']);
+        /** @var User $auth_user */
+        $auth_user = Auth::user();
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = User::query()->where([['ref', $auth_user->ref]]);
+        /** @var User $user */
+        $user = $query->first();
+        $data['user_id'] = $user->id;
         unset($data['file_id']);
 
         if (isset($files['file'])) {

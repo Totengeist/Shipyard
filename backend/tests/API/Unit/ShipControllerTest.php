@@ -35,7 +35,7 @@ class ShipControllerTest extends APITestCase {
         $faker = \Faker\Factory::create();
         $title = $faker->words(3, true);
 
-        $this->post('api/v1/ship', ['user_ref' => $user->ref, 'title' => $title, 'file_path' => 'tests/assets/science-vessel.ship'], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+        $this->post('api/v1/ship', ['title' => $title, 'file_path' => 'tests/assets/science-vessel.ship'], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
 
         $ship = Ship::query()->where([['user_id', $user->id], ['title', $title]])->first();
@@ -53,7 +53,7 @@ class ShipControllerTest extends APITestCase {
         $title = $faker->words(3, true);
         $description = $faker->paragraph();
 
-        $this->post('api/v1/ship', ['user_ref' => $user->ref, 'title' => $title, 'description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => self::createSampleUpload()])
+        $this->post('api/v1/ship', ['title' => $title, 'description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => self::createSampleUpload()])
              ->assertJsonResponse([
             'title' => $title,
             'description' => $description,
@@ -79,7 +79,7 @@ class ShipControllerTest extends APITestCase {
         $faker = \Faker\Factory::create();
         $title = $faker->words(3, true);
 
-        $this->post('api/v1/ship/' . $ship->ref, ['user_ref' => $user->ref, 'title' => $title], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+        $this->post('api/v1/ship/' . $ship->ref, ['title' => $title], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
             'title' => $title,
         ]);
@@ -106,7 +106,7 @@ class ShipControllerTest extends APITestCase {
         $oldtitle = $ship->title;
         $title = $faker->words(3, true);
 
-        $this->post('api/v1/ship/' . $ship->ref, ['user_ref' => $user->ref, 'title' => $title], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+        $this->post('api/v1/ship/' . $ship->ref, ['title' => $title], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(403);
 
         $ship = json_decode(Ship::query()->where([['ref', $ship->ref]])->first()->toJson(), true);
@@ -276,7 +276,7 @@ class ShipControllerTest extends APITestCase {
         $title = $faker->words(3, true);
         $description = $faker->paragraph(3, true);
 
-        $this->post('api/v1/ship/' . $ship->ref . '/upgrade', ['user_ref' => $user->ref, 'title' => $title, 'description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => self::createSampleUpload()])
+        $this->post('api/v1/ship/' . $ship->ref . '/upgrade', ['title' => $title, 'description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => self::createSampleUpload()])
              ->assertJsonResponse([
             'title' => $title,
             'description' => $description,

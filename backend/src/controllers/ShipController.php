@@ -4,6 +4,7 @@ namespace Shipyard\Controllers;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Shipyard\Auth;
 use Shipyard\FileManager;
 use Shipyard\Models\Ship;
 use Shipyard\Models\User;
@@ -36,15 +37,13 @@ class ShipController extends Controller {
         $data = (array) $request->getParsedBody();
         $files = $request->getUploadedFiles();
 
-        unset($data['user_id']);
-        if (isset($data['user_ref'])) {
-            /** @var \Illuminate\Database\Eloquent\Builder $query */
-            $query = User::query()->where([['ref', $data['user_ref']]]);
-            /** @var User $user */
-            $user = $query->first();
-            $data['user_id'] = $user->id;
-        }
-        unset($data['user_ref']);
+        /** @var User $auth_user */
+        $auth_user = Auth::user();
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = User::query()->where([['ref', $auth_user->ref]]);
+        /** @var User $user */
+        $user = $query->first();
+        $data['user_id'] = $user->id;
         unset($data['file_id']);
 
         if (isset($files['file'])) {
@@ -105,7 +104,7 @@ class ShipController extends Controller {
      */
     public function show(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
-        $query = Ship::query()->where([['ref', $args['ref']]])->with('user');
+        $query = Ship::query()->where([['ref', $args['ref']]])->with(['user', 'primary_screenshot']);
         $ship = $query->first();
         if ($ship == null) {
             return $this->not_found_response('Ship');
@@ -210,6 +209,10 @@ class ShipController extends Controller {
         $parent_ship = $query->first();
         if ($parent_ship == null) {
             return $this->not_found_response('Ship');
+        }
+        $abort = $this->isOrCan($parent_ship->user_id, 'edit-ships');
+        if ($abort !== null) {
+            return $abort;
         }
 
         $requestbody = (array) $request->getParsedBody();
