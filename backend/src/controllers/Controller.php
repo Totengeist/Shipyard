@@ -71,21 +71,44 @@ class Controller {
     }
 
     /**
+     * @param int    $code
+     * @param string $status
+     * @param string $body
+     *
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public static function error_response($code, $status, $body = '') {
+        $factory = new ResponseFactory();
+        $response = $factory->createResponse($code);
+        $response->getBody()->write($body);
+        $response->withStatus($code, $status);
+
+        return $response;
+    }
+
+    /**
      * @param string $type
      * @param string $message
      *
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public static function not_found_response($type, $message = null) {
-        $code = 404;
-        if ($message == null) {
+    public static function not_found_response($type, $message = '') {
+        if ($message == '') {
             $message = "$type not found";
         }
-        $factory = new ResponseFactory();
-        $response = $factory->createResponse($code);
-        $response->getBody()->write((string) json_encode(['error' => $message]));
-        $response->withStatus($code, $message);
 
-        return $response;
+        return self::error_response(404, $message, (string) json_encode(['errors' => [$message]]))
+                   ->withHeader('Content-Type', 'application/json');
+    }
+
+    /**
+     * @param string[] $errors
+     * @param string   $message
+     *
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public static function invalid_input_response($errors = [], $message = 'Invalid input') {
+        return self::error_response(422, $message, (string) json_encode(['errors' => $errors]))
+                   ->withHeader('Content-Type', 'application/json');
     }
 }

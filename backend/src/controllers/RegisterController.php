@@ -140,13 +140,7 @@ class RegisterController extends Controller {
         $errors = $this->validator($data)->errors();
 
         if (count($errors)) {
-            $payload = (string) json_encode(['errors' => $errors]);
-
-            $response->getBody()->write($payload);
-
-            return $response
-              ->withStatus(422)
-              ->withHeader('Content-Type', 'application/json');
+            return $this->invalid_input_response($errors);
         }
 
         $subdata = array_intersect_key($data, array_flip((array) ['name', 'email', 'password', 'password_confirmation']));
@@ -177,11 +171,9 @@ class RegisterController extends Controller {
             /** @var \Illuminate\Database\Eloquent\Builder $query */
             $query = User::query()->where('email', $activation->email);
             /** @var User $user */
-            $user = $query->first();
+            $user = $query->firstOrFail();
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $ex) {
-            return $response
-              ->withStatus(404)
-              ->withHeader('Content-Type', 'application/json');
+            return $this->not_found_response('Activation');
         }
         $user->makeVisible(['email', 'created_at', 'updated_at']);
         $user->activate();
