@@ -142,7 +142,7 @@ class ShipController extends Controller {
         $ship->save();
 
         return $response
-          ->withHeader('Content-Disposition', 'attachment; filename="' . self::slugify($ship->title) . '.ship"')
+          ->withHeader('Content-Disposition', 'attachment; filename="' . $ship->file->filename . '.' . $ship->file->extension . '"')
           ->withHeader('Content-Type', 'text/plain');
     }
 

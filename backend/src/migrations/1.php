@@ -148,7 +148,6 @@ Capsule::schema()->create('modifications', function ($table) {
     $table->bigInteger('parent_id')->unsigned()->nullable();
     $table->string('ref')->unique();
     $table->bigInteger('user_id')->unsigned()->nullable();
-    $table->bigInteger('save_id')->unsigned()->nullable();
     $table->string('title')->default(false);
     $table->text('description');
     $table->bigInteger('file_id');

@@ -29,8 +29,6 @@ class SaveControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
-
-        $user = Factory::create('Shipyard\Models\User');
         $faker = \Faker\Factory::create();
         $title = $faker->words(3, true);
 
@@ -73,9 +71,7 @@ class SaveControllerTest extends APITestCase {
         $user->activate();
         Auth::login($user);
         $faker = \Faker\Factory::create();
-        $save = Factory::create('Shipyard\Models\Save');
-        $save->user_id = $user->id;
-        $save->save();
+        $save = Factory::create('Shipyard\Models\Save', ['user_id' => $user->id]);
 
         $faker = \Faker\Factory::create();
         $title = $faker->words(3, true);
@@ -101,9 +97,7 @@ class SaveControllerTest extends APITestCase {
         $faker = \Faker\Factory::create();
 
         $user1 = Factory::create('Shipyard\Models\User');
-        $save = Factory::create('Shipyard\Models\Save');
-        $save->user_id = $user1->id;
-        $save->save();
+        $save = Factory::create('Shipyard\Models\Save', ['user_id' => $user1->id]);
 
         $faker = \Faker\Factory::create();
         $oldtitle = $save->title;
@@ -138,9 +132,7 @@ class SaveControllerTest extends APITestCase {
         Auth::login($user);
 
         $user1 = Factory::create('Shipyard\Models\User');
-        $save = Factory::create('Shipyard\Models\Save');
-        $save->user_id = $user1->id;
-        $save->save();
+        $save = Factory::create('Shipyard\Models\Save', ['user_id' => $user1->id]);
 
         $title = $faker->words(3, true);
         $description = $faker->paragraph;
@@ -166,9 +158,7 @@ class SaveControllerTest extends APITestCase {
         $user->activate();
         Auth::login($user);
         $faker = \Faker\Factory::create();
-        $save = Factory::create('Shipyard\Models\Save');
-        $save->user_id = $user->id;
-        $save->save();
+        $save = Factory::create('Shipyard\Models\Save', ['user_id' => $user->id]);
 
         $this->assertEquals($save->ref, Save::query()->where([['ref', $save->ref]])->first()->ref);
         $this->delete('api/v1/save/' . $save->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
@@ -190,9 +180,7 @@ class SaveControllerTest extends APITestCase {
         $faker = \Faker\Factory::create();
 
         $user1 = Factory::create('Shipyard\Models\User');
-        $save = Factory::create('Shipyard\Models\Save');
-        $save->user_id = $user1->id;
-        $save->save();
+        $save = Factory::create('Shipyard\Models\Save', ['user_id' => $user1->id]);
 
         $title = $save->title;
         $description = $save->description;
@@ -227,9 +215,7 @@ class SaveControllerTest extends APITestCase {
         Auth::login($user);
 
         $user1 = Factory::create('Shipyard\Models\User');
-        $save = Factory::create('Shipyard\Models\Save');
-        $save->user_id = $user1->id;
-        $save->save();
+        $save = Factory::create('Shipyard\Models\Save', ['user_id' => $user1->id]);
 
         $this->assertEquals($save->ref, Save::query()->where([['ref', $save->ref]])->first()->ref);
         $this->delete('api/v1/save/' . $save->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
@@ -251,5 +237,97 @@ class SaveControllerTest extends APITestCase {
              ->assertJsonResponse([
             'title' => $save->title,
         ]);
+    }
+
+    /**
+     * @return void
+     */
+    public function testCanDownloadSaves() {
+        $save = Factory::create('Shipyard\Models\Save');
+
+        $this->get('api/v1/save/' . $save->ref . '/download', ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
+
+        $this->assertNotEquals((string) $this->response->getBody(), '');
+        $this->assertEquals((string) $this->response->getBody(), $save->file->file_contents());
+        $this->assertEquals($this->response->getHeader('Content-Disposition')[0], 'attachment; filename="' . $save->file->filename . '.' . $save->file->extension . '"');
+
+        $this->get('api/v1/save/' . $save->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertJsonResponse([
+            'ref' => $save->ref,
+            'title' => $save->title,
+            'downloads' => $save->downloads+1,
+        ]);
+    }
+
+    /**
+     * @return void
+     */
+    public function testCanUpgradeSave() {
+        $user = Factory::create('Shipyard\Models\User');
+        $user->activate();
+        Auth::login($user);
+        $faker = \Faker\Factory::create();
+        $save = Factory::create('Shipyard\Models\Save', ['user_id' => $user->id]);
+
+        $faker = \Faker\Factory::create();
+        $title = $faker->words(3, true);
+        $description = $faker->paragraph(3, true);
+
+        $this->post('api/v1/save/' . $save->ref . '/upgrade', ['title' => $title, 'description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => self::createSampleUpload()])
+             ->assertJsonResponse([
+            'title' => $title,
+            'description' => $description,
+        ]);
+
+        $save2_json = json_decode((string) $this->response->getBody(), true);
+        $save2_object = Save::query()->where([['ref', $save2_json['ref']]])->firstOrFail();
+        $this->assertJsonFragment([
+            'title' => $title,
+            'description' => $description,
+        ], $save2_json);
+        $this->assertEquals($save2_object->parent->ref, $save->ref);
+    }
+
+    /**
+     * @return void
+     */
+    public function testCanDeleteSaveVersion() {
+        $user = Factory::create('Shipyard\Models\User');
+        $faker = \Faker\Factory::create();
+        $role_name = $faker->slug;
+        /** @var Role $role */
+        $role = Role::query()->create(['slug' => $role_name, 'label' => $faker->name]);
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Permission::query()->where('slug', 'delete-saves');
+        /** @var Permission $permission */
+        $permission = $query->first();
+        $role->givePermissionTo($permission);
+        $user->assignRole($role_name);
+        $user->activate();
+        Auth::login($user);
+
+        $save1 = Factory::create('Shipyard\Models\Save');
+        $save2 = Factory::create('Shipyard\Models\Save', ['parent_id' => $save1->id]);
+        $save3 = Factory::create('Shipyard\Models\Save', ['parent_id' => $save2->id]);
+        $save4 = Factory::create('Shipyard\Models\Save', ['parent_id' => $save3->id]);
+        $save5 = Factory::create('Shipyard\Models\Save', ['parent_id' => $save4->id]);
+
+        // delete first
+        $this->delete('api/v1/save/' . $save1->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
+        $this->assertEquals($save5->parent->parent->parent->parent, null);
+        $this->assertEquals($save5->parent->parent->parent->parent_id, null);
+
+        // delete middle
+        $save5 = Save::query()->where([['ref', $save5->ref]])->firstOrFail();
+        $this->delete('api/v1/save/' . $save3->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
+        $this->assertEquals($save5->parent->parent->getKey(), $save2->getKey());
+        $this->assertEquals($save5->parent->parent->child->getKey(), $save4->getKey());
+        $this->assertEquals($save5->parent->parent_id, $save2->id);
+
+        // delete last
+        $save5 = Save::query()->where([['ref', $save5->ref]])->firstOrFail();
+        $this->delete('api/v1/save/' . $save5->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
+        $this->assertEquals($save5->parent->parent->getKey(), $save2->getKey());
+        $this->assertEquals($save5->parent->parent_id, $save2->id);
     }
 }

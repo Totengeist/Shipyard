@@ -6,13 +6,15 @@ use Shipyard\Traits\HasRef;
 use Shipyard\Traits\HasReleases;
 use Shipyard\Traits\HasScreenshots;
 use Shipyard\Traits\HasTags;
+use Valitron\Validator;
 
 /**
  * @property int    $file_id
+ * @property File   $file
  * @property string $title
  * @property string $description
  * @property int    $user_id
- * @property int    $save_id
+ * @property int    $parent_id
  * @property int    $downloads
  */
 class Modification extends Model {
@@ -33,7 +35,7 @@ class Modification extends Model {
      * @var string[]
      */
     protected $fillable = [
-        'ref', 'user_id', 'parent_id', 'file_id', 'title', 'description',
+        'ref', 'user_id', 'parent_id', 'file_id', 'title', 'description', 'downloads',
     ];
 
     /**
@@ -41,7 +43,7 @@ class Modification extends Model {
      *
      * @var string[]
      */
-    protected $hidden = ['id', 'user_id', 'parent_id', 'file_id', 'save_id'];
+    protected $hidden = ['id', 'user_id', 'parent_id', 'file_id'];
 
     /**
      * A modification can belong to a user.
@@ -71,11 +73,40 @@ class Modification extends Model {
     }
 
     /**
-     * A save has a file.
+     * A mod has a file.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function file() {
         return $this->belongsTo(File::class);
+    }
+
+    /**
+     * Create or add on to a validator.
+     *
+     * @param mixed                    $data
+     * @param \Valitron\Validator|null $v
+     *
+     * @return Validator
+     */
+    public static function validator($data, $v = null) {
+        if ($v === null) {
+            $v = new Validator($data);
+        }
+
+        $v->rules([
+            'required' => [
+                ['user_id'],
+                ['title'],
+                ['description'],
+                ['file_id']
+            ]
+        ]);
+
+        return $v;
+    }
+
+    public function delete() {
+        return $this->file->delete() && parent::delete();
     }
 }

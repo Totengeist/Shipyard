@@ -34,6 +34,7 @@ $app->group($_SERVER['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $gro
 
         $group->get('/modification', 'Shipyard\Controllers\ModificationController:index');
         $group->get('/modification/{ref}', 'Shipyard\Controllers\ModificationController:show');
+        $group->get('/modification/{ref}/download', 'Shipyard\Controllers\ModificationController:download');
         $group->get('/modification/{ref}/screenshots', 'Shipyard\Controllers\ModificationController:index_screenshots');
 
         $group->get('/tag', 'Shipyard\Controllers\TagController:index');
@@ -71,11 +72,13 @@ $app->group($_SERVER['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $gro
 
         $group->post('/save', 'Shipyard\Controllers\SaveController:store');
         $group->post('/save/{ref}', 'Shipyard\Controllers\SaveController:update');
+        $group->post('/save/{ref}/upgrade', 'Shipyard\Controllers\SaveController:upgrade');
         $group->post('/save/{ref}/screenshots', 'Shipyard\Controllers\SaveController:store_screenshots');
         $group->delete('/save/{ref}', 'Shipyard\Controllers\SaveController:destroy');
 
         $group->post('/modification', 'Shipyard\Controllers\ModificationController:store');
         $group->post('/modification/{ref}', 'Shipyard\Controllers\ModificationController:update');
+        $group->post('/modification/{ref}/upgrade', 'Shipyard\Controllers\ModificationController:upgrade');
         $group->post('/modification/{ref}/screenshots', 'Shipyard\Controllers\ModificationController:store_screenshots');
         $group->delete('/modification/{ref}', 'Shipyard\Controllers\ModificationController:destroy');
 

@@ -8,12 +8,9 @@ use Shipyard\Auth;
 use Shipyard\Models\Permission;
 use Shipyard\Models\Role;
 use Shipyard\Models\Ship;
-use Shipyard\Traits\ProcessesSlugs;
 use Tests\APITestCase;
 
 class ShipControllerTest extends APITestCase {
-    use ProcessesSlugs;
-
     /**
      * @return void
      */
@@ -252,7 +249,7 @@ class ShipControllerTest extends APITestCase {
 
         $this->assertNotEquals((string) $this->response->getBody(), '');
         $this->assertEquals((string) $this->response->getBody(), $ship->file->file_contents());
-        $this->assertEquals($this->response->getHeader('Content-Disposition')[0], 'attachment; filename="' . self::slugify($ship->title) . '.ship"');
+        $this->assertEquals($this->response->getHeader('Content-Disposition')[0], 'attachment; filename="' . $ship->file->filename . '.' . $ship->file->extension . '"');
 
         $this->get('api/v1/ship/' . $ship->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([

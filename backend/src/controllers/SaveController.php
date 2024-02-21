@@ -21,7 +21,7 @@ class SaveController extends Controller {
      * @return Response
      */
     public function index(Request $request, Response $response) {
-        $payload = (string) json_encode($this->paginate(Save::with('user')));
+        $payload = (string) json_encode($this->paginate(Save::with('user', 'primary_screenshot')));
         $response->getBody()->write($payload);
 
         return $response
@@ -104,7 +104,7 @@ class SaveController extends Controller {
      */
     public function show(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
-        $query = Save::query()->where([['ref', $args['ref']]])->with('user');
+        $query = Save::query()->where([['ref', $args['ref']]])->with(['user', 'primary_screenshot']);
         $save = $query->first();
         if ($save == null) {
             return $this->not_found_response('Save');
@@ -121,6 +121,7 @@ class SaveController extends Controller {
      * Download the specified resource.
      *
      * @todo test with missing file
+     * @todo zip up save file and screenshot
      *
      * @param array<string,string> $args
      *
@@ -141,7 +142,7 @@ class SaveController extends Controller {
         $save->save();
 
         return $response
-          ->withHeader('Content-Disposition', 'attachment; filename="' . self::slugify($save->title) . '.space"')
+          ->withHeader('Content-Disposition', 'attachment; filename="' . $save->file->filename . '.' . $save->file->extension . '"')
           ->withHeader('Content-Type', 'text/plain');
     }
 
@@ -192,6 +193,33 @@ class SaveController extends Controller {
 
         return $response
           ->withHeader('Content-Type', 'application/json');
+    }
+
+    /**
+     * Add a new version of an existing save.
+     *
+     * @param array<string,string> $args
+     *
+     * @return Response
+     */
+    public function upgrade(Request $request, Response $response, $args) {
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Save::query()->where([['ref', $args['ref']]]);
+        /** @var Save $parent_save */
+        $parent_save = $query->first();
+        if ($parent_save == null) {
+            return $this->not_found_response('Save');
+        }
+        $abort = $this->isOrCan($parent_save->user_id, 'edit-saves');
+        if ($abort !== null) {
+            return $abort;
+        }
+
+        $requestbody = (array) $request->getParsedBody();
+        $requestbody['parent_id'] = $parent_save->id;
+        $request = $request->withParsedBody($requestbody);
+
+        return $this->store($request, $response);
     }
 
     /**
@@ -259,6 +287,14 @@ class SaveController extends Controller {
         if ($abort !== null) {
             return $abort;
         }
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Save::query()->where([['parent_id', $save->id]]);
+        $children = $query->get();
+        $children->each(function ($child, $key) use ($save) {
+            /* @var \Shipyard\Models\Save $child */
+            /* @var \Shipyard\Models\Save $save */
+            $child->update(['parent_id' => $save->parent_id]);
+        });
         $save->delete();
 
         $payload = (string) json_encode(['message' => 'successful']);

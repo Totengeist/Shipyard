@@ -4,7 +4,10 @@ namespace Shipyard\Controllers;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Shipyard\Auth;
+use Shipyard\FileManager;
 use Shipyard\Models\Modification;
+use Shipyard\Models\User;
 use Shipyard\Traits\ChecksPermissions;
 use Shipyard\Traits\ProcessesSlugs;
 
@@ -18,9 +21,7 @@ class ModificationController extends Controller {
      * @return Response
      */
     public function index(Request $request, Response $response) {
-        /** @var \Illuminate\Database\Eloquent\Builder $builder */
-        $builder = Modification::query();
-        $payload = (string) json_encode($this->paginate($builder));
+        $payload = (string) json_encode($this->paginate(Modification::with('user', 'primary_screenshot')));
         $response->getBody()->write($payload);
 
         return $response
@@ -34,10 +35,47 @@ class ModificationController extends Controller {
      */
     public function store(Request $request, Response $response) {
         $data = (array) $request->getParsedBody();
-        $validator = self::slug_validator($data);
+        $files = $request->getUploadedFiles();
+
+        /** @var User $auth_user */
+        $auth_user = Auth::user();
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = User::query()->where([['ref', $auth_user->ref]]);
+        /** @var User $user */
+        $user = $query->first();
+        $data['user_id'] = $user->id;
+        unset($data['file_id']);
+
+        if (isset($files['file'])) {
+            if (!is_array($files['file'])) {
+                $upload = FileManager::moveUploadedFile($files['file']);
+                $data['file_id'] = $upload->id;
+            } else {
+                $payload = (string) json_encode(['errors' => ['file' => 'Multiple file uploads are not allowed.']]);
+
+                $response->getBody()->write($payload);
+
+                return $response
+                  ->withStatus(401)
+                  ->withHeader('Content-Type', 'application/json');
+            }
+        } else {
+            $payload = (string) json_encode(['errors' => ['file' => 'File is missing or incorrect.']]);
+
+            $response->getBody()->write($payload);
+
+            return $response
+              ->withStatus(401)
+              ->withHeader('Content-Type', 'application/json');
+        }
+
+        $validator = Modification::validator($data);
         $validator->validate();
         /** @var string[] $errors */
         $errors = $validator->errors();
+        if (!file_exists($upload->filepath) || is_dir($upload->filepath)) {
+            $errors = array_merge_recursive($errors, ['errors' => ['file_id' => 'File is missing or incorrect.']]);
+        }
 
         if (count($errors)) {
             $payload = (string) json_encode(['errors' => $errors]);
@@ -48,7 +86,8 @@ class ModificationController extends Controller {
               ->withStatus(401)
               ->withHeader('Content-Type', 'application/json');
         }
-        $payload = (string) json_encode(Modification::query()->create($data));
+        $modification = Modification::query()->create($data);
+        $payload = (string) json_encode($modification);
 
         $response->getBody()->write($payload);
 
@@ -65,7 +104,7 @@ class ModificationController extends Controller {
      */
     public function show(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
-        $query = Modification::query()->where([['ref', $args['ref']]]);
+        $query = Modification::query()->where([['ref', $args['ref']]])->with(['user', 'primary_screenshot']);
         $modification = $query->first();
         if ($modification == null) {
             return $this->not_found_response('Modification');
@@ -76,6 +115,35 @@ class ModificationController extends Controller {
 
         return $response
           ->withHeader('Content-Type', 'application/json');
+    }
+
+    /**
+     * Download the specified resource.
+     *
+     * @todo test with missing file
+     * @todo zip up mod file and screenshot
+     *
+     * @param array<string,string> $args
+     *
+     * @return Response
+     */
+    public function download(Request $request, Response $response, $args) {
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Modification::query()->where([['ref', $args['ref']]]);
+        /** @var Modification $modification */
+        $modification = $query->first();
+
+        if ($modification == null || file_exists($modification->file->filepath) === false) {
+            return $this->not_found_response('file', 'file does not exist');
+        }
+
+        $response->getBody()->write((string) $modification->file->file_contents());
+        $modification->downloads++;
+        $modification->save();
+
+        return $response
+          ->withHeader('Content-Disposition', 'attachment; filename="' . $modification->file->filename . '.' . $modification->file->extension . '"')
+          ->withHeader('Content-Type', $modification->file->media_type);
     }
 
     /**
@@ -95,12 +163,28 @@ class ModificationController extends Controller {
         if ($modification == null) {
             return $this->not_found_response('Modification');
         }
+        $abort = $this->isOrCan($modification->user_id, 'edit-modifications');
+        if ($abort !== null) {
+            return $abort;
+        }
+
+        if (isset($data['user_ref'])) {
+            /** @var \Illuminate\Database\Eloquent\Builder $query */
+            $query = User::query()->where([['ref', $data['user_ref']]]);
+            /** @var User $user */
+            $user = $query->first();
+            if ($user == null) {
+                return $this->not_found_response('User');
+            }
+            $modification->user_id = $user->id;
+        }
         if (isset($data['title'])) {
             $modification->title = $data['title'];
         }
         if (isset($data['description'])) {
             $modification->description = $data['description'];
         }
+
         $modification->save();
 
         $payload = (string) json_encode($modification);
@@ -109,6 +193,33 @@ class ModificationController extends Controller {
 
         return $response
           ->withHeader('Content-Type', 'application/json');
+    }
+
+    /**
+     * Add a new version of an existing modification.
+     *
+     * @param array<string,string> $args
+     *
+     * @return Response
+     */
+    public function upgrade(Request $request, Response $response, $args) {
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Modification::query()->where([['ref', $args['ref']]]);
+        /** @var Modification $parent_mod */
+        $parent_mod = $query->first();
+        if ($parent_mod == null) {
+            return $this->not_found_response('Modification');
+        }
+        $abort = $this->isOrCan($parent_mod->user_id, 'edit-modifications');
+        if ($abort !== null) {
+            return $abort;
+        }
+
+        $requestbody = (array) $request->getParsedBody();
+        $requestbody['parent_id'] = $parent_mod->id;
+        $request = $request->withParsedBody($requestbody);
+
+        return $this->store($request, $response);
     }
 
     /**
@@ -172,6 +283,18 @@ class ModificationController extends Controller {
         if ($modification == null) {
             return $this->not_found_response('Modification');
         }
+        $abort = $this->isOrCan($modification->user_id, 'delete-modifications');
+        if ($abort !== null) {
+            return $abort;
+        }
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Modification::query()->where([['parent_id', $modification->id]]);
+        $children = $query->get();
+        $children->each(function ($child, $key) use ($modification) {
+            /* @var \Shipyard\Models\Modification $child */
+            /* @var \Shipyard\Models\Modification $modification */
+            $child->update(['parent_id' => $modification->parent_id]);
+        });
         $modification->delete();
 
         $payload = (string) json_encode(['message' => 'successful']);
