@@ -164,7 +164,7 @@ class ShipController extends Controller {
             return $this->not_found_response('Ship');
         }
         $abort = $this->isOrCan($ship->user_id, 'edit-ships');
-        if ($abort !== null) {
+        if ($abort !== true) {
             return $abort;
         }
 
@@ -211,7 +211,7 @@ class ShipController extends Controller {
             return $this->not_found_response('Ship');
         }
         $abort = $this->isOrCan($parent_ship->user_id, 'edit-ships');
-        if ($abort !== null) {
+        if ($abort !== true) {
             return $abort;
         }
 
@@ -284,7 +284,7 @@ class ShipController extends Controller {
             return $this->not_found_response('Ship');
         }
         $abort = $this->isOrCan($ship->user_id, 'delete-ships');
-        if ($abort !== null) {
+        if ($abort !== true) {
             return $abort;
         }
         /** @var \Illuminate\Database\Eloquent\Builder $query */

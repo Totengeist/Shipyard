@@ -50,8 +50,8 @@ $app->group($_SERVER['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $gro
     $group->group('', function (RouteCollectorProxy $group) {
         $group->get('/me', 'Shipyard\Controllers\LoginController:me');
 
-        $group->post('/user/{user_id}', 'Shipyard\Controllers\RegisterController:update');
-        $group->delete('/user/{user_id}', 'Shipyard\Controllers\RegisterController:destroy');
+        $group->post('/user/{user_ref}', 'Shipyard\Controllers\RegisterController:update');
+        $group->delete('/user/{user_ref}', 'Shipyard\Controllers\RegisterController:destroy');
 
         $group->get('/permission', 'Shipyard\Controllers\PermissionController:index');
         $group->post('/permission', 'Shipyard\Controllers\PermissionController:store');

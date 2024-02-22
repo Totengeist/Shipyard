@@ -164,7 +164,7 @@ class SaveController extends Controller {
             return $this->not_found_response('Save');
         }
         $abort = $this->isOrCan($save->user_id, 'edit-saves');
-        if ($abort !== null) {
+        if ($abort !== true) {
             return $abort;
         }
 
@@ -211,7 +211,7 @@ class SaveController extends Controller {
             return $this->not_found_response('Save');
         }
         $abort = $this->isOrCan($parent_save->user_id, 'edit-saves');
-        if ($abort !== null) {
+        if ($abort !== true) {
             return $abort;
         }
 
@@ -284,7 +284,7 @@ class SaveController extends Controller {
             return $this->not_found_response('Save');
         }
         $abort = $this->isOrCan($save->user_id, 'delete-saves');
-        if ($abort !== null) {
+        if ($abort !== true) {
             return $abort;
         }
         /** @var \Illuminate\Database\Eloquent\Builder $query */

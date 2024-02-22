@@ -109,12 +109,12 @@ class UserControllerTest extends APITestCase {
          ]);
 
         /** @var User $real_user */
-        $real_user = User::query()->findOrFail($user->id);
+        $real_user = User::query()->where('ref', $user->ref)->first();
         $this->assertTrue($real_user->active());
 
         $activation = !UserActivation::query()->where('email', $user->email)->get()->isEmpty();
         $this->assertFalse($activation);
-        $this->assertTrue($real_user->id == $user->id);
+        $this->assertTrue($real_user->ref == $user->ref);
     }
 
     /**
@@ -220,17 +220,17 @@ class UserControllerTest extends APITestCase {
         $newPass = password_hash('secret', PASSWORD_BCRYPT);
         Auth::login($admin);
 
-        $this->post('api/v1/user/' . $user->id, ['name' => $newName], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+        $this->post('api/v1/user/' . $user->ref, ['name' => $newName], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
         ->assertJsonResponse([
             'name' => $newName,
             'email' => $user->email,
         ]);
-        $this->post('api/v1/user/' . $user->id, ['name' => $user->name, 'email' => $newEmail], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+        $this->post('api/v1/user/' . $user->ref, ['name' => $user->name, 'email' => $newEmail], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
         ->assertJsonResponse([
             'name' => $user->name,
             'email' => $newEmail,
         ]);
-        $this->post('api/v1/user/' . $user->id, ['password' => $newPass, 'password_confirmation' => $newPass], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+        $this->post('api/v1/user/' . $user->ref, ['password' => $newPass, 'password_confirmation' => $newPass], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
         ->assertJsonResponse([
             'name' => $user->name,
             'email' => $newEmail,
@@ -257,17 +257,17 @@ class UserControllerTest extends APITestCase {
         $newPass = password_hash('secret', PASSWORD_BCRYPT);
         Auth::login($user);
 
-        $this->post('api/v1/user/' . $user->id, ['name' => $newName], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+        $this->post('api/v1/user/' . $user->ref, ['name' => $newName], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
         ->assertJsonResponse([
             'name' => $newName,
             'email' => $user->email,
         ]);
-        $this->post('api/v1/user/' . $user->id, ['name' => $user->name, 'email' => $newEmail], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+        $this->post('api/v1/user/' . $user->ref, ['name' => $user->name, 'email' => $newEmail], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
         ->assertJsonResponse([
             'name' => $user->name,
             'email' => $newEmail,
         ]);
-        $this->post('api/v1/user/' . $user->id, ['password' => $newPass, 'password_confirmation' => $newPass], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+        $this->post('api/v1/user/' . $user->ref, ['password' => $newPass, 'password_confirmation' => $newPass], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
         ->assertJsonResponse([
             'name' => $user->name,
             'email' => $newEmail,
@@ -294,7 +294,7 @@ class UserControllerTest extends APITestCase {
         $newName = $faker->name;
         Auth::login($other);
 
-        $this->post('api/v1/user/' . $user->id, ['name' => $newName], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+        $this->post('api/v1/user/' . $user->ref, ['name' => $newName], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
         ->assertStatus(403);
 
         $user2 = json_decode(User::query()->where([['name', $user->name], ['email', $user->email]])->first()->makeVisible(['email'])->toJson(), true); // @phpstan-ignore-line
@@ -316,13 +316,13 @@ class UserControllerTest extends APITestCase {
         $admin->assignRole('administrator');
         Auth::login($admin);
 
-        $this->delete('api/v1/user/' . $user->id, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+        $this->delete('api/v1/user/' . $user->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
         ->assertJsonResponse([
             'message' => 'successful',
         ]);
 
         $this->expectException(ModelNotFoundException::class);
-        User::query()->findOrFail($user->id);
+        User::query()->findOrFail($user->ref);
         $this->expectException(ModelNotFoundException::class);
         UserActivation::query()->where('email', $user->email)->firstOrFail();
     }
@@ -337,13 +337,13 @@ class UserControllerTest extends APITestCase {
         $user->activate();
         Auth::login($user);
 
-        $this->delete('api/v1/user/' . $user->id, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+        $this->delete('api/v1/user/' . $user->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
         ->assertJsonResponse([
             'message' => 'successful',
         ]);
 
         $this->expectException(ModelNotFoundException::class);
-        User::query()->findOrFail($user->id);
+        User::query()->findOrFail($user->ref);
         $this->expectException(ModelNotFoundException::class);
         UserActivation::query()->where('email', $user->email)->firstOrFail();
     }
@@ -360,7 +360,7 @@ class UserControllerTest extends APITestCase {
         $other->activate();
         Auth::login($other);
 
-        $this->delete('api/v1/user/' . $user->id, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+        $this->delete('api/v1/user/' . $user->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
         ->assertStatus(403);
 
         $user2 = json_decode(User::query()->where([['name', $user->name], ['email', $user->email]])->first()->makeVisible(['email'])->toJson(), true); // @phpstan-ignore-line

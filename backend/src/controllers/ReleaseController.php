@@ -33,7 +33,7 @@ class ReleaseController extends Controller {
      * @return Response
      */
     public function store(Request $request, Response $response) {
-        if (($perm_check = $this->can('create-releases')) !== null) {
+        if (($perm_check = $this->can('create-releases')) !== true) {
             return $perm_check;
         }
         $data = (array) $request->getParsedBody();
@@ -92,7 +92,7 @@ class ReleaseController extends Controller {
      * @return Response
      */
     public function update(Request $request, Response $response, $args) {
-        if (($perm_check = $this->can('edit-releases')) !== null) {
+        if (($perm_check = $this->can('edit-releases')) !== true) {
             return $perm_check;
         }
         $data = (array) $request->getParsedBody();
@@ -124,7 +124,7 @@ class ReleaseController extends Controller {
      * @return Response
      */
     public function destroy(Request $request, Response $response, $args) {
-        if (($perm_check = $this->can('delete-releases')) !== null) {
+        if (($perm_check = $this->can('delete-releases')) !== true) {
             return $perm_check;
         }
         /** @var \Illuminate\Database\Eloquent\Builder $query */

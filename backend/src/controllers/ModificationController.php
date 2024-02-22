@@ -164,7 +164,7 @@ class ModificationController extends Controller {
             return $this->not_found_response('Modification');
         }
         $abort = $this->isOrCan($modification->user_id, 'edit-modifications');
-        if ($abort !== null) {
+        if ($abort !== true) {
             return $abort;
         }
 
@@ -211,7 +211,7 @@ class ModificationController extends Controller {
             return $this->not_found_response('Modification');
         }
         $abort = $this->isOrCan($parent_mod->user_id, 'edit-modifications');
-        if ($abort !== null) {
+        if ($abort !== true) {
             return $abort;
         }
 
@@ -284,7 +284,7 @@ class ModificationController extends Controller {
             return $this->not_found_response('Modification');
         }
         $abort = $this->isOrCan($modification->user_id, 'delete-modifications');
-        if ($abort !== null) {
+        if ($abort !== true) {
             return $abort;
         }
         /** @var \Illuminate\Database\Eloquent\Builder $query */

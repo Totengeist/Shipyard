@@ -48,7 +48,7 @@ class ScreenshotController extends Controller {
         $item = $data['item'];
         $user_id = $item->user_id;
 
-        if (($perm_check = $this->isOrCan($user_id, 'create-screenshots')) !== null) {
+        if (($perm_check = $this->isOrCan($user_id, 'create-screenshots')) !== true) {
             return $perm_check;
         }
         $files = $request->getUploadedFiles();
@@ -134,7 +134,7 @@ class ScreenshotController extends Controller {
      * @return Response
      */
     public function update(Request $request, Response $response, $args) {
-        if (($perm_check = $this->can('edit-screenshots')) !== null) {
+        if (($perm_check = $this->can('edit-screenshots')) !== true) {
             return $perm_check;
         }
         $data = (array) $request->getParsedBody();
@@ -165,7 +165,7 @@ class ScreenshotController extends Controller {
      * @return Response
      */
     public function destroy(Request $request, Response $response, $args) {
-        if (($perm_check = $this->can('delete-screenshots')) !== null) {
+        if (($perm_check = $this->can('delete-screenshots')) !== true) {
             return $perm_check;
         }
         /** @var \Illuminate\Database\Eloquent\Builder $query */

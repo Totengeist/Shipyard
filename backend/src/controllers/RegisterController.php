@@ -199,14 +199,15 @@ class RegisterController extends Controller {
      * @return Response
      */
     public function destroy(Request $request, Response $response, $args) {
-        $id = (int) $args['user_id'];
-        if (($perm_check = $this->isOrCan($id, 'delete-users')) !== null) {
-            return $perm_check;
-        }
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = User::query()->where('ref', $args['user_ref']);
         /** @var User $user */
-        $user = User::query()->find($id);
+        $user = $query->first();
         if ($user == null) {
             return $this->not_found_response('User');
+        }
+        if (($perm_check = $this->isOrCan($user->id, 'delete-users')) !== true) {
+            return $perm_check;
         }
 
         /** @var \Illuminate\Database\Eloquent\Builder $query */
@@ -234,8 +235,14 @@ class RegisterController extends Controller {
      * @return Response
      */
     public function update(Request $request, Response $response, $args) {
-        $id = (int) $args['user_id'];
-        if (($perm_check = $this->isOrCan($id, 'edit-users')) !== null) {
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = User::query()->where('ref', $args['user_ref']);
+        /** @var User $user */
+        $user = $query->first();
+        if ($user == null) {
+            return $this->not_found_response('User');
+        }
+        if (($perm_check = $this->isOrCan($user->id, 'edit-users')) !== true) {
             return $perm_check;
         }
         $data = (array) $request->getParsedBody();
@@ -251,10 +258,6 @@ class RegisterController extends Controller {
                 ->withHeader('Content-Type', 'application/json');
         }
 
-        /** @var \Illuminate\Database\Eloquent\Builder $query */
-        $query = User::query()->where('id', $id);
-        /** @var User $user */
-        $user = $query->first();
         if ($user == null) {
             return $this->not_found_response('User');
         }
@@ -272,6 +275,10 @@ class RegisterController extends Controller {
 
         $user->save();
         Log::get()->channel('registration')->info('Updated user.', $user->toArray());
+
+        if ($this->isUser($user->id) === true) {
+            Auth::login($user);
+        }
 
         $payload = (string) json_encode(['user' => $user]);
 

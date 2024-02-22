@@ -2,6 +2,7 @@
 
 namespace Shipyard;
 
+use Shipyard\Models\User;
 use Slim\Psr7\Factory\ResponseFactory;
 use SlimSession\Helper as SessionHelper;
 
@@ -74,7 +75,23 @@ class Auth {
             return false;
         }
 
-        return static::$session->exists('user');
+        if (!static::$session->exists('user')) {
+            return false;
+        }
+
+        $user = static::$session->get('user');
+
+        /**
+         * Verify the user in the session exists.
+         *
+         * @var \Illuminate\Database\Eloquent\Builder $query
+         */
+        $query = User::query()->where([
+            ['email', '=', $user->email],
+            ['id', '=', $user->id]
+        ]);
+
+        return $query->first() != null;
     }
 
     /**

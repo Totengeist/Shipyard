@@ -18,7 +18,7 @@ class PermissionController extends Controller {
      * @return Response
      */
     public function index(Request $request, Response $response) {
-        if (($perm_check = $this->can('view-permissions')) !== null) {
+        if (($perm_check = $this->can('view-permissions')) !== true) {
             return $perm_check;
         }
 
@@ -35,7 +35,7 @@ class PermissionController extends Controller {
      * @return Response
      */
     public function store(Request $request, Response $response) {
-        if (($perm_check = $this->can('create-permissions')) !== null) {
+        if (($perm_check = $this->can('create-permissions')) !== true) {
             return $perm_check;
         }
         $data = (array) $request->getParsedBody();
@@ -72,7 +72,7 @@ class PermissionController extends Controller {
      * @return Response
      */
     public function show(Request $request, Response $response, $args) {
-        if (($perm_check = $this->can('view-permissions')) !== null) {
+        if (($perm_check = $this->can('view-permissions')) !== true) {
             return $perm_check;
         }
 
@@ -98,7 +98,7 @@ class PermissionController extends Controller {
      * @return Response
      */
     public function update(Request $request, Response $response, $args) {
-        if (($perm_check = $this->can('edit-permissions')) !== null) {
+        if (($perm_check = $this->can('edit-permissions')) !== true) {
             return $perm_check;
         }
         $data = (array) $request->getParsedBody();
@@ -132,7 +132,7 @@ class PermissionController extends Controller {
      * @return Response
      */
     public function destroy(Request $request, Response $response, $args) {
-        if (($perm_check = $this->can('delete-permissions')) !== null) {
+        if (($perm_check = $this->can('delete-permissions')) !== true) {
             return $perm_check;
         }
         /** @var \Illuminate\Database\Eloquent\Builder $query */
