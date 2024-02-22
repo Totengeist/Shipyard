@@ -8,22 +8,22 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
 /**
- * @method void debug(string $message, mixed[] $context = [])
- * @method static void debug(string $message, mixed[] $context = [])
- * @method void info(string $message, mixed[] $context = [])
- * @method static void info(string $message, mixed[] $context = [])
- * @method void notice(string $message, mixed[] $context = [])
- * @method static notice debug(string $message, mixed[] $context = [])
- * @method void warning(string $message, mixed[] $context = [])
- * @method static void warning(string $message, mixed[] $context = [])
- * @method void error(string $message, mixed[] $context = [])
- * @method static void error(string $message, mixed[] $context = [])
- * @method void critical(string $message, mixed[] $context = [])
- * @method static void critical(string $message, mixed[] $context = [])
- * @method void alert(string $message, mixed[] $context = [])
+ * @method        void alert(string $message, mixed[] $context = [])
  * @method static void alert(string $message, mixed[] $context = [])
- * @method void emergency(string $message, mixed[] $context = [])
+ * @method        void critical(string $message, mixed[] $context = [])
+ * @method static void critical(string $message, mixed[] $context = [])
+ * @method        void debug(string $message, mixed[] $context = [])
+ * @method static void debug(string $message, mixed[] $context = [])
+ * @method        void emergency(string $message, mixed[] $context = [])
  * @method static void emergency(string $message, mixed[] $context = [])
+ * @method        void error(string $message, mixed[] $context = [])
+ * @method static void error(string $message, mixed[] $context = [])
+ * @method        void info(string $message, mixed[] $context = [])
+ * @method static void info(string $message, mixed[] $context = [])
+ * @method        void notice(string $message, mixed[] $context = [])
+ * @method static void notice(string $message, mixed[] $context = [])
+ * @method        void warning(string $message, mixed[] $context = [])
+ * @method static void warning(string $message, mixed[] $context = [])
  */
 class Log {
     /**
@@ -154,7 +154,6 @@ class Log {
     /**
      * @return Log
      */
-
     public static function get() {
         return self::$global_logger;
     }
