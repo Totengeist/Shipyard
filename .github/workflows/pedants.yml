@@ -1,0 +1,51 @@
+name: pedants
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: PHP 7.4 on ubuntu-22.04
+    runs-on: ubuntu-22.04
+
+    defaults:
+      run:
+        working-directory: ./backend
+
+    env:
+      APP_TITLE: Shipyard
+      BASE_URL: /
+      LOG_LEVEL: OFF
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_DATABASE: shipyard
+      DB_USERNAME: root
+      DB_PASSWORD: root
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 7.4
+
+    - name: Validate composer.json and composer.lock
+      run: composer validate --strict
+
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v3
+      with:
+        path: backend/vendor
+        key: ubuntu-22.04-php7.4-${{ hashFiles('**/composer.lock') }}
+        restore-keys: ubuntu-22.04-php7.4-
+
+    - name: Install dependencies
+      run: |
+        composer install --prefer-dist --no-progress --no-suggest
+        composer require --dev friendsofphp/php-cs-fixer phpstan/phpstan
+
+    - name: Run phpstan and php-cs-fixer
+      run: |
+        composer style-check
+        vendor/bin/phpstan analyse
