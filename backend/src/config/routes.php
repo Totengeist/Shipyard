@@ -3,6 +3,7 @@
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Shipyard\Middleware\LogMiddleware;
 use Shipyard\Middleware\SessionMiddleware;
 use Slim\Routing\RouteCollectorProxy;
 
@@ -19,7 +20,7 @@ $app->group($_SERVER['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $gro
 
         return $response
           ->withHeader('Content-Type', 'application/json');
-    });
+    })->add(LogMiddleware::class);
 
     $group->group('', function (RouteCollectorProxy $group) {
         $group->get('/ship', 'Shipyard\Controllers\ShipController:index');
@@ -44,7 +45,7 @@ $app->group($_SERVER['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $gro
         $group->get('/release/{slug}', 'Shipyard\Controllers\ReleaseController:show');
 
         $group->get('/screenshot/{ref}', 'Shipyard\Controllers\ScreenshotController:show');
-    });
+    })->add(LogMiddleware::class);
 
     $group->group('', function (RouteCollectorProxy $group) {
         $group->get('/me', 'Shipyard\Controllers\LoginController:me');
@@ -92,12 +93,12 @@ $app->group($_SERVER['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $gro
 
         $group->post('/screenshot/{ref}', 'Shipyard\Controllers\ScreenshotController:update');
         $group->delete('/screenshot/{ref}', 'Shipyard\Controllers\ScreenshotController:destroy');
-    })->add(SessionMiddleware::class);
+    })->add(LogMiddleware::class)->add(SessionMiddleware::class);
     $group->get('/{path:.*}', function ($request, $response, array $args) {
         return $response
              ->withStatus(404);
-    });
-});
+    })->add(LogMiddleware::class);
+})->add(LogMiddleware::class);
 $app->get('/{path:.*}', function ($request, $response, array $args) {
     ob_start();
     require __DIR__ . '/../public/index.html';

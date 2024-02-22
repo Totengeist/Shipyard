@@ -5,6 +5,7 @@ namespace Shipyard\Controllers;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Shipyard\Auth;
+use Shipyard\Log;
 use Shipyard\Models\User;
 use Shipyard\Models\UserActivation;
 use Shipyard\Traits\ChecksPermissions;
@@ -146,6 +147,7 @@ class RegisterController extends Controller {
         $subdata = array_intersect_key($data, array_flip((array) ['name', 'email', 'password', 'password_confirmation']));
         $user = $this->create($subdata)->makeVisible(['email', 'created_at', 'updated_at']);
         $user->create_activation();
+        Log::get()->channel('registration')->info('Registered user.', $user->toArray());
 
         $payload = (string) json_encode(['user' => $user]);
 
@@ -177,6 +179,7 @@ class RegisterController extends Controller {
         }
         $user->makeVisible(['email', 'created_at', 'updated_at']);
         $user->activate();
+        Log::get()->channel('registration')->info('Activated user.', $user->toArray());
 
         Auth::login($user);
 
@@ -213,6 +216,7 @@ class RegisterController extends Controller {
             $activation->delete();
         }
         $user->delete();
+        Log::get()->channel('registration')->info('Deleted user.', $user->toArray());
 
         $payload = (string) json_encode(['message' => 'successful']);
 
@@ -267,6 +271,7 @@ class RegisterController extends Controller {
         }
 
         $user->save();
+        Log::get()->channel('registration')->info('Updated user.', $user->toArray());
 
         $payload = (string) json_encode(['user' => $user]);
 

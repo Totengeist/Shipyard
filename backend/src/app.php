@@ -20,7 +20,10 @@ class App {
             return new \SlimSession\Helper();
         });
         $container->set('logger', function () {
-            return Log::instanciateLogger();
+            $logger = new Log();
+            $logger->setAsGlobal();
+
+            return $logger;
         });
         AppFactory::setContainer($container);
 

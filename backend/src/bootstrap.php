@@ -16,6 +16,7 @@ $dotenv->required([
     'DB_DATABASE',
     'DB_USERNAME'
 ]);
+$_SERVER['APP_ROOT'] = realpath(__DIR__);
 
 $capsule = new Capsule();
 $capsule->addConnection([

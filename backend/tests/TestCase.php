@@ -5,11 +5,17 @@ namespace Tests;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use PHPUnit\Framework\TestCase as BaseTestCase;
+use Shipyard\Log;
 
 /**
  * @property int $id
  */
 class TestCase extends BaseTestCase {
+    public function setUp(): void {
+        parent::setUp();
+        (new Log())->setAsGlobal();
+    }
+
     /**
      * @param mixed[] $dataExpected
      * @param mixed[] $dataActual

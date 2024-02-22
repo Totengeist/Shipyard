@@ -37,7 +37,7 @@ class FileManager {
 
         if (file_exists($fullpath)) {
             if ($attempts > 10) {
-                Log::channel('files')->error('We have attempted to save a file 10 times and run into naming conflicts each time');
+                Log::get()->channel('files')->error('We have attempted to save a file 10 times and run into naming conflicts each time');
                 throw new \Exception('We have attempted to save a file 10 times and run into naming conflicts each time. Please report this to your administrator.');
             }
 
@@ -57,7 +57,7 @@ class FileManager {
             'compressed' => false
         ]);
 
-        Log::channel('files')->info('Saved file.', ['file' => $file->makeVisible('filepath')->attributesToArray(), 'user' => Auth::user()!==null ? Auth::user()->attributesToArray() : 'none']);
+        Log::get()->channel('files')->info('Saved file.', $file->makeVisible('filepath')->attributesToArray());
 
         return $file;
     }

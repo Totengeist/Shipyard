@@ -24,7 +24,7 @@ class Auth {
         }
 
         $log_user = array_diff_key($user->attributesToArray(), ['email', 'created_at', 'updated_at']);
-        Log::channel('auth')->info('Logged in user.', $log_user);
+        Log::get()->channel('auth')->info('Logged in user.');
         static::$session->set('user', $user);
     }
 
@@ -40,7 +40,7 @@ class Auth {
         if (static::$session->get('user') !== null) {
             $log_user = array_diff_key(static::$session->get('user')->attributesToArray(), ['email', 'created_at', 'updated_at']);
         }
-        Log::channel('auth')->info('Logged out user.', $log_user);
+        Log::get()->channel('auth')->info('Logged out user.', $log_user);
         static::$session->destroy();
     }
 
@@ -112,5 +112,20 @@ class Auth {
         session_id($session_id);
         session_start();
         static::$session = new SessionHelper();
+    }
+
+    /**
+     * Save information about the current request.
+     *
+     * @param mixed[] $info session information
+     *
+     * @return void
+     */
+    public static function request_info($info) {
+        if (static::$session === null) {
+            static::$session = new SessionHelper();
+        }
+
+        static::$session->set('request_info', $info);
     }
 }
