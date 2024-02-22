@@ -15,7 +15,7 @@ class Auth {
     public static $session;
 
     /**
-     * @param Models\User $user
+     * @param User $user
      *
      * @return void
      */
