@@ -81,11 +81,7 @@ Account Management
    :query email: a valid email address to send the activation link to.
    :query password: a strong password
    :query password_confirmation: the same strong password, to verify it wasn't misspelled
-   :reqheader Accept: the response content type depends on
-                      :mailheader:`Accept` header
    :reqheader Authorization: optional Bearer token to authenticate
-   :resheader Content-Type: this depends on :mailheader:`Accept`
-                            header of request
    :statuscode 200: no error
    :statuscode 422: the input was invalid or the email was already used
 
@@ -125,8 +121,9 @@ Account Management
    Log in a user.
    
    The ``session_id`` token should be stored by the client and used as a
-   Bearer token on future requests. Logging the user out shoudld be as simple
-   as deleting the token in the client's storage, but you can also :http:get:`/api/v1/logout`.
+   Bearer token on future requests. Logging the user out should be as simple
+   as deleting the token in the client's storage, but you can also :http:get:`/api/v1/logout`
+   to invalidate the session on the server.
 
    **Example request**:
 
@@ -159,7 +156,7 @@ Account Management
    :statuscode 401: the account doesn't exist, the password is incorrect,
      or the account has not been activated
 
-.. http:get:: /api/v1/logout
+.. http:post:: /api/v1/logout
 
    Log out the current session.
 
@@ -167,7 +164,7 @@ Account Management
 
    .. sourcecode:: http
 
-      GET /api/v1/lgout HTTP/1.1
+      POST /api/v1/logout HTTP/1.1
       Host: example.com
       Accept: application/json, text/javascript
 
@@ -184,8 +181,6 @@ Account Management
 
    :reqheader Authorization: optional bearer token to authenticate
    :statuscode 200: no error
-   :statuscode 401: the account doesn't exist, the password is incorrect,
-     or the account has not been activated
 
 .. http:get:: /api/v1/me
 
@@ -357,7 +352,7 @@ Ship Management
 
 .. http:get:: /api/v1/ship/(ref)
 
-   Information about a specific ship
+   Information about a specific ship, identified by ``ref``.
 
    **Example request**:
 
@@ -387,21 +382,7 @@ Ship Management
         }
       }
 
-   :statuscode 200: no error
-   :statuscode 404: the ship does not exist
-
-.. http:get:: /api/v1/ship/(ref)/download
-
-   Download a ship file.
-
-   **Example request**:
-
-   .. sourcecode:: http
-
-      GET /api/v1/ship/5abe24b6a/download HTTP/1.1
-      Host: example.com
-      Accept: application/json, text/javascript
-
+   :param ref: the unique ID of the ship to query
    :statuscode 200: no error
    :statuscode 404: the ship does not exist
 
@@ -437,12 +418,29 @@ Ship Management
         }
       }
 
-   :statuscode 200: no error
-   :statuscode 401: not logged in
-   :statuscode 404: the ship does not exist
+   :param file: the ship file being uploaded
    :reqheader Authorization: optional bearer token to authenticate
+   :statuscode 200: no error
+   :statuscode 401: not logged in or banned from uploading
+   :statuscode 404: the ship does not exist
 
-.. http:get:: /api/v1/ship/(ship_ref)/screenshots
+.. http:get:: /api/v1/ship/(ref)/download
+
+   Download a ship file.
+
+   **Example request**:
+
+   .. sourcecode:: http
+
+      GET /api/v1/ship/5abe24b6a/download HTTP/1.1
+      Host: example.com
+      Accept: application/json, text/javascript
+
+   :param ref: the unique ID of the ship to query
+   :statuscode 200: no error
+   :statuscode 404: the ship does not exist
+
+.. http:get:: /api/v1/ship/(ref)/screenshots
 
    A list of screenshots for a ship.
 
@@ -450,7 +448,7 @@ Ship Management
 
    .. sourcecode:: http
 
-      POST /api/v1/ship/8ef20cff9 HTTP/1.1
+      GET /api/v1/ship/8ef20cff9/screenshots HTTP/1.1
       Host: example.com
       Accept: application/json, text/javascript
 
@@ -478,6 +476,7 @@ Ship Management
         }
       ]
 
+   :param ref: the unique ID of the ship to get screenshots for
    :statuscode 200: no error
    :statuscode 404: the ship does not exist
 
@@ -485,19 +484,24 @@ Ship Management
 
    Edit an existing ship.
 
+   :param ref: the unique ID of the ship to edit
+   :reqheader Authorization: optional bearer token to authenticate
+   :statuscode 200: no error
+   :statuscode 404: the ship does not exist
+
 .. http:post:: /api/v1/ship/(ref)/upgrade
 
    Replace an existing ship with a new version.
 
    Older versions will still be accessible. This allows users to upgrade ships to support new
-   features added to The Last Starship. The ``(ref)`` will continue to point to the older version,
+   features added to The Last Starship. The ``ref`` will continue to point to the older version,
    but it's page will display a notice that a newer version is available.
 
    **Example request**:
 
    .. sourcecode:: http
 
-      POST /api/v1/ship/19fb7fa39 HTTP/1.1
+      POST /api/v1/ship/19fb7fa39/upgrade HTTP/1.1
       Host: example.com
       Accept: application/json, text/javascript
 
@@ -509,7 +513,7 @@ Ship Management
       Content-Type: application/json
 
       {
-        "ref": "19fb7fa39",
+        "ref": "8ef20cff9",
         "title": "et ut voluptatem",
         "description": "Ipsa eligendi quia dolorem sit amet illo. Magnam quae voluptas mollitia. Nemo et asperiores adipisci dolor cumque.",
         "downloads": 19519,
@@ -521,20 +525,32 @@ Ship Management
         }
       }
 
+   :param file: the ship file being uploaded
+   :param ref: the unique ID of the ship to be upgraded
+   :reqheader Authorization: optional bearer token to authenticate
    :statuscode 200: no error
    :statuscode 401: not logged in or not the owner of the ship
    :statuscode 404: the ship does not exist
-   :reqheader Authorization: optional bearer token to authenticate
 
-.. http:post:: /api/v1/ship/(ship_ref)/screenshots
+.. http:post:: /api/v1/ship/(ref)/screenshots
 
    Adds one or more screenshots to an existing ship.
 
+   :param ref: the unique ID of the ship to add screenshots to
    :reqheader Authorization: optional bearer token to authenticate
+   :statuscode 200: no error
+   :statuscode 401: not logged in or not the owner of the ship
+   :statuscode 404: the ship does not exist
 
 .. http:delete:: /api/v1/ship/(ref)
 
    Delete an existing ship.
+
+   :param ref: the unique ID of the ship to delete
+   :reqheader Authorization: optional bearer token to authenticate
+   :statuscode 200: no error
+   :statuscode 401: not logged in or not the owner of the ship
+   :statuscode 404: the ship does not exist
 
 Save Management
 ---------------
@@ -543,36 +559,121 @@ Save Management
 
    A paginated list of saves.
 
+   **Example request**:
+
+   .. sourcecode:: http
+
+      GET /api/v1/save HTTP/1.1
+      Host: example.com
+      Accept: application/json, text/javascript
+
+   **Example response**:
+
    :query page: an optional page number, defaulting to 1
-   :query per_page: an optional number of ships per page to return, defaulting to 15 and limited to 100 or less
+   :query per_page: an optional number of saves per page to return, defaulting to 15 and limited to 100 or less
    :statuscode 200: no error
 
 .. http:get:: /api/v1/save/(ref)
 
-   Information about a specific save
+   Information about a specific save, identified by ``ref``.
 
-   :statuscode 200: no error
-   :statuscode 404: the save does not exist
+   **Example request**:
 
-.. http:get:: /api/v1/save/(ref)/download
-.. http:get:: /api/v1/save/(ship_ref)/screenshots
+   **Example response**:
 
-   A list of screenshots for a save.
-
+   :param ref: the unique ID of the save to query
    :statuscode 200: no error
    :statuscode 404: the save does not exist
 
 .. http:post:: /api/v1/save
+
+   Upload a new save file.
+
+   **Example request**:
+
+   **Example response**:
+
+   :param file: the save file being uploaded
+   :reqheader Authorization: optional bearer token to authenticate
+   :statuscode 200: no error
+   :statuscode 401: not logged in or banned from uploading
+   :statuscode 404: the save does not exist
+
+.. http:get:: /api/v1/save/(ref)/download
+
+   Download a save file.
+
+   **Example request**:
+
+   .. sourcecode:: http
+
+      GET /api/v1/ship/5abe24b6a/download HTTP/1.1
+      Host: example.com
+      Accept: application/json, text/javascript
+
+   :param ref: the unique ID of the ship to query
+   :statuscode 200: no error
+   :statuscode 404: the save does not exist
+
+.. http:get:: /api/v1/save/(ref)/screenshots
+
+   A list of screenshots for a save.
+
+   **Example request**:
+
+   **Example response**:
+
+   :param ref: the unique ID of the save to get screenshots for
+   :statuscode 200: no error
+   :statuscode 404: the save does not exist
+
 .. http:post:: /api/v1/save/(ref)
-.. http:post:: /api/v1/save/(ship_ref)/screenshots
+
+   Edit an existing save.
+
+   :param ref: the unique ID of the save to edit
+   :reqheader Authorization: optional bearer token to authenticate
+   :statuscode 200: no error
+   :statuscode 404: the save does not exist
+
+.. http:post:: /api/v1/save/(ref)/upgrade
+
+   Replace an existing save with a new version.
+
+   Older versions will still be accessible. This allows users to upgrade saves to support new
+   features added to The Last Starship. The ``ref`` will continue to point to the older version,
+   but it's page will display a notice that a newer version is available.
+
+   **Example request**:
+
+   **Example response**:
+
+   :param file: the save file being uploaded
+   :param ref: the unique ID of the save to be upgraded
+   :reqheader Authorization: optional bearer token to authenticate
+   :statuscode 200: no error
+   :statuscode 401: not logged in or not the owner of the save
+   :statuscode 404: the save does not exist
+
+.. http:post:: /api/v1/save/(ref)/screenshots
 
    Adds one or more screenshots to an existing save.
 
+   :param ref: the unique ID of the save to add screenshots to
    :reqheader Authorization: optional bearer token to authenticate
+   :statuscode 200: no error
+   :statuscode 401: not logged in or not the owner of the save
+   :statuscode 404: the save does not exist
 
 .. http:delete:: /api/v1/save/(ref)
 
    Delete an existing save.
+
+   :param ref: the unique ID of the save to delete
+   :reqheader Authorization: optional bearer token to authenticate
+   :statuscode 200: no error
+   :statuscode 401: not logged in or not the owner of the save
+   :statuscode 404: the save does not exist
 
 Mod Management
 --------------
@@ -587,29 +688,81 @@ Mod Management
 
 .. http:get:: /api/v1/modification/(ref)
 
-   Information about a specific mod
+   Information about a specific mod, identified by ``ref``.
 
-   :statuscode 200: no error
-   :statuscode 404: the mod does not exist
-
-.. http:get:: /api/v1/modification/(ship_ref)/screenshots
-
-   A list of screenshots for a mod.
-
+   :param ref: the unique ID of the mod to query
    :statuscode 200: no error
    :statuscode 404: the mod does not exist
 
 .. http:post:: /api/v1/modification
+
+   Upload a new mod file.
+
+   :param file: the mod file being uploaded
+   :reqheader Authorization: optional bearer token to authenticate
+   :statuscode 200: no error
+   :statuscode 401: not logged in or banned from uploading
+   :statuscode 404: the mod does not exist
+
+.. http:get:: /api/v1/modification/(ref)/download
+
+   Download a mod file.
+
+   :param ref: the unique ID of the mod to query
+   :statuscode 200: no error
+   :statuscode 404: the mod does not exist
+
+.. http:get:: /api/v1/modification/(ref)/screenshots
+
+   A list of screenshots for a mod.
+
+   :param ref: the unique ID of the mod to get screenshots for
+   :statuscode 200: no error
+   :statuscode 404: the mod does not exist
+
 .. http:post:: /api/v1/modification/(ref)
-.. http:post:: /api/v1/modification/(ship_ref)/screenshots
+
+   Edit an existing mod.
+
+   :param ref: the unique ID of the mod to edit
+   :reqheader Authorization: optional bearer token to authenticate
+   :statuscode 200: no error
+   :statuscode 404: the mod does not exist
+
+.. http:post:: /api/v1/modification/(ref)/upgrade
+
+   Replace an existing mod with a new version.
+
+   Older versions will still be accessible. This allows users to upgrade mods to support new
+   features added to The Last Starship. The ``ref`` will continue to point to the older version,
+   but it's page will display a notice that a newer version is available.
+
+   :param file: the mod file being uploaded
+   :param ref: the unique ID of the mod to be upgraded
+   :reqheader Authorization: optional bearer token to authenticate
+   :statuscode 200: no error
+   :statuscode 401: not logged in or not the owner of the mod
+   :statuscode 404: the mod does not exist
+
+.. http:post:: /api/v1/modification/(ref)/screenshots
 
    Adds one or more screenshots to an existing modification.
 
+   :param ref: the unique ID of the ship to add screenshots to
    :reqheader Authorization: optional bearer token to authenticate
+   :statuscode 200: no error
+   :statuscode 401: not logged in or not the owner of the mod
+   :statuscode 404: the mod does not exist
 
 .. http:delete:: /api/v1/modification/(ref)
 
    Delete an existing mod.
+
+   :param ref: the unique ID of the mod to delete
+   :reqheader Authorization: optional bearer token to authenticate
+   :statuscode 200: no error
+   :statuscode 401: not logged in or not the owner of the mod
+   :statuscode 404: the mod does not exist
 
 Screenshot Management
 ---------------------
