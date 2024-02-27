@@ -11,7 +11,7 @@ $app->group($_SERVER['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $gro
     $group->post('/register', 'Shipyard\Controllers\RegisterController:register');
     $group->post('/activate/{token}', 'Shipyard\Controllers\RegisterController:activate');
     $group->post('/login', 'Shipyard\Controllers\LoginController:login');
-    $group->get('/logout', 'Shipyard\Controllers\LoginController:logout');
+    $group->post('/logout', 'Shipyard\Controllers\LoginController:logout');
     $group->get('/version', function (Request $request, Response $response, $args) {
         $raw_version = Capsule::table('meta')->where('name', '=', 'schema_version')->get()[0]; // 'select `default`,`value` from `meta` where `name` = ?', ['schema_version'])[0];
         $version = (empty($raw_version->value) ? $raw_version->default : $raw_version->value);

@@ -153,7 +153,7 @@ class UserControllerTest extends APITestCase {
         $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
         ->assertJsonResponse(['email' => $user->email]);
 
-        $this->get('api/v1/logout', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+        $this->post('api/v1/logout', [], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
          ->assertJsonResponse([
              'message' => 'You have been logged out.',
          ]);
