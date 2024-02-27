@@ -122,7 +122,7 @@ Account Management
    
    The ``session_id`` token should be stored by the client and used as a
    Bearer token on future requests. Logging the user out should be as simple
-   as deleting the token in the client's storage, but you can also :http:get:`/api/v1/logout`
+   as deleting the token in the client's storage, but you can also :http:post:`/api/v1/logout`
    to invalidate the session on the server.
 
    **Example request**:
@@ -422,7 +422,6 @@ Ship Management
    :reqheader Authorization: optional bearer token to authenticate
    :statuscode 200: no error
    :statuscode 401: not logged in or banned from uploading
-   :statuscode 404: the ship does not exist
 
 .. http:get:: /api/v1/ship/(ref)/download
 
@@ -597,7 +596,6 @@ Save Management
    :reqheader Authorization: optional bearer token to authenticate
    :statuscode 200: no error
    :statuscode 401: not logged in or banned from uploading
-   :statuscode 404: the save does not exist
 
 .. http:get:: /api/v1/save/(ref)/download
 
@@ -702,7 +700,6 @@ Mod Management
    :reqheader Authorization: optional bearer token to authenticate
    :statuscode 200: no error
    :statuscode 401: not logged in or banned from uploading
-   :statuscode 404: the mod does not exist
 
 .. http:get:: /api/v1/modification/(ref)/download
 
@@ -771,15 +768,28 @@ Screenshot Management
 
    Information about a specific screenshot
 
+   :param ref: the unique ID of the screenshot to edit
    :statuscode 200: no error
    :statuscode 404: the screenshot (or the item it belongs to) does not exist
 
 .. http:post:: /api/v1/screenshot/(ref)
+
+   Edit an existing screenshot.
+
+   :param ref: the unique ID of the screenshot to edit
+   :reqheader Authorization: optional bearer token to authenticate
+   :statuscode 200: no error
+   :statuscode 404: the screenshot does not exist
+
 .. http:delete:: /api/v1/screenshot/(ref)
 
    Deletes an existing screenshot.
 
+   :param ref: the unique ID of the screenshot to delete
    :reqheader Authorization: optional bearer token to authenticate
+   :statuscode 200: no error
+   :statuscode 401: not logged in or not the owner of the screenshot
+   :statuscode 404: the screenshot does not exist
 
 Administrative
 --------------
@@ -788,7 +798,23 @@ User Management
 ***************
 
 .. http:post:: /api/v1/user/(user_id)
+
+   Edit an existing user.
+
+   :param ref: the unique ID of the user to edit
+   :reqheader Authorization: optional bearer token to authenticate
+   :statuscode 200: no error
+   :statuscode 404: the user does not exist
+
 .. http:delete:: /api/v1/user/(user_id)
+
+   Delete an existing user.
+
+   :param ref: the unique ID of the user to delete
+   :reqheader Authorization: optional bearer token to authenticate
+   :statuscode 200: no error
+   :statuscode 401: not logged in or not the owner of the user
+   :statuscode 404: the user does not exist
 
 Tag & Release Management
 ************************
@@ -804,7 +830,7 @@ Tag & Release Management
 
 .. http:get:: /api/v1/tag/(slug)
 
-   Information about a specific tag
+   Information about a specific tag.
 
    :statuscode 200: no error
    :statuscode 404: the tag does not exist
@@ -815,7 +841,6 @@ Tag & Release Management
 .. http:delete:: /api/v1/tag/(slug)
 
    Delete an existing tag.
-
 
    :reqheader Authorization: optional bearer token to authenticate
 .. http:get:: /api/v1/release
@@ -829,7 +854,7 @@ Tag & Release Management
 
 .. http:get:: /api/v1/release/(slug)
 
-   Information about a specific release
+   Information about a specific release.
 
    :statuscode 200: no error
    :statuscode 404: the release does not exist

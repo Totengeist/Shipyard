@@ -23,7 +23,7 @@ trait HasRoles {
     /**
      * Assign the given role to an item.
      *
-     * @param \Shipyard\Models\Role|string $role
+     * @param Role|string $role
      *
      * @return \Illuminate\Database\Eloquent\Model
      */
@@ -44,7 +44,7 @@ trait HasRoles {
     /**
      * Remove the given role from an item.
      *
-     * @param \Shipyard\Models\Role|string $role
+     * @param Role|string $role
      *
      * @return int
      */
@@ -80,7 +80,7 @@ trait HasRoles {
     /**
      * Alias for hasPermission.
      *
-     * @param \Shipyard\Models\Permission|string $permission
+     * @param Permission|string $permission
      *
      * @return bool
      */
@@ -91,7 +91,7 @@ trait HasRoles {
     /**
      * Determine if the user has permission to perform the given task.
      *
-     * @param \Shipyard\Models\Permission|string $permission
+     * @param Permission|string $permission
      *
      * @return bool
      */

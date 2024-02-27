@@ -88,8 +88,8 @@ class Screenshot extends Model {
     /**
      * Create or add on to a validator.
      *
-     * @param mixed                    $data
-     * @param \Valitron\Validator|null $v
+     * @param mixed          $data
+     * @param Validator|null $v
      *
      * @return Validator
      */

@@ -46,7 +46,7 @@ class Auth {
     }
 
     /**
-     * @return Models\User|null
+     * @return User|null
      */
     public static function user() {
         if (static::$session === null) {
