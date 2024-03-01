@@ -270,7 +270,7 @@ class RegisterController extends Controller {
             $user->email = $subdata['email'];
         }
         if (isset($subdata['password'])) {
-            $user->password = $subdata['password'];
+            $user->password = password_hash($subdata['password'], PASSWORD_BCRYPT);
         }
 
         $user->save();

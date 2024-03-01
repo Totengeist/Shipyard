@@ -43,6 +43,11 @@ class LoginController extends Controller {
                 ->withStatus(401, 'Unauthorized');
         }
 
+        if (password_needs_rehash($data['password'], PASSWORD_BCRYPT)) {
+            $user->password = password_hash($data['password'], PASSWORD_BCRYPT);
+            $user->save();
+        }
+
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = UserActivation::query()->where('email', $user->email);
         if (!$query->get()->isEmpty()) {
