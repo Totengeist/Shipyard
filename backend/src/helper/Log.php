@@ -57,10 +57,10 @@ class Log {
     /**
      * Instanciate the logger.
      *
-     * @param Logger $logger
+     * @param Logger|string|null $logger
      */
     public function __construct($logger = null) {
-        if ($logger == null) {
+        if ($logger == null || is_string($logger)) {
             if (!(isset($_SERVER['LOG_LEVEL']) || isset($_SERVER['LOG_FILE']))) {
                 $log_level = 'OFF';
             } else {
@@ -73,12 +73,12 @@ class Log {
             } else {
                 $log_file = self::get_log_file();
                 $output = "%datetime%: [%channel%:%level_name%] > %message% %context% %extra%\n";
-                $formatter = new LineFormatter($output, null, false, true);
+                $formatter = new LineFormatter($output, null, true, true);
                 $stream = new StreamHandler($log_file, constant("\Monolog\Logger::$log_level"));
                 $stream->setFormatter($formatter);
             }
 
-            $logger = new Logger($_SERVER['APP_TITLE'] . ':main');
+            $logger = new Logger(is_string($logger) ? $logger : $_SERVER['APP_TITLE'] . ':main');
             $logger->pushHandler($stream);
             $logger->info("Logger initialized: {$log_level}");
         }
