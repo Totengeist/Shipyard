@@ -34,7 +34,7 @@ jobs:
     strategy:
         fail-fast: true
         matrix:
-            php: ['7.4']
+            php: ['7.2', '7.3', '7.4', '8.2']
             runner: ['ubuntu-20.04', 'ubuntu-22.04']
 
     steps:
@@ -59,11 +59,21 @@ jobs:
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest
+      if: ${{ matrix.php != '8.2' }}
+
+    - name: Install dependencies (PHP 8.2)
+      run: composer install --prefer-dist --no-progress --no-suggest --ignore-platform-reqs
+      if: ${{ matrix.php == '8.2' }}
 
     - name: Start MySQL
       run: |
         sudo /etc/init.d/mysql start
         mysql -h 127.0.0.1 --port 3306 -u root -proot -e 'CREATE DATABASE IF NOT EXISTS shipyard;'
+
+    - name: Use mysql_native_password (PHP 7.2 & 7.3)
+      run: |
+        mysql -h 127.0.0.1 --port 3306 -u root -proot -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';"
+      if: ${{ matrix.php == '7.2' || matrix.php == '7.3' }}
 
     - name: Run Migration
       run: php src/public/install/index.php
