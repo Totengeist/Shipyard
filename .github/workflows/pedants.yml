@@ -38,13 +38,15 @@ jobs:
     - name: Validate composer.json and composer.lock
       run: composer validate --strict
 
-    - name: Cache Composer packages
-      id: composer-cache
-      uses: actions/cache@v3
+    - name: Restore Composer Cache Directory
+      id: composer-cache-restore
+      run: |
+        echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+    - uses: actions/cache/restore@v3
       with:
-        path: backend/vendor
-        key: ubuntu-22.04-php7.4-${{ hashFiles('**/composer.lock') }}
-        restore-keys: ubuntu-22.04-php7.4-
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ubuntu-22.04-php7.4-composer-${{ hashFiles('**/composer.json') }}
+        restore-keys: ubuntu-22.04-php7.4-composer-
 
     - name: Install dependencies
       run: |

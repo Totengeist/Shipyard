@@ -49,13 +49,15 @@ jobs:
     - name: Validate composer.json and composer.lock
       run: composer validate --strict
 
-    - name: Cache Composer packages
-      id: composer-cache
-      uses: actions/cache@v3
+    - name: Restore Composer Cache Directory
+      id: composer-cache-restore
+      run: |
+        echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+    - uses: actions/cache/restore@v3
       with:
-        path: backend/vendor
-        key: ${{ matrix.runner }}-php${{ matrix.php }}-${{ hashFiles('**/composer.lock') }}
-        restore-keys: ${{ matrix.runner }}-php${{ matrix.php }}-
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ${{ runner.os }}-php${{ matrix.php }}-composer-${{ hashFiles('**/composer.json') }}
+        restore-keys: ${{ runner.os }}-php${{ matrix.php }}-composer-
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest
@@ -64,6 +66,16 @@ jobs:
     - name: Install dependencies (PHP 8.2)
       run: composer install --prefer-dist --no-progress --no-suggest --ignore-platform-reqs
       if: ${{ matrix.php == '8.2' }}
+
+    - name: Save Composer Cache Directory
+      id: composer-cache-save
+      run: |
+        echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+    - uses: actions/cache/save@v3
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ${{ runner.os }}-php${{ matrix.php }}-composer-${{ steps.composer-cache-restore.outputs.cache-primary-key }}
+        restore-keys: ${{ runner.os }}-php${{ matrix.php }}-composer-
 
     - name: Start MySQL
       run: |
