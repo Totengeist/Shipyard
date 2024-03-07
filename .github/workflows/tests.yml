@@ -55,7 +55,7 @@ jobs:
         echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
     - uses: actions/cache/restore@v3
       with:
-        path: ${{ steps.composer-cache.outputs.dir }}
+        path: ${{ steps.composer-cache-restore.outputs.dir }}
         key: ${{ runner.os }}-php${{ matrix.php }}-composer-${{ hashFiles('**/composer.json') }}
         restore-keys: ${{ runner.os }}-php${{ matrix.php }}-composer-
 
@@ -68,13 +68,10 @@ jobs:
       if: ${{ matrix.php == '8.2' }}
 
     - name: Save Composer Cache Directory
-      id: composer-cache-save
-      run: |
-        echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-    - uses: actions/cache/save@v3
+      uses: actions/cache/save@v3
       with:
-        path: ${{ steps.composer-cache.outputs.dir }}
-        key: ${{ runner.os }}-php${{ matrix.php }}-composer-${{ steps.composer-cache-restore.outputs.cache-primary-key }}
+        path: ${{ steps.composer-cache-restore.outputs.dir }}
+        key: ${{ runner.os }}-php${{ matrix.php }}-composer-${{ steps.composer-cache-restore-restore.outputs.cache-primary-key }}
         restore-keys: ${{ runner.os }}-php${{ matrix.php }}-composer-
 
     - name: Start MySQL
