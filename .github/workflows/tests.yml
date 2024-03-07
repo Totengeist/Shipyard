@@ -38,7 +38,7 @@ jobs:
             runner: ['ubuntu-20.04', 'ubuntu-22.04']
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Install PHP
       uses: shivammathur/setup-php@v2
@@ -49,11 +49,12 @@ jobs:
     - name: Validate composer.json and composer.lock
       run: composer validate --strict
 
-    - name: Restore Composer Cache Directory
+    - name: Get Composer Cache Directory
       id: composer-cache-restore
       run: |
         echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-    - uses: actions/cache/restore@v3
+    - name: Restore Composer Cache Directory
+      uses: actions/cache/restore@v4
       with:
         path: ${{ steps.composer-cache-restore.outputs.dir }}
         key: ${{ runner.os }}-php${{ matrix.php }}-composer-${{ hashFiles('**/composer.json') }}
@@ -67,8 +68,8 @@ jobs:
       run: composer install --prefer-dist --no-progress --no-suggest --ignore-platform-reqs
       if: ${{ matrix.php == '8.2' }}
 
-    - name: Save Composer Cache Directory
-      uses: actions/cache/save@v3
+    - name: Save Composer Cache
+      uses: actions/cache/save@v4
       with:
         path: ${{ steps.composer-cache-restore.outputs.dir }}
         key: ${{ runner.os }}-php${{ matrix.php }}-composer-${{ hashFiles('**/composer.json') }}
