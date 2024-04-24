@@ -16,7 +16,7 @@ import { AdminPermissionsComponent } from './admin/permissions/permissions.compo
 import { AdminEditPermissionsComponent } from './admin/edit-permissions/edit-permissions.component';
 import { ShipsComponent } from './ships/ships.component';
 import { ReleasesComponent } from './releases/releases.component';
-import { ChallengesComponent } from './challenges/challenges.component';
+import { ModificationsComponent } from './modifications/modifications.component';
 import { SavesComponent } from './saves/saves.component';
 
 @NgModule({
@@ -32,7 +32,7 @@ import { SavesComponent } from './saves/saves.component';
     AdminEditPermissionsComponent,
     ShipsComponent,
     ReleasesComponent,
-    ChallengesComponent,
+    ModificationsComponent,
     SavesComponent,
   ],
   imports: [

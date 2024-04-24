@@ -1,0 +1,9 @@
+<ul>
+    <li class="item-list" *ngFor="let modification of modifications">
+      <img src="missing.png" style="width: 100%">
+      <p><a href="/modification/{{ modification.ref }}" routerLink="/modification/{{ modification.ref }}">{{ modification.title }}</a> by {{ modification.username }}</p>
+      <p>{{ modification.description }}</p>
+    </li>
+</ul>
+
+<a [routerLink]="['/mods', page-1]" *ngIf="show_prev">Prev</a> -- Page {{ page }} -- <a [routerLink]="['/mods', page+1]" *ngIf="show_next">Next</a>

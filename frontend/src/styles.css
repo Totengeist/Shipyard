@@ -12,10 +12,28 @@ html, body {
 
 .container {
 	flex: 1;
+	display: flex;
+	width: 100%;
+	max-width: 100%;
 }
 
 footer div {
 	width: 100%;
 	text-align: center;
 	color: #6c757d;
+}
+
+.item-list {
+	list-style-type: none;
+	float: left;
+	display: block;
+	height: 250px;
+	width: 320px;
+	margin: 15px;
+	overflow: hidden;
+}
+
+.item-list img {
+	width: 100%;
+	border: 1px solid black
 }

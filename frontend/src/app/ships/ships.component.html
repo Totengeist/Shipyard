@@ -1,3 +1,9 @@
-<li *ngFor="let ship of ships">
-  <a href="/ship/{{ ship.ref }}" routerLink="/ship/{{ ship.ref }}">{{ ship.title }}</a> by {{ship.user?.name}}
-</li>
+<ul>
+    <li class="item-list" *ngFor="let ship of ships">
+        <img src="missing.png" style="width: 100%">
+        <p><a href="/ship/{{ ship.ref }}" routerLink="/ship/{{ ship.ref }}">{{ ship.title }}</a> by {{ ship.username }}</p>
+        <p>{{ ship.description }}</p>
+    </li>
+</ul>
+
+<a [routerLink]="['/ships', page-1]" *ngIf="show_prev">Prev</a> -- Page {{ page }} -- <a [routerLink]="['/ships', page+1]" *ngIf="show_next">Next</a>

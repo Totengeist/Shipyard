@@ -7,12 +7,12 @@ import { TokenStorageService } from '../_services/token-storage.service';
 import { environment } from '../../environments/environment';
 
 @Component({
-    selector: 'app-ships',
-    templateUrl: './ships.component.html',
-    styleUrls: ['./ships.component.css']
+    selector: 'app-modifications',
+    templateUrl: './modifications.component.html',
+    styleUrls: ['./modifications.component.css']
 })
-export class ShipsComponent implements OnInit {
-    ships: any[] = [];
+export class ModificationsComponent implements OnInit {
+    modifications: any[] = [];
     page: number = 1;
     last_page: number = -1;
     show_next: boolean = false;
@@ -23,8 +23,8 @@ export class ShipsComponent implements OnInit {
     ngOnInit(): void {
         this.route.params.subscribe(params => {
             this.page = +(params['page'] ?? 1);
-            this.ships = [];
-            this.getShips(this.page).subscribe(
+            this.modifications = [];
+            this.getModifications(this.page).subscribe(
                 data => {
                     this.last_page = +data.last_page;
                     if (this.page > 1) {
@@ -38,7 +38,7 @@ export class ShipsComponent implements OnInit {
                         this.show_next = false;
                     }
                     data.data.forEach((element: any) => {
-                        this.ships.push({title: element.title, ref: element.ref, description: (element.description ?? ""), username: (element.user?.name ?? "" ), userref: (element.user?.ref ?? "")});
+                        this.modifications.push({title: element.title, ref: element.ref, description: (element.description ?? ""), username: (element.user?.name ?? "" ), userref: (element.user?.ref ?? "")});
                     });
                 },
                 err => {
@@ -48,7 +48,7 @@ export class ShipsComponent implements OnInit {
         });
     }
 
-    getShips(page = 1): Observable<any> {
+    getModifications(page = 1): Observable<any> {
         const httpOptions = {
             headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'Accept': '*/*' })
         };
@@ -58,7 +58,7 @@ export class ShipsComponent implements OnInit {
             pageUrl = '?page='+page;
         }
 
-        return this.http.get(environment.apiUrl + 'ship' + pageUrl, httpOptions);
-    }
+        return this.http.get(environment.apiUrl + 'modification' + pageUrl, httpOptions);
+  }
 
 }
