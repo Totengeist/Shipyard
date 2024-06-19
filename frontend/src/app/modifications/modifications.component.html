@@ -1,6 +1,6 @@
 <ul class="result-list">
     <li class="result-item" *ngFor="let modification of modifications">
-        <img src="{{modification.screenshot}}">
+        <a href="/modification/{{ modification.ref }}" routerLink="/modification/{{ modification.ref }}"><img src="{{modification.screenshot}}"></a>
         <p><a href="/modification/{{ modification.ref }}" routerLink="/modification/{{ modification.ref }}">{{ modification.title }}</a> by {{ modification.username }}</p>
         <p>{{ modification.description }}</p>
     </li>
