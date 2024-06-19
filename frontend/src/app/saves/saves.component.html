@@ -1,6 +1,6 @@
 <ul class="result-list">
     <li class="result-item" *ngFor="let save of saves">
-        <img src="missing.png" style="width: 100%">
+        <img src="{{save.screenshot}}">
         <p><a href="/save/{{ save.ref }}" routerLink="/save/{{ save.ref }}">{{ save.title }}</a> by {{ save.username }}</p>
         <p>{{ save.description }}</p>
     </li>

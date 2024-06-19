@@ -47,7 +47,9 @@ li.result-item {
 
 li.result-item img {
 	width: 100%;
-	border: 1px solid black
+	height: 160px;
+	border: 1px solid black;
+	object-fit: cover;
 }
 
 div.result-controls {

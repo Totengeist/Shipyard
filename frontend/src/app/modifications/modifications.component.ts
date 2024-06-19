@@ -38,7 +38,19 @@ export class ModificationsComponent implements OnInit {
                         this.show_next = false;
                     }
                     data.data.forEach((element: any) => {
-                        this.modifications.push({title: element.title, ref: element.ref, description: (element.description ?? ""), username: (element.user?.name ?? "" ), userref: (element.user?.ref ?? "")});
+                        let screen = "missing.png"
+                        let screen_list = element.primary_screenshot ?? [];
+                        if (screen_list.length > 0) {
+                            screen = "api/v1/screenshot/"+screen_list[0].ref+"/download";
+                        }
+                        this.modifications.push({
+                            title: element.title,
+                            ref: element.ref,
+                            description: (element.description ?? ""),
+                            username: (element.user?.name ?? "" ),
+                            userref: (element.user?.ref ?? ""),
+                            screenshot: screen
+                        });
                     });
                 },
                 err => {
