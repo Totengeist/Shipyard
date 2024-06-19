@@ -9,7 +9,7 @@ use Slim\Routing\RouteCollectorProxy;
 
 $app->group($_SERVER['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $group) {
     $group->post('/register', 'Shipyard\Controllers\RegisterController:register');
-    $group->post('/activate/{token}', 'Shipyard\Controllers\RegisterController:activate');
+    $group->get('/activate/{token}', 'Shipyard\Controllers\RegisterController:activate');
     $group->post('/login', 'Shipyard\Controllers\LoginController:login');
     $group->post('/logout', 'Shipyard\Controllers\LoginController:logout');
     $group->get('/version', function (Request $request, Response $response, $args) {

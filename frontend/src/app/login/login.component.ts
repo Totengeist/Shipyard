@@ -37,16 +37,22 @@ export class LoginComponent implements OnInit {
             roles.push(element.label);
         })
         var permissions: string[] = [];
-        data.roles[0].permissions.forEach((element: any) => {
-            permissions.push(element.label);
-        })
-        var userData: object = { "name": data.name, "email": data.email, "roles": roles, "permissions": permissions };
+        if (roles.length > 0) {
+            data.roles[0].permissions.forEach((element: any) => {
+                permissions.push(element.label);
+            });
+		}
+        var userData: object = { "name": data.name, "ref": data.ref, "email": data.email, "roles": roles, "permissions": permissions };
         this.tokenStorage.saveUser(userData);
 
         this.isLoginFailed = false;
         this.isLoggedIn = true;
         this.name = this.tokenStorage.getUser().name;
-        this.router.navigate(['/admin/dashboard'])
+        if (roles.length > 0) {
+            this.router.navigate(['/admin/dashboard']);
+        } else {
+            this.router.navigate(['/home']);
+        }
         window.location.reload();
       },
       err => {

@@ -1,6 +1,6 @@
 <div id="app">
   <nav class="navbar navbar-expand navbar-dark bg-dark">
-    <a href="#" class="navbar-brand">Shipyard</a>
+    <a href="/home" class="navbar-brand" routerLink="home">Shipyard</a>
     <ul class="navbar-nav mr-auto" routerLinkActive="active">
       <li class="nav-item" *ngIf="isDashboard()">
         <a href="/admin/roles" class="nav-link" routerLink="/admin/roles">Roles</a>
@@ -35,9 +35,6 @@
   <div class="container" style="display: flex; width: 100%; max-width: 100%;">
       <div class="d-flex flex-column flex-shrink-0 p-3 bg-light" style="width: 280px;">
         <ul class="nav nav-pills flex-column mb-auto">
-          <li class="nav-item">
-            <a href="/home" class="nav-link" routerLink="home">Home </a>
-          </li>
           <li>
             <a href="/ships" class="nav-link" routerLink="ships">Ships</a>
           </li>
@@ -48,11 +45,14 @@
             <a href="/saves" class="nav-link" routerLink="saves">Saves</a>
           </li>
           <li>
+            <a href="/users" class="nav-link" routerLink="users">Users</a>
+          </li>
+          <li>
             <a href="/releases" class="nav-link" routerLink="releases">Releases</a>
           </li>
         </ul>
       </div>
-    <router-outlet></router-outlet>
+      <div class="content"><router-outlet></router-outlet></div>
   </div>
   <footer class="footer navbar navbar-expand navbar-dark bg-dark">
     <div>© 2022 Totengeist</div>

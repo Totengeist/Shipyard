@@ -17,6 +17,15 @@ html, body {
 	max-width: 100%;
 }
 
+.content {
+	flex: 1;
+}
+
+header.jumbotron {
+	font-size: x-large;
+	font-weight: bold;
+}
+
 footer div {
 	width: 100%;
 	text-align: center;

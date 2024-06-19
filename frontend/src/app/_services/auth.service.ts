@@ -22,15 +22,16 @@ export class AuthService {
   }
 
   logout(): Observable<any> {
-    return this.http.get(environment.apiUrl + 'logout', httpOptions);
+    return this.http.post(environment.apiUrl + 'logout', (new URLSearchParams()).toString(), httpOptions);
   }
 
   register(name: string, email: string, password: string, password_confirmation: string): Observable<any> {
-    return this.http.post(environment.apiUrl + 'register', {
-      name,
-      email,
-      password,
-      password_confirmation
-    }, httpOptions);
+    const body = new URLSearchParams();
+    body.set('name', name);
+    body.set('email', email);
+    body.set('password', password);
+    body.set('password_confirmation', password_confirmation);
+
+    return this.http.post(environment.apiUrl + 'register', body.toString(), httpOptions);
   }
 }

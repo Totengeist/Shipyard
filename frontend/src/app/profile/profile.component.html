@@ -1,29 +1,19 @@
-<div class="container" *ngIf="currentUser; else loggedOut">
-  <header class="jumbotron">
-    <h3>
-      <strong>{{ currentUser.name }}</strong>
-    </h3>
-  </header>
-  <p>
+<header class="jumbotron">{{ currentUser.name }}</header>
+<p>
     <strong>Email:</strong>
     {{ currentUser.email }}
-  </p>
-  <p>
+</p>
+<p>
     <strong>Ref:</strong>
     {{ currentUser.ref }}
-  </p>
-  <p>
-    <strong>Roles:</strong>
-    {{ currentUser | json }}
-  </p>
-  <strong>Roles:</strong>
-  <ul>
+</p>
+<p><strong>Roles and Permissions:</strong></p>
+<ul>
     <li *ngFor="let role of currentUser.roles">
       {{ role }}:
       <span *ngFor="let permission of currentUser.permissions">{{ permission }}, </span>
     </li>
-  </ul>
-</div>
+</ul>
 
 <ng-template #loggedOut>
   Please login.

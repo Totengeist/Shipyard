@@ -36,7 +36,10 @@ export class AppComponent implements OnInit {
       data => {
         this.tokenStorageService.signOut();
         this.isLoggedIn = false;
-        window.location.reload();
+        this.username = "";
+        this.showDashboard = false;
+        this.roles = [];
+        this.router.navigate(['/home'])
       },
       err => {
         alert( err.message );
