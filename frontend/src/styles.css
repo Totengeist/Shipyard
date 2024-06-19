@@ -32,17 +32,25 @@ footer div {
 	color: #6c757d;
 }
 
-.item-list {
+ul.result-list {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+li.result-item {
 	list-style-type: none;
-	float: left;
-	display: block;
 	height: 250px;
 	width: 320px;
 	margin: 15px;
 	overflow: hidden;
 }
 
-.item-list img {
+li.result-item img {
 	width: 100%;
 	border: 1px solid black
+}
+
+div.result-controls {
+	margin: auto;
+	width: fit-content;
 }

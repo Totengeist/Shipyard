@@ -1,9 +1,9 @@
-<ul>
-    <li class="item-list" *ngFor="let save of saves">
+<ul class="result-list">
+    <li class="result-item" *ngFor="let save of saves">
         <img src="missing.png" style="width: 100%">
         <p><a href="/save/{{ save.ref }}" routerLink="/save/{{ save.ref }}">{{ save.title }}</a> by {{ save.username }}</p>
         <p>{{ save.description }}</p>
     </li>
 </ul>
 
-<a [routerLink]="['/saves', page-1]" *ngIf="show_prev">Prev</a> -- Page {{ page }} -- <a [routerLink]="['/saves', page+1]" *ngIf="show_next">Next</a>
+<div class="result-controls"><span *ngIf="show_prev"><a [routerLink]="['/saves', page-1]">&lt; Prev</a> &bull; </span>Page {{ page }} / {{ last_page }}<span *ngIf="show_next"> &bull; <a [routerLink]="['/saves', page+1]">Next &gt;</a></span></div>
