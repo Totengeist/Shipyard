@@ -18,6 +18,7 @@ import { ShipsComponent } from './ships/ships.component';
 import { ReleasesComponent } from './releases/releases.component';
 import { ModificationsComponent } from './modifications/modifications.component';
 import { SavesComponent } from './saves/saves.component';
+import { ItemPageComponent } from './item_page/item_page.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { SavesComponent } from './saves/saves.component';
     ReleasesComponent,
     ModificationsComponent,
     SavesComponent,
+    ItemPageComponent,
   ],
   imports: [
     BrowserModule,

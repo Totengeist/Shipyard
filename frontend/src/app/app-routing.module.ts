@@ -8,6 +8,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { ShipsComponent } from './ships/ships.component';
 import { ModificationsComponent } from './modifications/modifications.component';
 import { SavesComponent } from './saves/saves.component';
+import { ItemPageComponent } from './item_page/item_page.component';
 import { ReleasesComponent } from './releases/releases.component';
 import { AdminDashboardComponent } from './admin/dashboard/admin.component';
 import { AdminRolesComponent } from './admin/roles/roles.component';
@@ -31,6 +32,11 @@ const routes: Routes = [
   { path: 'admin/role/:slug/edit', component: AdminRolesComponent },
   { path: 'admin/permissions', component: AdminPermissionsComponent },
   { path: 'admin/permission/:slug/edit', component: AdminEditPermissionsComponent },
+
+  { path: 'ship/:slug', component: ItemPageComponent, data: {item_type: 'ship'} },
+  { path: 'save/:slug', component: ItemPageComponent, data: {item_type: 'save'} },
+  { path: 'modification/:slug', component: ItemPageComponent, data: {item_type: 'modification'} },
+
   { path: '', redirectTo: '/home', pathMatch: 'full' }
 ];
 

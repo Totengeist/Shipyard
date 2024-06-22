@@ -39,7 +39,7 @@ ul.result-list {
 
 li.result-item {
 	list-style-type: none;
-	height: 250px;
+	height: 300px;
 	width: 320px;
 	margin: 15px;
 	overflow: hidden;
@@ -47,12 +47,51 @@ li.result-item {
 
 li.result-item img {
 	width: 100%;
-	height: 160px;
+	height: 200px;
 	border: 1px solid black;
 	object-fit: cover;
 }
 
-div.result-controls {
+app-item_page {
+	display: flex;
+	padding: 5px;
+}
+
+div#item-screenshots {
+	width: 800px;
+	margin-right: 50px;
+}
+div#item-details {
+	flex-grow: 2;
+}
+
+ul.screenshot-list {
+	display: flex;
+	flex-wrap: wrap;
+	margin: 0;
+	padding: 0;
+}
+
+ul.screenshot-list li {
+	list-style-type: none;
+	width: 33.2%;
+	margin: 5px 0 5px;
+}
+
+ul.screenshot-list li.active {
+	opacity: 0.7;
+}
+
+ul.screenshot-list li img {
+	width: 100%;
+	aspect-ratio: 320/200;
+	height: 200px;
+	border: 1px solid black;
+	object-fit: cover;
+}
+
+div.result-controls, p.download-button {
 	margin: auto;
 	width: fit-content;
 }
+
