@@ -45,9 +45,9 @@ class UserControllerTest extends APITestCase {
             'password_confirmation' => 'secret',
         ], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-                'name' => $name,
-                'email' => $email,
-         ]);
+                 'name' => $name,
+                 'email' => $email,
+             ]);
 
         /** @var User $user */
         $user = User::query()->where([['email', $email]])->first();
@@ -84,10 +84,10 @@ class UserControllerTest extends APITestCase {
             'password_confirmation' => $password,
         ], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'errors' => [
-                'email' => ['Email is not unique.'],
-            ],
-        ]);
+                 'errors' => [
+                     'email' => ['Email is not unique.'],
+                 ],
+             ]);
     }
 
     /**
@@ -104,9 +104,9 @@ class UserControllerTest extends APITestCase {
 
         $this->get('api/v1/activate/' . $activation->token, [], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-                'name' => $user->name,
-                'email' => $user->email,
-         ]);
+                 'name' => $user->name,
+                 'email' => $user->email,
+             ]);
 
         /** @var User $real_user */
         $real_user = User::query()->where('ref', $user->ref)->first();
@@ -131,13 +131,13 @@ class UserControllerTest extends APITestCase {
             'password' => 'secret',
         ], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-                'name' => $user->name,
-         ]);
+                 'name' => $user->name,
+             ]);
 
         $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-                'name' => $user->name,
-        ]);
+                 'name' => $user->name,
+             ]);
     }
 
     /**
@@ -176,8 +176,8 @@ class UserControllerTest extends APITestCase {
             'password' => 'notsecret',
         ], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'message' => 'These credentials do not match our records.',
-        ]);
+                 'message' => 'These credentials do not match our records.',
+             ]);
 
         $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);

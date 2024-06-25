@@ -18,8 +18,8 @@ class SaveControllerTest extends APITestCase {
         $save = Factory::create('Shipyard\Models\Save');
         $this->get('api/v1/save', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'title' => $save->title,
-         ]);
+                 'title' => $save->title,
+             ]);
     }
 
     /**
@@ -52,9 +52,9 @@ class SaveControllerTest extends APITestCase {
 
         $this->post('api/v1/save', ['title' => $title, 'description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => self::createSampleUpload('Battle.space')])
              ->assertJsonResponse([
-            'title' => $title,
-            'description' => $description,
-        ]);
+                 'title' => $title,
+                 'description' => $description,
+             ]);
 
         $save = json_decode(Save::query()->where([['title', $title], ['description', $description]])->with('user')->first()->toJson(), true);
         $this->assertJsonFragment([
@@ -78,8 +78,8 @@ class SaveControllerTest extends APITestCase {
 
         $this->post('api/v1/save/' . $save->ref, ['title' => $title], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'title' => $title,
-        ]);
+                 'title' => $title,
+             ]);
 
         $save = json_decode(Save::query()->where([['ref', $save->ref]])->first()->toJson(), true);
         $this->assertJsonFragment([
@@ -139,9 +139,9 @@ class SaveControllerTest extends APITestCase {
 
         $this->post('api/v1/save/' . $save->ref, ['title' => $title, 'description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'title' => $title,
-            'description' => $description,
-        ]);
+                 'title' => $title,
+                 'description' => $description,
+             ]);
 
         $save = json_decode(Save::query()->where([['ref', $save->ref]])->first()->toJson(), true);
         $this->assertJsonFragment([
@@ -163,8 +163,8 @@ class SaveControllerTest extends APITestCase {
         $this->assertEquals($save->ref, Save::query()->where([['ref', $save->ref]])->first()->ref);
         $this->delete('api/v1/save/' . $save->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-                'message' => 'successful'
-        ]);
+                 'message' => 'successful'
+             ]);
 
         $this->expectException(ModelNotFoundException::class);
         Save::query()->findOrFail($save->id);
@@ -220,8 +220,8 @@ class SaveControllerTest extends APITestCase {
         $this->assertEquals($save->ref, Save::query()->where([['ref', $save->ref]])->first()->ref);
         $this->delete('api/v1/save/' . $save->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-                'message' => 'successful'
-        ]);
+                 'message' => 'successful'
+             ]);
 
         $this->expectException(ModelNotFoundException::class);
         Save::query()->findOrFail($save->id);
@@ -235,8 +235,8 @@ class SaveControllerTest extends APITestCase {
 
         $this->get('api/v1/save/' . $save->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'title' => $save->title,
-        ]);
+                 'title' => $save->title,
+             ]);
     }
 
     /**
@@ -253,10 +253,10 @@ class SaveControllerTest extends APITestCase {
 
         $this->get('api/v1/save/' . $save->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'ref' => $save->ref,
-            'title' => $save->title,
-            'downloads' => $save->downloads+1,
-        ]);
+                 'ref' => $save->ref,
+                 'title' => $save->title,
+                 'downloads' => $save->downloads+1,
+             ]);
     }
 
     /**
@@ -275,9 +275,9 @@ class SaveControllerTest extends APITestCase {
 
         $this->post('api/v1/save/' . $save->ref . '/upgrade', ['title' => $title, 'description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => self::createSampleUpload()])
              ->assertJsonResponse([
-            'title' => $title,
-            'description' => $description,
-        ]);
+                 'title' => $title,
+                 'description' => $description,
+             ]);
 
         $save2_json = json_decode((string) $this->response->getBody(), true);
         $save2_object = Save::query()->where([['ref', $save2_json['ref']]])->firstOrFail();

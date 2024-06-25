@@ -16,9 +16,9 @@ class TagControllerTest extends APITestCase {
         $tag = Factory::create('Shipyard\Models\Tag');
         $this->get('api/v1/tag', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'slug' => $tag->slug,
-            'label' => $tag->label,
-         ]);
+                 'slug' => $tag->slug,
+                 'label' => $tag->label,
+             ]);
     }
 
     /**
@@ -59,9 +59,9 @@ class TagControllerTest extends APITestCase {
 
         $this->post('api/v1/tag', ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'slug' => $slug,
-            'label' => $label,
-        ]);
+                 'slug' => $slug,
+                 'label' => $label,
+             ]);
 
         $tag = json_decode(Tag::query()->where([['slug', $slug], ['label', $label]])->first()->toJson(), true);
         $this->assertJsonFragment([
@@ -85,8 +85,8 @@ class TagControllerTest extends APITestCase {
 
         $this->post('api/v1/tag', ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'label' => ['Label is required'],
-        ]);
+                 'label' => ['Label is required'],
+             ]);
     }
 
     /**
@@ -129,9 +129,9 @@ class TagControllerTest extends APITestCase {
 
         $this->post('api/v1/tag/' . $tag->slug, ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'slug' => $slug,
-            'label' => $label,
-        ]);
+                 'slug' => $slug,
+                 'label' => $label,
+             ]);
 
         $tag = json_decode(Tag::query()->find($tag->id)->toJson(), true);
         $this->assertJsonFragment([
@@ -176,8 +176,8 @@ class TagControllerTest extends APITestCase {
         $this->assertEquals($tag->id, $dbTag->id);
         $this->delete('api/v1/tag/' . $tag->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'message' => 'successful',
-        ]);
+                 'message' => 'successful',
+             ]);
 
         $this->expectException(ModelNotFoundException::class);
         Tag::query()->findOrFail($tag->id);
@@ -191,9 +191,9 @@ class TagControllerTest extends APITestCase {
 
         $this->get('api/v1/tag/' . $tag->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'slug' => $tag->slug,
-            'label' => $tag->label,
-        ]);
+                 'slug' => $tag->slug,
+                 'label' => $tag->label,
+             ]);
     }
 
     /**
@@ -208,8 +208,8 @@ class TagControllerTest extends APITestCase {
 
         $this->get('api/v1/tag/' . $tag->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'slug' => $tag->slug,
-            'label' => $tag->label,
-        ]);
+                 'slug' => $tag->slug,
+                 'label' => $tag->label,
+             ]);
     }
 }

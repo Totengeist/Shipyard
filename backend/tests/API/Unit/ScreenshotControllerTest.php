@@ -23,12 +23,12 @@ class ScreenshotControllerTest extends APITestCase {
 
         $this->get('api/v1/ship/' . $ship1->ref . '/screenshots', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'ref' => $screenshot1->ref,
-            'description' => $screenshot1->description,
-         ])->assertJsonResponse([
-            'ref' => $screenshot2->ref,
-            'description' => $screenshot2->description,
-         ], true);
+                 'ref' => $screenshot1->ref,
+                 'description' => $screenshot1->description,
+             ])->assertJsonResponse([
+                 'ref' => $screenshot2->ref,
+                 'description' => $screenshot2->description,
+             ], true);
     }
 
     /**
@@ -44,12 +44,12 @@ class ScreenshotControllerTest extends APITestCase {
 
         $this->get('api/v1/save/' . $save1->ref . '/screenshots', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'ref' => $screenshot1->ref,
-            'description' => $screenshot1->description,
-         ])->assertJsonResponse([
-            'ref' => $screenshot2->ref,
-            'description' => $screenshot2->description,
-         ], true);
+                 'ref' => $screenshot1->ref,
+                 'description' => $screenshot1->description,
+             ])->assertJsonResponse([
+                 'ref' => $screenshot2->ref,
+                 'description' => $screenshot2->description,
+             ], true);
     }
 
     /**
@@ -65,12 +65,12 @@ class ScreenshotControllerTest extends APITestCase {
 
         $this->get('api/v1/modification/' . $modification1->ref . '/screenshots', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'ref' => $screenshot1->ref,
-            'description' => $screenshot1->description,
-         ])->assertJsonResponse([
-            'ref' => $screenshot2->ref,
-            'description' => $screenshot2->description,
-         ], true);
+                 'ref' => $screenshot1->ref,
+                 'description' => $screenshot1->description,
+             ])->assertJsonResponse([
+                 'ref' => $screenshot2->ref,
+                 'description' => $screenshot2->description,
+             ], true);
     }
 
     /**
@@ -86,8 +86,8 @@ class ScreenshotControllerTest extends APITestCase {
 
         $return = $this->post('api/v1/ship/' . $ship->ref . '/screenshots', ['description' => [$description]], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => [self::createSampleUpload('science-vessel.png')]])
              ->assertJsonResponse([
-            'description' => $description,
-        ]);
+                 'description' => $description,
+             ]);
 
         $screenshot = json_decode(Screenshot::query()->whereHas('ships', function ($q) use ($ship) {
             $q->where('id', $ship->id);
@@ -112,8 +112,8 @@ class ScreenshotControllerTest extends APITestCase {
 
         $this->post('api/v1/ship/' . $ship->ref . '/screenshots', ['description' => [$description]], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => [self::createSampleUpload('science-vessel.png')]])
              ->assertJsonResponse([
-            'description' => $description,
-        ]);
+                 'description' => $description,
+             ]);
 
         $screenshot = json_decode(Screenshot::query()->whereHas('ships', function ($q) use ($ship) {
             $q->where('id', $ship->id);
@@ -138,8 +138,8 @@ class ScreenshotControllerTest extends APITestCase {
 
         $this->post('api/v1/save/' . $save->ref . '/screenshots', ['description' => [$description]], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => [self::createSampleUpload('science-vessel.png')]])
              ->assertJsonResponse([
-            'description' => $description,
-        ]);
+                 'description' => $description,
+             ]);
 
         $screenshot = json_decode(Screenshot::query()->whereHas('saves', function ($q) use ($save) {
             $q->where('id', $save->id);
@@ -164,8 +164,8 @@ class ScreenshotControllerTest extends APITestCase {
 
         $this->post('api/v1/modification/' . $modification->ref . '/screenshots', ['description' => [$description]], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => [self::createSampleUpload('science-vessel.png')]])
              ->assertJsonResponse([
-            'description' => $description,
-        ]);
+                 'description' => $description,
+             ]);
 
         $screenshot = json_decode(Screenshot::query()->whereHas('modifications', function ($q) use ($modification) {
             $q->where('id', $modification->id);
@@ -212,8 +212,8 @@ class ScreenshotControllerTest extends APITestCase {
 
         $this->post('api/v1/ship/' . $ship->ref . '/screenshots', [], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => [self::createSampleUpload('science-vessel.png')]])
              ->assertJsonResponse([
-            'description' => null,
-        ]);
+                 'description' => null,
+             ]);
     }
 
     /**
@@ -258,8 +258,8 @@ class ScreenshotControllerTest extends APITestCase {
 
         $this->post('api/v1/screenshot/' . $screenshot->ref, ['description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'description' => $description,
-        ]);
+                 'description' => $description,
+             ]);
 
         $screenshot = json_decode(Screenshot::query()->find($screenshot->id)->toJson(), true);
         $this->assertJsonFragment([
@@ -303,8 +303,8 @@ class ScreenshotControllerTest extends APITestCase {
         $this->assertEquals($screenshot->id, $dbScreenshot->id);
         $this->delete('api/v1/screenshot/' . $screenshot->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'message' => 'successful',
-        ]);
+                 'message' => 'successful',
+             ]);
 
         $this->expectException(ModelNotFoundException::class);
         Screenshot::query()->findOrFail($screenshot->id);
@@ -318,7 +318,7 @@ class ScreenshotControllerTest extends APITestCase {
 
         $this->get('api/v1/screenshot/' . $screenshot->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'description' => $screenshot->description,
-        ]);
+                 'description' => $screenshot->description,
+             ]);
     }
 }

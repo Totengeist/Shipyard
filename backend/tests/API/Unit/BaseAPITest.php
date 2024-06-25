@@ -13,8 +13,8 @@ class BaseAPITest extends APITestCase {
     public function testCanRetrieveVersion() {
         $this->get('api/v1/version', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'app' => $_SERVER['APP_TITLE'],
-         ]);
+                 'app' => $_SERVER['APP_TITLE'],
+             ]);
     }
 
     /**

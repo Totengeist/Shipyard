@@ -18,8 +18,8 @@ class ShipControllerTest extends APITestCase {
         $ship = Factory::create('Shipyard\Models\Ship');
         $this->get('api/v1/ship', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'title' => $ship->title,
-         ]);
+                 'title' => $ship->title,
+             ]);
     }
 
     /**
@@ -52,9 +52,9 @@ class ShipControllerTest extends APITestCase {
 
         $this->post('api/v1/ship', ['title' => $title, 'description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => self::createSampleUpload()])
              ->assertJsonResponse([
-            'title' => $title,
-            'description' => $description,
-        ]);
+                 'title' => $title,
+                 'description' => $description,
+             ]);
 
         $ship = json_decode(Ship::query()->where([['title', $title], ['description', $description]])->with('user')->first()->toJson(), true);
         $this->assertJsonFragment([
@@ -78,8 +78,8 @@ class ShipControllerTest extends APITestCase {
 
         $this->post('api/v1/ship/' . $ship->ref, ['title' => $title], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'title' => $title,
-        ]);
+                 'title' => $title,
+             ]);
 
         $ship = json_decode(Ship::query()->where([['ref', $ship->ref]])->first()->toJson(), true);
         $this->assertJsonFragment([
@@ -139,9 +139,9 @@ class ShipControllerTest extends APITestCase {
 
         $this->post('api/v1/ship/' . $ship->ref, ['title' => $title, 'description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'title' => $title,
-            'description' => $description,
-        ]);
+                 'title' => $title,
+                 'description' => $description,
+             ]);
 
         $ship = json_decode(Ship::query()->where([['ref', $ship->ref]])->first()->toJson(), true);
         $this->assertJsonFragment([
@@ -163,8 +163,8 @@ class ShipControllerTest extends APITestCase {
         $this->assertEquals($ship->ref, Ship::query()->where([['ref', $ship->ref]])->first()->ref);
         $this->delete('api/v1/ship/' . $ship->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-                'message' => 'successful'
-        ]);
+                 'message' => 'successful'
+             ]);
 
         $this->expectException(ModelNotFoundException::class);
         Ship::query()->findOrFail($ship->id);
@@ -220,8 +220,8 @@ class ShipControllerTest extends APITestCase {
         $this->assertEquals($ship->ref, Ship::query()->where([['ref', $ship->ref]])->first()->ref);
         $this->delete('api/v1/ship/' . $ship->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-                'message' => 'successful'
-        ]);
+                 'message' => 'successful'
+             ]);
 
         $this->expectException(ModelNotFoundException::class);
         Ship::query()->findOrFail($ship->id);
@@ -235,8 +235,8 @@ class ShipControllerTest extends APITestCase {
 
         $this->get('api/v1/ship/' . $ship->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'title' => $ship->title,
-        ]);
+                 'title' => $ship->title,
+             ]);
     }
 
     /**
@@ -253,10 +253,10 @@ class ShipControllerTest extends APITestCase {
 
         $this->get('api/v1/ship/' . $ship->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'ref' => $ship->ref,
-            'title' => $ship->title,
-            'downloads' => $ship->downloads+1,
-        ]);
+                 'ref' => $ship->ref,
+                 'title' => $ship->title,
+                 'downloads' => $ship->downloads+1,
+             ]);
     }
 
     /**
@@ -275,9 +275,9 @@ class ShipControllerTest extends APITestCase {
 
         $this->post('api/v1/ship/' . $ship->ref . '/upgrade', ['title' => $title, 'description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => self::createSampleUpload()])
              ->assertJsonResponse([
-            'title' => $title,
-            'description' => $description,
-        ]);
+                 'title' => $title,
+                 'description' => $description,
+             ]);
 
         $ship2_json = json_decode((string) $this->response->getBody(), true);
         $ship2_object = Ship::query()->where([['ref', $ship2_json['ref']]])->firstOrFail();

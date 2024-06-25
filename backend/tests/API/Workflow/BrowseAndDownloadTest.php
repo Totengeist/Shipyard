@@ -32,14 +32,14 @@ class BrowseAndDownloadWorkflowTest extends APITestCase {
 
         $this->get('api/v1/ship', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'title' => $ships[0]->title,
-        ]);
+                 'title' => $ships[0]->title,
+             ]);
 
         $this->get('api/v1/ship/' . $chosen_ship->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'ref' => $chosen_ship->ref,
-            'title' => $chosen_ship->title,
-        ]);
+                 'ref' => $chosen_ship->ref,
+                 'title' => $chosen_ship->title,
+             ]);
 
         $this->get('api/v1/ship/' . $chosen_ship->ref . '/download', ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
 
@@ -49,10 +49,10 @@ class BrowseAndDownloadWorkflowTest extends APITestCase {
 
         $this->get('api/v1/ship/' . $chosen_ship->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'ref' => $chosen_ship->ref,
-            'title' => $chosen_ship->title,
-            'downloads' => $chosen_ship->downloads+1,
-        ]);
+                 'ref' => $chosen_ship->ref,
+                 'title' => $chosen_ship->title,
+                 'downloads' => $chosen_ship->downloads+1,
+             ]);
     }
 
     /**
@@ -78,14 +78,14 @@ class BrowseAndDownloadWorkflowTest extends APITestCase {
 
         $this->get('api/v1/save', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'title' => $saves[0]->title,
-        ]);
+                 'title' => $saves[0]->title,
+             ]);
 
         $this->get('api/v1/save/' . $chosen_save->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'ref' => $chosen_save->ref,
-            'title' => $chosen_save->title,
-        ]);
+                 'ref' => $chosen_save->ref,
+                 'title' => $chosen_save->title,
+             ]);
 
         $this->get('api/v1/save/' . $chosen_save->ref . '/download', ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
 
@@ -95,9 +95,9 @@ class BrowseAndDownloadWorkflowTest extends APITestCase {
 
         $this->get('api/v1/save/' . $chosen_save->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'ref' => $chosen_save->ref,
-            'title' => $chosen_save->title,
-            'downloads' => $chosen_save->downloads+1,
-        ]);
+                 'ref' => $chosen_save->ref,
+                 'title' => $chosen_save->title,
+                 'downloads' => $chosen_save->downloads+1,
+             ]);
     }
 }

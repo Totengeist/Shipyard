@@ -40,9 +40,9 @@ class PermissionControllerTest extends APITestCase {
         $permission = Factory::create('Shipyard\Models\\Permission');
         $this->get('api/v1/permission', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'slug' => $permission->slug,
-            'label' => $permission->label,
-         ]);
+                 'slug' => $permission->slug,
+                 'label' => $permission->label,
+             ]);
     }
 
     /**
@@ -83,9 +83,9 @@ class PermissionControllerTest extends APITestCase {
 
         $this->post('api/v1/permission', ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'slug' => $slug,
-            'label' => $label,
-        ]);
+                 'slug' => $slug,
+                 'label' => $label,
+             ]);
 
         $permission = json_decode(Permission::query()->where([['slug', $slug], ['label', $label]])->first()->toJson(), true);
         $this->assertJsonFragment([
@@ -109,8 +109,8 @@ class PermissionControllerTest extends APITestCase {
 
         $this->post('api/v1/permission', ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'label' => ['Label is required'],
-        ]);
+                 'label' => ['Label is required'],
+             ]);
     }
 
     /**
@@ -153,9 +153,9 @@ class PermissionControllerTest extends APITestCase {
 
         $this->post('api/v1/permission/' . $permission->slug, ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'slug' => $slug,
-            'label' => $label,
-        ]);
+                 'slug' => $slug,
+                 'label' => $label,
+             ]);
 
         $permission = json_decode(Permission::query()->find($permission->id)->toJson(), true);
         $this->assertJsonFragment([
@@ -200,8 +200,8 @@ class PermissionControllerTest extends APITestCase {
         $this->assertEquals($permission->id, $dbPermission->id);
         $this->delete('api/v1/permission/' . $permission->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-                'message' => 'successful',
-        ]);
+                 'message' => 'successful',
+             ]);
 
         $this->expectException(ModelNotFoundException::class);
         Permission::query()->findOrFail($permission->id);
@@ -240,8 +240,8 @@ class PermissionControllerTest extends APITestCase {
 
         $this->get('api/v1/permission/' . $permission->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'slug' => $permission->slug,
-            'label' => $permission->label,
-        ]);
+                 'slug' => $permission->slug,
+                 'label' => $permission->label,
+             ]);
     }
 }

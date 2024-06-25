@@ -18,8 +18,8 @@ class ModificationControllerTest extends APITestCase {
         $modification = Factory::create('Shipyard\Models\Modification');
         $this->get('api/v1/modification', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'title' => $modification->title,
-         ]);
+                 'title' => $modification->title,
+             ]);
     }
 
     /**
@@ -52,9 +52,9 @@ class ModificationControllerTest extends APITestCase {
 
         $this->post('api/v1/modification', ['title' => $title, 'description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => self::createSampleUpload('Battle.space')])
              ->assertJsonResponse([
-            'title' => $title,
-            'description' => $description,
-        ]);
+                 'title' => $title,
+                 'description' => $description,
+             ]);
 
         $modification = json_decode(Modification::query()->where([['title', $title], ['description', $description]])->with('user')->first()->toJson(), true);
         $this->assertJsonFragment([
@@ -78,8 +78,8 @@ class ModificationControllerTest extends APITestCase {
 
         $this->post('api/v1/modification/' . $modification->ref, ['title' => $title], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'title' => $title,
-        ]);
+                 'title' => $title,
+             ]);
 
         $modification = json_decode(Modification::query()->where([['ref', $modification->ref]])->first()->toJson(), true);
         $this->assertJsonFragment([
@@ -139,9 +139,9 @@ class ModificationControllerTest extends APITestCase {
 
         $this->post('api/v1/modification/' . $modification->ref, ['title' => $title, 'description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'title' => $title,
-            'description' => $description,
-        ]);
+                 'title' => $title,
+                 'description' => $description,
+             ]);
 
         $modification = json_decode(Modification::query()->where([['ref', $modification->ref]])->first()->toJson(), true);
         $this->assertJsonFragment([
@@ -163,8 +163,8 @@ class ModificationControllerTest extends APITestCase {
         $this->assertEquals($modification->ref, Modification::query()->where([['ref', $modification->ref]])->first()->ref);
         $this->delete('api/v1/modification/' . $modification->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-                'message' => 'successful'
-        ]);
+                 'message' => 'successful'
+             ]);
 
         $this->expectException(ModelNotFoundException::class);
         Modification::query()->findOrFail($modification->id);
@@ -220,8 +220,8 @@ class ModificationControllerTest extends APITestCase {
         $this->assertEquals($modification->ref, Modification::query()->where([['ref', $modification->ref]])->first()->ref);
         $this->delete('api/v1/modification/' . $modification->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-                'message' => 'successful'
-        ]);
+                 'message' => 'successful'
+             ]);
 
         $this->expectException(ModelNotFoundException::class);
         Modification::query()->findOrFail($modification->id);
@@ -235,8 +235,8 @@ class ModificationControllerTest extends APITestCase {
 
         $this->get('api/v1/modification/' . $modification->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'title' => $modification->title,
-        ]);
+                 'title' => $modification->title,
+             ]);
     }
 
     /**
@@ -253,10 +253,10 @@ class ModificationControllerTest extends APITestCase {
 
         $this->get('api/v1/modification/' . $modification->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'ref' => $modification->ref,
-            'title' => $modification->title,
-            'downloads' => $modification->downloads+1,
-        ]);
+                 'ref' => $modification->ref,
+                 'title' => $modification->title,
+                 'downloads' => $modification->downloads+1,
+             ]);
     }
 
     /**
@@ -275,9 +275,9 @@ class ModificationControllerTest extends APITestCase {
 
         $this->post('api/v1/modification/' . $modification->ref . '/upgrade', ['title' => $title, 'description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => self::createSampleUpload()])
              ->assertJsonResponse([
-            'title' => $title,
-            'description' => $description,
-        ]);
+                 'title' => $title,
+                 'description' => $description,
+             ]);
 
         $modification2_json = json_decode((string) $this->response->getBody(), true);
         $modification2_object = Modification::query()->where([['ref', $modification2_json['ref']]])->firstOrFail();

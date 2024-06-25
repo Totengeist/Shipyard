@@ -40,9 +40,9 @@ class RoleControllerTest extends APITestCase {
         $role = Factory::create('Shipyard\Models\Role');
         $this->get('api/v1/role', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'slug' => $role->slug,
-            'label' => $role->label,
-         ]);
+                 'slug' => $role->slug,
+                 'label' => $role->label,
+             ]);
     }
 
     /**
@@ -83,9 +83,9 @@ class RoleControllerTest extends APITestCase {
 
         $this->post('api/v1/role', ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'slug' => $slug,
-            'label' => $label,
-        ]);
+                 'slug' => $slug,
+                 'label' => $label,
+             ]);
 
         $role = json_decode(Role::query()->where([['slug', $slug], ['label', $label]])->first()->toJson(), true);
         $this->assertJsonFragment([
@@ -109,8 +109,8 @@ class RoleControllerTest extends APITestCase {
 
         $this->post('api/v1/role', ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'label' => ['Label is required'],
-        ]);
+                 'label' => ['Label is required'],
+             ]);
     }
 
     /**
@@ -153,9 +153,9 @@ class RoleControllerTest extends APITestCase {
 
         $this->post('api/v1/role/' . $role->slug, ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'slug' => $slug,
-            'label' => $label,
-        ]);
+                 'slug' => $slug,
+                 'label' => $label,
+             ]);
 
         $role = json_decode(Role::query()->find($role->id)->toJson(), true);
         $this->assertJsonFragment([
@@ -200,8 +200,8 @@ class RoleControllerTest extends APITestCase {
         $this->assertEquals($role->id, $dbRole->id);
         $this->delete('api/v1/role/' . $role->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'message' => 'successful',
-        ]);
+                 'message' => 'successful',
+             ]);
 
         $this->expectException(ModelNotFoundException::class);
         Role::query()->findOrFail($role->id);
@@ -240,8 +240,8 @@ class RoleControllerTest extends APITestCase {
 
         $this->get('api/v1/role/' . $role->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'slug' => $role->slug,
-            'label' => $role->label,
-        ]);
+                 'slug' => $role->slug,
+                 'label' => $role->label,
+             ]);
     }
 }

@@ -35,8 +35,8 @@ class App {
 
         $app->add(
             new \Slim\Middleware\Session([
-              'autorefresh' => true,
-              'lifetime' => '1 hour',
+                'autorefresh' => true,
+                'lifetime' => '1 hour',
             ])
         );
     }

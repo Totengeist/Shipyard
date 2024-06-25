@@ -18,9 +18,9 @@ class ReleaseControllerTest extends APITestCase {
         $release = Factory::create('Shipyard\Models\Release');
         $this->get('api/v1/release', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'slug' => $release->slug,
-            'label' => $release->label,
-         ]);
+                 'slug' => $release->slug,
+                 'label' => $release->label,
+             ]);
     }
 
     /**
@@ -61,9 +61,9 @@ class ReleaseControllerTest extends APITestCase {
 
         $this->post('api/v1/release', ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'slug' => $slug,
-            'label' => $label,
-        ]);
+                 'slug' => $slug,
+                 'label' => $label,
+             ]);
 
         $release = json_decode(Release::query()->where([['slug', $slug], ['label', $label]])->first()->toJson(), true);
         $this->assertJsonFragment([
@@ -87,8 +87,8 @@ class ReleaseControllerTest extends APITestCase {
 
         $this->post('api/v1/release', ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'label' => ['Label is required'],
-        ]);
+                 'label' => ['Label is required'],
+             ]);
     }
 
     /**
@@ -131,9 +131,9 @@ class ReleaseControllerTest extends APITestCase {
 
         $this->post('api/v1/release/' . $release->slug, ['slug' => $slug, 'label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'slug' => $slug,
-            'label' => $label,
-        ]);
+                 'slug' => $slug,
+                 'label' => $label,
+             ]);
 
         $release = json_decode(Release::query()->find($release->id)->toJson(), true);
         $this->assertJsonFragment([
@@ -178,8 +178,8 @@ class ReleaseControllerTest extends APITestCase {
         $this->assertEquals($release->id, $dbRelease->id);
         $this->delete('api/v1/release/' . $release->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'message' => 'successful',
-        ]);
+                 'message' => 'successful',
+             ]);
 
         $this->expectException(ModelNotFoundException::class);
         Release::query()->findOrFail($release->id);
@@ -193,9 +193,9 @@ class ReleaseControllerTest extends APITestCase {
 
         $this->get('api/v1/release/' . $release->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'slug' => $release->slug,
-            'label' => $release->label,
-        ]);
+                 'slug' => $release->slug,
+                 'label' => $release->label,
+             ]);
     }
 
     /**
@@ -210,8 +210,8 @@ class ReleaseControllerTest extends APITestCase {
 
         $this->get('api/v1/release/' . $release->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-            'slug' => $release->slug,
-            'label' => $release->label,
-        ]);
+                 'slug' => $release->slug,
+                 'label' => $release->label,
+             ]);
     }
 }
