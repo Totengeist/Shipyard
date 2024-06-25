@@ -1,4 +1,4 @@
-<div class="col-md-12">
+<div id="login">
   <div class="card card-container">
     <img
       id="profile-img"
@@ -6,7 +6,7 @@
       class="profile-img-card"
     />
     <form
-      *ngIf="!isLoggedIn"
+      *ngIf="!user.isLoggedIn"
       name="form"
       (ngSubmit)="f.form.valid && onSubmit()"
       #f="ngForm"
@@ -54,7 +54,7 @@
         </div>
       </div>
       <div class="form-group">
-        <button class="btn btn-primary btn-block">
+        <button id="login-button" class="btn btn-primary btn-block">
           Login
         </button>
       </div>
@@ -62,15 +62,15 @@
         <div
           class="alert alert-danger"
           role="alert"
-          *ngIf="f.submitted && isLoginFailed"
+          *ngIf="f.submitted && user.isLoginFailed"
         >
-          Login failed: {{ errorMessage }}
+          Login failed: {{ user.errorMessage }}
         </div>
       </div>
     </form>
 
-    <div class="alert alert-success" *ngIf="isLoggedIn">
-      Logged in as {{ name }}.
+    <div class="alert alert-success" *ngIf="user.isLoggedIn">
+      Logged in as {{ user.username }}.
     </div>
   </div>
 </div>

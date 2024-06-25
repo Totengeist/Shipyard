@@ -128,4 +128,7 @@ class FileManager {
 
         return $base_type;
     }
+
+    public static function generateThumbnails($filepath) {
+    }
 }

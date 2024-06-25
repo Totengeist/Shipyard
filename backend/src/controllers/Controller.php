@@ -111,4 +111,15 @@ class Controller {
         return self::error_response(422, $message, (string) json_encode(['errors' => $errors]))
                    ->withHeader('Content-Type', 'application/json');
     }
+
+    /**
+     * @param string[] $errors
+     * @param string   $message
+     *
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public static function unauthorized_response($errors = [], $message = 'Unauthorized') {
+        return self::error_response(401, $message, (string) json_encode(['errors' => $errors]))
+                   ->withHeader('Content-Type', 'application/json');
+    }
 }

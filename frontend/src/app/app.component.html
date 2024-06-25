@@ -10,7 +10,7 @@
       </li>
     </ul>
 
-    <ul class="navbar-nav ml-auto" *ngIf="!isLoggedIn">
+    <ul class="navbar-nav ml-auto" *ngIf="!user.isLoggedIn">
       <li class="nav-item">
         <a href="/register" class="nav-link" routerLink="register">Sign Up</a>
       </li>
@@ -19,15 +19,15 @@
       </li>
     </ul>
 
-    <ul class="navbar-nav ml-auto" *ngIf="isLoggedIn">
+    <ul class="navbar-nav ml-auto" *ngIf="user.isLoggedIn">
       <li class="nav-item">
-        <a href="/profile" class="nav-link" routerLink="profile">{{ username }}</a>
+        <a href="/profile" class="nav-link" routerLink="profile">{{ user.username }}</a>
       </li>
-      <li class="nav-item" *ngIf="isLoggedIn && showDashboard">
+      <li class="nav-item" *ngIf="user.isLoggedIn && user.showDashboard">
         <a href="/admin/dashboard" class="nav-link" routerLink="admin/dashboard">Dashboard</a>
       </li>
       <li class="nav-item">
-        <a href class="nav-link" (click)="logout()">Log Out</a>
+        <a class="nav-link" (click)="user.logout()">Log Out</a>
       </li>
     </ul>
   </nav>
@@ -43,9 +43,6 @@
           </li>
           <li>
             <a href="/saves" class="nav-link" routerLink="saves">Saves</a>
-          </li>
-          <li>
-            <a href="/users" class="nav-link" routerLink="users">Users</a>
           </li>
           <li>
             <a href="/releases" class="nav-link" routerLink="releases">Releases</a>

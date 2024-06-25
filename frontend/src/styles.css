@@ -21,6 +21,15 @@ html, body {
 	flex: 1;
 }
 
+.nav-link {
+	cursor: pointer;
+}
+
+#login {
+	width: fit-content;
+	margin: auto;
+}
+
 header.jumbotron {
 	font-size: x-large;
 	font-weight: bold;

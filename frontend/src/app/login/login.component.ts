@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../_services/auth.service';
-import { TokenStorageService } from '../_services/token-storage.service';
+import { UserService } from '../_services/user.service';
 
 @Component({
   selector: 'app-login',
@@ -13,52 +12,20 @@ export class LoginComponent implements OnInit {
     username: null,
     password: null
   };
-  isLoggedIn = false;
-  isLoginFailed = false;
-  errorMessage = '';
-  name: string = '';
+  user: UserService = {} as UserService;
 
-  constructor(private router: Router, private authService: AuthService, private tokenStorage: TokenStorageService) { }
+  constructor(private router: Router, private userService: UserService) { }
 
   ngOnInit(): void {
-    if (this.tokenStorage.getToken()) {
-      this.isLoggedIn = true;
-      this.name = this.tokenStorage.getUser().name;
-    }
+    this.user = this.userService;
   }
 
   onSubmit(): void {
     const { username, password } = this.form;
-
-    this.authService.login(username, password).subscribe(
-      data => {
-        var roles: string[] = [];
-        data.roles.forEach((element: any) => {
-            roles.push(element.label);
-        })
-        var permissions: string[] = [];
-        if (roles.length > 0) {
-            data.roles[0].permissions.forEach((element: any) => {
-                permissions.push(element.label);
-            });
-		}
-        var userData: object = { "name": data.name, "ref": data.ref, "email": data.email, "roles": roles, "permissions": permissions };
-        this.tokenStorage.saveUser(userData);
-
-        this.isLoginFailed = false;
-        this.isLoggedIn = true;
-        this.name = this.tokenStorage.getUser().name;
-        if (roles.length > 0) {
-            this.router.navigate(['/admin/dashboard']);
-        } else {
-            this.router.navigate(['/home']);
-        }
-        window.location.reload();
-      },
-      err => {
-        this.errorMessage = err.error.message;
-        this.isLoginFailed = true;
-      }
-    );
+    let login = document.getElementById("login-button") as HTMLButtonElement;
+    if( login !== null ) {
+        login.disabled = true;
+    }
+    this.userService.login(username, password);
   }
 }
