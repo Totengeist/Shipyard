@@ -136,13 +136,14 @@ class ScreenshotController extends Controller {
     public function download(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Screenshot::query()->where([['ref', $args['ref']]]);
+        /** @var Screenshot $screenshot */
         $screenshot = $query->first();
         if ($screenshot == null) {
             return $this->not_found_response('Screenshot');
         }
         $payload = (string) json_encode($screenshot);
 
-        $response->getBody()->write($screenshot->file->file_contents());
+        $response->getBody()->write((string) $screenshot->file->file_contents());
 
         return $response
           ->withHeader('Content-Disposition', 'attachment; filename="' . $screenshot->file->filename . '.' . $screenshot->file->extension . '"')

@@ -102,7 +102,7 @@ class UserControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\Models\User');
         $activation = $user->create_activation();
 
-        $this->get('api/v1/activate/' . $activation->token, [], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+        $this->get('api/v1/activate/' . $activation->token, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
                  'name' => $user->name,
                  'email' => $user->email,

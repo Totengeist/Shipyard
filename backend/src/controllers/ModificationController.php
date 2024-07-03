@@ -21,7 +21,7 @@ class ModificationController extends Controller {
      * @return Response
      */
     public function index(Request $request, Response $response) {
-        $payload = (string) json_encode($this->paginate(Modification::with('user', 'primary_screenshot')));
+        $payload = (string) json_encode($this->paginate(Modification::with('user', 'primary_screenshot', 'tags')));
         $response->getBody()->write($payload);
 
         return $response
@@ -104,7 +104,7 @@ class ModificationController extends Controller {
      */
     public function show(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
-        $query = Modification::query()->where([['ref', $args['ref']]])->with(['user', 'primary_screenshot']);
+        $query = Modification::query()->where([['ref', $args['ref']]])->with(['user', 'primary_screenshot', 'tags']);
         $modification = $query->first();
         if ($modification == null) {
             return $this->not_found_response('Modification');

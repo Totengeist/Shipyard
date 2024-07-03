@@ -21,7 +21,7 @@ class SaveController extends Controller {
      * @return Response
      */
     public function index(Request $request, Response $response) {
-        $payload = (string) json_encode($this->paginate(Save::with('user', 'primary_screenshot')));
+        $payload = (string) json_encode($this->paginate(Save::with('user', 'primary_screenshot', 'tags')));
         $response->getBody()->write($payload);
 
         return $response
@@ -104,7 +104,7 @@ class SaveController extends Controller {
      */
     public function show(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
-        $query = Save::query()->where([['ref', $args['ref']]])->with(['user', 'primary_screenshot']);
+        $query = Save::query()->where([['ref', $args['ref']]])->with(['user', 'primary_screenshot', 'tags']);
         $save = $query->first();
         if ($save == null) {
             return $this->not_found_response('Save');
@@ -154,7 +154,7 @@ class SaveController extends Controller {
      * @return Response
      */
     public function update(Request $request, Response $response, $args) {
-        $data = $request->getParsedBody();
+        $data = (array) $request->getParsedBody();
 
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Save::query()->where([['ref', $args['ref']]]);
