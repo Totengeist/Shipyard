@@ -50,6 +50,7 @@ Capsule::schema()->create('users', function ($table) {
     $table->string('email')->unique();
     $table->string('password');
     $table->boolean('activated')->default(false);
+    $table->bigInteger('steamid')->unsigned()->nullable();
     $table->rememberToken();
     $table->timestamps();
 });

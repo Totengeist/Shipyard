@@ -14,7 +14,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.user = this.userService;
-    this.userService.initializeUserInfo();
+    this.userService.refresh();
   }
   
   isDashboard(): boolean {

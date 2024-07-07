@@ -25,6 +25,10 @@ export class AuthService {
     return this.http.post(environment.apiUrl + 'logout', (new URLSearchParams()).toString(), httpOptions);
   }
 
+  me(): Observable<any> {
+    return this.http.get(environment.apiUrl + 'me', httpOptions);
+  }
+
   register(name: string, email: string, password: string, password_confirmation: string): Observable<any> {
     const body = new URLSearchParams();
     body.set('name', name);

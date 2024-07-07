@@ -6,7 +6,7 @@
       class="profile-img-card"
     />
     <form
-      *ngIf="!user.isLoggedIn"
+      *ngIf="!user.isLoggedIn()"
       name="form"
       (ngSubmit)="f.form.valid && onSubmit()"
       #f="ngForm"
@@ -58,6 +58,12 @@
           Login
         </button>
       </div>
+      <hr>
+      <div class="form-group">
+        <a href="/Shipyard/steam/login" id="login-button" class="btn">
+          <img src="https://community.akamai.steamstatic.com/public/images/signinthroughsteam/sits_01.png">
+        </a>
+      </div>
       <div class="form-group">
         <div
           class="alert alert-danger"
@@ -69,7 +75,7 @@
       </div>
     </form>
 
-    <div class="alert alert-success" *ngIf="user.isLoggedIn">
+    <div class="alert alert-success" *ngIf="user.isLoggedIn()">
       Logged in as {{ user.username }}.
     </div>
   </div>

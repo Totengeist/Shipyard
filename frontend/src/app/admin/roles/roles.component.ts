@@ -20,9 +20,11 @@ export class AdminRolesComponent implements OnInit {
   ngOnInit(): void {
       this.getRoles().subscribe(
       data => {
-        data.forEach((element: any) => {
-            this.roles.push({label: element.label, slug: element.slug});
-        });
+        if( data !== null ) {
+            data.forEach((element: any) => {
+                this.roles.push({label: element.label, slug: element.slug});
+            });
+        }
       },
       err => {
         console.log("Error");

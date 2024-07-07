@@ -30,6 +30,10 @@ html, body {
 	margin: auto;
 }
 
+#login.card {
+	padding: 15px;
+}
+
 header.jumbotron {
 	font-size: x-large;
 	font-weight: bold;

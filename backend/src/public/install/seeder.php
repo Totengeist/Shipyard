@@ -3,7 +3,7 @@
 use Shipyard\Models\Release;
 use Shipyard\Models\User;
 
-echo 'Inserting administrator user.<br>\n';
+echo "Inserting administrator user.<br>\n";
 /** @var User $admin */
 $admin = User::query()->create([
     'name'       => 'administrator',
@@ -12,7 +12,7 @@ $admin = User::query()->create([
     'activated'  => true,
 ]);
 $admin->assignRole('administrator');
-echo 'Inserting releases.<br>\n';
+echo "Inserting releases.<br>\n";
 Release::query()->firstOrCreate(['label' => 'Update1.rc2']);
 Release::query()->firstOrCreate(['label' => 'Update2.rc1']);
 Release::query()->firstOrCreate(['label' => 'Update2.rc3']);

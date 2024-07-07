@@ -62,6 +62,8 @@ class LoginController extends Controller {
         $data = (Auth::user() !== null) ? Auth::user()->makeVisible(['email', 'created_at', 'updated_at']) : [];
         $data['session_id'] = Auth::session_id();
 
+        $data['steam'] = (Auth::user() !== null) ? (bool) Auth::user()->steamid : false;
+
         $response->getBody()->write((string) json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
 
         return $response
@@ -77,6 +79,8 @@ class LoginController extends Controller {
     public function me(Request $request, Response $response) {
         $data = (Auth::user() !== null) ? Auth::user()->makeVisible(['email', 'created_at', 'updated_at']) : [];
         $data['session_id'] = Auth::session_id();
+
+        $data['steam'] = (Auth::user() !== null) ? (bool) Auth::user()->steamid : false;
 
         $response->getBody()->write((string) json_encode($data));
 

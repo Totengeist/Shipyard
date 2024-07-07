@@ -11,7 +11,6 @@ import { TokenStorageService } from './token-storage.service';
 })
 export class UserService {
   roles: string[] = [];
-  isLoggedIn: boolean = false;
   isLoginFailed: boolean = false;
   errorMessage:string = '';
   showDashboard: boolean = false;
@@ -20,9 +19,7 @@ export class UserService {
   constructor(private authService: AuthService, private tokenStorageService: TokenStorageService, private router: Router, private http: HttpClient) { }
 
   initializeUserInfo(): void {
-    this.isLoggedIn = !!this.tokenStorageService.getUser();
-
-    if (this.isLoggedIn) {
+    if (this.isLoggedIn()) {
       const user = this.tokenStorageService.getUser();
       this.roles = user.roles;
       this.showDashboard = (this.roles.length > 0);
@@ -49,7 +46,7 @@ export class UserService {
   
   saveUserData(data: any) {
     var roles: string[] = [];
-    data.roles.forEach((element: any) => {
+    data.roles?.forEach((element: any) => {
         roles.push(element.label);
     })
     var permissions: string[] = [];
@@ -58,7 +55,7 @@ export class UserService {
             permissions.push(element.label);
         });
     }
-    var userData: object = { "name": data.name, "ref": data.ref, "email": data.email, "roles": roles, "permissions": permissions };
+    var userData: object = { "name": data.name, "ref": data.ref, "email": data.email, "roles": roles, "permissions": permissions, "hasSteamLogin": data.steam };
     this.tokenStorageService.saveUser(userData);
   }
 
@@ -69,8 +66,11 @@ export class UserService {
         this.initializeUserInfo();
       },
       err => {
-        this.errorMessage = err.error.message;
-        this.isLoginFailed = true;
+        if( err.status >= 400 && err.status < 500  && this.isLoggedIn()) {
+          this.tokenStorageService.signOut();
+          this.initializeUserInfo();
+          this.router.navigate(['/home']);
+        }
       }
     );
   }
@@ -79,14 +79,9 @@ export class UserService {
     this.authService.login(username, password).subscribe(
       data => {
         this.saveUserData(data);
-
-        this.isLoginFailed = false;
         this.initializeUserInfo();
-        if (this.roles.length > 0) {
-            this.router.navigate(['/admin/dashboard']);
-        } else {
-            this.router.navigate(['/home']);
-        }
+        this.isLoginFailed = false;
+        this.router.navigate(['/home']);
       },
       err => {
         this.errorMessage = err.error.message;
@@ -98,8 +93,12 @@ export class UserService {
       }
     );
   }
+  
+  isLoggedIn(): boolean {
+    return !!this.tokenStorageService.getUser();
+  }
 
   getUserBoard(): Observable<any> {
-    return this.http.get(environment.apiUrl + 'me', { responseType: 'text' });
+    return this.authService.me();
   }
 }

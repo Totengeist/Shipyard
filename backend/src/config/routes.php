@@ -7,6 +7,12 @@ use Shipyard\Middleware\LogMiddleware;
 use Shipyard\Middleware\SessionMiddleware;
 use Slim\Routing\RouteCollectorProxy;
 
+$app->group($_SERVER['BASE_URL'] . '/steam', function (RouteCollectorProxy $group) {
+    $group->get('/register', 'Shipyard\Controllers\SteamController:register');
+    $group->get('/login', 'Shipyard\Controllers\SteamController:login');
+    $group->get('/process_registration', 'Shipyard\Controllers\SteamController:process_registration');
+    $group->get('/process_login', 'Shipyard\Controllers\SteamController:process_login');
+});
 $app->group($_SERVER['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $group) {
     $group->post('/register', 'Shipyard\Controllers\RegisterController:register');
     $group->get('/activate/{token}', 'Shipyard\Controllers\RegisterController:activate');
@@ -94,6 +100,8 @@ $app->group($_SERVER['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $gro
 
         $group->post('/screenshot/{ref}', 'Shipyard\Controllers\ScreenshotController:update');
         $group->delete('/screenshot/{ref}', 'Shipyard\Controllers\ScreenshotController:destroy');
+
+        $group->get('/steam/login', 'Shipyard\SteamHelper:login()');
     })->add(LogMiddleware::class)->add(SessionMiddleware::class);
     $group->get('/{path:.*}', function ($request, $response, array $args) {
         return $response

@@ -4,16 +4,10 @@
     {{ currentUser.email }}
 </p>
 <p>
-    <strong>Ref:</strong>
-    {{ currentUser.ref }}
+    <strong>Steam Login: </strong>
+    <a href="/Shipyard/steam/register" *ngIf="!currentUser.hasSteamLogin"><img src="https://community.akamai.steamstatic.com/public/images/signinthroughsteam/sits_01.png"></a>
+    <b *ngIf="currentUser.hasSteamLogin">Enabled!</b>
 </p>
-<p><strong>Roles and Permissions:</strong></p>
-<ul>
-    <li *ngFor="let role of currentUser.roles">
-      {{ role }}:
-      <span *ngFor="let permission of currentUser.permissions">{{ permission }}, </span>
-    </li>
-</ul>
 
 <ng-template #loggedOut>
   Please login.
