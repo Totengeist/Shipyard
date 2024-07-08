@@ -5,9 +5,7 @@ import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 import { ProfileComponent } from './profile/profile.component';
-import { ShipsComponent } from './ships/ships.component';
-import { ModificationsComponent } from './modifications/modifications.component';
-import { SavesComponent } from './saves/saves.component';
+import { ItemListComponent } from './item_list/item_list.component';
 import { ItemPageComponent } from './item_page/item_page.component';
 import { ReleasesComponent } from './releases/releases.component';
 import { AdminDashboardComponent } from './admin/dashboard/admin.component';
@@ -20,13 +18,13 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'profile', component: ProfileComponent },
-  { path: 'ships/:page', component: ShipsComponent },
-  { path: 'ships', component: ShipsComponent },
-  { path: 'mods/:page', component: ModificationsComponent },
-  { path: 'mods', component: ModificationsComponent },
-  { path: 'saves/:page', component: SavesComponent },
-  { path: 'saves', component: SavesComponent },
-  { path: 'releases', component:ReleasesComponent },
+  { path: 'ships/:page', component: ItemListComponent, data: {item_type: 'ship'} },
+  { path: 'ships', component: ItemListComponent, data: {item_type: 'ship'} },
+  { path: 'saves/:page', component: ItemListComponent, data: {item_type: 'save'} },
+  { path: 'saves', component: ItemListComponent, data: {item_type: 'save'} },
+  { path: 'mods/:page', component: ItemListComponent, data: {item_type: 'modification'} },
+  { path: 'mods', component: ItemListComponent, data: {item_type: 'modification'} },
+  { path: 'releases', component: ReleasesComponent },
   { path: 'admin/dashboard', component: AdminDashboardComponent },
   { path: 'admin/roles', component: AdminRolesComponent },
   { path: 'admin/role/:slug/edit', component: AdminRolesComponent },

@@ -20,21 +20,25 @@ export class AdminRolesComponent implements OnInit {
   ngOnInit(): void {
       this.getRoles().subscribe(
       data => {
-        if( data !== null ) {
+        if ( data !== null ) {
             data.forEach((element: any) => {
                 this.roles.push({label: element.label, slug: element.slug});
             });
         }
       },
       err => {
-        console.log("Error");
+        console.log('Error');
       }
     );
   }
-  
+
   getRoles(): Observable<any> {
     const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'Accept': '*/*', 'Authorization': 'Bearer ' + this.token.getToken() })
+      headers: new HttpHeaders({
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Accept: '*/*',
+        Authorization: 'Bearer ' + this.token.getToken()
+      })
     };
 
     return this.http.get(AUTH_API + 'role', httpOptions);

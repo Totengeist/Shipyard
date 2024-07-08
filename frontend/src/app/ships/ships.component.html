@@ -1,9 +1,0 @@
-<ul class="result-list">
-    <li class="result-item" *ngFor="let ship of ships">
-        <a href="/ship/{{ ship.ref }}" routerLink="/ship/{{ ship.ref }}"><img src="{{ship.screenshot}}"></a>
-        <p><a href="/ship/{{ ship.ref }}" routerLink="/ship/{{ ship.ref }}">{{ ship.title }}</a> by {{ ship.username }}</p>
-        <p>{{ ship.description }}</p>
-    </li>
-</ul>
-
-<div class="result-controls"><span *ngIf="show_prev"><a [routerLink]="['/ships', page-1]">&lt; Prev</a> &bull; </span>Page {{ page }} / {{ last_page }}<span *ngIf="show_next"> &bull; <a [routerLink]="['/ships', page+1]">Next &gt;</a></span></div>

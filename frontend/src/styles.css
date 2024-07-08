@@ -65,7 +65,7 @@ li.result-item img {
 	object-fit: cover;
 }
 
-app-item_page {
+app-item-page {
 	display: flex;
 	padding: 5px;
 }

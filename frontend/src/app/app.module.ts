@@ -14,10 +14,8 @@ import { AdminDashboardComponent } from './admin/dashboard/admin.component';
 import { AdminRolesComponent } from './admin/roles/roles.component';
 import { AdminPermissionsComponent } from './admin/permissions/permissions.component';
 import { AdminEditPermissionsComponent } from './admin/edit-permissions/edit-permissions.component';
-import { ShipsComponent } from './ships/ships.component';
 import { ReleasesComponent } from './releases/releases.component';
-import { ModificationsComponent } from './modifications/modifications.component';
-import { SavesComponent } from './saves/saves.component';
+import { ItemListComponent } from './item_list/item_list.component';
 import { ItemPageComponent } from './item_page/item_page.component';
 
 @NgModule({
@@ -31,10 +29,8 @@ import { ItemPageComponent } from './item_page/item_page.component';
     AdminRolesComponent,
     AdminPermissionsComponent,
     AdminEditPermissionsComponent,
-    ShipsComponent,
     ReleasesComponent,
-    ModificationsComponent,
-    SavesComponent,
+    ItemListComponent,
     ItemPageComponent,
   ],
   imports: [

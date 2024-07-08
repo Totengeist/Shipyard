@@ -22,8 +22,8 @@ export class LoginComponent implements OnInit {
 
   onSubmit(): void {
     const { username, password } = this.form;
-    let login = document.getElementById("login-button") as HTMLButtonElement;
-    if( login !== null ) {
+    const login = document.getElementById('login-button') as HTMLButtonElement;
+    if ( login !== null ) {
         login.disabled = true;
     }
     this.userService.login(username, password);

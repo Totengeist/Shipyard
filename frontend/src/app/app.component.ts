@@ -16,11 +16,11 @@ export class AppComponent implements OnInit {
     this.user = this.userService;
     this.userService.refresh();
   }
-  
+
   isDashboard(): boolean {
-    return (this.router.url.split("/", -1)[1] == "admin");
+    return (this.router.url.split('/', -1)[1] === 'admin');
   }
-  
+
   showDashboard(): boolean {
     return (this.userService.roles.length > 0);
   }

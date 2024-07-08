@@ -23,14 +23,14 @@ export class ReleasesComponent implements OnInit {
         });
       },
       err => {
-        console.log("Error");
+        console.log('Error');
       }
     );
   }
-  
+
   getReleases(): Observable<any> {
     const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'Accept': '*/*' })
+      headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', Accept: '*/*' })
     };
 
     return this.http.get(environment.apiUrl + 'release', httpOptions);

@@ -1,9 +1,0 @@
-<ul class="result-list">
-    <li class="result-item" *ngFor="let save of saves">
-        <a href="/save/{{ save.ref }}" routerLink="/save/{{ save.ref }}"><img src="{{save.screenshot}}"></a>
-        <p><a href="/save/{{ save.ref }}" routerLink="/save/{{ save.ref }}">{{ save.title }}</a> by {{ save.username }}</p>
-        <p>{{ save.description }}</p>
-    </li>
-</ul>
-
-<div class="result-controls"><span *ngIf="show_prev"><a [routerLink]="['/saves', page-1]">&lt; Prev</a> &bull; </span>Page {{ page }} / {{ last_page }}<span *ngIf="show_next"> &bull; <a [routerLink]="['/saves', page+1]">Next &gt;</a></span></div>

@@ -1,20 +1,22 @@
-<div id="item-screenshots" *ngIf="hasScreenshots()">
-<div class="primary-screenshot"><img src="api/v1/screenshot/{{ active_shot }}/download"></div>
-<ul class="screenshot-list">
-    <li *ngFor="let screenshot of screenshots" [ngClass]="{'active': active_shot === screenshot.ref }">
-        <a href=""><img src="api/v1/screenshot/{{ screenshot.ref }}/download"></a>
-	</li>
-</ul>
-</div>
-
 <div id="item-details">
 <h1>{{ item.title }}</h1>
 
 <p><a href="/user/{{ user.ref }}" routerLink="/user/{{ user.ref }}">{{ user.name }}</a> - {{ item.description }}</p>
 
-<p>Downloaded {{ item.downloads }} times
+<ul class="item-tags">
+    <li *ngFor="let tag of tags"><a href="/tag/{{ tag.slug }}" routerLink="/tag/{{ tag.slug }}">{{ tag.label }}</a></li>
+</ul>
 
-<p class="download-button"><a href="api/v1/{{ item_type }}/{{ item_id }}/download" class="btn btn-primary">Download</a></p>
+<p class="download-button"><a href="api/v1/{{ itemType }}/{{ itemId }}/download" class="btn btn-primary">Download</a><br>Downloaded {{ item.downloads }} times</p>
 
 <!-- <p>Meta data goes here</p> -->
+</div>
+
+<div id="item-screenshots" *ngIf="hasScreenshots()">
+<div class="primary-screenshot"><img src="api/v1/screenshot/{{ activeShot }}/download"></div>
+<ul class="screenshot-list">
+    <li *ngFor="let screenshot of screenshots" [ngClass]="{'active': activeShot === screenshot.ref }">
+        <a href=""><img src="api/v1/screenshot/{{ screenshot.ref }}/download"></a>
+    </li>
+</ul>
 </div>

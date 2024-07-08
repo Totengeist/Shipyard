@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 const httpOptions = {
-  headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', 'Accept': '*/*' })
+  headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', Accept: '*/*' })
 };
 
 @Injectable({
@@ -29,12 +29,12 @@ export class AuthService {
     return this.http.get(environment.apiUrl + 'me', httpOptions);
   }
 
-  register(name: string, email: string, password: string, password_confirmation: string): Observable<any> {
+  register(name: string, email: string, password: string, passwordConfirmation: string): Observable<any> {
     const body = new URLSearchParams();
     body.set('name', name);
     body.set('email', email);
     body.set('password', password);
-    body.set('password_confirmation', password_confirmation);
+    body.set('password_confirmation', passwordConfirmation);
 
     return this.http.post(environment.apiUrl + 'register', body.toString(), httpOptions);
   }

@@ -11,12 +11,17 @@ import { TokenStorageService } from './token-storage.service';
 })
 export class UserService {
   roles: string[] = [];
-  isLoginFailed: boolean = false;
-  errorMessage:string = '';
-  showDashboard: boolean = false;
-  username: string = "";
+  isLoginFailed = false;
+  errorMessage = '';
+  showDashboard = false;
+  username = '';
 
-  constructor(private authService: AuthService, private tokenStorageService: TokenStorageService, private router: Router, private http: HttpClient) { }
+  constructor(
+    private authService: AuthService,
+    private tokenStorageService: TokenStorageService,
+    private router: Router,
+    private http: HttpClient
+  ) { }
 
   initializeUserInfo(): void {
     if (this.isLoggedIn()) {
@@ -27,7 +32,7 @@ export class UserService {
     } else {
       this.roles = [];
       this.showDashboard = false;
-      this.username = "";
+      this.username = '';
     }
   }
 
@@ -43,30 +48,37 @@ export class UserService {
       }
     );
   }
-  
-  saveUserData(data: any) {
-    var roles: string[] = [];
+
+  saveUserData(data: any): void {
+    const roles: string[] = [];
     data.roles?.forEach((element: any) => {
         roles.push(element.label);
-    })
-    var permissions: string[] = [];
+    });
+    const permissions: string[] = [];
     if (roles.length > 0) {
         data.roles[0].permissions.forEach((element: any) => {
             permissions.push(element.label);
         });
     }
-    var userData: object = { "name": data.name, "ref": data.ref, "email": data.email, "roles": roles, "permissions": permissions, "hasSteamLogin": data.steam };
+    const userData: object = {
+        name: data.name,
+        ref: data.ref,
+        email: data.email,
+        roles,
+        permissions,
+        hasSteamLogin: data.steam
+    };
     this.tokenStorageService.saveUser(userData);
   }
 
-  refresh() {
+  refresh(): void {
     this.getUserBoard().subscribe(
       data => {
         this.saveUserData(data);
         this.initializeUserInfo();
       },
       err => {
-        if( err.status >= 400 && err.status < 500  && this.isLoggedIn()) {
+        if ( err.status >= 400 && err.status < 500  && this.isLoggedIn()) {
           this.tokenStorageService.signOut();
           this.initializeUserInfo();
           this.router.navigate(['/home']);
@@ -75,7 +87,7 @@ export class UserService {
     );
   }
 
-  login(username: string, password: string) {
+  login(username: string, password: string): void {
     this.authService.login(username, password).subscribe(
       data => {
         this.saveUserData(data);
@@ -86,14 +98,14 @@ export class UserService {
       err => {
         this.errorMessage = err.error.message;
         this.isLoginFailed = true;
-        let login = document.getElementById("login-button") as HTMLButtonElement;
-        if( login !== null ) {
+        const login = document.getElementById('login-button') as HTMLButtonElement;
+        if ( login !== null ) {
             login.disabled = true;
         }
       }
     );
   }
-  
+
   isLoggedIn(): boolean {
     return !!this.tokenStorageService.getUser();
   }
