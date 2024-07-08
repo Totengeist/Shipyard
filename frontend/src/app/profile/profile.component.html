@@ -3,10 +3,12 @@
     <strong>Email:</strong>
     {{ currentUser.email }}
 </p>
-<p>
+<p *ngIf="!currentUser.hasSteamLogin">
     <strong>Steam Login: </strong>
-    <a href="/Shipyard/steam/register" *ngIf="!currentUser.hasSteamLogin"><img src="https://community.akamai.steamstatic.com/public/images/signinthroughsteam/sits_01.png"></a>
-    <b *ngIf="currentUser.hasSteamLogin">Enabled!</b>
+    <a href="/Shipyard/steam/register" *ngIf="!currentUser.hasSteamLogin"><img src="https://community.akamai.steamstatic.com/public/images/signinthroughsteam/sits_01.png"></a>  <b class="text-danger" *ngIf="steamError">{{ steamError }}</b>
+</p>
+<p *ngIf="currentUser.hasSteamLogin">
+    <strong>Steam Login: Enabled!</strong>&nbsp;<a href="#" (click)="removeSteam()">Unlink</a>
 </p>
 
 <ng-template #loggedOut>

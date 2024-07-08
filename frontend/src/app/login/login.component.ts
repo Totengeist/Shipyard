@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../_services/user.service';
 
 @Component({
@@ -14,10 +14,17 @@ export class LoginComponent implements OnInit {
   };
   user: UserService = {} as UserService;
 
-  constructor(private router: Router, private userService: UserService) { }
+  constructor(private route: ActivatedRoute, private userService: UserService) { }
 
   ngOnInit(): void {
     this.user = this.userService;
+    const queryError: string|null = this.route.snapshot.queryParamMap.get('error');
+    if ( queryError !== null ) {
+        this.user.isLoginFailed = true;
+        if ( queryError === 'steam_not_linked' ) {
+            this.user.errorMessage = 'This Steam account is not linked to a user.';
+        }
+    }
   }
 
   onSubmit(): void {

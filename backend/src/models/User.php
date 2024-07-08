@@ -6,11 +6,11 @@ use Shipyard\Traits\HasRef;
 use Shipyard\Traits\HasRoles;
 
 /**
- * @property string $name
- * @property string $email
- * @property string $password
- * @property int    $steamid
- * @property bool   $activated
+ * @property string   $name
+ * @property string   $email
+ * @property string   $password
+ * @property int|null $steamid
+ * @property bool     $activated
  */
 class User extends Model {
     use HasRoles;

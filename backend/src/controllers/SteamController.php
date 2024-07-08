@@ -110,10 +110,7 @@ class SteamController extends Controller {
             $query = User::query()->where([['steamid', $steamid]]);
             /** @var User|null $existing_user */
             $existing_user = $query->first();
-            if ($existing_user !== null) {
-                header('location: ' . $_SERVER['BASE_URL'] . '/home');
-                exit;
-            }
+
             /** @var User $auth_user */
             $auth_user = Auth::user();
 
@@ -122,7 +119,13 @@ class SteamController extends Controller {
             /** @var User $user */
             $user = $query->first();
             if ($user == null) {
-                return $this->invalid_input_response([], 'This Steam ID is already associated with an existing user.');
+                header('location: ' . $_SERVER['BASE_URL'] . '/home');
+                exit;
+            }
+
+            if ($existing_user !== null && $existing_user->id !== $user->id) {
+                header('location: ' . $_SERVER['BASE_URL'] . '/profile?error=steam_already_linked');
+                exit;
             }
 
             $auth_user->steamid = (int) $steamid;
@@ -153,6 +156,33 @@ class SteamController extends Controller {
             header('location: ' . $_SERVER['BASE_URL'] . '/home');
             exit;
         }
-        echo 'Unable to login';
+        header('location: ' . $_SERVER['BASE_URL'] . '/login?error=steam_not_linked');
+        exit;
+    }
+
+    /**
+     * Register a successful Steam OpenID login to a Shipyard account.
+     *
+     * @return void|Response
+     */
+    public function remove(Request $request, Response $response) {
+        /** @var User $auth_user */
+        $auth_user = Auth::user();
+
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = User::query()->where([['ref', $auth_user->ref]]);
+        /** @var User $user */
+        $user = $query->first();
+        if ($user == null) {
+            return $this->not_found_response('User');
+        }
+
+        $auth_user->steamid = null;
+        $user->steamid = null;
+        $user->save();
+        $response->getBody()->write((string) json_encode(['message' => 'Success!']));
+
+        return $response
+          ->withHeader('Content-Type', 'application/json');
     }
 }

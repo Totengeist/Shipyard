@@ -12,6 +12,7 @@ $app->group($_SERVER['BASE_URL'] . '/steam', function (RouteCollectorProxy $grou
     $group->get('/login', 'Shipyard\Controllers\SteamController:login');
     $group->get('/process_registration', 'Shipyard\Controllers\SteamController:process_registration');
     $group->get('/process_login', 'Shipyard\Controllers\SteamController:process_login');
+    $group->post('/remove', 'Shipyard\Controllers\SteamController:remove');
 });
 $app->group($_SERVER['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $group) {
     $group->post('/register', 'Shipyard\Controllers\RegisterController:register');

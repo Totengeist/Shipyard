@@ -60,7 +60,7 @@
       </div>
       <hr>
       <div class="form-group">
-        <a href="/Shipyard/steam/login" id="login-button" class="btn">
+        <a href="/Shipyard/steam/login" id="steam-login" class="btn">
           <img src="https://community.akamai.steamstatic.com/public/images/signinthroughsteam/sits_01.png">
         </a>
       </div>
@@ -68,7 +68,7 @@
         <div
           class="alert alert-danger"
           role="alert"
-          *ngIf="f.submitted && user.isLoginFailed"
+          *ngIf="user.isLoginFailed"
         >
           Login failed: {{ user.errorMessage }}
         </div>

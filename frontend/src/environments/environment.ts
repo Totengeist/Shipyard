@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost/Shipyard/api/v1/'
+  apiUrl: 'http://localhost/Shipyard/api/v1/',
+  standardUrl: 'http://localhost/Shipyard/'
 };
 
 /*

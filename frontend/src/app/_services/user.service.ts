@@ -1,10 +1,14 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 import { TokenStorageService } from './token-storage.service';
+
+const httpOptions = {
+  headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', Accept: '*/*' })
+};
 
 @Injectable({
   providedIn: 'root'
@@ -47,6 +51,10 @@ export class UserService {
         alert( err.message );
       }
     );
+  }
+
+  removeSteam(): Observable<any> {
+    return this.http.post(environment.standardUrl + 'steam/remove', httpOptions);
   }
 
   saveUserData(data: any): void {
@@ -100,7 +108,7 @@ export class UserService {
         this.isLoginFailed = true;
         const login = document.getElementById('login-button') as HTMLButtonElement;
         if ( login !== null ) {
-            login.disabled = true;
+            login.disabled = false;
         }
       }
     );

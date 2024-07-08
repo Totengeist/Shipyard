@@ -28,10 +28,16 @@ html, body {
 #login {
 	width: fit-content;
 	margin: auto;
+	width: 300px;
 }
 
-#login.card {
+#login .card {
 	padding: 15px;
+}
+
+#steam-login {
+	display: block;
+	margin: auto;
 }
 
 header.jumbotron {
