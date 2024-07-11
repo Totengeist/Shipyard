@@ -10,7 +10,7 @@ describe('ItemListComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [ ItemListComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

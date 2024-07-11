@@ -8,17 +8,16 @@
 </ul>
 
 <p class="download-button"><a href="api/v1/{{ itemType }}/{{ itemId }}/download" class="btn btn-primary">Download</a><br>Downloaded {{ item.downloads }} times</p>
+<p class="download-button"><a href="new;parent={{ itemId }};itemType={{ itemType }}" [routerLink]="['/new', {parent: itemId, itemType: itemType}]" class="btn btn-primary">Upload a revision</a></p>
 
 <!-- <p>Meta data goes here</p> -->
 </div>
 
 <div id="item-screenshots" *ngIf="hasScreenshots()">
-<div class="primary-screenshot"><img src="api/v1/screenshot/{{ activeShot }}/download"></div>
+<div class="primary-screenshot"><img src="api/v1/screenshot/{{ activeShot.ref }}/download" alt="{{ activeShot.description }}" title="{{ activeShot.description }}"></div>
 <ul class="screenshot-list">
-    <li *ngFor="let screenshot of screenshots" [ngClass]="{'active': activeShot === screenshot.ref }">
-        <a href=""><img src="api/v1/screenshot/{{ screenshot.ref }}/download"></a>
+    <li *ngFor="let screenshot of screenshots" [ngClass]="{'active': activeShot.ref === screenshot.ref }">
+        <a href=""><img src="api/v1/screenshot/{{ screenshot.ref }}/download" alt="{{ screenshot.description }}" title="{{ screenshot.description }}"></a>
     </li>
 </ul>
 </div>
-
-<a href="new;parent={{ itemId }};itemType={{ itemType }}" [routerLink]="['/new', {parent: itemId, itemType: itemType}]">Upload a revision</a>

@@ -20,21 +20,21 @@ import { ItemPageComponent } from './item_page/item_page.component';
 import { ItemUploadComponent } from './item_upload/item_upload.component';
 
 @NgModule({ declarations: [
-        AppComponent,
-        LoginComponent,
-        RegisterComponent,
-        HomeComponent,
-        ProfileComponent,
-        AdminDashboardComponent,
-        AdminRolesComponent,
-        AdminPermissionsComponent,
-        AdminEditPermissionsComponent,
-        ReleasesComponent,
-        ItemListComponent,
-        ItemPageComponent,
-        ItemUploadComponent,
-    ],
-    bootstrap: [AppComponent], imports: [BrowserModule,
-        AppRoutingModule,
-        FormsModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
+  AppComponent,
+  LoginComponent,
+  RegisterComponent,
+  HomeComponent,
+  ProfileComponent,
+  AdminDashboardComponent,
+  AdminRolesComponent,
+  AdminPermissionsComponent,
+  AdminEditPermissionsComponent,
+  ReleasesComponent,
+  ItemListComponent,
+  ItemPageComponent,
+  ItemUploadComponent,
+],
+bootstrap: [AppComponent], imports: [BrowserModule,
+  AppRoutingModule,
+  FormsModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule { }

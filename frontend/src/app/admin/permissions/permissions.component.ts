@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { TokenStorageService } from '../../_services/token-storage.service';
@@ -16,13 +15,13 @@ export class AdminPermissionsComponent implements OnInit {
   constructor(private token: TokenStorageService, private http: HttpClient) { }
 
   ngOnInit(): void {
-      this.getPermissions().subscribe(
+    this.getPermissions().subscribe(
       data => {
         data.forEach((element: any) => {
-            this.permissions.push({label: element.label, slug: element.slug});
+          this.permissions.push({label: element.label, slug: element.slug});
         });
       },
-      err => {
+      () => {
         console.log('Error');
       }
     );

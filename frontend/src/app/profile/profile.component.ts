@@ -9,7 +9,11 @@ import { UserService } from '../_services/user.service';
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
-  currentUser: any;
+  currentUser: User = {
+    name: null,
+    email: null,
+    hasSteamLogin: false
+  };;
   steamError = '';
 
   constructor(private userService: UserService, private route: ActivatedRoute, private token: TokenStorageService) { }
@@ -18,20 +22,26 @@ export class ProfileComponent implements OnInit {
     this.currentUser = this.token.getUser();
     const queryError: string|null = this.route.snapshot.queryParamMap.get('error');
     if ( queryError !== null ) {
-        if ( queryError === 'steam_already_linked' ) {
-            this.steamError = 'This Steam ID is already associated with an existing user.';
-        }
+      if ( queryError === 'steam_already_linked' ) {
+        this.steamError = 'This Steam ID is already associated with an existing user.';
+      }
     }
   }
 
   removeSteam(): void {
     this.userService.removeSteam().subscribe(
-      data => {
-          location.reload();
+      () => {
+        location.reload();
       },
-      err => {
-          location.reload();
+      () => {
+        location.reload();
       }
     );
   }
+}
+
+interface User {
+    name: string|null,
+    email: string|null,
+    hasSteamLogin: boolean
 }

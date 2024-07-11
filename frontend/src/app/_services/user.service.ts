@@ -42,13 +42,13 @@ export class UserService {
 
   logout(): void {
     this.authService.logout().subscribe(
-      data => {
+      () => {
         this.tokenStorageService.signOut();
         this.initializeUserInfo();
         this.router.navigate(['/home']);
       },
       err => {
-        alert( err.message );
+        console.log( err.message );
       }
     );
   }
@@ -60,21 +60,21 @@ export class UserService {
   saveUserData(data: any): void {
     const roles: string[] = [];
     data.roles?.forEach((element: any) => {
-        roles.push(element.label);
+      roles.push(element.label);
     });
     const permissions: string[] = [];
     if (roles.length > 0) {
-        data.roles[0].permissions.forEach((element: any) => {
-            permissions.push(element.label);
-        });
+      data.roles[0].permissions.forEach((element: any) => {
+        permissions.push(element.label);
+      });
     }
     const userData: object = {
-        name: data.name,
-        ref: data.ref,
-        email: data.email,
-        roles,
-        permissions,
-        hasSteamLogin: data.steam
+      name: data.name,
+      ref: data.ref,
+      email: data.email,
+      roles,
+      permissions,
+      hasSteamLogin: data.steam
     };
     this.tokenStorageService.saveUser(userData);
   }
@@ -108,7 +108,7 @@ export class UserService {
         this.isLoginFailed = true;
         const login = document.getElementById('login-button') as HTMLButtonElement;
         if ( login !== null ) {
-            login.disabled = false;
+          login.disabled = false;
         }
       }
     );

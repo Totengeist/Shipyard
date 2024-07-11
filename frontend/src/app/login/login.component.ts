@@ -8,7 +8,7 @@ import { UserService } from '../_services/user.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  form: any = {
+  form: LoginFormData = {
     username: null,
     password: null
   };
@@ -20,10 +20,10 @@ export class LoginComponent implements OnInit {
     this.user = this.userService;
     const queryError: string|null = this.route.snapshot.queryParamMap.get('error');
     if ( queryError !== null ) {
-        this.user.isLoginFailed = true;
-        if ( queryError === 'steam_not_linked' ) {
-            this.user.errorMessage = 'This Steam account is not linked to a user.';
-        }
+      this.user.isLoginFailed = true;
+      if ( queryError === 'steam_not_linked' ) {
+        this.user.errorMessage = 'This Steam account is not linked to a user.';
+      }
     }
   }
 
@@ -31,8 +31,15 @@ export class LoginComponent implements OnInit {
     const { username, password } = this.form;
     const login = document.getElementById('login-button') as HTMLButtonElement;
     if ( login !== null ) {
-        login.disabled = true;
+      login.disabled = true;
     }
-    this.userService.login(username, password);
+    if( username !== null && password !== null ) {
+      this.userService.login(username, password);
+    }
   }
+}
+
+interface LoginFormData { 
+    username: string|null,
+    password: string|null
 }

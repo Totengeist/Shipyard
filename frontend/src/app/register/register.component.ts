@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { AuthService } from '../_services/auth.service';
 
 @Component({
@@ -6,8 +6,8 @@ import { AuthService } from '../_services/auth.service';
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })
-export class RegisterComponent implements OnInit {
-  form: any = {
+export class RegisterComponent {
+  form: RegisterFormData = {
     name: null,
     email: null,
     password: null,
@@ -19,22 +19,28 @@ export class RegisterComponent implements OnInit {
 
   constructor(private authService: AuthService) { }
 
-  ngOnInit(): void {
-  }
-
   onSubmit(): void {
     const { name, email, password, password_confirmation } = this.form;
 
-    this.authService.register(name, email, password, password_confirmation).subscribe(
-      data => {
-        console.log(data);
-        this.isSuccessful = true;
-        this.isSignUpFailed = false;
-      },
-      err => {
-        this.errorMessage = err.error.message;
-        this.isSignUpFailed = true;
-      }
-    );
+    if( name !== null && email !== null && password !== null && password_confirmation !== null ) {
+      this.authService.register(name, email, password, password_confirmation).subscribe(
+        data => {
+          console.log(data);
+          this.isSuccessful = true;
+          this.isSignUpFailed = false;
+        },
+        err => {
+          this.errorMessage = err.error.message;
+          this.isSignUpFailed = true;
+        }
+      );
+    }
   }
+}
+
+interface RegisterFormData { 
+    name: string|null,
+    email: string|null,
+    password: string|null,
+    password_confirmation: string|null
 }

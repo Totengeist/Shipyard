@@ -10,7 +10,7 @@ describe('ReleasesComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [ ReleasesComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

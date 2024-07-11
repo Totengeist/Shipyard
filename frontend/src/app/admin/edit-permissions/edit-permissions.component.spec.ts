@@ -10,7 +10,7 @@ describe('EditPermissionsComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [ EditPermissionsComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

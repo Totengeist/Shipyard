@@ -21,7 +21,7 @@ export class ItemUploadComponent implements OnInit {
 
   ngOnInit(): void {
     let availableTypes: string[] = [];
-    for (const [_, value] of Object.entries(this.supportedTypes)) {
+    for (const value of Object.values(this.supportedTypes)) {
       availableTypes = availableTypes.concat((value as any)[1]);
     }
     let selectedTypes = availableTypes;

@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { TokenStorageService } from '../../_services/token-storage.service';
@@ -18,15 +17,15 @@ export class AdminRolesComponent implements OnInit {
   constructor(private token: TokenStorageService, private http: HttpClient) { }
 
   ngOnInit(): void {
-      this.getRoles().subscribe(
+    this.getRoles().subscribe(
       data => {
         if ( data !== null ) {
-            data.forEach((element: any) => {
-                this.roles.push({label: element.label, slug: element.slug});
-            });
+          data.forEach((element: any) => {
+            this.roles.push({label: element.label, slug: element.slug});
+          });
         }
       },
-      err => {
+      () => {
         console.log('Error');
       }
     );

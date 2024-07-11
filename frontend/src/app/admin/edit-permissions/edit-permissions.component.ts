@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { TokenStorageService } from '../../_services/token-storage.service';
@@ -25,7 +24,7 @@ export class AdminEditPermissionsComponent implements OnInit {
         this.slug = data.slug;
         this.label = data.label;
       },
-      err => {
+      () => {
         console.log('Error');
       }
     );
