@@ -1,0 +1,17 @@
+{{ parent }}
+<div id="upload-container">
+    <form id="upload">
+        <label for="title">Name:&nbsp;</label>
+        <input type="text" name="title" required />
+        <p></p>
+        <label for="description">Description:</label><br>
+        <textarea type="text" name="description" required ></textarea>
+    </form>
+    <div id="uppy"></div>
+    <p class="alert alert-warning" *ngIf="parent !== ''">You're uploading a revision to an existing item. If this was unintended, please use the upload form <a href="/new" routerLink="new">here</a>.</p>
+    <p class="alert alert-primary" *ngIf="itemType !== ''">It looks like you're uploading a {{ supportedTypes[itemType][0] }}. If this isn't right, please <a href="/support" routerLink="support">contact us</a>.</p>
+</div>
+
+<ng-template #loggedOut>
+  Please login.
+</ng-template>
