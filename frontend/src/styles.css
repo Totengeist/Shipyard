@@ -114,3 +114,18 @@ div.result-controls, p.download-button {
 	width: fit-content;
 }
 
+#upload-container {
+	width: min-content;
+	margin: auto;
+	padding: 10px;
+}
+
+form#upload textarea {
+	width: 100%;
+}
+
+#uppy {
+	margin: auto;
+	width: min-content;
+	padding: 15px 0;
+}

@@ -19,6 +19,11 @@
     "@angular/platform-browser": "^18.0.6",
     "@angular/platform-browser-dynamic": "^18.0.6",
     "@angular/router": "^18.0.6",
+    "@types/lodash": "^4.17.6",
+    "@uppy/core": "^4.0.0",
+    "@uppy/dashboard": "^4.0.0",
+    "@uppy/form": "^4.0.0",
+    "@uppy/xhr-upload": "^4.0.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.14.7"

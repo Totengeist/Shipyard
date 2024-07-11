@@ -17,6 +17,7 @@ import { AdminEditPermissionsComponent } from './admin/edit-permissions/edit-per
 import { ReleasesComponent } from './releases/releases.component';
 import { ItemListComponent } from './item_list/item_list.component';
 import { ItemPageComponent } from './item_page/item_page.component';
+import { ItemUploadComponent } from './item_upload/item_upload.component';
 
 @NgModule({ declarations: [
         AppComponent,
@@ -31,6 +32,7 @@ import { ItemPageComponent } from './item_page/item_page.component';
         ReleasesComponent,
         ItemListComponent,
         ItemPageComponent,
+        ItemUploadComponent,
     ],
     bootstrap: [AppComponent], imports: [BrowserModule,
         AppRoutingModule,
