@@ -15,9 +15,10 @@ export class ItemPageComponent implements OnInit {
   currentUser: User = {ref: null, name: null, email: null};
   itemType = '';
   itemId = '';
-  item: Item = {ref: null, title: null, description: null, downloads: -1, user: {ref: null, name: null, email: null}}
-  parent: Item = {ref: null, title: null, description: null, downloads: -1, user: {ref: null, name: null, email: null}}
-  user: User = {ref: null, name: null, email: null}
+  item: Item = {ref: null, title: null, description: null, downloads: -1, user: {ref: null, name: null, email: null}};
+  parent: Item = {ref: null, title: null, description: null, downloads: -1, user: {ref: null, name: null, email: null}};
+  children: Item[] = [];
+  user: User = {ref: null, name: null, email: null};
   tags: any[] = [];
   screenshots: Screenshot[] = [];
   activeShot: Screenshot = {ref: null, description: null};
@@ -40,6 +41,7 @@ export class ItemPageComponent implements OnInit {
           if( data.parent !== null ) {
             this.parent = data.parent;
           }
+          this.children = data.children;
           this.user = data.user;
           this.tags = data.tags;
           if (data.primary_screenshot.length > 0) {
@@ -79,6 +81,10 @@ export class ItemPageComponent implements OnInit {
       return false;
     }
     return (this.parent.ref !== null);
+  }
+  
+  hasChildren(): boolean {
+    return (this.children.length > 0);
   }
   
   belongsToCurrentUser(): boolean {

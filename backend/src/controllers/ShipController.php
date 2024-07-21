@@ -104,7 +104,7 @@ class ShipController extends Controller {
      */
     public function show(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
-        $query = Ship::query()->where([['ref', $args['ref']]])->with(['user', 'primary_screenshot', 'tags', 'parent', 'parent.user']);
+        $query = Ship::query()->where([['ref', $args['ref']]])->with(['user', 'primary_screenshot', 'tags', 'parent', 'parent.user', 'children', 'children.user']);
         $ship = $query->first();
         if ($ship == null) {
             return $this->not_found_response('Ship');

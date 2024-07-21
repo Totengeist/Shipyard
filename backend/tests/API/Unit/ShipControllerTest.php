@@ -321,7 +321,7 @@ class ShipControllerTest extends APITestCase {
         $ship5 = Ship::query()->where([['ref', $ship5->ref]])->firstOrFail();
         $this->delete('api/v1/ship/' . $ship3->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
         $this->assertEquals($ship5->parent->parent->getKey(), $ship2->getKey());
-        $this->assertEquals($ship5->parent->parent->child->getKey(), $ship4->getKey());
+        $this->assertEquals($ship5->parent->parent->children->first()->getKey(), $ship4->getKey());
         $this->assertEquals($ship5->parent->parent_id, $ship2->id);
 
         // delete last

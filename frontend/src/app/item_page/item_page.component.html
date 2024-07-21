@@ -4,7 +4,7 @@
 <div class="alert alert-secondary" >
 <span *ngIf="hasParent()">This item is derived from <a href="{{ itemType }}/{{parent.ref}}" [routerLink]="['/'+itemType+'/'+parent.ref]">{{parent.title}}</a><span *ngIf="!parentBelongsToSameUser()">&nbsp;by <a href="/user/{{ parent.user.ref }}" routerLink="/user/{{ parent.user.ref }}">{{parent.user.name}}</a></span>.&nbsp;</span>
 <span *ngIf="belongsToCurrentUser()">Have you made changes to this item? <a href="new;parent={{ itemId }};itemType={{ itemType }}" [routerLink]="['/new', {parent: itemId, itemType: itemType}]">Upload a revision</a>!</span>
-<span *ngIf="!belongsToCurrentUser()">Were you inspired by this item? <a href="new;parent={{ itemId }};itemType={{ itemType }}" [routerLink]="['/new', {parent: itemId, itemType: itemType}]">Upload a revision</a>! The original creator will get a mention and this item will be listed in the revisions list of the original.</span>
+<span *ngIf="!belongsToCurrentUser()">Were you inspired by this item? <a href="new;parent={{ itemId }};itemType={{ itemType }}" [routerLink]="['/new', {parent: itemId, itemType: itemType}]">Upload a revision</a>! The original creator will get a mention and your ship will be listed in the revisions on this page.</span>
 </div>
 
 <p>{{ item.description }}</p>
@@ -14,6 +14,11 @@
 </ul>
 
 <p class="download-button"><a href="api/v1/{{ itemType }}/{{ itemId }}/download" class="btn btn-primary">Download</a><br>Downloaded {{ item.downloads }} times</p>
+
+<h3 *ngIf="hasChildren()">Revisions</h3>
+<ul *ngIf="hasChildren()">
+    <li *ngFor="let child of children"><a href="{{ itemType }}/{{child.ref}}" [routerLink]="['/'+itemType+'/'+child.ref]">{{ child.title }}</a><span *ngIf="user.ref !== child.user.ref">&nbsp;by <a href="/user/{{ child.user.ref }}" routerLink="/user/{{ child.user.ref }}">{{child.user.name}}</a></span></li>
+</ul>
 
 <!-- <p>Meta data goes here</p> -->
 </div>

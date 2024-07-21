@@ -64,12 +64,12 @@ class Ship extends Model {
     }
 
     /**
-     * A ship can have a child.
+     * A ship can have children.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function child() {
-        return $this->hasOne(Ship::class, 'parent_id', 'id');
+    public function children() {
+        return $this->hasMany(Ship::class, 'parent_id', 'id');
     }
 
     /**
