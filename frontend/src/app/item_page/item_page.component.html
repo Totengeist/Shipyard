@@ -1,14 +1,19 @@
 <div id="item-details">
 <h1>{{ item.title }}</h1>
+<div>By <a href="/user/{{ user.ref }}" routerLink="/user/{{ user.ref }}">{{ user.name }}</a></div>
+<div class="alert alert-secondary" >
+<span *ngIf="hasParent()">This item is derived from <a href="{{ itemType }}/{{parent.ref}}" [routerLink]="['/'+itemType+'/'+parent.ref]">{{parent.title}}</a><span *ngIf="!parentBelongsToSameUser()">&nbsp;by <a href="/user/{{ parent.user.ref }}" routerLink="/user/{{ parent.user.ref }}">{{parent.user.name}}</a></span>.&nbsp;</span>
+<span *ngIf="belongsToCurrentUser()">Have you made changes to this item? <a href="new;parent={{ itemId }};itemType={{ itemType }}" [routerLink]="['/new', {parent: itemId, itemType: itemType}]">Upload a revision</a>!</span>
+<span *ngIf="!belongsToCurrentUser()">Were you inspired by this item? <a href="new;parent={{ itemId }};itemType={{ itemType }}" [routerLink]="['/new', {parent: itemId, itemType: itemType}]">Upload a revision</a>! The original creator will get a mention and this item will be listed in the revisions list of the original.</span>
+</div>
 
-<p><a href="/user/{{ user.ref }}" routerLink="/user/{{ user.ref }}">{{ user.name }}</a> - {{ item.description }}</p>
+<p>{{ item.description }}</p>
 
 <ul class="item-tags">
     <li *ngFor="let tag of tags"><a href="/tag/{{ tag.slug }}" routerLink="/tag/{{ tag.slug }}">{{ tag.label }}</a></li>
 </ul>
 
 <p class="download-button"><a href="api/v1/{{ itemType }}/{{ itemId }}/download" class="btn btn-primary">Download</a><br>Downloaded {{ item.downloads }} times</p>
-<p class="download-button"><a href="new;parent={{ itemId }};itemType={{ itemType }}" [routerLink]="['/new', {parent: itemId, itemType: itemType}]" class="btn btn-primary">Upload a revision</a></p>
 
 <!-- <p>Meta data goes here</p> -->
 </div>

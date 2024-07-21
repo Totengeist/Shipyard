@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { TokenStorageService } from '../_services/token-storage.service';
+import { UserService } from '../_services/user.service';
 import { environment } from '../../environments/environment';
 
 @Component({
@@ -11,23 +12,34 @@ import { environment } from '../../environments/environment';
   styleUrls: ['./item_page.component.css']
 })
 export class ItemPageComponent implements OnInit {
+  currentUser: User = {ref: null, name: null, email: null};
   itemType = '';
   itemId = '';
-  item: any;
-  user: User = {ref: null, name: null, email: null, hasSteamLogin: false}
+  item: Item = {ref: null, title: null, description: null, downloads: -1, user: {ref: null, name: null, email: null}}
+  parent: Item = {ref: null, title: null, description: null, downloads: -1, user: {ref: null, name: null, email: null}}
+  user: User = {ref: null, name: null, email: null}
   tags: any[] = [];
   screenshots: Screenshot[] = [];
   activeShot: Screenshot = {ref: null, description: null};
 
-  constructor(private token: TokenStorageService, private http: HttpClient, private route: ActivatedRoute, private router: Router) { }
+  constructor(private userService: UserService, private token: TokenStorageService, private http: HttpClient, private route: ActivatedRoute, private router: Router) {
+    this.initializeFields();
+  }
 
   ngOnInit(): void {
-    this.itemType = this.route.snapshot.data.item_type;
+    if( this.token.getUser() !== null ) {
+      this.currentUser = this.token.getUser();
+    }
+    this.initializeFields();
     this.route.params.subscribe(params => {
       this.itemId = params.slug;
       this.getItem(this.itemType, this.itemId).subscribe(
         data => {
           this.item = data;
+          this.parent = {ref: null, title: null, description: null, downloads: -1, user: {ref: null, name: null, email: null}}
+          if( data.parent !== null ) {
+            this.parent = data.parent;
+          }
           this.user = data.user;
           this.tags = data.tags;
           if (data.primary_screenshot.length > 0) {
@@ -50,6 +62,34 @@ export class ItemPageComponent implements OnInit {
         }
       );
     });
+  }
+  
+  initializeFields(): void {
+    this.itemType = this.route.snapshot.data.item_type;
+    this.item = {ref: null, title: null, description: null, downloads: -1, user: {ref: null, name: null, email: null}}
+    this.parent = {ref: null, title: null, description: null, downloads: -1, user: {ref: null, name: null, email: null}}
+    this.user = {ref: null, name: null, email: null}
+    this.tags = [];
+    this.screenshots = []
+    this.activeShot = {ref: null, description: null};
+  }
+  
+  hasParent(): boolean {
+    if( this.parent === null || this.parent === undefined ) {
+      return false;
+    }
+    return (this.parent.ref !== null);
+  }
+  
+  belongsToCurrentUser(): boolean {
+    if (this.currentUser.ref === null) {
+      return false;
+    }
+    return (this.currentUser.ref === this.user.ref)
+  }
+  
+  parentBelongsToSameUser(): boolean {
+    return (this.parent!.user!.ref === this.user.ref)
   }
 
   getItem(itemType: string, itemId: string): Observable<any> {
@@ -77,6 +117,14 @@ export class ItemPageComponent implements OnInit {
 
 }
 
+interface Item {
+    ref: string|null,
+    title: string|null,
+    description: string|null
+    downloads: number,
+    user: User
+}
+
 interface Screenshot {
     ref: string|null,
     description: string|null
@@ -85,6 +133,5 @@ interface Screenshot {
 interface User {
     ref: string|null,
     name: string|null,
-    email: string|null,
-    hasSteamLogin: boolean
+    email: string|null
 }
