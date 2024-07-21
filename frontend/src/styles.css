@@ -4,6 +4,18 @@ html, body {
 	min-height: 100vh;
 }
 
+header.billboard {
+	padding: 2rem 1rem;
+	margin-bottom: 2rem;
+	background-color: #e9ecef;
+	border-radius: .3rem;
+}
+
+header.billboard h1 {
+    font-size: x-large;
+    font-weight: bold;
+}
+
 #app {
 	display: flex;
 	flex-direction: column;
@@ -11,7 +23,6 @@ html, body {
 }
 
 .container {
-	flex: 1;
 	display: flex;
 	width: 100%;
 	max-width: 100%;
@@ -69,6 +80,62 @@ li.result-item img {
 	height: 200px;
 	border: 1px solid black;
 	object-fit: cover;
+}
+
+div.home-list {
+	clear: both;
+	overflow: hidden;
+	width: 83vw;
+	overflow-x: scroll;
+	margin-bottom: 25px;
+}
+
+ul.home-list {
+	padding-left: 0;
+	width: max-content;
+}
+
+li.home-item {
+	list-style-type: none;
+	width: 250px;
+	height: 147;
+	margin: 5px;
+	float:left;
+	margin-bottom: -10px;
+}
+
+li.home-item img {
+	width: 100%;
+	height: 123px;
+	border: 1px solid black;
+	object-fit: cover;
+}
+
+li.home-item p {
+	position: relative;
+	top: -25px;
+	margin: 0 1px;
+	padding: 0 3px;
+	background-color: rgba(255, 255, 255, 0.6);
+	text-wrap: nowrap;
+	overflow: hidden;
+}
+
+li.home-more {
+	list-style-type: none;
+	width: 250px;
+	margin: 5px;
+	float:left;
+	margin-bottom: -10px;
+	border: 1px solid black;
+}
+
+li.home-more a {
+	display: block;
+	width: max-content;
+	height: 123px;
+	margin: auto;
+	padding-top: 50px;
 }
 
 app-item-page {

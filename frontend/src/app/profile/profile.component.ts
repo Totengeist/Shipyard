@@ -13,7 +13,7 @@ export class ProfileComponent implements OnInit {
     name: null,
     email: null,
     hasSteamLogin: false
-  };;
+  };
   steamError = '';
 
   constructor(private userService: UserService, private route: ActivatedRoute, private token: TokenStorageService) { }
