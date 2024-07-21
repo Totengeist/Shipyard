@@ -26,7 +26,7 @@ class Tag extends Model {
      * @var string[]
      */
     protected $hidden = [
-        'id',
+        'id', 'pivot',
     ];
 
     /**

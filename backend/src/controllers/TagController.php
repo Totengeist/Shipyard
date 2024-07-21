@@ -71,7 +71,7 @@ class TagController extends Controller {
      */
     public function show(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
-        $query = Tag::query()->where([['slug', $args['slug']]]);
+        $query = Tag::query()->where([['slug', $args['slug']]])->with(['ships', 'ships.user', 'saves', 'saves.user', 'modifications', 'modifications.user']);
         $tag = $query->first();
         if ($tag == null) {
             return $this->not_found_response('Tag');

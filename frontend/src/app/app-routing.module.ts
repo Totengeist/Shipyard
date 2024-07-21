@@ -5,10 +5,12 @@ import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 import { ProfileComponent } from './profile/profile.component';
+import { ReleasesComponent } from './releases/releases.component';
 import { ItemListComponent } from './item_list/item_list.component';
 import { ItemPageComponent } from './item_page/item_page.component';
-import { ReleasesComponent } from './releases/releases.component';
 import { ItemUploadComponent } from './item_upload/item_upload.component';
+import { TagListComponent } from './tag_list/tag_list.component';
+import { TagPageComponent } from './tag_page/tag_page.component';
 import { AdminDashboardComponent } from './admin/dashboard/admin.component';
 import { AdminRolesComponent } from './admin/roles/roles.component';
 import { AdminPermissionsComponent } from './admin/permissions/permissions.component';
@@ -25,6 +27,8 @@ const routes: Routes = [
   { path: 'saves', component: ItemListComponent, data: {item_type: 'save'} },
   { path: 'mods/:page', component: ItemListComponent, data: {item_type: 'modification'} },
   { path: 'mods', component: ItemListComponent, data: {item_type: 'modification'} },
+  { path: 'tags/:page', component: TagListComponent },
+  { path: 'tags', component: TagListComponent },
   { path: 'releases', component: ReleasesComponent },
   { path: 'admin/dashboard', component: AdminDashboardComponent },
   { path: 'admin/roles', component: AdminRolesComponent },
@@ -35,6 +39,7 @@ const routes: Routes = [
   { path: 'ship/:slug', component: ItemPageComponent, data: {item_type: 'ship'} },
   { path: 'save/:slug', component: ItemPageComponent, data: {item_type: 'save'} },
   { path: 'modification/:slug', component: ItemPageComponent, data: {item_type: 'modification'} },
+  { path: 'tag/:slug', component: TagPageComponent },
 
   { path: 'new', component: ItemUploadComponent },
 

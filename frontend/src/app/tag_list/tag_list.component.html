@@ -1,0 +1,7 @@
+<ul>
+    <li *ngFor="let tag of tags">
+        <a href="/tag/{{ tag.slug }}" routerLink="/tag/{{ tag.slug }}">{{ tag.label }}</a>: {{ tag.description }}
+    </li>
+</ul>
+
+<div class="result-controls"><span *ngIf="showPrev"><a [routerLink]="['/tags', page-1]">&lt; Prev</a> &bull; </span>Page {{ page }} / {{ lastPage }}<span *ngIf="showNext"> &bull; <a [routerLink]="['/tags', page+1]">Next &gt;</a></span></div>
