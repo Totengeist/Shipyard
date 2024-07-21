@@ -13,7 +13,7 @@
     <li *ngFor="let tag of tags"><a href="/tag/{{ tag.slug }}" routerLink="/tag/{{ tag.slug }}">{{ tag.label }}</a></li>
 </ul>
 
-<p class="download-button"><a href="api/v1/{{ itemType }}/{{ itemId }}/download" class="btn btn-primary">Download</a><br>Downloaded {{ item.downloads }} times</p>
+<p class="download-button"><a href="api/v1/{{ itemType }}/{{ itemId }}/download" class="btn btn-primary">Download</a><br>{{ item.downloads }} downloads</p>
 
 <h3 *ngIf="hasChildren()">Revisions</h3>
 <ul *ngIf="hasChildren()">

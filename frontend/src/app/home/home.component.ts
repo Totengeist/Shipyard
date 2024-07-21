@@ -10,7 +10,7 @@ import { environment } from '../../environments/environment';
 })
 export class HomeComponent implements OnInit {
   content?: string;
-  itemTypes: string[] = ['ship', 'save', 'modification']
+  itemTypes: string[] = ['ship', 'save', 'modification'];
   items: Record<string, any[]> = {};
 
   constructor(private http: HttpClient) { }

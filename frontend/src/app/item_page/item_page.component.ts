@@ -84,6 +84,9 @@ export class ItemPageComponent implements OnInit {
   }
   
   hasChildren(): boolean {
+    if (this.children === null || this.children === undefined ) {
+      return false;
+    }
     return (this.children.length > 0);
   }
   
