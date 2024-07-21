@@ -20,6 +20,7 @@ import { ItemPageComponent } from './item_page/item_page.component';
 import { ItemUploadComponent } from './item_upload/item_upload.component';
 import { TagListComponent } from './tag_list/tag_list.component';
 import { TagPageComponent } from './tag_page/tag_page.component';
+import { UserPageComponent } from './user_page/user_page.component';
 
 @NgModule({ declarations: [
   AppComponent,
@@ -37,6 +38,7 @@ import { TagPageComponent } from './tag_page/tag_page.component';
   ItemUploadComponent,
   TagListComponent,
   TagPageComponent,
+  UserPageComponent,
 ],
 bootstrap: [AppComponent], imports: [BrowserModule,
   AppRoutingModule,

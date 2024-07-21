@@ -43,6 +43,44 @@ class User extends Model {
         'password', 'remember_token', 'activated', 'id', 'email', 'steamid', 'created_at', 'updated_at',
     ];
 
+    /**
+     * Retrieve ships by this user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function ships() {
+        return $this->retrieve_type(Ship::class);
+    }
+
+    /**
+     * Retrieve saves by this user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function saves() {
+        return $this->retrieve_type(Save::class);
+    }
+
+    /**
+     * Retrieve modifications by this user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function modifications() {
+        return $this->retrieve_type(Modification::class);
+    }
+
+    /**
+     * Retrieve tagged items of a specific class.
+     *
+     * @param class-string $class
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function retrieve_type($class) {
+        return $this->hasMany($class, 'user_id', 'id');
+    }
+
     /** @return UserActivation */
     public function create_activation() {
         /** @var UserActivation $activation */

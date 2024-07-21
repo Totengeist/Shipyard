@@ -7,12 +7,12 @@ import { UserService } from '../_services/user.service';
 import { environment } from '../../environments/environment';
 
 @Component({
-  selector: 'app-tag-page',
-  templateUrl: './tag_page.component.html',
-  styleUrls: ['./tag_page.component.css']
+  selector: 'app-user-page',
+  templateUrl: './user_page.component.html',
+  styleUrls: ['./user_page.component.css']
 })
-export class TagPageComponent implements OnInit {
-  tag: { slug: string, label: string, description: string } = { slug: "", label: "", description: "" };
+export class UserPageComponent implements OnInit {
+  name = "";
   itemTypes: string[] = ['ship', 'save', 'modification'];
   items: Record<string, any[]> = {};
 
@@ -21,9 +21,9 @@ export class TagPageComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       const itemId = params.slug;
-      this.getTag(itemId).subscribe(
+      this.getUser(itemId).subscribe(
         data => {
-          this.tag = data;
+          this.name = data.name;
           this.itemTypes.forEach((element: string) => {
             this.items[element] = data[element+'s'];
           });
@@ -36,11 +36,11 @@ export class TagPageComponent implements OnInit {
     });
   }
 
-  getTag(itemId: string): Observable<any> {
+  getUser(itemId: string): Observable<any> {
     const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', Accept: '*/*' })
     };
 
-    return this.http.get(environment.apiUrl + 'tag/' + itemId, httpOptions);
+    return this.http.get(environment.apiUrl + 'user/' + itemId, httpOptions);
   }
 }

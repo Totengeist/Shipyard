@@ -192,6 +192,28 @@ class RegisterController extends Controller {
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @param array<string,string> $args
+     *
+     * @return Response
+     */
+    public function show(Request $request, Response $response, $args) {
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = User::query()->where([['ref', $args['ref']]])->with(['ships', 'saves', 'modifications']);
+        $tag = $query->first();
+        if ($tag == null) {
+            return $this->not_found_response('User');
+        }
+        $payload = (string) json_encode($tag);
+
+        $response->getBody()->write($payload);
+
+        return $response
+          ->withHeader('Content-Type', 'application/json');
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param array<string,string> $args

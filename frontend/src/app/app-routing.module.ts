@@ -11,6 +11,7 @@ import { ItemPageComponent } from './item_page/item_page.component';
 import { ItemUploadComponent } from './item_upload/item_upload.component';
 import { TagListComponent } from './tag_list/tag_list.component';
 import { TagPageComponent } from './tag_page/tag_page.component';
+import { UserPageComponent } from './user_page/user_page.component';
 import { AdminDashboardComponent } from './admin/dashboard/admin.component';
 import { AdminRolesComponent } from './admin/roles/roles.component';
 import { AdminPermissionsComponent } from './admin/permissions/permissions.component';
@@ -40,6 +41,7 @@ const routes: Routes = [
   { path: 'save/:slug', component: ItemPageComponent, data: {item_type: 'save'} },
   { path: 'modification/:slug', component: ItemPageComponent, data: {item_type: 'modification'} },
   { path: 'tag/:slug', component: TagPageComponent },
+  { path: 'user/:slug', component: UserPageComponent },
 
   { path: 'new', component: ItemUploadComponent },
 

@@ -1,0 +1,13 @@
+<div>
+<h1>{{ name }}</h1>
+
+<div *ngFor="let type of itemTypes">
+<h3 *ngIf="type==='ship'">Ships</h3>
+<h3 *ngIf="type==='save'">Saves</h3>
+<h3 *ngIf="type==='modification'">Mods</h3>
+<ul>
+    <li *ngFor="let item of items[type]" title="{{ item.title }} by {{ item.username }}">
+        <a href="/{{ type }}/{{ item.ref }}" routerLink="/{{ type }}/{{ item.ref }}">{{ item.title }}</a>
+    </li>
+</ul>
+</div>
