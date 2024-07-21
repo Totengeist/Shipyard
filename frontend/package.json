@@ -24,6 +24,9 @@
     "@uppy/dashboard": "^4.0.0",
     "@uppy/form": "^4.0.0",
     "@uppy/xhr-upload": "^4.0.0",
+    "emoji-toolkit": "^8.0.0",
+    "marked": "^12.0.0",
+    "ngx-markdown": "^18.0.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.14.7"

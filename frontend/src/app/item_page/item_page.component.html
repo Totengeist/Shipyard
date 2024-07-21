@@ -7,7 +7,7 @@
 <span *ngIf="!belongsToCurrentUser()">Were you inspired by this item? <a href="new;parent={{ itemId }};itemType={{ itemType }}" [routerLink]="['/new', {parent: itemId, itemType: itemType}]">Upload a revision</a>! The original creator will get a mention and your ship will be listed in the revisions on this page.</span>
 </div>
 
-<p>{{ item.description }}</p>
+<markdown [data]="item.description"></markdown>
 
 <ul class="item-tags">
     <li *ngFor="let tag of tags"><a href="/tag/{{ tag.slug }}" routerLink="/tag/{{ tag.slug }}">{{ tag.label }}</a></li>

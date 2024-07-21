@@ -3,6 +3,8 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
+import { MarkdownComponent, MarkdownModule } from 'ngx-markdown';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
@@ -42,5 +44,7 @@ import { UserPageComponent } from './user_page/user_page.component';
 ],
 bootstrap: [AppComponent], imports: [BrowserModule,
   AppRoutingModule,
+  MarkdownComponent,
+  MarkdownModule.forRoot(),
   FormsModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule { }
