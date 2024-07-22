@@ -1,15 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { TokenStorageService } from '../_services/token-storage.service';
 import { UserService } from '../_services/user.service';
 import { environment } from '../../environments/environment';
+import { NgFor, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-user-page',
   templateUrl: './user_page.component.html',
-  styleUrls: ['./user_page.component.css']
+  styleUrls: ['./user_page.component.css'],
+  standalone: true,
+  imports: [NgFor, NgIf, RouterLink]
 })
 export class UserPageComponent implements OnInit {
   name = "";

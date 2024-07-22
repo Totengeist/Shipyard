@@ -8,7 +8,7 @@ describe('PermissionsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PermissionsComponent ]
+      imports: [PermissionsComponent]
     })
       .compileComponents();
   });

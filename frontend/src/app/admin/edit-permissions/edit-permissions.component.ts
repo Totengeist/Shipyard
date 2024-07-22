@@ -9,7 +9,8 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-edit-permissions',
   templateUrl: './edit-permissions.component.html',
-  styleUrls: ['./edit-permissions.component.css']
+  styleUrls: ['./edit-permissions.component.css'],
+  standalone: true
 })
 export class AdminEditPermissionsComponent implements OnInit {
   slug = '';

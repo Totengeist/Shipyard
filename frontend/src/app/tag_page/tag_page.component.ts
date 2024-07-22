@@ -1,15 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { TokenStorageService } from '../_services/token-storage.service';
 import { UserService } from '../_services/user.service';
 import { environment } from '../../environments/environment';
+import { NgFor, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-tag-page',
   templateUrl: './tag_page.component.html',
-  styleUrls: ['./tag_page.component.css']
+  styleUrls: ['./tag_page.component.css'],
+  standalone: true,
+  imports: [NgFor, NgIf, RouterLink]
 })
 export class TagPageComponent implements OnInit {
   tag: { slug: string, label: string, description: string } = { slug: "", label: "", description: "" };

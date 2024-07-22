@@ -3,11 +3,15 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { TokenStorageService } from '../../_services/token-storage.service';
 import { environment } from '../../../environments/environment';
+import { RouterLink } from '@angular/router';
+import { NgFor } from '@angular/common';
 
 @Component({
   selector: 'app-permissions',
   templateUrl: './permissions.component.html',
-  styleUrls: ['./permissions.component.css']
+  styleUrls: ['./permissions.component.css'],
+  standalone: true,
+  imports: [NgFor, RouterLink]
 })
 export class AdminPermissionsComponent implements OnInit {
   permissions: any[] = [];

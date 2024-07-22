@@ -1,14 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { TokenStorageService } from '../_services/token-storage.service';
 import { environment } from '../../environments/environment';
+import { NgFor, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-item-list',
   templateUrl: './item_list.component.html',
-  styleUrls: ['./item_list.component.css']
+  styleUrls: ['./item_list.component.css'],
+  standalone: true,
+  imports: [NgFor, RouterLink, NgIf]
 })
 export class ItemListComponent implements OnInit {
   itemType = '';

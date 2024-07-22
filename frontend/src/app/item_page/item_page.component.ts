@@ -1,15 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { TokenStorageService } from '../_services/token-storage.service';
 import { UserService } from '../_services/user.service';
 import { environment } from '../../environments/environment';
+import { MarkdownComponent } from 'ngx-markdown';
+import { NgIf, NgFor, NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-item-page',
   templateUrl: './item_page.component.html',
-  styleUrls: ['./item_page.component.css']
+  styleUrls: ['./item_page.component.css'],
+  standalone: true,
+  imports: [RouterLink, NgIf, MarkdownComponent, NgFor, NgClass]
 })
 export class ItemPageComponent implements OnInit {
   currentUser: User = {ref: null, name: null, email: null};

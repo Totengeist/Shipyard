@@ -1,10 +1,14 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../_services/auth.service';
+import { FormsModule } from '@angular/forms';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css']
+  styleUrls: ['./register.component.css'],
+  standalone: true,
+  imports: [NgIf, FormsModule]
 })
 export class RegisterComponent {
   form: RegisterFormData = {

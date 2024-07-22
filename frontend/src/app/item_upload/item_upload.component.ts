@@ -1,15 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { environment } from '../../environments/environment';
 import Uppy from '@uppy/core';
 import Form from '@uppy/form';
 import Dashboard from '@uppy/dashboard';
 import XHR from '@uppy/xhr-upload';
+import { NgIf } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-item-upload',
   templateUrl: './item_upload.component.html',
-  styleUrls: ['./item_upload.component.css']
+  styleUrls: ['./item_upload.component.css'],
+  standalone: true,
+  imports: [FormsModule, NgIf, RouterLink]
 })
 export class ItemUploadComponent implements OnInit {
   supportedTypes: any = {ship: ["ship file", [".ship"]], save: ["save file", [".space"]], modification: ["mod archive", [".zip"]]}; // eslint-disable-line @typescript-eslint/no-explicit-any
