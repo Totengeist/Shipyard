@@ -31,15 +31,11 @@ export class ItemUploadComponent implements OnInit {
     }
     if( this.route.snapshot.paramMap.get('itemType') !== null ) {
       const typeCheck = this.route.snapshot.paramMap.get('itemType') ?? "";
-      console.log(typeCheck);
-      console.log(availableTypes);
       if (typeCheck in this.supportedTypes) {
         this.itemType = typeCheck;
         selectedTypes = (this.supportedTypes as any)[typeCheck][1];
       }
     }
-    console.log(this.supportedTypes.ship);
-    console.log(selectedTypes);
 
     this.uppy = new Uppy({
       restrictions: {
@@ -68,7 +64,6 @@ export class ItemUploadComponent implements OnInit {
         if( this.parent != "" ) {
           endpoint += "/"+this.parent+"/upgrade";
         }
-        console.log(endpoint);
         this.uppy.getPlugin('XHRUpload').setOptions({ endpoint });
       })
       .on('file-removed', () => {

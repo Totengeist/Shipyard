@@ -42,7 +42,9 @@ export class ItemPageComponent implements OnInit {
             this.parent = data.parent;
           }
           this.children = data.children;
-          this.user = data.user;
+          if( data.user !== null ) {
+            this.user = data.user;
+          }
           this.tags = data.tags;
           if (data.primary_screenshot.length > 0) {
             this.activeShot = data.primary_screenshot[0];

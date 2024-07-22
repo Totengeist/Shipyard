@@ -10,7 +10,7 @@
       </li>
     </ul>
 
-    <ul class="navbar-nav ml-auto" *ngIf="!user.isLoggedIn()">
+    <ul class="navbar-nav flex-row flex-wrap ms-md-auto" *ngIf="!user.isLoggedIn()">
       <li class="nav-item">
         <a href="/register" class="nav-link" routerLink="register">Sign Up</a>
       </li>
@@ -19,7 +19,7 @@
       </li>
     </ul>
 
-    <ul class="navbar-nav ml-auto" *ngIf="user.isLoggedIn()">
+    <ul class="navbar-nav flex-row flex-wrap ms-md-auto" *ngIf="user.isLoggedIn()">
       <li class="nav-item">
         <a href="/profile" class="nav-link" routerLink="profile">{{ user.username }}</a>
       </li>

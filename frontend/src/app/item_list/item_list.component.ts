@@ -47,7 +47,7 @@ export class ItemListComponent implements OnInit {
             this.items.push({
               title: element.title,
               ref: element.ref,
-              description: (element.description ?? ''),
+              description: (element.description.substring(0, 150) ?? ''),
               username: (element.user?.name ?? '' ),
               userref: (element.user?.ref ?? ''),
               screenshot: screen
