@@ -1,6 +1,7 @@
 name: pedants
 
 on:
+  workflow_dispatch: null
   push:
     paths:
       - '**.php'
