@@ -201,11 +201,11 @@ class RegisterController extends Controller {
     public function show(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = User::query()->where([['ref', $args['ref']]])->with(['ships', 'saves', 'modifications']);
-        $tag = $query->first();
-        if ($tag == null) {
+        $user = $query->first();
+        if ($user == null) {
             return $this->not_found_response('User');
         }
-        $payload = (string) json_encode($tag);
+        $payload = (string) json_encode($user);
 
         $response->getBody()->write($payload);
 
@@ -268,6 +268,9 @@ class RegisterController extends Controller {
             return $perm_check;
         }
         $data = (array) $request->getParsedBody();
+        if (isset($data['email']) && ($data['email'] == $user->email)) {
+            unset($data['email']);
+        }
 
         $subdata = array_intersect_key($data, array_flip(['name', 'email', 'password', 'password_confirmation']));
         /** @var string[] $errors */
@@ -302,7 +305,7 @@ class RegisterController extends Controller {
             Auth::login($user);
         }
 
-        $payload = (string) json_encode(['user' => $user]);
+        $payload = (string) json_encode($user);
 
         $response->getBody()->write($payload);
 

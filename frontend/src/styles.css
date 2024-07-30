@@ -182,7 +182,7 @@ div.result-controls, p.download-button {
 }
 
 #upload-container {
-	width: min-content;
+	width: 770px;
 	margin: auto;
 	padding: 10px;
 }

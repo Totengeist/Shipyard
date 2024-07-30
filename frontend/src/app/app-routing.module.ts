@@ -5,6 +5,7 @@ import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 import { ProfileComponent } from './profile/profile.component';
+import { EditProfileComponent } from './edit_profile/edit_profile.component';
 import { ReleasesComponent } from './releases/releases.component';
 import { ItemListComponent } from './item_list/item_list.component';
 import { ItemPageComponent } from './item_page/item_page.component';
@@ -22,6 +23,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'profile', component: ProfileComponent },
+  { path: 'profile/edit', component: EditProfileComponent },
   { path: 'ships/:page', component: ItemListComponent, data: {item_type: 'ship'} },
   { path: 'ships', component: ItemListComponent, data: {item_type: 'ship'} },
   { path: 'saves/:page', component: ItemListComponent, data: {item_type: 'save'} },

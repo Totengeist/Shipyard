@@ -38,4 +38,20 @@ export class AuthService {
 
     return this.http.post(environment.apiUrl + 'register', body.toString(), httpOptions);
   }
+
+  edit(ref: string, name: string|null, email: string|null, password: string|null, passwordConfirmation: string|null): Observable<any> {
+    const body = new URLSearchParams();
+    if( name !== null ) {
+      body.set('name', name);
+    }
+    if( email !== null ) {
+      body.set('email', email);
+    }
+    if( password !== null && password === passwordConfirmation ) {
+      body.set('password', password);
+      body.set('password_confirmation', passwordConfirmation);
+    }
+
+    return this.http.post(environment.apiUrl + 'user/' + ref, body.toString(), httpOptions);
+  }
 }

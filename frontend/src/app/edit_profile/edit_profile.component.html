@@ -1,0 +1,50 @@
+<div id="upload-container">
+    <h1>Edit Profile</h1>
+    <form 
+      name="form"
+      (ngSubmit)="f.form.valid && onSubmit()"
+      #f="ngForm"
+      novalidate
+    >
+        <div class="form-floating mb-3">
+            <input placeholder="{{ currentUser.name }}" value="{{ currentUser.name }}" 
+              type="text"
+              class="form-control"
+              name="name"
+              [(ngModel)]="currentUser.name"
+              required
+              minlength="3"
+              maxlength="20"
+              #name="ngModel" />
+            <label for="name">Name</label>
+        </div>
+        <div class="alert-danger" *ngIf="name.errors && f.submitted">
+          <div *ngIf="name.errors.required">Name is required</div>
+          <div *ngIf="name.errors.minlength">
+            Name must be at least 3 characters
+          </div>
+          <div *ngIf="name.errors.maxlength">
+            Name must be at most 20 characters
+          </div>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="email" name="email" placeholder="{{ currentUser.email }}" value="{{ currentUser.email }}" required [(ngModel)]="currentUser.email" />
+            <label for="name">Email</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="password" name="password" placeholder="Password" [(ngModel)]="currentUser.password" />
+            <label for="name">Password</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Password Confirmation" [(ngModel)]="currentUser.password_confirmation" />
+            <label for="name">Password Confirmation</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="submit" id="submit" value="Submit" class="btn btn-primary" (click)="onSubmit()" />
+        </div>
+    </form>
+</div>
+
+<ng-template #loggedOut>
+  Please login.
+</ng-template>

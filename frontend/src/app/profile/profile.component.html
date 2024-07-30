@@ -10,6 +10,7 @@
 <p *ngIf="currentUser.hasSteamLogin">
     <strong>Steam Login: Enabled!</strong>&nbsp;<a href="#" (click)="removeSteam()">Unlink</a>
 </p>
+<p class="download-button"><a href="/profile/edit" routerLink="/profile/edit" class="btn btn-primary">Edit Profile</a></p>
 
 <ng-template #loggedOut>
   Please login.
