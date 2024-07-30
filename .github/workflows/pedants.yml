@@ -52,7 +52,7 @@ jobs:
     - name: Install dependencies
       run: |
         composer install --prefer-dist --no-progress --no-suggest
-        composer require --dev friendsofphp/php-cs-fixer phpstan/phpstan:1.11.5
+        composer require --dev friendsofphp/php-cs-fixer phpstan/phpstan
 
     - name: Run phpstan and php-cs-fixer
       run: |
