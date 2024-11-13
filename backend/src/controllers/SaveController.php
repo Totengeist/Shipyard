@@ -21,7 +21,12 @@ class SaveController extends Controller {
      * @return Response
      */
     public function index(Request $request, Response $response) {
-        $payload = (string) json_encode($this->paginate(Save::with('user', 'primary_screenshot', 'tags')));
+        $user = Auth::user();
+        if ($user == null) {
+            $payload = (string) json_encode($this->paginate(Save::with('user', 'primary_screenshot', 'tags')->whereRaw('(flags & 1 <> 1 AND flags & 2 <> 2)')));
+        } else {
+            $payload = (string) json_encode($this->paginate(Save::with('user', 'primary_screenshot', 'tags')->whereRaw('(flags & 1 <> 1 AND flags & 2 <> 2)')->orWhere('user_id', $user->id)));
+        }
         $response->getBody()->write($payload);
 
         return $response
@@ -37,12 +42,13 @@ class SaveController extends Controller {
         $data = (array) $request->getParsedBody();
         $files = $request->getUploadedFiles();
 
-        /** @var User $auth_user */
-        $auth_user = Auth::user();
-        /** @var \Illuminate\Database\Eloquent\Builder $query */
-        $query = User::query()->where([['ref', $auth_user->ref]]);
         /** @var User $user */
-        $user = $query->first();
+        $user = Auth::user();
+        if ($user == null) {
+            /** @var \Illuminate\Database\Eloquent\Builder $query */
+            $query = User::query()->where([['ref', 'system']]);
+            $user = $query->first();
+        }
         $data['user_id'] = $user->id;
         unset($data['file_id']);
 
@@ -68,6 +74,27 @@ class SaveController extends Controller {
               ->withStatus(401)
               ->withHeader('Content-Type', 'application/json');
         }
+
+        $flags = 0;
+        if (isset($data['state'])) {
+            foreach ($data['state'] as $flag) {
+                switch ($flag) {
+                    case 'private':
+                        // Anonymized uploads cannot be marked private during creation. That's a mod-only action.
+                        if ($user->ref !== 'system') {
+                            $flags++;
+                        }
+                        break;
+                    case 'unlisted':
+                        $flags += 2;
+                        break;
+                    case 'locked':
+                        $flags += 4;
+                }
+            }
+            unset($data['state']);
+        }
+        $data['flags'] = $flags;
 
         $validator = Save::validator($data);
         $validator->validate();
@@ -109,6 +136,9 @@ class SaveController extends Controller {
         if ($save == null) {
             return $this->not_found_response('Save');
         }
+        if ($save->isPrivate() && (Auth::user() === null || $save->user_id !== Auth::user()->id)) {
+            return $this->not_found_response('Save');
+        }
         $payload = (string) json_encode($save);
 
         $response->getBody()->write($payload);
@@ -135,6 +165,9 @@ class SaveController extends Controller {
 
         if ($save == null || file_exists($save->file->filepath) === false) {
             return $this->not_found_response('file', 'file does not exist');
+        }
+        if ($save->isPrivate() && (Auth::user() === null || $save->user_id !== Auth::user()->id)) {
+            return $this->not_found_response('Save');
         }
 
         $response->getBody()->write((string) $save->file->file_contents());
@@ -184,6 +217,24 @@ class SaveController extends Controller {
         if (isset($data['description'])) {
             $save->description = $data['description'];
         }
+
+        $flags = 0;
+        if (isset($data['state'])) {
+            foreach ($data['state'] as $flag) {
+                switch ($flag) {
+                    case 'private':
+                        $flags++;
+                        break;
+                    case 'unlisted':
+                        $flags += 2;
+                        break;
+                    case 'locked':
+                        $flags += 4;
+                }
+            }
+            unset($data['state']);
+        }
+        $save->flags = $flags;
 
         $save->save();
 

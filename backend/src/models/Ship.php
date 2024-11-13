@@ -35,7 +35,7 @@ class Ship extends Model {
      * @var string[]
      */
     protected $fillable = [
-        'ref', 'user_id', 'parent_id', 'file_id', 'title', 'description', 'downloads',
+        'ref', 'user_id', 'parent_id', 'file_id', 'title', 'description', 'downloads', 'flags',
     ];
 
     /**
@@ -108,5 +108,25 @@ class Ship extends Model {
 
     public function delete() {
         return $this->file->delete() && parent::delete();
+    }
+
+    public function isUnlisted() {
+        return (bool) ($this->flags & 2 == 2);
+    }
+
+    public function isListed() {
+        return !$this->isUnlisted();
+    }
+
+    public function isPrivate() {
+        return (bool) ($this->flags & 1 == 1);
+    }
+
+    public function isPublic() {
+        return !$this->isPrivate();
+    }
+
+    public function isLocked() {
+        return (bool) ($this->flags & 4 == 4);
     }
 }

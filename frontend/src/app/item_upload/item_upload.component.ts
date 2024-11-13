@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { environment } from '../../environments/environment';
+import { UserService } from './../_services/user.service';
 import Uppy from '@uppy/core';
 import Form from '@uppy/form';
 import Dashboard from '@uppy/dashboard';
@@ -20,10 +21,12 @@ export class ItemUploadComponent implements OnInit {
   itemType = "";
   parent = "";
   uppy: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  user: UserService = {} as UserService;
 
-  constructor(private route: ActivatedRoute, private router: Router) { }
+  constructor(private userService: UserService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
+    this.user = this.userService;
     let availableTypes: string[] = [];
     for (const value of Object.values(this.supportedTypes)) {
       availableTypes = availableTypes.concat((value as any)[1]);

@@ -21,7 +21,12 @@ class ShipController extends Controller {
      * @return Response
      */
     public function index(Request $request, Response $response) {
-        $payload = (string) json_encode($this->paginate(Ship::with('user', 'primary_screenshot', 'tags')));
+        $user = Auth::user();
+        if ($user == null) {
+            $payload = (string) json_encode($this->paginate(Ship::with('user', 'primary_screenshot', 'tags')->whereRaw('(flags & 1 <> 1 AND flags & 2 <> 2)')));
+        } else {
+            $payload = (string) json_encode($this->paginate(Ship::with('user', 'primary_screenshot', 'tags')->whereRaw('(flags & 1 <> 1 AND flags & 2 <> 2)')->orWhere('user_id', $user->id)));
+        }
         $response->getBody()->write($payload);
 
         return $response
@@ -37,12 +42,13 @@ class ShipController extends Controller {
         $data = (array) $request->getParsedBody();
         $files = $request->getUploadedFiles();
 
-        /** @var User $auth_user */
-        $auth_user = Auth::user();
-        /** @var \Illuminate\Database\Eloquent\Builder $query */
-        $query = User::query()->where([['ref', $auth_user->ref]]);
         /** @var User $user */
-        $user = $query->first();
+        $user = Auth::user();
+        if ($user == null) {
+            /** @var \Illuminate\Database\Eloquent\Builder $query */
+            $query = User::query()->where([['ref', 'system']]);
+            $user = $query->first();
+        }
         $data['user_id'] = $user->id;
         unset($data['file_id']);
 
@@ -68,6 +74,27 @@ class ShipController extends Controller {
               ->withStatus(401)
               ->withHeader('Content-Type', 'application/json');
         }
+
+        $flags = 0;
+        if (isset($data['state'])) {
+            foreach ($data['state'] as $flag) {
+                switch ($flag) {
+                    case 'private':
+                        // Anonymized uploads cannot be marked private during creation. That's a mod-only action.
+                        if ($user->ref !== 'system') {
+                            $flags++;
+                        }
+                        break;
+                    case 'unlisted':
+                        $flags += 2;
+                        break;
+                    case 'locked':
+                        $flags += 4;
+                }
+            }
+            unset($data['state']);
+        }
+        $data['flags'] = $flags;
 
         $validator = Ship::validator($data);
         $validator->validate();
@@ -109,6 +136,9 @@ class ShipController extends Controller {
         if ($ship == null) {
             return $this->not_found_response('Ship');
         }
+        if ($ship->isPrivate() && (Auth::user() === null || $ship->user_id !== Auth::user()->id)) {
+            return $this->not_found_response('Ship');
+        }
         $payload = (string) json_encode($ship);
 
         $response->getBody()->write($payload);
@@ -135,6 +165,9 @@ class ShipController extends Controller {
 
         if ($ship == null || file_exists($ship->file->filepath) === false) {
             return $this->not_found_response('file', 'file does not exist');
+        }
+        if ($ship->isPrivate() && (Auth::user() === null || $ship->user_id !== Auth::user()->id)) {
+            return $this->not_found_response('Ship');
         }
 
         $response->getBody()->write((string) $ship->file->file_contents());
@@ -185,6 +218,24 @@ class ShipController extends Controller {
             $ship->description = $data['description'];
         }
 
+        $flags = 0;
+        if (isset($data['state'])) {
+            foreach ($data['state'] as $flag) {
+                switch ($flag) {
+                    case 'private':
+                        $flags++;
+                        break;
+                    case 'unlisted':
+                        $flags += 2;
+                        break;
+                    case 'locked':
+                        $flags += 4;
+                }
+            }
+            unset($data['state']);
+        }
+        $ship->flags = $flags;
+
         $ship->save();
 
         $payload = (string) json_encode($ship);
@@ -209,6 +260,10 @@ class ShipController extends Controller {
         $parent_ship = $query->first();
         if ($parent_ship == null) {
             return $this->not_found_response('Ship');
+        }
+        $abort = $this->isOrCan($parent_ship->user_id, 'edit-saves');
+        if ($abort !== true) {
+            return $abort;
         }
 
         $requestbody = (array) $request->getParsedBody();

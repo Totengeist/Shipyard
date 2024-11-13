@@ -66,7 +66,90 @@ class ModificationControllerTest extends APITestCase {
     /**
      * @return void
      */
+    public function testCanCreateUnlistedAndPrivateModifications() {
+        $user = Factory::create('Shipyard\Models\User');
+        $user->activate();
+        Auth::login($user);
+        $faker = \Faker\Factory::create();
+        $title = $faker->words(3, true);
+        $description = $faker->paragraph();
+
+        $this->post('api/v1/modification', ['title' => $title, 'description' => $description, 'state' => ['unlisted', 'private', 'locked']], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => self::createSampleUpload('Battle.space')])
+             ->assertJsonResponse([
+                 'title' => $title,
+                 'description' => $description,
+             ]);
+
+        $modification = Modification::query()->where([['title', $title], ['description', $description]])->first();
+        $this->assertEquals($modification->flags, 7);
+        $this->assertTrue($modification->isUnlisted());
+        $this->assertFalse($modification->isListed());
+        $this->assertTrue($modification->isPrivate());
+        $this->assertFalse($modification->isPublic());
+        $this->assertTrue($modification->isLocked());
+    }
+
+    /**
+     * @return void
+     */
+    public function testListedAndUnlistedModificationsShowAppropriately() {
+        $user = Factory::create('Shipyard\Models\User');
+        $modification1 = Factory::create('Shipyard\Models\Modification', ['user_id' => $user->id, 'flags' => 0]);
+        $modification2 = Factory::create('Shipyard\Models\Modification', ['user_id' => $user->id, 'flags' => 1]);
+        $modification3 = Factory::create('Shipyard\Models\Modification', ['user_id' => $user->id, 'flags' => 2]);
+        $modification4 = Factory::create('Shipyard\Models\Modification', ['user_id' => $user->id, 'flags' => 3]);
+
+        $this->get('api/v1/modification', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertJsonResponse([
+                 'ref' => $modification1->ref,
+             ])
+             ->assertJsonResponse([
+                 'ref' => $modification2->ref,
+                 'ref' => $modification3->ref,
+                 'ref' => $modification4->ref,
+             ], true);
+
+        Auth::login($user);
+
+        $this->get('api/v1/modification', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertJsonResponse([
+                 'ref' => $modification1->ref,
+                 'ref' => $modification2->ref,
+                 'ref' => $modification3->ref,
+                 'ref' => $modification4->ref,
+             ]);
+    }
+
+    /**
+     * @return void
+     */
     public function testCanEditOwnModifications() {
+        $user = Factory::create('Shipyard\Models\User');
+        $user2 = Factory::create('Shipyard\Models\User');
+        $user->activate();
+        Auth::login($user);
+        $faker = \Faker\Factory::create();
+        $modification = Factory::create('Shipyard\Models\Modification', ['user_id' => $user->id]);
+
+        $faker = \Faker\Factory::create();
+        $title = $faker->words(3, true);
+
+        $this->post('api/v1/modification/' . $modification->ref, ['title' => $title, 'user_ref' => $user2->ref], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertJsonResponse([
+                 'title' => $title,
+             ]);
+
+        $modification = json_decode(Modification::query()->where([['ref', $modification->ref]])->with('user')->first()->toJson(), true);
+        $this->assertJsonFragment([
+            'title' => $title,
+            'ref' => $user2->ref,
+        ], $modification);
+    }
+
+    /**
+     * @return void
+     */
+    public function testCanUnlistAndPrivateAndLockModifications() {
         $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
@@ -76,14 +159,14 @@ class ModificationControllerTest extends APITestCase {
         $faker = \Faker\Factory::create();
         $title = $faker->words(3, true);
 
-        $this->post('api/v1/modification/' . $modification->ref, ['title' => $title], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+        $this->post('api/v1/modification/' . $modification->ref, ['state' => ['unlisted', 'private', 'locked']], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-                 'title' => $title,
+                 'flags' => 7,
              ]);
 
         $modification = json_decode(Modification::query()->where([['ref', $modification->ref]])->first()->toJson(), true);
         $this->assertJsonFragment([
-            'title' => $title,
+            'flags' => 7,
         ], $modification);
     }
 
@@ -257,6 +340,34 @@ class ModificationControllerTest extends APITestCase {
                  'title' => $modification->title,
                  'downloads' => $modification->downloads+1,
              ]);
+    }
+
+    /**
+     * @return void
+     */
+    public function testCanDownloadUnlistedButNotPrivateModifications() {
+        $user = Factory::create('Shipyard\Models\User');
+        $modification1 = Factory::create('Shipyard\Models\Modification', ['user_id' => $user->id, 'flags' => 0]);
+        $modification2 = Factory::create('Shipyard\Models\Modification', ['user_id' => $user->id, 'flags' => 1]);
+        $modification3 = Factory::create('Shipyard\Models\Modification', ['user_id' => $user->id, 'flags' => 2]);
+        $modification4 = Factory::create('Shipyard\Models\Modification', ['user_id' => $user->id, 'flags' => 3]);
+
+        $this->get('api/v1/modification/' . $modification1->ref . '/download', ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
+        $this->assertEquals($this->response->getHeader('Content-Disposition')[0], 'attachment; filename="' . $modification1->file->filename . '.' . $modification1->file->extension . '"');
+        $this->get('api/v1/modification/' . $modification3->ref . '/download', ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
+        $this->assertEquals($this->response->getHeader('Content-Disposition')[0], 'attachment; filename="' . $modification3->file->filename . '.' . $modification3->file->extension . '"');
+
+        $this->get('api/v1/modification/' . $modification2->ref . '/download', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertJsonResponse(['errors' => ['Modification not found']]);
+        $this->get('api/v1/modification/' . $modification4->ref . '/download', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertJsonResponse(['errors' => ['Modification not found']]);
+
+        Auth::login($user);
+
+        $this->get('api/v1/modification/' . $modification2->ref . '/download', ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
+        $this->assertEquals($this->response->getHeader('Content-Disposition')[0], 'attachment; filename="' . $modification1->file->filename . '.' . $modification1->file->extension . '"');
+        $this->get('api/v1/modification/' . $modification4->ref . '/download', ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
+        $this->assertEquals($this->response->getHeader('Content-Disposition')[0], 'attachment; filename="' . $modification1->file->filename . '.' . $modification1->file->extension . '"');
     }
 
     /**

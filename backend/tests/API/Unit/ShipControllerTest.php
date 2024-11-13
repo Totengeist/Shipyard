@@ -66,7 +66,90 @@ class ShipControllerTest extends APITestCase {
     /**
      * @return void
      */
+    public function testCanCreateUnlistedAndPrivateShips() {
+        $user = Factory::create('Shipyard\Models\User');
+        $user->activate();
+        Auth::login($user);
+        $faker = \Faker\Factory::create();
+        $title = $faker->words(3, true);
+        $description = $faker->paragraph();
+
+        $this->post('api/v1/ship', ['title' => $title, 'description' => $description, 'state' => ['unlisted', 'private', 'locked']], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => self::createSampleUpload()])
+             ->assertJsonResponse([
+                 'title' => $title,
+                 'description' => $description,
+             ]);
+
+        $ship = Ship::query()->where([['title', $title], ['description', $description]])->first();
+        $this->assertEquals($ship->flags, 7);
+        $this->assertTrue($ship->isUnlisted());
+        $this->assertFalse($ship->isListed());
+        $this->assertTrue($ship->isPrivate());
+        $this->assertFalse($ship->isPublic());
+        $this->assertTrue($ship->isLocked());
+    }
+
+    /**
+     * @return void
+     */
+    public function testListedAndUnlistedShipsShowAppropriately() {
+        $user = Factory::create('Shipyard\Models\User');
+        $ship1 = Factory::create('Shipyard\Models\Ship', ['user_id' => $user->id, 'flags' => 0]);
+        $ship2 = Factory::create('Shipyard\Models\Ship', ['user_id' => $user->id, 'flags' => 1]);
+        $ship3 = Factory::create('Shipyard\Models\Ship', ['user_id' => $user->id, 'flags' => 2]);
+        $ship4 = Factory::create('Shipyard\Models\Ship', ['user_id' => $user->id, 'flags' => 3]);
+
+        $this->get('api/v1/ship', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertJsonResponse([
+                 'ref' => $ship1->ref,
+             ])
+             ->assertJsonResponse([
+                 'ref' => $ship2->ref,
+                 'ref' => $ship3->ref,
+                 'ref' => $ship4->ref,
+             ], true);
+
+        Auth::login($user);
+
+        $this->get('api/v1/ship', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertJsonResponse([
+                 'ref' => $ship1->ref,
+                 'ref' => $ship2->ref,
+                 'ref' => $ship3->ref,
+                 'ref' => $ship4->ref,
+             ]);
+    }
+
+    /**
+     * @return void
+     */
     public function testCanEditOwnShips() {
+        $user = Factory::create('Shipyard\Models\User');
+        $user2 = Factory::create('Shipyard\Models\User');
+        $user->activate();
+        Auth::login($user);
+        $faker = \Faker\Factory::create();
+        $ship = Factory::create('Shipyard\Models\Ship', ['user_id' => $user->id]);
+
+        $faker = \Faker\Factory::create();
+        $title = $faker->words(3, true);
+
+        $this->post('api/v1/ship/' . $ship->ref, ['title' => $title, 'user_ref' => $user2->ref], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertJsonResponse([
+                 'title' => $title,
+             ]);
+
+        $ship = json_decode(Ship::query()->where([['ref', $ship->ref]])->with('user')->first()->toJson(), true);
+        $this->assertJsonFragment([
+            'title' => $title,
+            'ref' => $user2->ref,
+        ], $ship);
+    }
+
+    /**
+     * @return void
+     */
+    public function testCanUnlistAndPrivateAndLockShips() {
         $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
@@ -76,14 +159,14 @@ class ShipControllerTest extends APITestCase {
         $faker = \Faker\Factory::create();
         $title = $faker->words(3, true);
 
-        $this->post('api/v1/ship/' . $ship->ref, ['title' => $title], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+        $this->post('api/v1/ship/' . $ship->ref, ['state' => ['unlisted', 'private', 'locked']], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-                 'title' => $title,
+                 'flags' => 7,
              ]);
 
         $ship = json_decode(Ship::query()->where([['ref', $ship->ref]])->first()->toJson(), true);
         $this->assertJsonFragment([
-            'title' => $title,
+            'flags' => 7,
         ], $ship);
     }
 
@@ -257,6 +340,34 @@ class ShipControllerTest extends APITestCase {
                  'title' => $ship->title,
                  'downloads' => $ship->downloads+1,
              ]);
+    }
+
+    /**
+     * @return void
+     */
+    public function testCanDownloadUnlistedButNotPrivateShips() {
+        $user = Factory::create('Shipyard\Models\User');
+        $ship1 = Factory::create('Shipyard\Models\Ship', ['user_id' => $user->id, 'flags' => 0]);
+        $ship2 = Factory::create('Shipyard\Models\Ship', ['user_id' => $user->id, 'flags' => 1]);
+        $ship3 = Factory::create('Shipyard\Models\Ship', ['user_id' => $user->id, 'flags' => 2]);
+        $ship4 = Factory::create('Shipyard\Models\Ship', ['user_id' => $user->id, 'flags' => 3]);
+
+        $this->get('api/v1/ship/' . $ship1->ref . '/download', ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
+        $this->assertEquals($this->response->getHeader('Content-Disposition')[0], 'attachment; filename="' . $ship1->file->filename . '.' . $ship1->file->extension . '"');
+        $this->get('api/v1/ship/' . $ship3->ref . '/download', ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
+        $this->assertEquals($this->response->getHeader('Content-Disposition')[0], 'attachment; filename="' . $ship3->file->filename . '.' . $ship3->file->extension . '"');
+
+        $this->get('api/v1/ship/' . $ship2->ref . '/download', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertJsonResponse(['errors' => ['Ship not found']]);
+        $this->get('api/v1/ship/' . $ship4->ref . '/download', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertJsonResponse(['errors' => ['Ship not found']]);
+
+        Auth::login($user);
+
+        $this->get('api/v1/ship/' . $ship2->ref . '/download', ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
+        $this->assertEquals($this->response->getHeader('Content-Disposition')[0], 'attachment; filename="' . $ship1->file->filename . '.' . $ship1->file->extension . '"');
+        $this->get('api/v1/ship/' . $ship4->ref . '/download', ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
+        $this->assertEquals($this->response->getHeader('Content-Disposition')[0], 'attachment; filename="' . $ship1->file->filename . '.' . $ship1->file->extension . '"');
     }
 
     /**

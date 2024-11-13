@@ -21,7 +21,12 @@ class ModificationController extends Controller {
      * @return Response
      */
     public function index(Request $request, Response $response) {
-        $payload = (string) json_encode($this->paginate(Modification::with('user', 'primary_screenshot', 'tags')));
+        $user = Auth::user();
+        if ($user == null) {
+            $payload = (string) json_encode($this->paginate(Modification::with('user', 'primary_screenshot', 'tags')->whereRaw('(flags & 1 <> 1 AND flags & 2 <> 2)')));
+        } else {
+            $payload = (string) json_encode($this->paginate(Modification::with('user', 'primary_screenshot', 'tags')->whereRaw('(flags & 1 <> 1 AND flags & 2 <> 2)')->orWhere('user_id', $user->id)));
+        }
         $response->getBody()->write($payload);
 
         return $response
@@ -37,12 +42,13 @@ class ModificationController extends Controller {
         $data = (array) $request->getParsedBody();
         $files = $request->getUploadedFiles();
 
-        /** @var User $auth_user */
-        $auth_user = Auth::user();
-        /** @var \Illuminate\Database\Eloquent\Builder $query */
-        $query = User::query()->where([['ref', $auth_user->ref]]);
         /** @var User $user */
-        $user = $query->first();
+        $user = Auth::user();
+        if ($user == null) {
+            /** @var \Illuminate\Database\Eloquent\Builder $query */
+            $query = User::query()->where([['ref', 'system']]);
+            $user = $query->first();
+        }
         $data['user_id'] = $user->id;
         unset($data['file_id']);
 
@@ -68,6 +74,27 @@ class ModificationController extends Controller {
               ->withStatus(401)
               ->withHeader('Content-Type', 'application/json');
         }
+
+        $flags = 0;
+        if (isset($data['state'])) {
+            foreach ($data['state'] as $flag) {
+                switch ($flag) {
+                    case 'private':
+                        // Anonymized uploads cannot be marked private during creation. That's a mod-only action.
+                        if ($user->ref !== 'system') {
+                            $flags++;
+                        }
+                        break;
+                    case 'unlisted':
+                        $flags += 2;
+                        break;
+                    case 'locked':
+                        $flags += 4;
+                }
+            }
+            unset($data['state']);
+        }
+        $data['flags'] = $flags;
 
         $validator = Modification::validator($data);
         $validator->validate();
@@ -109,6 +136,9 @@ class ModificationController extends Controller {
         if ($modification == null) {
             return $this->not_found_response('Modification');
         }
+        if ($modification->isPrivate() && (Auth::user() === null || $modification->user_id !== Auth::user()->id)) {
+            return $this->not_found_response('Modification');
+        }
         $payload = (string) json_encode($modification);
 
         $response->getBody()->write($payload);
@@ -135,6 +165,9 @@ class ModificationController extends Controller {
 
         if ($modification == null || file_exists($modification->file->filepath) === false) {
             return $this->not_found_response('file', 'file does not exist');
+        }
+        if ($modification->isPrivate() && (Auth::user() === null || $modification->user_id !== Auth::user()->id)) {
+            return $this->not_found_response('Modification');
         }
 
         $response->getBody()->write((string) $modification->file->file_contents());
@@ -184,6 +217,24 @@ class ModificationController extends Controller {
         if (isset($data['description'])) {
             $modification->description = $data['description'];
         }
+
+        $flags = 0;
+        if (isset($data['state'])) {
+            foreach ($data['state'] as $flag) {
+                switch ($flag) {
+                    case 'private':
+                        $flags++;
+                        break;
+                    case 'unlisted':
+                        $flags += 2;
+                        break;
+                    case 'locked':
+                        $flags += 4;
+                }
+            }
+            unset($data['state']);
+        }
+        $modification->flags = $flags;
 
         $modification->save();
 

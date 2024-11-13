@@ -66,7 +66,90 @@ class SaveControllerTest extends APITestCase {
     /**
      * @return void
      */
+    public function testCanCreateUnlistedAndPrivateAndLockedSaves() {
+        $user = Factory::create('Shipyard\Models\User');
+        $user->activate();
+        Auth::login($user);
+        $faker = \Faker\Factory::create();
+        $title = $faker->words(3, true);
+        $description = $faker->paragraph();
+
+        $this->post('api/v1/save', ['title' => $title, 'description' => $description, 'state' => ['unlisted', 'private', 'locked']], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => self::createSampleUpload('Battle.space')])
+             ->assertJsonResponse([
+                 'title' => $title,
+                 'description' => $description,
+             ]);
+
+        $save = Save::query()->where([['title', $title], ['description', $description]])->first();
+        $this->assertEquals($save->flags, 7);
+        $this->assertTrue($save->isUnlisted());
+        $this->assertFalse($save->isListed());
+        $this->assertTrue($save->isPrivate());
+        $this->assertFalse($save->isPublic());
+        $this->assertTrue($save->isLocked());
+    }
+
+    /**
+     * @return void
+     */
+    public function testListedAndUnlistedSavesShowAppropriately() {
+        $user = Factory::create('Shipyard\Models\User');
+        $save1 = Factory::create('Shipyard\Models\Save', ['user_id' => $user->id, 'flags' => 0]);
+        $save2 = Factory::create('Shipyard\Models\Save', ['user_id' => $user->id, 'flags' => 1]);
+        $save3 = Factory::create('Shipyard\Models\Save', ['user_id' => $user->id, 'flags' => 2]);
+        $save4 = Factory::create('Shipyard\Models\Save', ['user_id' => $user->id, 'flags' => 3]);
+
+        $this->get('api/v1/save', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertJsonResponse([
+                 'ref' => $save1->ref,
+             ])
+             ->assertJsonResponse([
+                 'ref' => $save2->ref,
+                 'ref' => $save3->ref,
+                 'ref' => $save4->ref,
+             ], true);
+
+        Auth::login($user);
+
+        $this->get('api/v1/save', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertJsonResponse([
+                 'ref' => $save1->ref,
+                 'ref' => $save2->ref,
+                 'ref' => $save3->ref,
+                 'ref' => $save4->ref,
+             ]);
+    }
+
+    /**
+     * @return void
+     */
     public function testCanEditOwnSaves() {
+        $user = Factory::create('Shipyard\Models\User');
+        $user2 = Factory::create('Shipyard\Models\User');
+        $user->activate();
+        Auth::login($user);
+        $faker = \Faker\Factory::create();
+        $save = Factory::create('Shipyard\Models\Save', ['user_id' => $user->id]);
+
+        $faker = \Faker\Factory::create();
+        $title = $faker->words(3, true);
+
+        $this->post('api/v1/save/' . $save->ref, ['title' => $title, 'user_ref' => $user2->ref], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertJsonResponse([
+                 'title' => $title,
+             ]);
+
+        $save = json_decode(Save::query()->where([['ref', $save->ref]])->with('user')->first()->toJson(), true);
+        $this->assertJsonFragment([
+            'title' => $title,
+            'ref' => $user2->ref,
+        ], $save);
+    }
+
+    /**
+     * @return void
+     */
+    public function testCanUnlistAndPrivateAndLockSaves() {
         $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
@@ -76,14 +159,14 @@ class SaveControllerTest extends APITestCase {
         $faker = \Faker\Factory::create();
         $title = $faker->words(3, true);
 
-        $this->post('api/v1/save/' . $save->ref, ['title' => $title], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+        $this->post('api/v1/save/' . $save->ref, ['state' => ['unlisted', 'private', 'locked']], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-                 'title' => $title,
+                 'flags' => 7,
              ]);
 
         $save = json_decode(Save::query()->where([['ref', $save->ref]])->first()->toJson(), true);
         $this->assertJsonFragment([
-            'title' => $title,
+            'flags' => 7,
         ], $save);
     }
 
@@ -257,6 +340,34 @@ class SaveControllerTest extends APITestCase {
                  'title' => $save->title,
                  'downloads' => $save->downloads+1,
              ]);
+    }
+
+    /**
+     * @return void
+     */
+    public function testCanDownloadUnlistedButNotPrivateSaves() {
+        $user = Factory::create('Shipyard\Models\User');
+        $save1 = Factory::create('Shipyard\Models\Save', ['user_id' => $user->id, 'flags' => 0]);
+        $save2 = Factory::create('Shipyard\Models\Save', ['user_id' => $user->id, 'flags' => 1]);
+        $save3 = Factory::create('Shipyard\Models\Save', ['user_id' => $user->id, 'flags' => 2]);
+        $save4 = Factory::create('Shipyard\Models\Save', ['user_id' => $user->id, 'flags' => 3]);
+
+        $this->get('api/v1/save/' . $save1->ref . '/download', ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
+        $this->assertEquals($this->response->getHeader('Content-Disposition')[0], 'attachment; filename="' . $save1->file->filename . '.' . $save1->file->extension . '"');
+        $this->get('api/v1/save/' . $save3->ref . '/download', ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
+        $this->assertEquals($this->response->getHeader('Content-Disposition')[0], 'attachment; filename="' . $save3->file->filename . '.' . $save3->file->extension . '"');
+
+        $this->get('api/v1/save/' . $save2->ref . '/download', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertJsonResponse(['errors' => ['Save not found']]);
+        $this->get('api/v1/save/' . $save4->ref . '/download', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertJsonResponse(['errors' => ['Save not found']]);
+
+        Auth::login($user);
+
+        $this->get('api/v1/save/' . $save2->ref . '/download', ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
+        $this->assertEquals($this->response->getHeader('Content-Disposition')[0], 'attachment; filename="' . $save1->file->filename . '.' . $save1->file->extension . '"');
+        $this->get('api/v1/save/' . $save4->ref . '/download', ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
+        $this->assertEquals($this->response->getHeader('Content-Disposition')[0], 'attachment; filename="' . $save1->file->filename . '.' . $save1->file->extension . '"');
     }
 
     /**

@@ -200,6 +200,13 @@ form#upload textarea {
 	width: 100%;
 }
 
+form .checkbox-label {
+    position: unset;
+    padding: 0 1.5em 0 .5em;
+    line-height: .8em;
+    margin: unset;
+}
+
 #uppy {
 	margin: auto;
 	width: min-content;

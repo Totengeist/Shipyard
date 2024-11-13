@@ -9,10 +9,15 @@
             <textarea type="text" class="form-control" id="description" name="description" placeholder="Why should someone download this item? What considerations are there?" required style="height: 160px;"></textarea>
             <label for="description">Describe the item <small>(Why should someone download it? What considerations are there?)</small></label><br>
         </div>
-        <div class="form-floating mb-3" style="text-align: right; margin-top: -35px;"><a href="https://www.markdownguide.org/cheat-sheet/" target="_blank">Markdown allowed</a></div>
+        <div class="form-floating mb-3" style="text-align: right; margin-top: -35px;">
+            <input type="checkbox" name="state[]" id="state_private" value="private" *ngIf="user.isLoggedIn()"> <label class="checkbox-label" for="state_private" *ngIf="user.isLoggedIn()">Private</label>
+            <input type="checkbox" name="state[]" id="state_unlisted" value="unlisted"> <label class="checkbox-label" for="state_unlisted"> Unlisted</label>
+            <a href="https://www.markdownguide.org/cheat-sheet/" target="_blank">Markdown allowed</a>
+        </div>
     </form>
-    <p class="alert alert-warning" *ngIf="parent !== ''">You're uploading a revision to an existing item. If this was unintended, please use the upload form <a href="/new" routerLink="new">here</a>.</p>
-    <p class="alert alert-primary" *ngIf="itemType !== ''">It looks like you're uploading a {{ supportedTypes[itemType][0] }}. If this isn't right, please <a href="/support" routerLink="support">contact us</a>.</p>
+    <p class="alert alert-warning" *ngIf="!user.isLoggedIn()">You are not logged in. Uploading a file will upload it anonymously and you will not be able to make changes to it or reclaim it later. Please consider <a href="/register" routerLink="/register">signing up for an account</a> or <a href="/login" routerLink="/login">logging in</a>!</p>
+    <p class="alert alert-warning" *ngIf="parent !== ''">You're uploading a revision to an existing item. If this was unintended, please use the upload form <a href="/new" routerLink="/new">here</a>.</p>
+    <p class="alert alert-primary" *ngIf="itemType !== ''">It looks like you're uploading a {{ supportedTypes[itemType][0] }}. If this isn't right, please <a href="/about" routerLink="/about"  fragment="contact">contact us</a>.</p>
     <div id="uppy"></div>
 </div>
 
