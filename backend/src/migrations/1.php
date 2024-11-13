@@ -125,6 +125,7 @@ Capsule::schema()->create('ships', function ($table) {
     $table->bigInteger('parent_id')->unsigned()->nullable();
     $table->string('ref')->unique();
     $table->bigInteger('user_id')->unsigned()->nullable();
+    $table->integer('flags')->unsigned()->default(0);
     $table->string('title')->default(false);
     $table->text('description');
     $table->bigInteger('file_id');
@@ -137,6 +138,7 @@ Capsule::schema()->create('saves', function ($table) {
     $table->bigInteger('parent_id')->unsigned()->nullable();
     $table->string('ref')->unique();
     $table->bigInteger('user_id')->unsigned()->nullable();
+    $table->integer('flags')->unsigned()->default(0);
     $table->string('title')->default(false);
     $table->text('description');
     $table->bigInteger('file_id');
@@ -149,6 +151,7 @@ Capsule::schema()->create('modifications', function ($table) {
     $table->bigInteger('parent_id')->unsigned()->nullable();
     $table->string('ref')->unique();
     $table->bigInteger('user_id')->unsigned()->nullable();
+    $table->integer('flags')->unsigned()->default(0);
     $table->string('title')->default(false);
     $table->text('description');
     $table->bigInteger('file_id');
