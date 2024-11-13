@@ -36,6 +36,15 @@ header.billboard h1 {
 	cursor: pointer;
 }
 
+nav.navbar {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+footer.footer {
+	display: unset;
+}
+
 #login {
 	width: fit-content;
 	margin: auto;

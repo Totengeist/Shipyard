@@ -4,6 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
+import { AboutComponent } from './about/about.component';
 import { ProfileComponent } from './profile/profile.component';
 import { EditProfileComponent } from './edit_profile/edit_profile.component';
 import { ReleasesComponent } from './releases/releases.component';
@@ -46,6 +47,7 @@ const routes: Routes = [
   { path: 'user/:slug', component: UserPageComponent },
 
   { path: 'new', component: ItemUploadComponent },
+  { path: 'about', component: AboutComponent },
 
   { path: '', redirectTo: '/home', pathMatch: 'full' }
 ];
