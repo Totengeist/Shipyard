@@ -57,22 +57,10 @@ class ShipController extends Controller {
                 $upload = FileManager::moveUploadedFile($files['file']);
                 $data['file_id'] = $upload->id;
             } else {
-                $payload = (string) json_encode(['errors' => ['file' => 'Multiple file uploads are not allowed.']]);
-
-                $response->getBody()->write($payload);
-
-                return $response
-                  ->withStatus(401)
-                  ->withHeader('Content-Type', 'application/json');
+                return $this->invalid_input_response(['file' => 'Multiple file uploads are not allowed.']);
             }
         } else {
-            $payload = (string) json_encode(['errors' => ['file' => 'File is missing or incorrect.']]);
-
-            $response->getBody()->write($payload);
-
-            return $response
-              ->withStatus(401)
-              ->withHeader('Content-Type', 'application/json');
+            return $this->invalid_input_response(['file' => 'File is missing or incorrect.']);
         }
 
         $flags = 0;
@@ -105,13 +93,7 @@ class ShipController extends Controller {
         }
 
         if (count($errors)) {
-            $payload = (string) json_encode(['errors' => $errors]);
-
-            $response->getBody()->write($payload);
-
-            return $response
-              ->withStatus(401)
-              ->withHeader('Content-Type', 'application/json');
+            return $this->invalid_input_response($errors);
         }
         $ship = Ship::query()->create($data);
         $payload = (string) json_encode($ship);

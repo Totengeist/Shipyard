@@ -36,11 +36,7 @@ class LoginController extends Controller {
         $user = $query->first();
 
         if ($user == null || !password_verify($password, $user->password)) {
-            $response->getBody()->write((string) (string) json_encode(['message' => 'These credentials do not match our records.']));
-
-            return $response
-                ->withHeader('Content-Type', 'application/json')
-                ->withStatus(401, 'Unauthorized');
+            return $this->invalid_input_response('These credentials do not match our records.');
         }
 
         if (password_needs_rehash($data['password'], PASSWORD_BCRYPT)) {
@@ -51,11 +47,7 @@ class LoginController extends Controller {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = UserActivation::query()->where('email', $user->email);
         if (!$query->get()->isEmpty()) {
-            $response->getBody()->write((string) (string) json_encode(['message' => 'This account has not been activated. Please check your email.']));
-
-            return $response
-                ->withHeader('Content-Type', 'application/json')
-                ->withStatus(401, 'Unauthorized');
+            return $this->unauthorized_response('This account has not been activated. Please check your email.');
         }
 
         Auth::login($user);

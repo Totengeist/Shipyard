@@ -48,13 +48,7 @@ class PermissionController extends Controller {
         $errors = $validator->errors();
 
         if (count($errors)) {
-            $payload = (string) json_encode(['errors' => $errors]);
-
-            $response->getBody()->write($payload);
-
-            return $response
-              ->withStatus(401)
-              ->withHeader('Content-Type', 'application/json');
+            return $this->invalid_input_response($errors);
         }
         $payload = (string) json_encode(Permission::query()->create($data));
 

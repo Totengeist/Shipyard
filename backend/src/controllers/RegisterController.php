@@ -276,11 +276,7 @@ class RegisterController extends Controller {
         /** @var string[] $errors */
         $errors = $this->validator($subdata, true)->errors();
         if (count($errors)) {
-            $response->getBody()->write((string) json_encode(['errors' => $errors]));
-
-            return $response
-                ->withStatus(422)
-                ->withHeader('Content-Type', 'application/json');
+            $this->invalid_input_response($errors);
         }
 
         if ($user == null) {
