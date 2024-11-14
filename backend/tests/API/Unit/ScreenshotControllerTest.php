@@ -270,6 +270,24 @@ class ScreenshotControllerTest extends APITestCase {
     /**
      * @return void
      */
+    public function testCanDownloadScreenshots() {
+        $screenshot = Factory::create('Shipyard\Models\Screenshot');
+
+        $this->get('api/v1/screenshot/' . $screenshot->ref . '/download', ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
+
+        $this->assertEquals((string) $this->response->getBody(), $screenshot->file->file_contents());
+        $this->assertEquals($this->response->getHeader('Content-Disposition')[0], 'attachment; filename="' . $screenshot->file->filename . '.' . $screenshot->file->extension . '"');
+
+        $this->get('api/v1/screenshot/' . $screenshot->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertJsonResponse([
+                 'ref' => $screenshot->ref,
+                 'description' => $screenshot->description,
+             ]);
+    }
+
+    /**
+     * @return void
+     */
     public function testUserCannotDeleteScreenshots() {
         $screenshot = Factory::create('Shipyard\Models\Screenshot');
 
