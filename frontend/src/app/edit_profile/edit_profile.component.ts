@@ -21,6 +21,7 @@ export class EditProfileComponent implements OnInit {
     ref: '',
   };
   steamError = '';
+  discordError = '';
 
   constructor(private userService: UserService, private route: ActivatedRoute, private token: TokenStorageService) {  }
 

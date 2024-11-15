@@ -28,6 +28,9 @@ export class LoginComponent implements OnInit {
       if ( queryError === 'steam_not_linked' ) {
         this.user.errorMessage = 'This Steam account is not linked to a user.';
       }
+      if ( queryError === 'discord_not_linked' ) {
+        this.user.errorMessage = 'This Discord account is not linked to a user.';
+      }
     }
   }
 

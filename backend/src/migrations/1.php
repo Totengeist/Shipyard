@@ -51,6 +51,7 @@ Capsule::schema()->create('users', function ($table) {
     $table->string('password');
     $table->boolean('activated')->default(false);
     $table->bigInteger('steamid')->unsigned()->nullable();
+    $table->bigInteger('discordid')->unsigned()->nullable();
     $table->rememberToken();
     $table->timestamps();
 });

@@ -57,6 +57,10 @@ export class UserService {
     return this.http.post(environment.standardUrl + 'steam/remove', httpOptions);
   }
 
+  removeDiscord(): Observable<any> {
+    return this.http.post(environment.standardUrl + 'discord/remove', httpOptions);
+  }
+
   saveUserData(data: any): void {
     const roles: string[] = [];
     data.roles?.forEach((element: any) => {
@@ -74,7 +78,8 @@ export class UserService {
       email: data.email,
       roles,
       permissions,
-      hasSteamLogin: data.steam
+      hasSteamLogin: data.steam,
+      hasDiscordLogin: data.discord
     };
     this.tokenStorageService.saveUser(userData);
   }

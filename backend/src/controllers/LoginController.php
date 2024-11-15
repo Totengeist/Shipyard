@@ -55,6 +55,7 @@ class LoginController extends Controller {
         $data['session_id'] = Auth::session_id();
 
         $data['steam'] = (Auth::user() !== null) ? (bool) Auth::user()->steamid : false;
+        $data['discord'] = (Auth::user() !== null) ? (bool) Auth::user()->discordid : false;
 
         $response->getBody()->write((string) json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
 
@@ -73,6 +74,7 @@ class LoginController extends Controller {
         $data['session_id'] = Auth::session_id();
 
         $data['steam'] = (Auth::user() !== null) ? (bool) Auth::user()->steamid : false;
+        $data['discord'] = (Auth::user() !== null) ? (bool) Auth::user()->discordid : false;
 
         $response->getBody()->write((string) json_encode($data));
 

@@ -10,6 +10,7 @@ use Shipyard\Traits\HasRoles;
  * @property string   $email
  * @property string   $password
  * @property int|null $steamid
+ * @property int|null $discordid
  * @property bool     $activated
  */
 class User extends Model {
@@ -40,7 +41,7 @@ class User extends Model {
      * @var string[]
      */
     protected $hidden = [
-        'password', 'remember_token', 'activated', 'id', 'email', 'steamid', 'created_at', 'updated_at',
+        'password', 'remember_token', 'activated', 'id', 'email', 'steamid', 'discordid', 'created_at', 'updated_at',
     ];
 
     /**
