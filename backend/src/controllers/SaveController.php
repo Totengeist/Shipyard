@@ -24,10 +24,10 @@ class SaveController extends Controller {
         $user = Auth::user();
         if ($user == null) {
             /** @var \Illuminate\Database\Eloquent\Builder $content */
-            $content = Save::with('user', 'primary_screenshot', 'tags')->whereRaw('(flags & 1 <> 1 AND flags & 2 <> 2)');
+            $content = Save::with('user', 'primary_screenshot', 'tags')->whereRaw('(flags & 1 <> 1 AND flags & 2 <> 2)')->orderBy('updated_at', 'DESC');
         } else {
             /** @var \Illuminate\Database\Eloquent\Builder $content */
-            $content = Save::with('user', 'primary_screenshot', 'tags')->whereRaw('(flags & 1 <> 1 AND flags & 2 <> 2)')->orWhere('user_id', $user->id);
+            $content = Save::with('user', 'primary_screenshot', 'tags')->whereRaw('(flags & 1 <> 1 AND flags & 2 <> 2)')->orWhere('user_id', $user->id)->orderBy('updated_at', 'DESC');
         }
         $payload = (string) json_encode($this->paginate($content));
         $response->getBody()->write($payload);
