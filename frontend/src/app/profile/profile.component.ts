@@ -15,9 +15,11 @@ export class ProfileComponent implements OnInit {
   currentUser: User = {
     name: null,
     email: null,
-    hasSteamLogin: false
+    hasSteamLogin: false,
+    hasDiscordLogin: false
   };
   steamError = '';
+  discordError = '';
 
   constructor(private userService: UserService, private route: ActivatedRoute, private token: TokenStorageService) { }
 
@@ -27,6 +29,9 @@ export class ProfileComponent implements OnInit {
     if ( queryError !== null ) {
       if ( queryError === 'steam_already_linked' ) {
         this.steamError = 'This Steam ID is already associated with an existing user.';
+      }
+      if ( queryError === 'discord_already_linked' ) {
+        this.discordError = 'This Discord ID is already associated with an existing user.';
       }
     }
   }
@@ -41,10 +46,22 @@ export class ProfileComponent implements OnInit {
       }
     );
   }
+
+  removeDiscord(): void {
+    this.userService.removeDiscord().subscribe(
+      () => {
+        location.reload();
+      },
+      () => {
+        location.reload();
+      }
+    );
+  }
 }
 
 interface User {
     name: string|null,
     email: string|null,
     hasSteamLogin: boolean
+    hasDiscordLogin: boolean
 }
