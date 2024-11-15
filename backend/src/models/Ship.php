@@ -13,6 +13,7 @@ use Valitron\Validator;
  * @property File   $file
  * @property string $title
  * @property string $description
+ * @property int    $flags
  * @property int    $user_id
  * @property int    $parent_id
  * @property int    $downloads
@@ -106,26 +107,56 @@ class Ship extends Model {
         return $v;
     }
 
+    /**
+     * Delete the resource and the associated file.
+     *
+     * @return bool
+     */
     public function delete() {
         return $this->file->delete() && parent::delete();
     }
 
+    /**
+     * Whether the file is unlisted.
+     *
+     * @return bool
+     */
     public function isUnlisted() {
         return (bool) ($this->flags & 2 == 2);
     }
 
+    /**
+     * Whether the file is listed.
+     *
+     * @return bool
+     */
     public function isListed() {
         return !$this->isUnlisted();
     }
 
+    /**
+     * Whether the file is private.
+     *
+     * @return bool
+     */
     public function isPrivate() {
         return (bool) ($this->flags & 1 == 1);
     }
 
+    /**
+     * Whether the file is public.
+     *
+     * @return bool
+     */
     public function isPublic() {
         return !$this->isPrivate();
     }
 
+    /**
+     * Whether the file has editing locked.
+     *
+     * @return bool
+     */
     public function isLocked() {
         return (bool) ($this->flags & 4 == 4);
     }

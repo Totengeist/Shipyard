@@ -33,7 +33,7 @@ class SaveControllerTest extends APITestCase {
         $title = $faker->words(3, true);
 
         $this->post('api/v1/save', ['title' => $title, 'file_path' => 'tests/test.sav'], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
-             ->assertStatus(401);
+             ->assertStatus(422);
 
         $save = Save::query()->where([['user_id', $user->id], ['title', $title]])->first();
         $this->assertNull($save);
@@ -80,6 +80,7 @@ class SaveControllerTest extends APITestCase {
                  'description' => $description,
              ]);
 
+        /** @var Save $save */
         $save = Save::query()->where([['title', $title], ['description', $description]])->first();
         $this->assertEquals($save->flags, 7);
         $this->assertTrue($save->isUnlisted());
@@ -105,7 +106,11 @@ class SaveControllerTest extends APITestCase {
              ])
              ->assertJsonResponse([
                  'ref' => $save2->ref,
+             ], true)
+             ->assertJsonResponse([
                  'ref' => $save3->ref,
+             ], true)
+             ->assertJsonResponse([
                  'ref' => $save4->ref,
              ], true);
 
@@ -114,8 +119,14 @@ class SaveControllerTest extends APITestCase {
         $this->get('api/v1/save', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
                  'ref' => $save1->ref,
+             ])
+             ->assertJsonResponse([
                  'ref' => $save2->ref,
+             ])
+             ->assertJsonResponse([
                  'ref' => $save3->ref,
+             ])
+             ->assertJsonResponse([
                  'ref' => $save4->ref,
              ]);
     }

@@ -176,7 +176,7 @@ class UserControllerTest extends APITestCase {
             'password' => 'notsecret',
         ], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
-                 'message' => 'These credentials do not match our records.',
+                 'errors' => ['These credentials do not match our records.'],
              ]);
 
         $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
@@ -197,7 +197,7 @@ class UserControllerTest extends APITestCase {
             'password' => 'secret',
         ], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
         ->assertJsonresponse([
-            'message' => 'This account has not been activated. Please check your email.',
+            'errors' => ['This account has not been activated. Please check your email.'],
         ]);
 
         $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])

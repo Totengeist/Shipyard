@@ -4,7 +4,7 @@ use Shipyard\Models\Release;
 use Shipyard\Models\User;
 
 echo "Inserting administrator user.<br>\n";
-/** @var User $admin */
+/** @var User $system */
 $system = User::query()->create([
     'name'       => 'system',
     'email'      => 'system',
@@ -14,6 +14,7 @@ $system = User::query()->create([
 $system->ref = 'system';
 $system->save();
 
+/** @var User $admin */
 $admin = User::query()->create([
     'name'       => 'administrator',
     'email'      => 'admin@tls-wiki.com',

@@ -56,7 +56,10 @@ class ScreenshotController extends Controller {
         if (count($files) == 0) {
             $validator = Screenshot::validator([]);
             $validator->validate();
+            /** @var string[] $errors */
             $errors = $validator->errors();
+            $errors = array_merge_recursive($errors, ['errors' => ['files' => 'There was no file included.']]);
+
             return $this->invalid_input_response($errors);
         }
 

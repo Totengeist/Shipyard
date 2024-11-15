@@ -23,10 +23,13 @@ class ModificationController extends Controller {
     public function index(Request $request, Response $response) {
         $user = Auth::user();
         if ($user == null) {
-            $payload = (string) json_encode($this->paginate(Modification::with('user', 'primary_screenshot', 'tags')->whereRaw('(flags & 1 <> 1 AND flags & 2 <> 2)')));
+            /** @var \Illuminate\Database\Eloquent\Builder $content */
+            $content = Modification::with('user', 'primary_screenshot', 'tags')->whereRaw('(flags & 1 <> 1 AND flags & 2 <> 2)');
         } else {
-            $payload = (string) json_encode($this->paginate(Modification::with('user', 'primary_screenshot', 'tags')->whereRaw('(flags & 1 <> 1 AND flags & 2 <> 2)')->orWhere('user_id', $user->id)));
+            /** @var \Illuminate\Database\Eloquent\Builder $content */
+            $content = Modification::with('user', 'primary_screenshot', 'tags')->whereRaw('(flags & 1 <> 1 AND flags & 2 <> 2)')->orWhere('user_id', $user->id);
         }
+        $payload = (string) json_encode($this->paginate($content));
         $response->getBody()->write($payload);
 
         return $response
@@ -47,6 +50,7 @@ class ModificationController extends Controller {
         if ($user == null) {
             /** @var \Illuminate\Database\Eloquent\Builder $query */
             $query = User::query()->where([['ref', 'system']]);
+            /** @var User $user */
             $user = $query->first();
         }
         $data['user_id'] = $user->id;
@@ -60,7 +64,7 @@ class ModificationController extends Controller {
                 return $this->invalid_input_response(['file' => 'Multiple file uploads are not allowed.']);
             }
         } else {
-                return $this->invalid_input_response(['file' => 'File is missing or incorrect.']); 
+            return $this->invalid_input_response(['file' => 'File is missing or incorrect.']);
         }
 
         $flags = 0;
@@ -114,6 +118,7 @@ class ModificationController extends Controller {
     public function show(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Modification::query()->where([['ref', $args['ref']]])->with(['user', 'primary_screenshot', 'tags']);
+        /** @var Modification $modification */
         $modification = $query->first();
         if ($modification == null) {
             return $this->not_found_response('Modification');

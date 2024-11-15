@@ -3,8 +3,8 @@
 namespace Shipyard\Controllers;
 
 use Psr\Container\ContainerInterface;
-use Slim\Psr7\Factory\ResponseFactory;
 use Shipyard\Log;
+use Slim\Psr7\Factory\ResponseFactory;
 
 class Controller {
     /** @var ContainerInterface */
@@ -84,7 +84,8 @@ class Controller {
         $response->getBody()->write($body);
         $response->withStatus($code, $status);
 
-        Log::error("$status ($code): ".$body."\n".(new \Exception)->getTraceAsString());
+        Log::error("$status ($code): " . $body . "\n" . (new \Exception())->getTraceAsString());
+
         return $response;
     }
 

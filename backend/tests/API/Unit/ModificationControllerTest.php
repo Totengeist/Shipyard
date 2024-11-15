@@ -33,7 +33,7 @@ class ModificationControllerTest extends APITestCase {
         $title = $faker->words(3, true);
 
         $this->post('api/v1/modification', ['title' => $title, 'file_path' => 'tests/test.sav'], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
-             ->assertStatus(401);
+             ->assertStatus(422);
 
         $modification = Modification::query()->where([['user_id', $user->id], ['title', $title]])->first();
         $this->assertNull($modification);
@@ -80,6 +80,7 @@ class ModificationControllerTest extends APITestCase {
                  'description' => $description,
              ]);
 
+        /** @var Modification $modification */
         $modification = Modification::query()->where([['title', $title], ['description', $description]])->first();
         $this->assertEquals($modification->flags, 7);
         $this->assertTrue($modification->isUnlisted());
@@ -105,7 +106,11 @@ class ModificationControllerTest extends APITestCase {
              ])
              ->assertJsonResponse([
                  'ref' => $modification2->ref,
+             ], true)
+             ->assertJsonResponse([
                  'ref' => $modification3->ref,
+             ], true)
+             ->assertJsonResponse([
                  'ref' => $modification4->ref,
              ], true);
 
@@ -114,8 +119,14 @@ class ModificationControllerTest extends APITestCase {
         $this->get('api/v1/modification', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
                  'ref' => $modification1->ref,
+             ])
+             ->assertJsonResponse([
                  'ref' => $modification2->ref,
+             ])
+             ->assertJsonResponse([
                  'ref' => $modification3->ref,
+             ])
+             ->assertJsonResponse([
                  'ref' => $modification4->ref,
              ]);
     }

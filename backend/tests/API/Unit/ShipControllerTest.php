@@ -33,7 +33,7 @@ class ShipControllerTest extends APITestCase {
         $title = $faker->words(3, true);
 
         $this->post('api/v1/ship', ['title' => $title, 'file_path' => 'tests/assets/science-vessel.ship'], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
-             ->assertStatus(401);
+             ->assertStatus(422);
 
         $ship = Ship::query()->where([['user_id', $user->id], ['title', $title]])->first();
         $this->assertNull($ship);
@@ -80,6 +80,7 @@ class ShipControllerTest extends APITestCase {
                  'description' => $description,
              ]);
 
+        /** @var Ship $ship */
         $ship = Ship::query()->where([['title', $title], ['description', $description]])->first();
         $this->assertEquals($ship->flags, 7);
         $this->assertTrue($ship->isUnlisted());
@@ -105,7 +106,11 @@ class ShipControllerTest extends APITestCase {
              ])
              ->assertJsonResponse([
                  'ref' => $ship2->ref,
+             ], true)
+             ->assertJsonResponse([
                  'ref' => $ship3->ref,
+             ], true)
+             ->assertJsonResponse([
                  'ref' => $ship4->ref,
              ], true);
 
@@ -114,8 +119,14 @@ class ShipControllerTest extends APITestCase {
         $this->get('api/v1/ship', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
                  'ref' => $ship1->ref,
+             ])
+             ->assertJsonResponse([
                  'ref' => $ship2->ref,
+             ])
+             ->assertJsonResponse([
                  'ref' => $ship3->ref,
+             ])
+             ->assertJsonResponse([
                  'ref' => $ship4->ref,
              ]);
     }
