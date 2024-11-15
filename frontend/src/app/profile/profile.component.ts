@@ -1,15 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { TokenStorageService } from '../_services/token-storage.service';
 import { UserService } from '../_services/user.service';
-import { NgIf } from '@angular/common';
+import { environment } from '../../environments/environment';
+import { NgFor, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css'],
   standalone: true,
-  imports: [RouterLink, NgIf]
+  imports: [NgFor, NgIf, RouterLink]
 })
 export class ProfileComponent implements OnInit {
   currentUser: User = {
@@ -20,8 +23,10 @@ export class ProfileComponent implements OnInit {
   };
   steamError = '';
   discordError = '';
+  itemTypes: string[] = ['ship', 'save', 'modification'];
+  items: Record<string, any[]> = {};
 
-  constructor(private userService: UserService, private route: ActivatedRoute, private token: TokenStorageService) { }
+  constructor(private userService: UserService, private route: ActivatedRoute, private token: TokenStorageService, private http: HttpClient) { }
 
   ngOnInit(): void {
     this.currentUser = this.token.getUser();
@@ -34,6 +39,17 @@ export class ProfileComponent implements OnInit {
         this.discordError = 'This Discord ID is already associated with an existing user.';
       }
     }
+    this.getUser(this.token.getUser().ref).subscribe(
+      data => {
+        this.itemTypes.forEach((element: string) => {
+          this.items[element] = data[element+'s'];
+        });
+        console.log(this.items);
+      },
+      () => {
+        console.log('Error');
+      }
+    );
   }
 
   removeSteam(): void {
@@ -56,6 +72,14 @@ export class ProfileComponent implements OnInit {
         location.reload();
       }
     );
+  }
+
+  getUser(itemId: string): Observable<any> {
+    const httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', Accept: '*/*' })
+    };
+
+    return this.http.get(environment.apiUrl + 'user/' + itemId, httpOptions);
   }
 }
 

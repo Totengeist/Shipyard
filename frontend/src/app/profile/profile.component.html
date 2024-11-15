@@ -19,6 +19,17 @@
 </p>
 <p class="download-button"><a href="/profile/edit" routerLink="/profile/edit" class="btn btn-primary">Edit Profile</a></p>
 
+<div *ngFor="let type of itemTypes">
+<h3 *ngIf="type==='ship'">Ships</h3>
+<h3 *ngIf="type==='save'">Saves</h3>
+<h3 *ngIf="type==='modification'">Mods</h3>
+<ul>
+    <li *ngFor="let item of items[type]" title="{{ item.title }} by {{ item.username }}">
+        <a href="/{{ type }}/{{ item.ref }}" routerLink="/{{ type }}/{{ item.ref }}">{{ item.title }}</a>
+    </li>
+</ul>
+</div>
+
 <ng-template #loggedOut>
   Please login.
 </ng-template>
