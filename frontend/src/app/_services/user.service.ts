@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, interval, Subscription } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 import { TokenStorageService } from './token-storage.service';
@@ -19,6 +19,7 @@ export class UserService {
   errorMessage = '';
   showDashboard = false;
   username = '';
+  activeLogin: Subscription = new Subscription();
 
   constructor(
     private authService: AuthService,
@@ -33,6 +34,9 @@ export class UserService {
       this.roles = user.roles;
       this.showDashboard = (this.roles.length > 0);
       this.username = user.name;
+
+      this.activeLogin.unsubscribe();
+      this.activeLogin = interval(30000).subscribe(() => { this.refresh(); console.log("Session check"); });
     } else {
       this.roles = [];
       this.showDashboard = false;
@@ -45,6 +49,7 @@ export class UserService {
       () => {
         this.tokenStorageService.signOut();
         this.initializeUserInfo();
+        this.activeLogin.unsubscribe();
         this.router.navigate(['/home']);
       },
       err => {
@@ -92,6 +97,7 @@ export class UserService {
       },
       err => {
         if ( err.status >= 400 && err.status < 500  && this.isLoggedIn()) {
+          this.activeLogin.unsubscribe();
           this.tokenStorageService.signOut();
           this.initializeUserInfo();
           this.router.navigate(['/home']);
