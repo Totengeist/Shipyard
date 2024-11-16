@@ -248,10 +248,6 @@ class SaveController extends Controller {
         if ($parent_save == null) {
             return $this->not_found_response('Save');
         }
-        $abort = $this->isOrCan($parent_save->user_id, 'edit-saves');
-        if ($abort !== true) {
-            return $abort;
-        }
 
         $requestbody = (array) $request->getParsedBody();
         $requestbody['parent_id'] = $parent_save->id;

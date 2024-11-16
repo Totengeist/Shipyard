@@ -248,10 +248,6 @@ class ShipController extends Controller {
         if ($parent_ship == null) {
             return $this->not_found_response('Ship');
         }
-        $abort = $this->isOrCan($parent_ship->user_id, 'edit-saves');
-        if ($abort !== true) {
-            return $abort;
-        }
 
         $requestbody = (array) $request->getParsedBody();
         $requestbody['parent_id'] = $parent_ship->id;

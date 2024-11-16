@@ -248,10 +248,6 @@ class ModificationController extends Controller {
         if ($parent_mod == null) {
             return $this->not_found_response('Modification');
         }
-        $abort = $this->isOrCan($parent_mod->user_id, 'edit-modifications');
-        if ($abort !== true) {
-            return $abort;
-        }
 
         $requestbody = (array) $request->getParsedBody();
         $requestbody['parent_id'] = $parent_mod->id;
