@@ -157,9 +157,18 @@ class ShipController extends Controller {
             return $this->not_found_response('Ship');
         }
 
-        $response->getBody()->write((string) $ship->file->file_contents());
         $ship->downloads++;
         $ship->save();
+        if ($ship->file->compressed) {
+            if (($file = gzopen($ship->file->filepath, 'r')) === false || ($str = stream_get_contents($file)) === false) {
+                throw new \Exception('Unable to open file: ' . json_encode($ship));
+            }
+        } else {
+            if (($file = fopen($ship->file->filepath, 'r')) === false || ($str = stream_get_contents($file)) === false) {
+                throw new \Exception('Unable to open file: ' . json_encode($ship));
+            }
+        }
+        $response->getBody()->write($str);
 
         return $response
           ->withHeader('Content-Disposition', 'attachment; filename="' . $ship->file->filename . '.' . $ship->file->extension . '"')

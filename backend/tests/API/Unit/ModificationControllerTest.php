@@ -341,8 +341,11 @@ class ModificationControllerTest extends APITestCase {
 
         $this->get('api/v1/modification/' . $modification->ref . '/download', ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
 
+        $stream = gzopen($modification->file->filepath, 'r');
+
         $this->assertNotEquals((string) $this->response->getBody(), '');
-        $this->assertEquals((string) $this->response->getBody(), $modification->file->file_contents());
+        $this->assertNotFalse($stream);
+        $this->assertEquals((string) $this->response->getBody(), stream_get_contents($stream));
         $this->assertEquals($this->response->getHeader('Content-Disposition')[0], 'attachment; filename="' . $modification->file->filename . '.' . $modification->file->extension . '"');
 
         $this->get('api/v1/modification/' . $modification->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])

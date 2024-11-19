@@ -122,7 +122,7 @@ class Save extends Model {
      * @return bool
      */
     public function isUnlisted() {
-        return (bool) ($this->flags & 2 == 2);
+        return ($this->flags & 2) == 2;
     }
 
     /**
@@ -140,7 +140,7 @@ class Save extends Model {
      * @return bool
      */
     public function isPrivate() {
-        return (bool) ($this->flags & 1 == 1);
+        return ($this->flags & 1) == 1;
     }
 
     /**
@@ -158,6 +158,6 @@ class Save extends Model {
      * @return bool
      */
     public function isLocked() {
-        return (bool) ($this->flags & 4 == 4);
+        return ($this->flags & 4) == 4;
     }
 }

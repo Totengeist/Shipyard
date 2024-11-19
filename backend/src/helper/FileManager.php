@@ -47,14 +47,26 @@ class FileManager {
         }
 
         $uploadedFile->moveTo($fullpath);
+        $is_compressed = false;
+        $final_media_type = self::getMediaType($fullpath);
+        if (in_array($final_media_type, ['text/plain', 'application/tls-ship+introversion', 'application/tls-save+introversion'])) {
+            try {
+                self::compressFile($fullpath, $fullpath . '.gz');
+                $is_compressed = true;
+                unlink($fullpath);
+                rename($fullpath . '.gz', $fullpath);
+            } catch (\Exception $e) {
+                Log::get()->channel('files')->error('Failed to compress file: ' . $e->getMessage());
+            }
+        }
 
         /** @var File $file */
         $file = File::query()->create([
             'filename' => $original_filename,
-            'media_type' => self::getMediaType($fullpath),
+            'media_type' => $final_media_type,
             'extension' => $extension,
             'filepath' => $fullpath,
-            'compressed' => false
+            'compressed' => $is_compressed
         ]);
 
         Log::get()->channel('files')->info('Saved file.', $file->makeVisible('filepath')->attributesToArray());
@@ -98,7 +110,7 @@ class FileManager {
         $default_ftype = 'application/octet-stream';
         $finfo = new \finfo(FILEINFO_MIME);
         $determined_ftype = $finfo->file($filepath);
-        if (($determined_ftype !== false) && is_string($determined_ftype) && (strlen($determined_ftype)>0)) {
+        if (($determined_ftype !== false) && (strlen($determined_ftype)>0)) {
             return $determined_ftype;
         }
 
@@ -127,5 +139,77 @@ class FileManager {
         }
 
         return $base_type;
+    }
+
+    /**
+     * Compresses a file using GZip compression.
+     *
+     * @param string $inpath  the input filepath
+     * @param string $outpath the output filepath
+     *
+     * @return void
+     */
+    public static function compressFile($inpath, $outpath) {
+        // Open input file
+        $inFile = fopen($inpath, 'rb');
+        if ($inFile === false) {
+            throw new \Exception("Unable to open input file: $inpath");
+        }
+
+        // Open output file
+        $gzFile = gzopen($outpath, 'wb9');
+        if ($gzFile === false) {
+            fclose($inFile);
+            throw new \Exception("Unable to open output file: $outpath");
+        }
+
+        // Stream copy
+        $length = 512 * 1024; // 512 kB
+        while (!feof($inFile)) {
+            if (($str = fread($inFile, $length)) === false) {
+                throw new \Exception("Unable to read file: $outpath");
+            }
+            gzwrite($gzFile, $str);
+        }
+
+        // Close files
+        fclose($inFile);
+        gzclose($gzFile);
+    }
+
+    /**
+     * Decompresses a file using GZip compression.
+     *
+     * @param string $inpath  the input filepath
+     * @param string $outpath the output filepath
+     *
+     * @return void
+     */
+    public static function decompressFile($inpath, $outpath) {
+        // Open input file
+        $gzFile = gzopen($inpath, 'rb');
+        if ($gzFile === false) {
+            throw new \Exception("Unable to open input file: $outpath");
+        }
+
+        // Open output file
+        $outFile = fopen($outpath, 'wb');
+        if ($outFile === false) {
+            fclose($gzFile);
+            throw new \Exception("Unable to open output file: $inpath");
+        }
+
+        // Stream copy
+        $length = 512 * 1024; // 512 kB
+        while (!gzeof($gzFile)) {
+            if (($str = gzread($gzFile, $length)) === false) {
+                throw new \Exception("Unable to read file: $gzFile");
+            }
+            fwrite($outFile, $str);
+        }
+
+        // Close files
+        gzclose($gzFile);
+        fclose($outFile);
     }
 }

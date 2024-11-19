@@ -157,9 +157,18 @@ class SaveController extends Controller {
             return $this->not_found_response('Save');
         }
 
-        $response->getBody()->write((string) $save->file->file_contents());
         $save->downloads++;
         $save->save();
+        if ($save->file->compressed) {
+            if (($file = gzopen($save->file->filepath, 'r')) === false || ($str = stream_get_contents($file)) === false) {
+                throw new \Exception('Unable to open file: ' . json_encode($save));
+            }
+        } else {
+            if (($file = fopen($save->file->filepath, 'r')) === false || ($str = stream_get_contents($file)) === false) {
+                throw new \Exception('Unable to open file: ' . json_encode($save));
+            }
+        }
+        $response->getBody()->write($str);
 
         return $response
           ->withHeader('Content-Disposition', 'attachment; filename="' . $save->file->filename . '.' . $save->file->extension . '"')

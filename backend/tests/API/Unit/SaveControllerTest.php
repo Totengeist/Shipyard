@@ -341,8 +341,11 @@ class SaveControllerTest extends APITestCase {
 
         $this->get('api/v1/save/' . $save->ref . '/download', ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
 
+        $stream = gzopen($save->file->filepath, 'r');
+
         $this->assertNotEquals((string) $this->response->getBody(), '');
-        $this->assertEquals((string) $this->response->getBody(), $save->file->file_contents());
+        $this->assertNotFalse($stream);
+        $this->assertEquals((string) $this->response->getBody(), stream_get_contents($stream));
         $this->assertEquals($this->response->getHeader('Content-Disposition')[0], 'attachment; filename="' . $save->file->filename . '.' . $save->file->extension . '"');
 
         $this->get('api/v1/save/' . $save->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])

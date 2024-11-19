@@ -157,9 +157,18 @@ class ModificationController extends Controller {
             return $this->not_found_response('Modification');
         }
 
-        $response->getBody()->write((string) $modification->file->file_contents());
         $modification->downloads++;
         $modification->save();
+        if ($modification->file->compressed) {
+            if (($file = gzopen($modification->file->filepath, 'r')) === false || ($str = stream_get_contents($file)) === false) {
+                throw new \Exception('Unable to open file: ' . json_encode($modification));
+            }
+        } else {
+            if (($file = fopen($modification->file->filepath, 'r')) === false || ($str = stream_get_contents($file)) === false) {
+                throw new \Exception('Unable to open file: ' . json_encode($modification));
+            }
+        }
+        $response->getBody()->write($str);
 
         return $response
           ->withHeader('Content-Disposition', 'attachment; filename="' . $modification->file->filename . '.' . $modification->file->extension . '"')
