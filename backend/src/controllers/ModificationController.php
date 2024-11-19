@@ -92,7 +92,7 @@ class ModificationController extends Controller {
         $validator->validate();
         /** @var string[] $errors */
         $errors = $validator->errors();
-        if (!file_exists($upload->filepath) || is_dir($upload->filepath)) {
+        if (!file_exists($upload->getFilePath()) || is_dir($upload->getFilePath())) {
             $errors = array_merge_recursive($errors, ['errors' => ['file_id' => 'File is missing or incorrect.']]);
         }
 
@@ -150,7 +150,7 @@ class ModificationController extends Controller {
         /** @var Modification $modification */
         $modification = $query->first();
 
-        if ($modification == null || file_exists($modification->file->filepath) === false) {
+        if ($modification == null || file_exists($modification->file->getFilePath()) === false) {
             return $this->not_found_response('file', 'file does not exist');
         }
         if ($modification->isPrivate() && (Auth::user() === null || $modification->user_id !== Auth::user()->id)) {
@@ -160,11 +160,11 @@ class ModificationController extends Controller {
         $modification->downloads++;
         $modification->save();
         if ($modification->file->compressed) {
-            if (($file = gzopen($modification->file->filepath, 'r')) === false || ($str = stream_get_contents($file)) === false) {
+            if (($file = gzopen($modification->file->getFilePath(), 'r')) === false || ($str = stream_get_contents($file)) === false) {
                 throw new \Exception('Unable to open file: ' . json_encode($modification));
             }
         } else {
-            if (($file = fopen($modification->file->filepath, 'r')) === false || ($str = stream_get_contents($file)) === false) {
+            if (($file = fopen($modification->file->getFilePath(), 'r')) === false || ($str = stream_get_contents($file)) === false) {
                 throw new \Exception('Unable to open file: ' . json_encode($modification));
             }
         }

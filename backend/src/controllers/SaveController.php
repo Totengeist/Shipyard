@@ -92,7 +92,7 @@ class SaveController extends Controller {
         $validator->validate();
         /** @var string[] $errors */
         $errors = $validator->errors();
-        if (!file_exists($upload->filepath) || is_dir($upload->filepath)) {
+        if (!file_exists($upload->getFilePath()) || is_dir($upload->getFilePath())) {
             $errors = array_merge_recursive($errors, ['errors' => ['file_id' => 'File is missing or incorrect.']]);
         }
 
@@ -150,7 +150,7 @@ class SaveController extends Controller {
         /** @var Save $save */
         $save = $query->first();
 
-        if ($save == null || file_exists($save->file->filepath) === false) {
+        if ($save == null || file_exists($save->file->getFilePath()) === false) {
             return $this->not_found_response('file', 'file does not exist');
         }
         if ($save->isPrivate() && (Auth::user() === null || $save->user_id !== Auth::user()->id)) {
@@ -160,11 +160,11 @@ class SaveController extends Controller {
         $save->downloads++;
         $save->save();
         if ($save->file->compressed) {
-            if (($file = gzopen($save->file->filepath, 'r')) === false || ($str = stream_get_contents($file)) === false) {
+            if (($file = gzopen($save->file->getFilePath(), 'r')) === false || ($str = stream_get_contents($file)) === false) {
                 throw new \Exception('Unable to open file: ' . json_encode($save));
             }
         } else {
-            if (($file = fopen($save->file->filepath, 'r')) === false || ($str = stream_get_contents($file)) === false) {
+            if (($file = fopen($save->file->getFilePath(), 'r')) === false || ($str = stream_get_contents($file)) === false) {
                 throw new \Exception('Unable to open file: ' . json_encode($save));
             }
         }

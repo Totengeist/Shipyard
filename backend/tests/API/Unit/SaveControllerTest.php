@@ -341,7 +341,7 @@ class SaveControllerTest extends APITestCase {
 
         $this->get('api/v1/save/' . $save->ref . '/download', ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
 
-        $stream = gzopen($save->file->filepath, 'r');
+        $stream = gzopen($save->file->getFilePath(), 'r');
 
         $this->assertNotEquals((string) $this->response->getBody(), '');
         $this->assertNotFalse($stream);

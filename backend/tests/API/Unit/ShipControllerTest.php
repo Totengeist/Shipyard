@@ -341,7 +341,7 @@ class ShipControllerTest extends APITestCase {
 
         $this->get('api/v1/ship/' . $ship->ref . '/download', ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
 
-        $stream = gzopen($ship->file->filepath, 'r');
+        $stream = gzopen($ship->file->getFilePath(), 'r');
 
         $this->assertNotEquals((string) $this->response->getBody(), '');
         $this->assertNotFalse($stream);

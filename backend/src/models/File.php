@@ -30,10 +30,19 @@ class File extends Model {
 
     /** @return string|false */
     public function file_contents() {
-        return file_get_contents($this->filepath);
+        return file_get_contents($this->getFilePath());
     }
 
     public function delete() {
-        return unlink($this->filepath) && parent::delete();
+        return unlink($this->getFilePath()) && parent::delete();
+    }
+
+    /**
+     * The full filepath for the file.
+     *
+     * @return string
+     */
+    public function getFilePath() {
+        return $_SERVER['STORAGE'] . $this->filepath;
     }
 }

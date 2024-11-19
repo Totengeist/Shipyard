@@ -31,9 +31,8 @@ class FileManager {
         $extension = pathinfo((string) $uploadedFile->getClientFilename(), PATHINFO_EXTENSION);
         $media_type = $uploadedFile->getClientMediaType();
         $original_filename = pathinfo((string) $uploadedFile->getClientFilename(), PATHINFO_FILENAME);
-        $basename = self::get_guid(32);
-        $filename = sprintf('%s.%0.8s', $basename, $extension);
-        $fullpath = self::getStorageDirectory($basename) . $filename;
+        $filename = self::get_guid(32);
+        $fullpath = self::getStorageDirectory($filename) . $filename;
 
         if (file_exists($fullpath)) {
             if ($attempts > 10) {
@@ -65,7 +64,7 @@ class FileManager {
             'filename' => $original_filename,
             'media_type' => $final_media_type,
             'extension' => $extension,
-            'filepath' => $fullpath,
+            'filepath' => str_replace($_SERVER['STORAGE'], '', $fullpath),
             'compressed' => $is_compressed
         ]);
 
@@ -88,7 +87,7 @@ class FileManager {
      * @return string
      */
     public static function getStorageDirectory($hash) {
-        $dir = dirname(__DIR__) . '/public/storage/' . $hash[0] . '/' . $hash[1] . '/' . $hash . '/';
+        $dir = $_SERVER['STORAGE'] . $hash[0] . '/' . $hash[1] . '/' . $hash . '/';
         if (!is_dir($dir)) {
             mkdir($dir, 0777, true);
         }

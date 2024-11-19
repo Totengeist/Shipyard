@@ -17,6 +17,9 @@ $dotenv->required([
     'DB_USERNAME'
 ]);
 $_SERVER['APP_ROOT'] = realpath(__DIR__);
+if (!isset($_SERVER['STORAGE'])) {
+    $_SERVER['STORAGE'] = realpath($_SERVER['APP_ROOT'] . '/public/storage') . DIRECTORY_SEPARATOR;
+}
 
 $capsule = new Capsule();
 $capsule->addConnection([

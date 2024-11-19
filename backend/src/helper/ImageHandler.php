@@ -61,14 +61,14 @@ class ImageManager {
         }
 
         // Load the image and verify it loaded.
-        $image = call_user_func(self::$handlers[$type]['load'], $file->filepath); // @phpstan-ignore argument.type
+        $image = call_user_func(self::$handlers[$type]['load'], $file->getFilePath()); // @phpstan-ignore argument.type
         if (!$image) {
             return false;
         }
 
         foreach (self::$thumb_sizes as $size) {
             $thumbnail = self::createThumbnail($image, $type, $size[0], $size[1]);
-            $thumb_filepath = rtrim($file->filepath, '.' . $file->extension) . '-' . $size[0] . '.' . $file->extension;
+            $thumb_filepath = $file->getFilePath() . '-' . $size[0];
             $thumb_filename = rtrim($file->filename, '.' . $file->extension) . '-' . $size[0] . '.' . $file->extension;
             if ($thumbnail !== false) {
                 call_user_func(
@@ -83,7 +83,7 @@ class ImageManager {
                 'filename' => $thumb_filename,
                 'media_type' => $file->media_type,
                 'extension' => $file->extension,
-                'filepath' => $thumb_filepath,
+                'filepath' => str_replace($_SERVER['STORAGE'], '', $thumb_filepath),
                 'compressed' => false
             ]);
         }
@@ -105,8 +105,15 @@ class ImageManager {
         $_width = imagesx($image);
         $_height = imagesy($image);
 
+        if ($height == 0) {
+            $height = null;
+        }
+        if ($width == 0) {
+            return false;
+        }
+
         // maintain aspect ratio when no height set
-        if ($height == null) {
+        if ($height === null) {
             // get width to height ratio
             $ratio = $_width / $_height;
 
@@ -118,7 +125,7 @@ class ImageManager {
             // if is landscape
             // use ratio to scale width to fit in square
             else {
-                $height = $width;
+                $height = (int) $width;
                 $width = (int) floor($width * $ratio);
             }
         }
