@@ -150,7 +150,7 @@ class ModificationController extends Controller {
         /** @var Modification $modification */
         $modification = $query->first();
 
-        if ($modification == null || file_exists($modification->file->getFilePath()) === false) {
+        if ($modification == null || $modification->file == null || file_exists($modification->file->getFilePath()) === false) {
             return $this->not_found_response('file', 'file does not exist');
         }
         if ($modification->isPrivate() && (Auth::user() === null || $modification->user_id !== Auth::user()->id)) {
@@ -184,6 +184,7 @@ class ModificationController extends Controller {
      */
     public function update(Request $request, Response $response, $args) {
         $data = (array) $request->getParsedBody();
+        $files = $request->getUploadedFiles();
 
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Modification::query()->where([['ref', $args['ref']]]);
@@ -212,6 +213,17 @@ class ModificationController extends Controller {
         }
         if (isset($data['description'])) {
             $modification->description = $data['description'];
+        }
+
+        if (isset($files['file'])) {
+            if (!is_array($files['file'])) {
+                if ($modification->file != null) {
+                    $modification->file->delete();
+                }
+                $modification->file_id = FileManager::moveUploadedFile($files['file'])->id;
+            } else {
+                return $this->invalid_input_response(['file' => 'Multiple file uploads are not allowed.']);
+            }
         }
 
         $flags = 0;

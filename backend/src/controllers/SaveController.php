@@ -150,7 +150,7 @@ class SaveController extends Controller {
         /** @var Save $save */
         $save = $query->first();
 
-        if ($save == null || file_exists($save->file->getFilePath()) === false) {
+        if ($save == null || $save->file == null || file_exists($save->file->getFilePath()) === false) {
             return $this->not_found_response('file', 'file does not exist');
         }
         if ($save->isPrivate() && (Auth::user() === null || $save->user_id !== Auth::user()->id)) {
@@ -184,6 +184,7 @@ class SaveController extends Controller {
      */
     public function update(Request $request, Response $response, $args) {
         $data = (array) $request->getParsedBody();
+        $files = $request->getUploadedFiles();
 
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Save::query()->where([['ref', $args['ref']]]);
@@ -212,6 +213,17 @@ class SaveController extends Controller {
         }
         if (isset($data['description'])) {
             $save->description = $data['description'];
+        }
+
+        if (isset($files['file'])) {
+            if (!is_array($files['file'])) {
+                if ($save->file != null) {
+                    $save->file->delete();
+                }
+                $save->file_id = FileManager::moveUploadedFile($files['file'])->id;
+            } else {
+                return $this->invalid_input_response(['file' => 'Multiple file uploads are not allowed.']);
+            }
         }
 
         $flags = 0;

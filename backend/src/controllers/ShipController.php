@@ -150,7 +150,7 @@ class ShipController extends Controller {
         /** @var Ship $ship */
         $ship = $query->first();
 
-        if ($ship == null || file_exists($ship->file->getFilePath()) === false) {
+        if ($ship == null || $ship->file == null || file_exists($ship->file->getFilePath()) === false) {
             return $this->not_found_response('file', 'file does not exist');
         }
         if ($ship->isPrivate() && (Auth::user() === null || $ship->user_id !== Auth::user()->id)) {
@@ -184,6 +184,7 @@ class ShipController extends Controller {
      */
     public function update(Request $request, Response $response, $args) {
         $data = (array) $request->getParsedBody();
+        $files = $request->getUploadedFiles();
 
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Ship::query()->where([['ref', $args['ref']]]);
@@ -212,6 +213,17 @@ class ShipController extends Controller {
         }
         if (isset($data['description'])) {
             $ship->description = $data['description'];
+        }
+
+        if (isset($files['file'])) {
+            if (!is_array($files['file'])) {
+                if ($ship->file != null) {
+                    $ship->file->delete();
+                }
+                $ship->file_id = FileManager::moveUploadedFile($files['file'])->id;
+            } else {
+                return $this->invalid_input_response(['file' => 'Multiple file uploads are not allowed.']);
+            }
         }
 
         $flags = 0;
