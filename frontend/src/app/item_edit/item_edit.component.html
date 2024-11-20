@@ -1,0 +1,39 @@
+<div id="item-details">
+<h1>Edit {{ item.title }}</h1>
+
+<ul class="item-tags">
+    <li *ngFor="let tag of tags"><a href="/tag/{{ tag.slug }}" routerLink="/tag/{{ tag.slug }}">{{ tag.label }}</a></li>
+</ul>
+
+<div id="upload-container">
+    <form id="edit-form">
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="title" name="title" placeholder="Title" required value="{{ item.title }}" />
+            <label for="title">Title</label>
+        </div>
+        <div class="form-floating mb-3">
+            <textarea type="text" class="form-control" id="description" name="description" placeholder="Why should someone download this item? What considerations are there?" required style="height: 160px;" value="{{item.description}}"></textarea>
+            <label for="description">Describe the item <small>(Why should someone download it? What considerations are there?)</small></label><br>
+        </div>
+        <div class="form-floating mb-3" style="text-align: right; margin-top: -35px;">
+            <input type="checkbox" name="state[]" id="state_private" value="private"> <label class="checkbox-label" for="state_private">Private</label>
+            <input type="checkbox" name="state[]" id="state_unlisted" value="unlisted"> <label class="checkbox-label" for="state_unlisted"> Unlisted</label>
+            <a href="https://www.markdownguide.org/cheat-sheet/" target="_blank">Markdown allowed</a>
+        </div>
+        <p class="alert alert-warning">You can replace the downloadable file below. If you've made changes to the file to update it for newer versions of the game, consider <a href="new;parent={{ itemId }};itemType={{ itemType }}" [routerLink]="['/new', {parent: itemId, itemType: itemType}]">creating a revision</a> instead.</p>
+        <div id="uppy"></div>
+        <input type="submit" name="submit" class="btn btn-primary" value="Submit" />
+    </form>
+</div>
+
+<!-- <p>Meta data goes here</p> -->
+</div>
+
+<div id="item-screenshots" *ngIf="hasScreenshots()">
+<div class="primary-screenshot"><img src="api/v1/screenshot/{{ activeShot.ref }}/download" alt="{{ activeShot.description }}" title="{{ activeShot.description }}"></div>
+<ul class="screenshot-list">
+    <li *ngFor="let screenshot of screenshots" [ngClass]="{'active': activeShot.ref === screenshot.ref }">
+        <a href=""><img src="api/v1/screenshot/{{ screenshot.ref }}/download" alt="{{ screenshot.description }}" title="{{ screenshot.description }}"></a>
+    </li>
+</ul>
+</div>
