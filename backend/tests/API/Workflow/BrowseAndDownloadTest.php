@@ -43,8 +43,11 @@ class BrowseAndDownloadWorkflowTest extends APITestCase {
 
         $this->get('api/v1/ship/' . $chosen_ship->ref . '/download', ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
 
+        $stream = gzopen($chosen_ship->file->getFilePath(), 'r');
+
         $this->assertNotEquals((string) $this->response->getBody(), '');
-        $this->assertEquals((string) $this->response->getBody(), stream_get_contents(gzopen($chosen_ship->file->getFilePath(), 'r')));
+        $this->assertNotFalse($stream);
+        $this->assertEquals((string) $this->response->getBody(), stream_get_contents($stream));
         $this->assertEquals($this->response->getHeader('Content-Disposition')[0], 'attachment; filename="' . $chosen_ship->file->filename . '.' . $chosen_ship->file->extension . '"');
 
         $this->get('api/v1/ship/' . $chosen_ship->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
@@ -89,8 +92,11 @@ class BrowseAndDownloadWorkflowTest extends APITestCase {
 
         $this->get('api/v1/save/' . $chosen_save->ref . '/download', ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
 
+        $stream = gzopen($chosen_save->file->getFilePath(), 'r');
+
         $this->assertNotEquals((string) $this->response->getBody(), '');
-        $this->assertEquals((string) $this->response->getBody(), stream_get_contents(gzopen($chosen_save->file->getFilePath(), 'r')));
+        $this->assertNotFalse($stream);
+        $this->assertEquals((string) $this->response->getBody(), stream_get_contents($stream));
         $this->assertEquals($this->response->getHeader('Content-Disposition')[0], 'attachment; filename="' . $chosen_save->file->filename . '.' . $chosen_save->file->extension . '"');
 
         $this->get('api/v1/save/' . $chosen_save->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])

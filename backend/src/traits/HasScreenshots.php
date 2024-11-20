@@ -30,8 +30,8 @@ trait HasScreenshots {
     /**
      * Assign the given screenshot to the item.
      *
-     * @param string $screenshot
-     * @param bool   $primary
+     * @param string|Screenshot $screenshot
+     * @param bool              $primary
      *
      * @return mixed
      */
@@ -61,7 +61,7 @@ trait HasScreenshots {
     /**
      * Remove the given screenshot from the item.
      *
-     * @param string $screenshot
+     * @param string|Screenshot $screenshot
      *
      * @return mixed
      */
@@ -83,7 +83,7 @@ trait HasScreenshots {
     /**
      * Determine if the item has the given screenshot.
      *
-     * @param mixed $screenshots
+     * @param string|Screenshot|null $screenshots
      *
      * @return bool
      */

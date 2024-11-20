@@ -131,6 +131,8 @@ class ImageManager {
         }
 
         // create duplicate image based on calculated target size
+        /** @var int<1, max> $width */
+        /** @var int<1, max> $height */
         $thumbnail = imagecreatetruecolor($width, $height);
 
         // set transparency options for GIFs and PNGs

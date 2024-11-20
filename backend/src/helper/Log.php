@@ -80,7 +80,7 @@ class Log {
 
             $logger = new Logger(is_string($logger) ? $logger : $_SERVER['APP_TITLE'] . ':main');
             $logger->pushHandler($stream);
-            $logger->info("Logger initialized: {$log_level}");
+            $logger->debug("Logger initialized: {$log_level}");
         }
 
         $this->logger = $logger;

@@ -5,6 +5,7 @@ namespace Shipyard\Controllers;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Shipyard\Auth;
+use Shipyard\Log;
 use Shipyard\Models\User;
 
 class SteamController extends Controller {
@@ -91,7 +92,7 @@ class SteamController extends Controller {
 
         if (preg_match("#is_valid\s*:\s*true#i", $result)) {
             preg_match('#^https://steamcommunity.com/openid/id/([0-9]{17,25})#', $_GET['openid_claimed_id'], $matches);
-            $steamID64 = is_numeric($matches[1]) ? (int) $matches[1] : 0;
+            $steamID64 = count($matches) ? (int) $matches[1] : 0;
 
             return $steamID64;
         }
@@ -128,6 +129,7 @@ class SteamController extends Controller {
                 exit;
             }
 
+            Log::get()->channel('registration')->info('Registering Steam ID to user.', $user->toArray());
             $auth_user->steamid = (int) $steamid;
             $user->steamid = (int) $steamid;
             $user->save();
@@ -180,6 +182,7 @@ class SteamController extends Controller {
         $auth_user->steamid = null;
         $user->steamid = null;
         $user->save();
+        Log::get()->channel('registration')->info('Unregistering Steam ID from user.', $user->toArray());
         $response->getBody()->write((string) json_encode(['message' => 'Success!']));
 
         return $response

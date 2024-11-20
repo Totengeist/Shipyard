@@ -20,7 +20,7 @@ trait HasReleases {
     /**
      * Assign the given release to an item.
      *
-     * @param string $release
+     * @param string|Release $release
      *
      * @return mixed
      */
@@ -41,7 +41,7 @@ trait HasReleases {
     /**
      * Remove the given release from an item.
      *
-     * @param string $release
+     * @param string|Release $release
      *
      * @return mixed
      */
