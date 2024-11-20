@@ -97,8 +97,10 @@ class User extends Model {
         if ($this->activated) {
             return;
         }
-        $activation = UserActivation::query()->where('email', $this->email);
-        if ($activation !== null) {
+
+        /** @var \Illuminate\Database\Eloquent\Builder $activations */
+        $activations = UserActivation::query()->where('email', $this->email);
+        foreach ($activations->get() as $activation) {
             $activation->delete();
         }
         $this->activated = true;

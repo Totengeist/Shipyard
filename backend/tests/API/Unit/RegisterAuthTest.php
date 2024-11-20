@@ -112,8 +112,7 @@ class UserControllerTest extends APITestCase {
         $real_user = User::query()->where('ref', $user->ref)->first();
         $this->assertTrue($real_user->active());
 
-        $activation = !UserActivation::query()->where('email', $user->email)->get()->isEmpty();
-        $this->assertFalse($activation);
+        $this->assertTrue(UserActivation::query()->where('email', $user->email)->get()->isEmpty());
         $this->assertTrue($real_user->ref == $user->ref);
     }
 

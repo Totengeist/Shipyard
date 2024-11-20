@@ -18,11 +18,34 @@ class UserActivation extends Model {
     protected $table = 'user_activations';
 
     /**
+     * The primary key for the table used by the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'token';
+
+    /**
+     * Whether the table has an automatically incrementing primary key.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var string[]
      */
     protected $fillable = ['email'];
+
+    /**
+     * The attributes that are casted.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'token' => 'string',
+    ];
 
     /**
      * The attributes that should be hidden for arrays.
