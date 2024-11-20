@@ -1,6 +1,7 @@
 {
     "name": "totengeist/shipyard",
     "description": "TLS Shipyard",
+    "version": "0.1.0-alpha",
     "type": "project",
     "license": "GPL-3.0-or-later",
     "authors": [
