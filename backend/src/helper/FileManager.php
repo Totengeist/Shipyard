@@ -68,7 +68,7 @@ class FileManager {
             'compressed' => $is_compressed
         ]);
 
-        Log::get()->channel('files')->info('Saved file.', $file->makeVisible('filepath')->attributesToArray());
+        Log::get()->channel('files')->notice('Saved file.', $file->makeVisible('filepath')->attributesToArray());
 
         return $file;
     }
