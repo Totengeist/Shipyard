@@ -7,6 +7,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Shipyard\Auth;
 use Shipyard\FileManager;
 use Shipyard\Models\Save;
+use Shipyard\Models\Tag;
 use Shipyard\Models\User;
 use Shipyard\Traits\ChecksPermissions;
 use Shipyard\Traits\ProcessesSlugs;
@@ -45,9 +46,11 @@ class SaveController extends Controller {
         $data = (array) $request->getParsedBody();
         $files = $request->getUploadedFiles();
 
+        $anonymous = false;
         /** @var User $user */
         $user = Auth::user();
         if ($user == null) {
+            $anonymous = true;
             /** @var \Illuminate\Database\Eloquent\Builder $query */
             $query = User::query()->where([['ref', 'system']]);
             /** @var User $user */
@@ -67,26 +70,10 @@ class SaveController extends Controller {
             return $this->invalid_input_response(['file' => 'File is missing or incorrect.']);
         }
 
-        $flags = 0;
         if (isset($data['state'])) {
-            foreach ($data['state'] as $flag) {
-                switch ($flag) {
-                    case 'private':
-                        // Anonymized uploads cannot be marked private during creation. That's a mod-only action.
-                        if ($user->ref !== 'system') {
-                            $flags++;
-                        }
-                        break;
-                    case 'unlisted':
-                        $flags += 2;
-                        break;
-                    case 'locked':
-                        $flags += 4;
-                }
-            }
+            $data['flags'] = $this->get_flags($data['state'], $anonymous);
             unset($data['state']);
         }
-        $data['flags'] = $flags;
 
         $validator = Save::validator($data);
         $validator->validate();
@@ -215,6 +202,8 @@ class SaveController extends Controller {
             $save->description = $data['description'];
         }
 
+        $this->edit_tags($data, $save);
+
         if (isset($files['file'])) {
             if (!is_array($files['file'])) {
                 if ($save->file != null) {
@@ -226,28 +215,13 @@ class SaveController extends Controller {
             }
         }
 
-        $flags = 0;
         if (isset($data['state'])) {
-            foreach ($data['state'] as $flag) {
-                switch ($flag) {
-                    case 'private':
-                        $flags++;
-                        break;
-                    case 'unlisted':
-                        $flags += 2;
-                        break;
-                    case 'locked':
-                        $flags += 4;
-                }
-            }
+            $save->flags = $this->get_flags($data['state']);
             unset($data['state']);
         }
-        $save->flags = $flags;
 
         $save->save();
-
         $payload = (string) json_encode($save);
-
         $response->getBody()->write($payload);
 
         return $response
@@ -358,5 +332,71 @@ class SaveController extends Controller {
 
         return $response
           ->withHeader('Content-Type', 'application/json');
+    }
+
+    /**
+     * Check and set flags for an item.
+     *
+     * @param string[] $data             the data submitted
+     * @param bool     $anonymous_create whether this is an anonymous item creation
+     *
+     * @return int the flag bitfield
+     */
+    public function get_flags($data, $anonymous_create = false) {
+        $flags = 0;
+        foreach ($data as $flag) {
+            switch ($flag) {
+                case 'private':
+                    // Anonymized uploads cannot be marked private during creation. That's a mod-only action.
+                    if (!$anonymous_create) {
+                        $flags++;
+                    }
+                    break;
+                case 'unlisted':
+                    $flags += 2;
+                    break;
+                case 'locked':
+                    $flags += 4;
+            }
+        }
+
+        return $flags;
+    }
+
+    /**
+     * Add and remove tags from a model.
+     *
+     * @param array<string, string> $data  the submitted data
+     * @param Save                  $model the model to add and remove tags from
+     *
+     * @return void
+     */
+    public function edit_tags($data, $model) {
+        if (isset($data['remove_tags'])) {
+            $tag_query = preg_replace('/[^0-9a-z-_,]/i', '', $data['remove_tags']);
+            if ($tag_query !== null) {
+                /** @var \Illuminate\Database\Eloquent\Builder $query */
+                $query = Tag::query();
+                $remove_tags = $query->whereIn('slug', explode(',', $tag_query))->get();
+                $tag_ids = [];
+                foreach ($remove_tags as $remove_tag) {
+                    $tag_ids[] = $remove_tag->id;
+                }
+                $model->tags()->detach($tag_ids);
+            }
+        }
+        if (isset($data['add_tags'])) {
+            $tag_query = preg_replace('/[^0-9a-z-_,]/i', '', $data['add_tags']);
+            if ($tag_query !== null) {
+                /** @var \Illuminate\Database\Eloquent\Builder $query */
+                $query = Tag::query();
+                $add_tags = $query->whereIn('slug', explode(',', $tag_query))->get();
+                $tag_ids = [];
+                foreach ($add_tags as $add_tag) {
+                    $tag_ids[] = $add_tag->id;
+                }
+                $model->tags()->attach($tag_ids, ['type' => get_class($model)::$tag_label]);
+            }
+        }
     }
 }

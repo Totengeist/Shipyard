@@ -30,6 +30,8 @@ export class ItemEditComponent implements OnInit {
   children: Item[] = [];
   user: User = {ref: null, name: null, email: null};
   tags: any[] = [];
+  removeTags = [];
+  addTags = [];
   screenshots: Screenshot[] = [];
   activeShot: Screenshot = {ref: null, description: null};
   uppy: any; // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -124,6 +126,30 @@ export class ItemEditComponent implements OnInit {
     this.tags = [];
     this.screenshots = []
     this.activeShot = {ref: null, description: null};
+  }
+  
+  // check if the tag was added
+  public removeTag(tag:any): void {
+    this.removeTags.push(tag.slug);
+    let index = this.tags.length - 1;
+    while (index>= 0) {
+      if (this.tags[index].slug == tag.slug) {
+        this.tags.splice(index, 1);
+      }
+      index--;
+    }
+  }
+  // check if the tag was removed
+  public addTag(): boolean {
+    const tagElement = document.getElementById('tag_adding') as HTMLInputElement;
+    if (tagElement == null || tagElement.value === "") {
+      return false;
+    }
+    
+    this.addTags.push(tagElement.value);
+    this.tags.push({'label': tagElement.value, 'slug': tagElement.value});
+    tagElement.value = "";
+    return false;
   }
   
   hasParent(): boolean {
