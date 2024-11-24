@@ -137,4 +137,36 @@ class TagController extends Controller {
         return $response
           ->withHeader('Content-Type', 'application/json');
     }
+
+    /**
+     * Return the top 30 matching tags.
+     *
+     * @param array<string,string> $args
+     *
+     * @return Response
+     */
+    public function search(Request $request, Response $response, $args) {
+        $query_str = preg_replace('/[;]/i', '', $args['query']);
+        if ($query_str === null || $query_str === '') {
+            $response->getBody()->write('[]');
+
+            return $response
+              ->withHeader('Content-Type', 'application/json');
+        }
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Tag::query()->where('label', 'like', '%' . $query_str . '%');
+        $tags = $query->paginate(30);
+        if ($tags == null) {
+            $response->getBody()->write('[]');
+
+            return $response
+              ->withHeader('Content-Type', 'application/json');
+        }
+
+        $payload = (string) json_encode($tags);
+        $response->getBody()->write($payload);
+
+        return $response
+          ->withHeader('Content-Type', 'application/json');
+    }
 }

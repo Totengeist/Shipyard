@@ -66,6 +66,8 @@ $app->group($_SERVER['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $gro
         $group->get('/screenshot/{ref}/download', 'Shipyard\Controllers\ScreenshotController:download');
 
         $group->get('/user/{ref}', 'Shipyard\Controllers\RegisterController:show');
+
+        $group->get('/search/tag/{query}', 'Shipyard\Controllers\TagController:search');
     })->add(LogMiddleware::class);
 
     $group->group('', function (RouteCollectorProxy $group) {
