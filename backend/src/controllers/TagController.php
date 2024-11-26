@@ -153,8 +153,16 @@ class TagController extends Controller {
             return $response
               ->withHeader('Content-Type', 'application/json');
         }
-        /** @var \Illuminate\Database\Eloquent\Builder $query */
-        $query = Tag::query()->where('label', 'like', '%' . $query_str . '%');
+        if ($this->can('assign-tags') === true) {
+            /** @var \Illuminate\Database\Eloquent\Builder $query */
+            $query = Tag::query();
+            $query = $query->where('label', 'like', '%' . $query_str . '%')->orWhere('slug', 'like', '%' . self::slugify($query_str) . '%');
+        } else {
+            /** @var \Illuminate\Database\Eloquent\Builder $query */
+            $query = Tag::query()->where('locked', false)->where(function ($query) use ($query_str) {
+                $query->where('label', 'like', '%' . $query_str . '%')->orWhere('slug', 'like', '%' . self::slugify($query_str) . '%');
+            });
+        }
         $tags = $query->paginate(30);
         if ($tags == null) {
             $response->getBody()->write('[]');

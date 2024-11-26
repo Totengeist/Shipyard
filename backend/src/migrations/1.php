@@ -176,6 +176,7 @@ Capsule::schema()->create('tags', function ($table) {
     $table->string('slug')->unique();
     $table->string('label')->unique();
     $table->text('description')->nullable();
+    $table->boolean('locked')->default(false);
     $table->timestamps();
 });
 echo "Creating link table between items and tags table.<br>\n";
@@ -255,6 +256,7 @@ $delete_permissions  = create_permission(['slug' => 'delete-permissions', 'label
 $create_tags  = create_permission(['slug' => 'create-tags', 'label' => 'create tags']);
 $edit_tags    = create_permission(['slug' => 'edit-tags',   'label' => 'edit tags']);
 $delete_tags  = create_permission(['slug' => 'delete-tags', 'label' => 'delete tags']);
+$assign_tags  = create_permission(['slug' => 'assign-tags', 'label' => 'assign tags']);
 
 // releases
 $create_releases  = create_permission(['slug' => 'create-releases', 'label' => 'create releases']);
@@ -287,6 +289,7 @@ $admin->givePermissionTo($delete_permissions);
 $admin->givePermissionTo($create_tags);
 $admin->givePermissionTo($edit_tags);
 $admin->givePermissionTo($delete_tags);
+$admin->givePermissionTo($assign_tags);
 $admin->givePermissionTo($create_releases);
 $admin->givePermissionTo($edit_releases);
 $admin->givePermissionTo($delete_releases);

@@ -99,8 +99,11 @@ trait HasRoles {
         if (is_string($permission)) {
             /** @var \Illuminate\Database\Eloquent\Builder $query */
             $query = Permission::query()->where('slug', $permission);
-            /** @var Permission $permission */
+            /** @var Permission|null $permission */
             $permission = $query->first();
+        }
+        if ($permission === null) {
+            return false;
         }
 
         return $this->hasRole($permission->roles);
