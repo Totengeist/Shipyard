@@ -1,0 +1,15 @@
+<div>
+    <div class="form-floating mb-3">
+        <input id="itemSearch" name="itemSearch" #searchInput placeholder="Add a tag." class="form-control" type="text" autocomplete="off" (click)="showSearches = true">
+        <label for="itemSearch">Add a tag</label>
+    </div>
+    <div class="card" style="position:absolute w-100" [hidden]="!showSearches">
+        <div class="search">
+            <div *ngFor="let item of items; trackBy: trackById" tappable (click)="setItemName(item)" class="search-result">
+                {{item.label}}
+            </div>
+        </div>
+        <p class="alert alert-warning" *ngIf="items && items.length <= 0 && !isSearching">No matching tags found</p>
+        <p class="alert alert-warning" [hidden]="!isSearching">Searching tags...</p>
+    </div>
+</div>

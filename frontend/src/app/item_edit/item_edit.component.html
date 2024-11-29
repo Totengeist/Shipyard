@@ -7,14 +7,10 @@
             <input type="text" class="form-control" id="title" name="title" placeholder="Title" required value="{{ item.title }}" />
             <label for="title">Title</label>
         </div>
-        <div class="form-floating mb-3">
+        <app-search  (setNameEvent)="addTag($event.item)"></app-search>
+        <ul class="item-tags">
             <input type="hidden" id="remove_tags" name="remove_tags" required value="{{ removeTags.join(',') }}" />
             <input type="hidden" id="add_tags" name="add_tags" required value="{{ addTags.join(',') }}" />
-            <input type="text" class="form-control" id="tag_adding" placeholder="tag_adding" required />
-            <label for="tag_adding">Tags to add.</label><br>
-            <button (click)="addTag()">Add</button>
-        </div>
-        <ul class="item-tags">
             <li *ngFor="let tag of tags">{{ tag.label }} <a (click)="removeTag(tag)">x</a></li>
         </ul>
         <div class="form-floating mb-3">

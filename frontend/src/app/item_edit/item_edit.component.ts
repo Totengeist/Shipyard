@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { TokenStorageService } from '../_services/token-storage.service';
 import { UserService } from '../_services/user.service';
 import { environment } from '../../environments/environment';
+import { SearchComponent } from '../search/search.component';
 import { MarkdownComponent } from 'ngx-markdown';
 import Uppy from '@uppy/core';
 import Form from '@uppy/form';
@@ -18,7 +19,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './item_edit.component.html',
   styleUrls: ['./item_edit.component.css'],
   standalone: true,
-  imports: [FormsModule, RouterLink, NgIf, MarkdownComponent, NgFor, NgClass]
+  imports: [SearchComponent, FormsModule, RouterLink, NgIf, MarkdownComponent, NgFor, NgClass]
 })
 export class ItemEditComponent implements OnInit {
   supportedTypes: any = {ship: ["ship file", [".ship"]], save: ["save file", [".space"]], modification: ["mod archive", [".zip"]]}; // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -30,8 +31,8 @@ export class ItemEditComponent implements OnInit {
   children: Item[] = [];
   user: User = {ref: null, name: null, email: null};
   tags: any[] = [];
-  removeTags = [];
-  addTags = [];
+  removeTags: string[] = [];
+  addTags: string[] = [];
   screenshots: Screenshot[] = [];
   activeShot: Screenshot = {ref: null, description: null};
   uppy: any; // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -140,15 +141,10 @@ export class ItemEditComponent implements OnInit {
     }
   }
   // check if the tag was removed
-  public addTag(): boolean {
-    const tagElement = document.getElementById('tag_adding') as HTMLInputElement;
-    if (tagElement == null || tagElement.value === "") {
-      return false;
-    }
-    
-    this.addTags.push(tagElement.value);
-    this.tags.push({'label': tagElement.value, 'slug': tagElement.value});
-    tagElement.value = "";
+  public addTag(item:any): boolean {
+    console.log(item);
+    this.addTags.push(item.slug);
+    this.tags.push(item);
     return false;
   }
   
