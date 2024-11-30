@@ -44,7 +44,6 @@ export class ProfileComponent implements OnInit {
         this.itemTypes.forEach((element: string) => {
           this.items[element] = data[element+'s'];
         });
-        console.log(this.items);
       },
       () => {
         console.log('Error');

@@ -53,6 +53,10 @@ class ScreenshotController extends Controller {
         }
         $files = $request->getUploadedFiles();
 
+        if (!is_array($files['file'])) {
+            $files['file'] = [$files['file']];
+        }
+
         if (count($files) == 0) {
             $validator = Screenshot::validator([]);
             $validator->validate();

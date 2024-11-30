@@ -1,7 +1,7 @@
 <div id="item-details">
-<h1>Edit {{ item.title }}</h1>
 
 <div id="upload-container">
+    <h1>Edit {{ item.title }}</h1>
     <form id="edit-form">
         <div class="form-floating mb-3">
             <input type="text" class="form-control" id="title" name="title" placeholder="Title" required value="{{ item.title }}" />
@@ -26,16 +26,18 @@
         <div id="uppy"></div>
         <input type="submit" name="submit" class="btn btn-primary" value="Submit" />
     </form>
+
+    <h2>Edit screenshots</h2>
+    <form id="screenshots-form">
+        <div id="item-screenshots" *ngIf="hasScreenshots()">
+        <ul class="screenshot-list">
+            <li *ngFor="let screenshot of screenshots">
+                <a href=""><img src="api/v1/screenshot/{{ screenshot.ref }}/download" alt="{{ screenshot.description }}" title="{{ screenshot.description }}"></a>
+            </li>
+        </ul>
+        </div>
+        <div id="screenuppy"></div>
+    </form>
 </div>
 
-<!-- <p>Meta data goes here</p> -->
-</div>
-
-<div id="item-screenshots" *ngIf="hasScreenshots()">
-<div class="primary-screenshot"><img src="api/v1/screenshot/{{ activeShot.ref }}/download" alt="{{ activeShot.description }}" title="{{ activeShot.description }}"></div>
-<ul class="screenshot-list">
-    <li *ngFor="let screenshot of screenshots" [ngClass]="{'active': activeShot.ref === screenshot.ref }">
-        <a href=""><img src="api/v1/screenshot/{{ screenshot.ref }}/download" alt="{{ screenshot.description }}" title="{{ screenshot.description }}"></a>
-    </li>
-</ul>
 </div>

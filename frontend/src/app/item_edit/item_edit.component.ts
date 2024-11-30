@@ -11,6 +11,7 @@ import Uppy from '@uppy/core';
 import Form from '@uppy/form';
 import Dashboard from '@uppy/dashboard';
 import XHR from '@uppy/xhr-upload';
+import ImageEditor from '@uppy/image-editor';
 import { NgIf, NgFor, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -34,8 +35,8 @@ export class ItemEditComponent implements OnInit {
   removeTags: string[] = [];
   addTags: string[] = [];
   screenshots: Screenshot[] = [];
-  activeShot: Screenshot = {ref: null, description: null};
-  uppy: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  uppy: Uppy = new Uppy();
+  screenshotUppy: Uppy = new Uppy();
   userServ: UserService = {} as UserService;
 
   constructor(private userService: UserService, private token: TokenStorageService, private http: HttpClient, private route: ActivatedRoute, private router: Router) {
@@ -61,9 +62,6 @@ export class ItemEditComponent implements OnInit {
             this.user = data.user;
           }
           this.tags = data.tags;
-          if (data.primary_screenshot.length > 0) {
-            this.activeShot = data.primary_screenshot[0];
-          }
         },
         () => {
           console.log('Error');
@@ -72,9 +70,6 @@ export class ItemEditComponent implements OnInit {
       this.getScreenshots(this.itemType, this.itemId).subscribe(
         data => {
           this.screenshots = data;
-          if (this.activeShot.ref === null && this.screenshots.length > 0) {
-            this.activeShot = this.screenshots[0];
-          }
         },
         () => {
           console.log('Error');
@@ -102,7 +97,7 @@ export class ItemEditComponent implements OnInit {
       .use(XHR, { endpoint: environment.apiUrl+this.itemType })
       .on('file-added', (file) => {
         const endpoint = environment.apiUrl+this.itemType+"/"+this.itemId;
-        this.uppy.getPlugin('XHRUpload').setOptions({ endpoint });
+        this.uppy.getPlugin('XHRUpload')!.setOptions({ endpoint });
       })
       .on('upload-success', (file, response) => {
         this.router.navigate(['/'+this.itemType+"/"+this.itemId]);
@@ -117,6 +112,28 @@ export class ItemEditComponent implements OnInit {
           this.uppy.upload();
         }
       });
+
+    this.screenshotUppy = new Uppy({
+      restrictions: {
+        allowedFileTypes: ['.jpg', '.png', '.gif'],
+      },
+    })
+      .use(Dashboard, { inline: true, target: '#screenuppy' })
+      .use(Form, {
+        target: '#screenshots-form',
+      })
+      .use(XHR, { endpoint: environment.apiUrl+this.itemType+"/"+this.itemId+"/screenshots" })
+      .use(ImageEditor)
+      .on('complete', () => {
+        this.getScreenshots(this.itemType, this.itemId).subscribe(
+          data => {
+            this.screenshots = data;
+          },
+          () => {
+            console.log('Error');
+          }
+        );
+      });
   }
   
   initializeFields(): void {
@@ -126,7 +143,6 @@ export class ItemEditComponent implements OnInit {
     this.user = {ref: null, name: null, email: null}
     this.tags = [];
     this.screenshots = []
-    this.activeShot = {ref: null, description: null};
   }
   
   // check if the tag was added
