@@ -27,14 +27,15 @@ export class ItemEditComponent implements OnInit {
   currentUser: User = {ref: null, name: null, email: null};
   itemType = '';
   itemId = '';
-  item: Item = {ref: null, title: null, description: null, downloads: -1, user: {ref: null, name: null, email: null}};
-  parent: Item = {ref: null, title: null, description: null, downloads: -1, user: {ref: null, name: null, email: null}};
+  item: Item = {ref: null, title: null, description: null, downloads: -1, user: {ref: null, name: null, email: null}, flags: 0};
+  parent: Item = {ref: null, title: null, description: null, downloads: -1, user: {ref: null, name: null, email: null}, flags: 0};
   children: Item[] = [];
   user: User = {ref: null, name: null, email: null};
   tags: any[] = [];
   removeTags: string[] = [];
   addTags: string[] = [];
   screenshots: Screenshot[] = [];
+  activeShot: Screenshot = {ref: null, description: null, primary: true};
   uppy: Uppy = new Uppy();
   screenshotUppy: Uppy = new Uppy();
   userServ: UserService = {} as UserService;
@@ -53,7 +54,7 @@ export class ItemEditComponent implements OnInit {
       this.getItem(this.itemType, this.itemId).subscribe(
         data => {
           this.item = data;
-          this.parent = {ref: null, title: null, description: null, downloads: -1, user: {ref: null, name: null, email: null}}
+          this.parent = {ref: null, title: null, description: null, downloads: -1, user: {ref: null, name: null, email: null}, flags: 0}
           if( data.parent !== null ) {
             this.parent = data.parent;
           }
@@ -61,20 +62,19 @@ export class ItemEditComponent implements OnInit {
           if( data.user !== null ) {
             this.user = data.user;
           }
+          if (this.currentUser.ref !== this.user.ref) {
+            this.router.navigate(['/']);
+          }
           this.tags = data.tags;
+          if (data.primary_screenshot.length > 0) {
+            this.activeShot = data.primary_screenshot[0];
+          }
         },
         () => {
           console.log('Error');
         }
       );
-      this.getScreenshots(this.itemType, this.itemId).subscribe(
-        data => {
-          this.screenshots = data;
-        },
-        () => {
-          console.log('Error');
-        }
-      );
+      this.updateScreenshots();
     });
 
     let selectedTypes = [];
@@ -124,25 +124,28 @@ export class ItemEditComponent implements OnInit {
       })
       .use(XHR, { endpoint: environment.apiUrl+this.itemType+"/"+this.itemId+"/screenshots" })
       .use(ImageEditor)
-      .on('complete', () => {
-        this.getScreenshots(this.itemType, this.itemId).subscribe(
-          data => {
-            this.screenshots = data;
-          },
-          () => {
-            console.log('Error');
-          }
-        );
+      .on('upload-success', (file, response) => {
+        console.log(response.body);
+        if (response.status >= 200 && response.status < 300) {
+          const data = JSON.parse(JSON.stringify(response.body));
+          this.screenshots = data;
+          data.forEach((element: Screenshot) => {
+            if (element.primary) {
+              this.activeShot = element;
+            }
+          });
+        }
       });
   }
   
   initializeFields(): void {
     this.itemType = this.route.snapshot.data.item_type;
-    this.item = {ref: null, title: null, description: null, downloads: -1, user: {ref: null, name: null, email: null}}
-    this.parent = {ref: null, title: null, description: null, downloads: -1, user: {ref: null, name: null, email: null}}
+    this.item = {ref: null, title: null, description: null, downloads: -1, user: {ref: null, name: null, email: null}, flags: 0}
+    this.parent = {ref: null, title: null, description: null, downloads: -1, user: {ref: null, name: null, email: null}, flags: 0}
     this.user = {ref: null, name: null, email: null}
     this.tags = [];
-    this.screenshots = []
+    this.screenshots = [];
+    this.activeShot = {ref: null, description: null, primary: true};
   }
   
   // check if the tag was added
@@ -163,7 +166,61 @@ export class ItemEditComponent implements OnInit {
     this.tags.push(item);
     return false;
   }
-  
+
+  public deleteScreenshot(screenshot: Screenshot):void {
+    const verify = confirm("Are you sure you want to delete this screenshot? This action is irreversible.");
+    if (verify) {
+      const httpOptions = {
+        headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', Accept: '*/*' })
+      };
+
+      this.http.delete(environment.apiUrl + 'screenshot/' + screenshot.ref, httpOptions).subscribe(
+        () => {
+          this.updateScreenshots();
+        });
+    }
+  }
+
+  public editScreenshotDescription(screenshot: Screenshot):void {
+    let description = screenshot.description
+    if (description === null) {
+      description = "";
+    }
+    const new_description = prompt("Enter the description for the screenshot:", description);
+    if (new_description === description || new_description === null) {
+      return;
+    }
+      
+    const httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', Accept: '*/*' })
+    };
+    const body = new URLSearchParams();
+    body.set('description', new_description);
+
+    this.http.post(environment.apiUrl + 'screenshot/' + screenshot.ref, body.toString(), httpOptions).subscribe(
+      () => {
+        this.updateScreenshots();
+      });
+  }
+
+  public makePrimaryScreenshot(screenshot: Screenshot):void {
+    console.log("primarying");
+  }
+
+  public updateScreenshots() {
+    this.getScreenshots(this.itemType, this.itemId).subscribe(
+      data => {
+        this.screenshots = data;
+        if (this.activeShot.ref === null && this.screenshots.length > 0) {
+          this.activeShot = this.screenshots[0];
+        }
+      },
+      () => {
+        console.log('Error');
+      }
+    );
+  }
+
   hasParent(): boolean {
     if( this.parent === null || this.parent === undefined ) {
       return false;
@@ -177,7 +234,15 @@ export class ItemEditComponent implements OnInit {
     }
     return (this.children.length > 0);
   }
-  
+
+  isPrivate(): boolean {
+    return (this.item.flags & 1) == 1;
+  }
+
+  isUnlisted(): boolean {
+    return (this.item.flags & 2) == 2;
+  }
+
   belongsToCurrentUser(): boolean {
     if (this.currentUser.ref === null) {
       return false;
@@ -219,12 +284,14 @@ interface Item {
     title: string|null,
     description: string|null
     downloads: number,
-    user: User
+    user: User,
+    flags: number
 }
 
 interface Screenshot {
     ref: string|null,
-    description: string|null
+    description: string|null,
+    primary: boolean
 }
 
 interface User {

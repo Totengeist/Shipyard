@@ -89,7 +89,7 @@ trait HasScreenshots {
      */
     public function hasScreenshot($screenshots = null) {
         if (is_null($screenshots)) {
-            return (bool) empty($this->screenshots);
+            return (bool) $this->screenshots->count();
         } elseif (is_string($screenshots)) {
             return $this->screenshots->contains('ref', $screenshots);
         }

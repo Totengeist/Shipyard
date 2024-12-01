@@ -57,7 +57,7 @@ class ScreenshotController extends Controller {
             $files['file'] = [$files['file']];
         }
 
-        if (count($files) == 0) {
+        if (count($files) === 0) { /** @phpstan-ignore identical.alwaysFalse */
             $validator = Screenshot::validator([]);
             $validator->validate();
             /** @var string[] $errors */
@@ -91,8 +91,15 @@ class ScreenshotController extends Controller {
             $item->assignScreenshot($screenshot);
         }
 
-        $payload = (string) json_encode($item->screenshots()->get());
+        $screenshots = $item->screenshots()->get()->makeVisible(['pivot'])->toArray();
+        $shots = [];
+        foreach ($screenshots as $shot) {
+            $shot['primary'] = $shot['pivot']['primary'];
+            unset($shot['pivot']);
+            $shots[] = $shot;
+        }
 
+        $payload = (string) json_encode($shots);
         $response->getBody()->write($payload);
 
         return $response

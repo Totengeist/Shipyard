@@ -18,8 +18,8 @@
             <label for="description">Describe the item <small>(Why should someone download it? What considerations are there?)</small></label><br>
         </div>
         <div class="form-floating mb-3" style="text-align: right; margin-top: -35px;">
-            <input type="checkbox" name="state[]" id="state_private" value="private"> <label class="checkbox-label" for="state_private">Private</label>
-            <input type="checkbox" name="state[]" id="state_unlisted" value="unlisted"> <label class="checkbox-label" for="state_unlisted"> Unlisted</label>
+            <input type="checkbox" name="state[]" id="state_private" value="private" [checked]="isPrivate()"> <label class="checkbox-label" for="state_private">Private</label>
+            <input type="checkbox" name="state[]" id="state_unlisted" value="unlisted" [checked]="isUnlisted()"> <label class="checkbox-label" for="state_unlisted">Unlisted</label>
             <a href="https://www.markdownguide.org/cheat-sheet/" target="_blank">Markdown allowed</a>
         </div>
         <p class="alert alert-warning">You can replace the downloadable file below. If you've made changes to the file to update it for newer versions of the game, consider <a href="new;parent={{ itemId }};itemType={{ itemType }}" [routerLink]="['/new', {parent: itemId, itemType: itemType}]">creating a revision</a> instead.</p>
@@ -32,7 +32,11 @@
         <div id="item-screenshots" *ngIf="hasScreenshots()">
         <ul class="screenshot-list">
             <li *ngFor="let screenshot of screenshots">
-                <a href=""><img src="api/v1/screenshot/{{ screenshot.ref }}/download" alt="{{ screenshot.description }}" title="{{ screenshot.description }}"></a>
+                <img src="api/v1/screenshot/{{ screenshot.ref }}/download" alt="{{ screenshot.description }}" title="{{ screenshot.description }}">
+                <a (click)="deleteScreenshot(screenshot)">X</a>
+                <a (click)="editScreenshotDescription(screenshot)">E</a>
+                <span *ngIf="screenshot.primary">P</span>
+                <a (click)="makePrimaryScreenshot(screenshot)" *ngIf="!screenshot.primary">M</a>
             </li>
         </ul>
         </div>
