@@ -1,19 +1,19 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute, RouterLink } from '@angular/router';
+import { NgIf, NgFor, NgClass } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
+import { FormsModule } from '@angular/forms';
+import { Router, ActivatedRoute, RouterLink } from '@angular/router';
+import Uppy from '@uppy/core';
+import Dashboard from '@uppy/dashboard';
+import Form from '@uppy/form';
+import ImageEditor from '@uppy/image-editor';
+import XHR from '@uppy/xhr-upload';
+import { MarkdownComponent } from 'ngx-markdown';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 import { TokenStorageService } from '../_services/token-storage.service';
 import { UserService } from '../_services/user.service';
-import { environment } from '../../environments/environment';
 import { SearchComponent } from '../search/search.component';
-import { MarkdownComponent } from 'ngx-markdown';
-import Uppy from '@uppy/core';
-import Form from '@uppy/form';
-import Dashboard from '@uppy/dashboard';
-import XHR from '@uppy/xhr-upload';
-import ImageEditor from '@uppy/image-editor';
-import { NgIf, NgFor, NgClass } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-item-edit',
@@ -95,11 +95,11 @@ export class ItemEditComponent implements OnInit {
         triggerUploadOnSubmit: true,
       })
       .use(XHR, { endpoint: environment.apiUrl+this.itemType })
-      .on('file-added', (file) => {
+      .on('file-added', () => {
         const endpoint = environment.apiUrl+this.itemType+'/'+this.itemId;
         this.uppy.getPlugin('XHRUpload')!.setOptions({ endpoint });
       })
-      .on('upload-success', (file, response) => {
+      .on('upload-success', () => {
         this.router.navigate(['/'+this.itemType+'/'+this.itemId]);
       })
       .on('upload', (data, files) => {
@@ -204,7 +204,7 @@ export class ItemEditComponent implements OnInit {
   }
 
   public makePrimaryScreenshot(screenshot: Screenshot):void {
-    console.log('primarying');
+    console.log('primarying' + screenshot.ref);
   }
 
   public updateScreenshots() {

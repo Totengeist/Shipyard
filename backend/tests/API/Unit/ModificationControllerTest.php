@@ -82,7 +82,7 @@ class ModificationControllerTest extends APITestCase {
 
         /** @var Modification $modification */
         $modification = Modification::query()->where([['title', $title], ['description', $description]])->first();
-        $this->assertEquals($modification->flags, 7);
+        $this->assertEquals(7, $modification->flags);
         $this->assertTrue($modification->isUnlisted());
         $this->assertFalse($modification->isListed());
         $this->assertTrue($modification->isPrivate());

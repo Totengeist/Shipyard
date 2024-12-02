@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
-import { AuthService } from '../_services/auth.service';
-import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { AuthService } from '../_services/auth.service';
 
 @Component({
   selector: 'app-register',

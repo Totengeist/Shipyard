@@ -11,7 +11,7 @@
         <ul class="item-tags">
             <input type="hidden" id="remove_tags" name="remove_tags" required value="{{ removeTags.join(',') }}" />
             <input type="hidden" id="add_tags" name="add_tags" required value="{{ addTags.join(',') }}" />
-            <li *ngFor="let tag of tags">{{ tag.label }} <a (click)="removeTag(tag)">x</a></li>
+            <li *ngFor="let tag of tags">{{ tag.label }} <a (click)="removeTag(tag)" (keyup)="removeTag(tag)" role="link" tabindex={{0}}>x</a></li>
         </ul>
         <div class="form-floating mb-3">
             <textarea type="text" class="form-control" id="description" name="description" placeholder="Why should someone download this item? What considerations are there?" required style="height: 160px;" value="{{item.description}}"></textarea>
@@ -33,10 +33,10 @@
         <ul class="screenshot-list">
             <li *ngFor="let screenshot of screenshots">
                 <img src="api/v1/screenshot/{{ screenshot.ref }}/download" alt="{{ screenshot.description }}" title="{{ screenshot.description }}">
-                <a (click)="deleteScreenshot(screenshot)">X</a>
-                <a (click)="editScreenshotDescription(screenshot)">E</a>
+                <a (click)="deleteScreenshot(screenshot)" (keyup)="deleteScreenshot(screenshot)" role="link" tabindex={{0}}>X</a>
+                <a (click)="editScreenshotDescription(screenshot)" (keyup)="editScreenshotDescription(screenshot)" role="link" tabindex={{0}}>E</a>
                 <span *ngIf="screenshot.primary">P</span>
-                <a (click)="makePrimaryScreenshot(screenshot)" *ngIf="!screenshot.primary">M</a>
+                <a (click)="makePrimaryScreenshot(screenshot)" (keyup)="makePrimaryScreenshot(screenshot)" role="link" tabindex={{0}} *ngIf="!screenshot.primary">M</a>
             </li>
         </ul>
         </div>

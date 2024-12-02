@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { NgIf } from '@angular/common';
+import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { UserService } from './_services/user.service';
-import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-root',

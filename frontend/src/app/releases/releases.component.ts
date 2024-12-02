@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { TokenStorageService } from '../_services/token-storage.service';
-import { environment } from '../../environments/environment';
-import { RouterLink } from '@angular/router';
 import { NgFor } from '@angular/common';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
+import { RouterLink } from '@angular/router';
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { TokenStorageService } from '../_services/token-storage.service';
 
 @Component({
   selector: 'app-releases',

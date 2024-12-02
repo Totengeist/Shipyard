@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { NgIf } from '@angular/common';
+import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { TokenStorageService } from '../_services/token-storage.service';
 import { UserService } from '../_services/user.service';
-import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-edit-profile',

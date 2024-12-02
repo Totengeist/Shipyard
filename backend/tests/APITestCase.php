@@ -37,10 +37,10 @@ class APITestCase extends TestCase {
     }
 
     /**
-     * @param array<string,string>                                                                      $headers
-     * @param array<string,string>                                                                      $cookies
-     * @param array<string,string>                                                                      $serverParams
-     * @param array<string, array<int, \Slim\Psr7\UploadedFile>>|array<string, \Slim\Psr7\UploadedFile> $uploadedFiles
+     * @param array<string,string>                                                $headers
+     * @param array<string,string>                                                $cookies
+     * @param array<string,string>                                                $serverParams
+     * @param array<string, array<int, UploadedFile>>|array<string, UploadedFile> $uploadedFiles
      *
      * @return SlimRequest
      */
@@ -98,10 +98,10 @@ class APITestCase extends TestCase {
     }
 
     /**
-     * @param string                                                                                    $route
-     * @param array<string, array<string>|string>                                                       $args
-     * @param array<string, string>                                                                     $headers
-     * @param array<string, array<int, \Slim\Psr7\UploadedFile>>|array<string, \Slim\Psr7\UploadedFile> $uploadedFiles
+     * @param string                                                              $route
+     * @param array<string, array<string>|string>                                 $args
+     * @param array<string, string>                                               $headers
+     * @param array<string, array<int, UploadedFile>>|array<string, UploadedFile> $uploadedFiles
      *
      * @return $this
      */

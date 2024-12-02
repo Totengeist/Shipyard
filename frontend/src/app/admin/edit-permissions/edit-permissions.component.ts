@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
+import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { TokenStorageService } from '../../_services/token-storage.service';
 import { environment } from '../../../environments/environment';
+import { TokenStorageService } from '../../_services/token-storage.service';
 
 
 @Component({

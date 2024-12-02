@@ -10,7 +10,7 @@ class Auth {
     /**
      * The active session.
      *
-     * @var \SlimSession\Helper<mixed>
+     * @var SessionHelper<mixed>
      */
     public static $session;
 

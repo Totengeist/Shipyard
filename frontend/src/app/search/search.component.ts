@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
 import { NgIf, NgFor, NgClass } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core'; // eslint-disable-line import/named
 
 import { from, fromEvent, Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map} from 'rxjs/operators';

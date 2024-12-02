@@ -10,7 +10,7 @@ on:
       - '**.php'
 
 jobs:
-  build:
+  backend:
     name: PHP 7.4 on ubuntu-22.04
     runs-on: ubuntu-22.04
 
@@ -37,7 +37,7 @@ jobs:
         php-version: 7.4
 
     - name: Validate composer.json and composer.lock
-      run: composer validate --strict
+      run: composer validate --strict --no-check-version
 
     - name: Get Composer Cache Directory
       id: composer-cache-restore
@@ -59,3 +59,27 @@ jobs:
       run: |
         composer style-check
         vendor/bin/phpstan analyse
+
+  frontend:
+    name: Node.js on ubuntu-22.04
+    runs-on: ubuntu-22.04
+
+    defaults:
+      run:
+        working-directory: ./frontend
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: latest
+        cache: 'npm'
+        cache-dependency-path: ./frontend/package-lock.json
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run linter
+      run: npm run lint

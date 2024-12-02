@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute, RouterLink } from '@angular/router';
+import { NgIf, NgFor, NgClass } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
+import { Router, ActivatedRoute, RouterLink } from '@angular/router';
+import { MarkdownComponent } from 'ngx-markdown';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 import { TokenStorageService } from '../_services/token-storage.service';
 import { UserService } from '../_services/user.service';
-import { environment } from '../../environments/environment';
-import { MarkdownComponent } from 'ngx-markdown';
-import { NgIf, NgFor, NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-item-page',

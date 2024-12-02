@@ -1,24 +1,24 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { Routes, RouterModule } from '@angular/router'; // eslint-disable-line import/named
 
-import { RegisterComponent } from './register/register.component';
-import { LoginComponent } from './login/login.component';
-import { HomeComponent } from './home/home.component';
 import { AboutComponent } from './about/about.component';
-import { ProfileComponent } from './profile/profile.component';
+import { AdminDashboardComponent } from './admin/dashboard/admin.component';
+import { AdminEditPermissionsComponent } from './admin/edit-permissions/edit-permissions.component';
+import { AdminPermissionsComponent } from './admin/permissions/permissions.component';
+import { AdminRolesComponent } from './admin/roles/roles.component';
 import { EditProfileComponent } from './edit_profile/edit_profile.component';
-import { ReleasesComponent } from './releases/releases.component';
+import { HomeComponent } from './home/home.component';
+import { ItemEditComponent } from './item_edit/item_edit.component';
 import { ItemListComponent } from './item_list/item_list.component';
 import { ItemPageComponent } from './item_page/item_page.component';
-import { ItemEditComponent } from './item_edit/item_edit.component';
 import { ItemUploadComponent } from './item_upload/item_upload.component';
+import { LoginComponent } from './login/login.component';
+import { ProfileComponent } from './profile/profile.component';
+import { RegisterComponent } from './register/register.component';
+import { ReleasesComponent } from './releases/releases.component';
 import { TagListComponent } from './tag_list/tag_list.component';
 import { TagPageComponent } from './tag_page/tag_page.component';
 import { UserPageComponent } from './user_page/user_page.component';
-import { AdminDashboardComponent } from './admin/dashboard/admin.component';
-import { AdminRolesComponent } from './admin/roles/roles.component';
-import { AdminPermissionsComponent } from './admin/permissions/permissions.component';
-import { AdminEditPermissionsComponent } from './admin/edit-permissions/edit-permissions.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },

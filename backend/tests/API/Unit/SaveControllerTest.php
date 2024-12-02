@@ -82,7 +82,7 @@ class SaveControllerTest extends APITestCase {
 
         /** @var Save $save */
         $save = Save::query()->where([['title', $title], ['description', $description]])->first();
-        $this->assertEquals($save->flags, 7);
+        $this->assertEquals(7, $save->flags);
         $this->assertTrue($save->isUnlisted());
         $this->assertFalse($save->isListed());
         $this->assertTrue($save->isPrivate());

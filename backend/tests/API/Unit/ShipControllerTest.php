@@ -82,7 +82,7 @@ class ShipControllerTest extends APITestCase {
 
         /** @var Ship $ship */
         $ship = Ship::query()->where([['title', $title], ['description', $description]])->first();
-        $this->assertEquals($ship->flags, 7);
+        $this->assertEquals(7, $ship->flags);
         $this->assertTrue($ship->isUnlisted());
         $this->assertFalse($ship->isListed());
         $this->assertTrue($ship->isPrivate());

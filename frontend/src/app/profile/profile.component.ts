@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { NgFor, NgIf } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 import { TokenStorageService } from '../_services/token-storage.service';
 import { UserService } from '../_services/user.service';
-import { environment } from '../../environments/environment';
-import { NgFor, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-profile',

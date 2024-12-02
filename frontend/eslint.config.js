@@ -1,5 +1,6 @@
 // @ts-check
 const eslint = require("@eslint/js");
+const importPlugin = require("eslint-plugin-import");
 const tseslint = require("typescript-eslint");
 const angular = require("angular-eslint");
 
@@ -11,11 +12,23 @@ module.exports = tseslint.config(
       ...tseslint.configs.recommended,
       ...tseslint.configs.stylistic,
       ...angular.configs.tsRecommended,
+      importPlugin.flatConfigs.recommended,
     ],
     processor: angular.processInlineTemplates,
     rules: {
-      "indent": ["error", 2],
       "eol-last": ["error", "always"],
+      "import/first": ["error"],
+      "import/newline-after-import": ["error"],
+      "import/no-duplicates": ["error"],
+      "import/no-self-import": ["error"],
+      "import/no-unresolved": ["off"], // no-unresolved currently doesn't work properly with TypeScript
+      "import/order": ["error", {
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        }
+      }],
+      "indent": ["error", 2],
       "no-trailing-spaces": ["error"],
       "quotes": ["error", "single"],
       "@angular-eslint/directive-selector": [
@@ -34,6 +47,7 @@ module.exports = tseslint.config(
           style: "kebab-case",
         },
       ],
+      "@typescript-eslint/no-explicit-any": ["warn"],
     },
   },
   {

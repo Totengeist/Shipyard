@@ -1,13 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { NgIf } from '@angular/common';
+import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
+import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
+import Uppy from '@uppy/core';
+import Dashboard from '@uppy/dashboard';
+import Form from '@uppy/form';
+import XHR from '@uppy/xhr-upload';
 import { environment } from '../../environments/environment';
 import { UserService } from './../_services/user.service';
-import Uppy from '@uppy/core';
-import Form from '@uppy/form';
-import Dashboard from '@uppy/dashboard';
-import XHR from '@uppy/xhr-upload';
-import { NgIf } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-item-upload',

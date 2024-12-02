@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { NgIf } from '@angular/common';
+import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../_services/user.service';
-import { FormsModule } from '@angular/forms';
-import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-login',

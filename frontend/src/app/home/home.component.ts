@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { NgFor, NgIf } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
+import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { RouterLink } from '@angular/router';
-import { NgFor, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-home',
