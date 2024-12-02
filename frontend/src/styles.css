@@ -160,6 +160,10 @@ div#item-details {
 	flex-grow: 2;
 }
 
+div#item-screenshots .primary-screenshot img {
+    width: 100%;
+}
+
 ul.screenshot-list {
 	display: flex;
 	flex-wrap: wrap;

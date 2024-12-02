@@ -27,7 +27,7 @@
 <div class="primary-screenshot"><img src="api/v1/screenshot/{{ activeShot.ref }}/download" alt="{{ activeShot.description }}" title="{{ activeShot.description }}"></div>
 <ul class="screenshot-list">
     <li *ngFor="let screenshot of screenshots" [ngClass]="{'active': activeShot.ref === screenshot.ref }">
-        <a href=""><img src="api/v1/screenshot/{{ screenshot.ref }}/download" alt="{{ screenshot.description }}" title="{{ screenshot.description }}"></a>
+        <a (click)="setActiveScreenshot(screenshot)" (keyup)="setActiveScreenshot(screenshot)" role="link" tabindex={{0}}><img src="api/v1/screenshot/{{ screenshot.ref }}/download" alt="{{ screenshot.description }}" title="{{ screenshot.description }}"></a>
     </li>
 </ul>
 </div>

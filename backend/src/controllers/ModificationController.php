@@ -7,6 +7,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Shipyard\Auth;
 use Shipyard\FileManager;
 use Shipyard\Models\Modification;
+use Shipyard\Models\Screenshot;
 use Shipyard\Models\Tag;
 use Shipyard\Models\User;
 use Shipyard\Traits\ChecksPermissions;
@@ -200,6 +201,16 @@ class ModificationController extends Controller {
         }
         if (isset($data['description'])) {
             $modification->description = $data['description'];
+        }
+
+        if (isset($data['primary_screenshot'])) {
+            $ref = strtolower($data['primary_screenshot']);
+            /** @var Screenshot $screenshot */
+            $screenshot = $modification->screenshots()->where([['ref', $ref]])->first();
+            if ($screenshot == null) {
+                return $this->not_found_response('Screenshot');
+            }
+            $modification->assignScreenshot($screenshot, true);
         }
 
         $this->edit_tags($data, $modification);

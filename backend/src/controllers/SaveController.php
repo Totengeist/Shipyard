@@ -7,6 +7,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Shipyard\Auth;
 use Shipyard\FileManager;
 use Shipyard\Models\Save;
+use Shipyard\Models\Screenshot;
 use Shipyard\Models\Tag;
 use Shipyard\Models\User;
 use Shipyard\Traits\ChecksPermissions;
@@ -202,7 +203,27 @@ class SaveController extends Controller {
             $save->description = $data['description'];
         }
 
+        if (isset($data['primary_screenshot'])) {
+            $ref = strtolower($data['primary_screenshot']);
+            /** @var Screenshot $screenshot */
+            $screenshot = $save->screenshots()->where([['ref', $ref]])->first();
+            if ($screenshot == null) {
+                return $this->not_found_response('Screenshot');
+            }
+            $save->assignScreenshot($screenshot, true);
+        }
+
         $this->edit_tags($data, $save);
+
+        if (isset($data['primary_screenshot'])) {
+            $ref = strtolower($data['primary_screenshot']);
+            /** @var Screenshot $screenshot */
+            $screenshot = $save->screenshots()->where([['ref', $ref]])->first();
+            if ($screenshot == null) {
+                return $this->not_found_response('Screenshot');
+            }
+            $save->assignScreenshot($screenshot, true);
+        }
 
         if (isset($files['file'])) {
             if (!is_array($files['file'])) {

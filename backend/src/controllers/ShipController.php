@@ -6,6 +6,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Shipyard\Auth;
 use Shipyard\FileManager;
+use Shipyard\Models\Screenshot;
 use Shipyard\Models\Ship;
 use Shipyard\Models\Tag;
 use Shipyard\Models\User;
@@ -200,6 +201,16 @@ class ShipController extends Controller {
         }
         if (isset($data['description'])) {
             $ship->description = $data['description'];
+        }
+
+        if (isset($data['primary_screenshot'])) {
+            $ref = strtolower($data['primary_screenshot']);
+            /** @var Screenshot $screenshot */
+            $screenshot = $ship->screenshots()->where([['ref', $ref]])->first();
+            if ($screenshot == null) {
+                return $this->not_found_response('Screenshot');
+            }
+            $ship->assignScreenshot($screenshot, true);
         }
 
         $this->edit_tags($data, $ship);

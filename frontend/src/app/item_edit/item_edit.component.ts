@@ -51,7 +51,7 @@ export class ItemEditComponent implements OnInit {
     this.initializeFields();
     this.route.params.subscribe(params => {
       this.itemId = params.slug;
-      this.getItem(this.itemType, this.itemId).subscribe(
+      this.getItem().subscribe(
         data => {
           this.item = data;
           this.parent = {ref: null, title: null, description: null, downloads: -1, user: {ref: null, name: null, email: null}, flags: 0}
@@ -204,11 +204,25 @@ export class ItemEditComponent implements OnInit {
   }
 
   public makePrimaryScreenshot(screenshot: Screenshot):void {
-    console.log('primarying' + screenshot.ref);
+    const httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', Accept: '*/*' })
+    };
+    const body = new URLSearchParams();
+    if (screenshot.ref == null) {
+      console.log('Unable to mark screenshot as primary. Screenshot ID is unknown.');
+      return
+    }
+    body.set('primary_screenshot', screenshot.ref);
+
+
+    this.http.post(environment.apiUrl + this.itemType + '/' + this.item.ref, body.toString(), httpOptions).subscribe(
+      () => {
+        this.updateScreenshots();
+      });
   }
 
   public updateScreenshots() {
-    this.getScreenshots(this.itemType, this.itemId).subscribe(
+    this.getScreenshots().subscribe(
       data => {
         this.screenshots = data;
         if (this.activeShot.ref === null && this.screenshots.length > 0) {
@@ -254,20 +268,20 @@ export class ItemEditComponent implements OnInit {
     return (this.parent!.user!.ref === this.user.ref)
   }
 
-  getItem(itemType: string, itemId: string): Observable<any> {
+  getItem(): Observable<any> {
     const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', Accept: '*/*' })
     };
 
-    return this.http.get(environment.apiUrl + itemType + '/' + itemId, httpOptions);
+    return this.http.get(environment.apiUrl + this.itemType + '/' + this.itemId, httpOptions);
   }
 
-  getScreenshots(itemType: string, itemId: string): Observable<any> {
+  getScreenshots(): Observable<any> {
     const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', Accept: '*/*' })
     };
 
-    return this.http.get(environment.apiUrl + itemType + '/' + itemId + '/screenshots', httpOptions);
+    return this.http.get(environment.apiUrl + this.itemType + '/' + this.itemId + '/screenshots', httpOptions);
   }
 
   hasScreenshots(): boolean {

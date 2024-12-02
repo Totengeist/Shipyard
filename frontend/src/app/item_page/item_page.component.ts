@@ -82,6 +82,10 @@ export class ItemPageComponent implements OnInit {
     this.activeShot = {ref: null, description: null};
   }
 
+  setActiveScreenshot(screenshot: Screenshot): void {
+    this.activeShot = screenshot;
+  }
+
   hasParent(): boolean {
     if( this.parent === null || this.parent === undefined ) {
       return false;

@@ -172,7 +172,9 @@ class ScreenshotController extends Controller {
         if ($screenshot == null) {
             return $this->not_found_response('Screenshot');
         }
-        $screenshot->description = $data['description'];
+        if (isset($data['description'])) {
+            $screenshot->description = $data['description'];
+        }
         $screenshot->save();
 
         $payload = (string) json_encode($screenshot);

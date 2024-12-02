@@ -51,7 +51,12 @@ trait HasScreenshots {
                 $this->screenshots()->updateExistingPivot($old_primary->id, ['primary' => false]);
             }
         }
-        $return = $this->screenshots()->save($screenshot, ['type' => self::$tag_label, 'primary' => $primary]);
+        if ($this->hasScreenshot($screenshot)) {
+            $this->screenshots()->updateExistingPivot($screenshot->id, ['primary' => $primary]);
+            $return = true;
+        } else {
+            $return = $this->screenshots()->save($screenshot, ['type' => self::$tag_label, 'primary' => $primary]);
+        }
         unset($this->screenshots);
         unset($this->primary_screenshot);
 

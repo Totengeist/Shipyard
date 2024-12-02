@@ -13,7 +13,6 @@ use Totengeist\IVParser\IVFile;
  * Processing uploaded files, moving files, and determining file types.
  *
  * @todo Implement virus scanning with clamav https://stackoverflow.com/q/7648623/9882907
- * @todo Use IVParsers to implement custom internal media types
  */
 class FileManager {
     use CreatesUniqueIDs;
@@ -89,7 +88,7 @@ class FileManager {
     public static function getStorageDirectory($hash) {
         $dir = $_SERVER['STORAGE'] . $hash[0] . '/' . $hash[1] . '/' . $hash . '/';
         if (!is_dir($dir)) {
-            mkdir($dir, 0777, true);
+            mkdir($dir, 07700, true);
         }
 
         return $dir;
