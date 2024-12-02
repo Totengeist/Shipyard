@@ -42,7 +42,7 @@ export class RegisterComponent {
   }
 }
 
-interface RegisterFormData { 
+interface RegisterFormData {
     name: string|null,
     email: string|null,
     password: string|null,

@@ -46,7 +46,7 @@ export class LoginComponent implements OnInit {
   }
 }
 
-interface LoginFormData { 
+interface LoginFormData {
     username: string|null,
     password: string|null
 }

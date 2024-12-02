@@ -44,11 +44,11 @@ const routes: Routes = [
   { path: 'ship/:slug', component: ItemPageComponent, data: {item_type: 'ship'} },
   { path: 'save/:slug', component: ItemPageComponent, data: {item_type: 'save'} },
   { path: 'modification/:slug', component: ItemPageComponent, data: {item_type: 'modification'} },
-  
+
   { path: 'ship/:slug/edit', component: ItemEditComponent, data: {item_type: 'ship'} },
   { path: 'save/:slug/edit', component: ItemEditComponent, data: {item_type: 'save'} },
   { path: 'modification/:slug/edit', component: ItemEditComponent, data: {item_type: 'modification'} },
-  
+
   { path: 'tag/:slug', component: TagPageComponent },
   { path: 'user/:slug', component: UserPageComponent },
 

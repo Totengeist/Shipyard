@@ -15,6 +15,9 @@ module.exports = tseslint.config(
     processor: angular.processInlineTemplates,
     rules: {
       "indent": ["error", 2],
+      "eol-last": ["error", "always"],
+      "no-trailing-spaces": ["error"],
+      "quotes": ["error", "single"],
       "@angular-eslint/directive-selector": [
         "error",
         {

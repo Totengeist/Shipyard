@@ -15,7 +15,7 @@ import { NgFor, NgIf } from '@angular/common';
   imports: [NgFor, NgIf, RouterLink]
 })
 export class UserPageComponent implements OnInit {
-  name = "";
+  name = '';
   itemTypes: string[] = ['ship', 'save', 'modification'];
   items: Record<string, any[]> = {};
 

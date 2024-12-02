@@ -2,8 +2,8 @@ import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter } from '
 import { NgIf, NgFor, NgClass } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import { from, fromEvent, Observable } from "rxjs";
-import { debounceTime, distinctUntilChanged, map} from "rxjs/operators";
+import { from, fromEvent, Observable } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 
@@ -25,7 +25,7 @@ export class SearchComponent implements OnInit {
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
-  	this.itemSearch();
+    this.itemSearch();
   }
 
   itemSearch(): void {
@@ -38,7 +38,7 @@ export class SearchComponent implements OnInit {
     blur$.subscribe(() => setTimeout(this.closeDropDown, 100));
     search$.subscribe(() => {
       const searchValue = this.searchInput.nativeElement.value.trim();
-      if( searchValue !== "" ) {
+      if( searchValue !== '' ) {
         this.isSearching = true;
         this.getItems(searchValue).subscribe(
           data => {
@@ -62,7 +62,7 @@ export class SearchComponent implements OnInit {
 
   setItemName(item: any): void {
     this.setNameEvent.emit({item});
-    this.searchInput.nativeElement.value = "";
+    this.searchInput.nativeElement.value = '';
     this.items = []
     this.showSearches = false;
   }

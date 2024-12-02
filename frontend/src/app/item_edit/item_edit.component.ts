@@ -23,7 +23,7 @@ import { FormsModule } from '@angular/forms';
   imports: [SearchComponent, FormsModule, RouterLink, NgIf, MarkdownComponent, NgFor, NgClass]
 })
 export class ItemEditComponent implements OnInit {
-  supportedTypes: any = {ship: ["ship file", [".ship"]], save: ["save file", [".space"]], modification: ["mod archive", [".zip"]]}; // eslint-disable-line @typescript-eslint/no-explicit-any
+  supportedTypes: any = {ship: ['ship file', ['.ship']], save: ['save file', ['.space']], modification: ['mod archive', ['.zip']]}; // eslint-disable-line @typescript-eslint/no-explicit-any
   currentUser: User = {ref: null, name: null, email: null};
   itemType = '';
   itemId = '';
@@ -96,11 +96,11 @@ export class ItemEditComponent implements OnInit {
       })
       .use(XHR, { endpoint: environment.apiUrl+this.itemType })
       .on('file-added', (file) => {
-        const endpoint = environment.apiUrl+this.itemType+"/"+this.itemId;
+        const endpoint = environment.apiUrl+this.itemType+'/'+this.itemId;
         this.uppy.getPlugin('XHRUpload')!.setOptions({ endpoint });
       })
       .on('upload-success', (file, response) => {
-        this.router.navigate(['/'+this.itemType+"/"+this.itemId]);
+        this.router.navigate(['/'+this.itemType+'/'+this.itemId]);
       })
       .on('upload', (data, files) => {
         if( files.length == 0 ) {
@@ -122,7 +122,7 @@ export class ItemEditComponent implements OnInit {
       .use(Form, {
         target: '#screenshots-form',
       })
-      .use(XHR, { endpoint: environment.apiUrl+this.itemType+"/"+this.itemId+"/screenshots" })
+      .use(XHR, { endpoint: environment.apiUrl+this.itemType+'/'+this.itemId+'/screenshots' })
       .use(ImageEditor)
       .on('upload-success', (file, response) => {
         console.log(response.body);
@@ -137,7 +137,7 @@ export class ItemEditComponent implements OnInit {
         }
       });
   }
-  
+
   initializeFields(): void {
     this.itemType = this.route.snapshot.data.item_type;
     this.item = {ref: null, title: null, description: null, downloads: -1, user: {ref: null, name: null, email: null}, flags: 0}
@@ -147,7 +147,7 @@ export class ItemEditComponent implements OnInit {
     this.screenshots = [];
     this.activeShot = {ref: null, description: null, primary: true};
   }
-  
+
   // check if the tag was added
   public removeTag(tag:any): void {
     this.removeTags.push(tag.slug);
@@ -168,7 +168,7 @@ export class ItemEditComponent implements OnInit {
   }
 
   public deleteScreenshot(screenshot: Screenshot):void {
-    const verify = confirm("Are you sure you want to delete this screenshot? This action is irreversible.");
+    const verify = confirm('Are you sure you want to delete this screenshot? This action is irreversible.');
     if (verify) {
       const httpOptions = {
         headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', Accept: '*/*' })
@@ -184,13 +184,13 @@ export class ItemEditComponent implements OnInit {
   public editScreenshotDescription(screenshot: Screenshot):void {
     let description = screenshot.description
     if (description === null) {
-      description = "";
+      description = '';
     }
-    const new_description = prompt("Enter the description for the screenshot:", description);
+    const new_description = prompt('Enter the description for the screenshot:', description);
     if (new_description === description || new_description === null) {
       return;
     }
-      
+
     const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', Accept: '*/*' })
     };
@@ -204,7 +204,7 @@ export class ItemEditComponent implements OnInit {
   }
 
   public makePrimaryScreenshot(screenshot: Screenshot):void {
-    console.log("primarying");
+    console.log('primarying');
   }
 
   public updateScreenshots() {
@@ -227,7 +227,7 @@ export class ItemEditComponent implements OnInit {
     }
     return (this.parent.ref !== null);
   }
-  
+
   hasChildren(): boolean {
     if (this.children === null || this.children === undefined ) {
       return false;
@@ -249,7 +249,7 @@ export class ItemEditComponent implements OnInit {
     }
     return (this.currentUser.ref === this.user.ref)
   }
-  
+
   parentBelongsToSameUser(): boolean {
     return (this.parent!.user!.ref === this.user.ref)
   }

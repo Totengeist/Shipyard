@@ -17,9 +17,9 @@ import { FormsModule } from '@angular/forms';
   imports: [FormsModule, NgIf, RouterLink]
 })
 export class ItemUploadComponent implements OnInit {
-  supportedTypes: any = {ship: ["ship file", [".ship"]], save: ["save file", [".space"]], modification: ["mod archive", [".zip"]]}; // eslint-disable-line @typescript-eslint/no-explicit-any
-  itemType = "";
-  parent = "";
+  supportedTypes: any = {ship: ['ship file', ['.ship']], save: ['save file', ['.space']], modification: ['mod archive', ['.zip']]}; // eslint-disable-line @typescript-eslint/no-explicit-any
+  itemType = '';
+  parent = '';
   uppy: any; // eslint-disable-line @typescript-eslint/no-explicit-any
   user: UserService = {} as UserService;
 
@@ -34,10 +34,10 @@ export class ItemUploadComponent implements OnInit {
     let selectedTypes = availableTypes;
 
     if( this.route.snapshot.paramMap.get('parent') !== null ) {
-      this.parent = this.route.snapshot.paramMap.get('parent') ?? "";
+      this.parent = this.route.snapshot.paramMap.get('parent') ?? '';
     }
     if( this.route.snapshot.paramMap.get('itemType') !== null ) {
-      const typeCheck = this.route.snapshot.paramMap.get('itemType') ?? "";
+      const typeCheck = this.route.snapshot.paramMap.get('itemType') ?? '';
       if (typeCheck in this.supportedTypes) {
         this.itemType = typeCheck;
         selectedTypes = (this.supportedTypes as any)[typeCheck][1];
@@ -68,8 +68,8 @@ export class ItemUploadComponent implements OnInit {
           break;
         }
         let endpoint = environment.apiUrl+this.itemType;
-        if( this.parent != "" ) {
-          endpoint += "/"+this.parent+"/upgrade";
+        if( this.parent != '' ) {
+          endpoint += '/'+this.parent+'/upgrade';
         }
         this.uppy.getPlugin('XHRUpload').setOptions({ endpoint });
       })

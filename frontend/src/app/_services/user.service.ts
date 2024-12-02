@@ -36,7 +36,7 @@ export class UserService {
       this.username = user.name;
 
       this.activeLogin.unsubscribe();
-      this.activeLogin = interval(30000).subscribe(() => { this.refresh(); console.log("Session check"); });
+      this.activeLogin = interval(30000).subscribe(() => { this.refresh(); console.log('Session check'); });
     } else {
       this.roles = [];
       this.showDashboard = false;

@@ -15,7 +15,7 @@ import { NgFor, NgIf } from '@angular/common';
   imports: [NgFor, NgIf, RouterLink]
 })
 export class TagPageComponent implements OnInit {
-  tag: { slug: string, label: string, description: string } = { slug: "", label: "", description: "" };
+  tag: { slug: string, label: string, description: string } = { slug: '', label: '', description: '' };
   itemTypes: string[] = ['ship', 'save', 'modification'];
   items: Record<string, any[]> = {};
 
