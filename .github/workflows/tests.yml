@@ -100,10 +100,12 @@ jobs:
     - name: Run test suite
       run: composer test
       if: ${{ !(matrix.php == '7.4' && matrix.runner == 'ubuntu-22.04') }}
+      timeout-minutes: 5
 
     - name: Run test suite
       run: vendor/bin/phpunit --verbose --coverage-clover ./coverage.xml
       if: ${{ matrix.php == '7.4' && matrix.runner == 'ubuntu-22.04' }}
+      timeout-minutes: 5
       env:
         XDEBUG_MODE: coverage
 
