@@ -3,6 +3,7 @@
 require __DIR__ . '/../vendor/autoload.php';
 use Dotenv\Dotenv;
 use Illuminate\Database\Capsule\Manager as Capsule;
+use Shipyard\EnvironmentManager;
 
 $dotenv = Dotenv::createMutable((string) realpath(dirname(__DIR__)));
 if (!getenv('DB_HOST')) {
@@ -17,23 +18,7 @@ $dotenv->required([
     'DB_USERNAME'
 ]);
 $_SERVER['APP_ROOT'] = realpath(__DIR__);
-if (!isset($_SERVER['STORAGE'])) {
-    $_SERVER['STORAGE'] = realpath($_SERVER['APP_ROOT'] . '/storage') . DIRECTORY_SEPARATOR;
-} else {
-    if ($_SERVER['STORAGE'][0] == DIRECTORY_SEPARATOR || $_SERVER['STORAGE'][0] == '/' || $_SERVER['STORAGE'][0] == '\\') {
-        $dir = $_SERVER['STORAGE'];
-        if (!is_dir($dir)) {
-            mkdir($dir, 0700, true);
-        }
-        $_SERVER['STORAGE'] = realpath($dir) . DIRECTORY_SEPARATOR;
-    } else {
-        $dir = $_SERVER['APP_ROOT'] . '/' . $_SERVER['STORAGE'];
-        if (!is_dir($dir)) {
-            mkdir($dir, 0700, true);
-        }
-        $_SERVER['STORAGE'] = realpath($dir) . DIRECTORY_SEPARATOR;
-    }
-}
+$_SERVER['STORAGE'] = EnvironmentManager::storage();
 
 $capsule = new Capsule();
 $capsule->addConnection([
