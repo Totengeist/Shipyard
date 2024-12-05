@@ -19,7 +19,7 @@ class DiscordController extends Controller {
      */
     public function register(Request $request, Response $response) {
         $discord_login_url = 'https://discord.com/oauth2/authorize?client_id=' . $_SERVER['DISCORD_CLIENT_ID'] . '&response_type=code&redirect_uri='
-            . urlencode((!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['BASE_URL'] . '/discord/process_registration')
+            . urlencode($_SERVER['BASE_URL_ABS'] . '/discord/process_registration')
             . '&scope=identify';
 
         header("location: $discord_login_url");
@@ -33,7 +33,7 @@ class DiscordController extends Controller {
      */
     public function login(Request $request, Response $response) {
         $discord_login_url = 'https://discord.com/oauth2/authorize?client_id=' . $_SERVER['DISCORD_CLIENT_ID'] . '&response_type=code&redirect_uri='
-            . urlencode((!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['BASE_URL'] . '/discord/process_login')
+            . urlencode($_SERVER['BASE_URL_ABS'] . '/discord/process_login')
             . '&scope=identify';
 
         header("location: $discord_login_url");
@@ -52,7 +52,7 @@ class DiscordController extends Controller {
         $payload = [
             'code'=>$code,
             'grant_type'=>'authorization_code',
-            'redirect_uri'=>(!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['BASE_URL'] . '/discord/' . $uri,
+            'redirect_uri'=>$_SERVER['BASE_URL_ABS'] . '/discord/' . $uri,
             'scope'=>'identify',
         ];
 

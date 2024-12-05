@@ -24,4 +24,14 @@ class EnvironmentManager {
 
         return realpath($storage) . DIRECTORY_SEPARATOR;
     }
+
+    /**
+     * Create and register logger.
+     *
+     * @return void
+     */
+    public static function initializeLogger() {
+        $logger = new Log();
+        $logger->setAsGlobal();
+    }
 }

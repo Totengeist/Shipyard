@@ -18,7 +18,9 @@ $dotenv->required([
     'DB_USERNAME'
 ]);
 $_SERVER['APP_ROOT'] = realpath(__DIR__);
+$_SERVER['BASE_URL_ABS'] = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['BASE_URL'];
 $_SERVER['STORAGE'] = EnvironmentManager::storage();
+EnvironmentManager::initializeLogger();
 
 $capsule = new Capsule();
 $capsule->addConnection([

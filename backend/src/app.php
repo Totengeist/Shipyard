@@ -19,16 +19,10 @@ class App {
         $container->set('session', function () {
             return new \SlimSession\Helper();
         });
-        $container->set('logger', function () {
-            $logger = new Log();
-            $logger->setAsGlobal();
-
-            return $logger;
-        });
+        $container->set('logger', Log::get());
         AppFactory::setContainer($container);
 
         $app = AppFactory::create();
-        require __DIR__ . '/config/routes.php';
         self::$app = $app;
 
         $container->get('logger')->debug('App initialized.');
@@ -39,6 +33,7 @@ class App {
                 'lifetime' => '1 hour',
             ])
         );
+        require __DIR__ . '/config/routes.php';
     }
 
     /**

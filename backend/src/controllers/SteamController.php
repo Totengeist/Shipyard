@@ -18,7 +18,7 @@ class SteamController extends Controller {
         $login_url_params = [
             'openid.ns'         => 'http://specs.openid.net/auth/2.0',
             'openid.mode'       => 'checkid_setup',
-            'openid.return_to'  => (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['BASE_URL'] . '/steam/process_registration',
+            'openid.return_to'  => $_SERVER['BASE_URL_ABS'] . '/steam/process_registration',
             'openid.realm'      => (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'],
             'openid.identity'   => 'http://specs.openid.net/auth/2.0/identifier_select',
             'openid.claimed_id' => 'http://specs.openid.net/auth/2.0/identifier_select',
@@ -39,7 +39,7 @@ class SteamController extends Controller {
         $login_url_params = [
             'openid.ns'         => 'http://specs.openid.net/auth/2.0',
             'openid.mode'       => 'checkid_setup',
-            'openid.return_to'  => (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['BASE_URL'] . '/steam/process_login',
+            'openid.return_to'  => $_SERVER['BASE_URL_ABS'] . '/steam/process_login',
             'openid.realm'      => (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'],
             'openid.identity'   => 'http://specs.openid.net/auth/2.0/identifier_select',
             'openid.claimed_id' => 'http://specs.openid.net/auth/2.0/identifier_select',
