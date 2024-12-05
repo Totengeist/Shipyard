@@ -17,7 +17,28 @@ function log_errors($severity, $message, $file, $line, $options = []) {
     include __DIR__ . '/error.html';
     exit;
 }
+/**
+ * @return never
+ */
+function log_fatal() {
+    $file = 'unknown file';
+    $message  = 'shutdown';
+    $severity   = E_CORE_ERROR;
+    $line = 0;
+
+    $error = error_get_last();
+
+    if ($error !== null) {
+        $severity = $error['type'];
+        $file = $error['file'];
+        $line = $error['line'];
+        $message  = $error['message'];
+        log_errors($severity, $message, $file, $line);
+    }
+    exit;
+}
 set_error_handler('log_errors');
+register_shutdown_function('log_fatal');
 try {
     require __DIR__ . '/../bootstrap.php';
 
