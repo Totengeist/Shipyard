@@ -20,6 +20,7 @@ class App {
             return new \SlimSession\Helper();
         });
         $container->set('logger', Log::get());
+        $container->set('notifier', NotificationManager::get());
         AppFactory::setContainer($container);
 
         $app = AppFactory::create();

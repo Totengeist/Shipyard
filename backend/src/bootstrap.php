@@ -21,6 +21,7 @@ $_SERVER['APP_ROOT'] = realpath(__DIR__);
 $_SERVER['BASE_URL_ABS'] = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['BASE_URL'];
 $_SERVER['STORAGE'] = EnvironmentManager::storage();
 EnvironmentManager::initializeLogger();
+EnvironmentManager::initializeNotifier();
 
 $capsule = new Capsule();
 $capsule->addConnection([

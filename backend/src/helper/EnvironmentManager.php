@@ -34,4 +34,18 @@ class EnvironmentManager {
         $logger = new Log();
         $logger->setAsGlobal();
     }
+
+    /**
+     * Create and register notifiers.
+     *
+     * @return void
+     */
+    public static function initializeNotifier() {
+        $notifier = new NotificationManager();
+        $notifier->setAsGlobal();
+        $notifier->add_channel('email-text', new EmailNotifier());
+        $htmlemail = new EmailNotifier();
+        $htmlemail->isHTML();
+        $notifier->add_channel('email-html', $htmlemail);
+    }
 }
