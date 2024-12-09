@@ -49,6 +49,19 @@ class EmailNotifier extends Notifier {
     }
 
     /**
+     * @return bool
+     */
+    public function isEnabled() {
+        if (isset($_SERVER['DISABLE_EMAIL']) && $_SERVER['DISABLE_EMAIL'] == true) {
+            Log::get()->channel('notifications')->debug('Email notifications disabled by DISABLE_EMAIL.');
+
+            return false;
+        }
+
+        return $this->enabled;
+    }
+
+    /**
      * Retrieve the basic configuration settings from the environment.
      *
      * @param PHPMailer $mailer
@@ -59,10 +72,12 @@ class EmailNotifier extends Notifier {
         if (!isset($_SERVER['SMTP_HOST'], $_SERVER['SMTP_USER'], $_SERVER['SMTP_PASSWORD'], $_SERVER['SMTP_PASSWORD'], $_SERVER['SMTP_FROM'])
             || $_SERVER['SMTP_HOST'] == '' || $_SERVER['SMTP_USER'] == '' || $_SERVER['SMTP_PASSWORD'] == '' || $_SERVER['SMTP_PASSWORD'] == '' || $_SERVER['SMTP_FROM'] == ''
         ) {
+            Log::get()->channel('notifications')->debug('Email notifications disabled by lack of evironment settings.');
             $this->disable();
 
             return;
         }
+        Log::get()->channel('notifications')->debug('SMTP host set: ' . $_SERVER['SMTP_HOST']);
 
         $mailer->isSMTP();
         if (isset($_SERVER['SMTP_AUTH']) && strtolower(trim($_SERVER['SMTP_AUTH'])) == 'true') {
@@ -94,7 +109,7 @@ class EmailNotifier extends Notifier {
      * @return bool
      */
     public function send($message, $subject) {
-        if (!$this->enabled || count($this->mailer->getToAddresses()) <= 0) {
+        if (!$this->isEnabled() || count($this->mailer->getToAddresses()) <= 0) {
             return false;
         }
         $this->mailer->Subject = $subject;

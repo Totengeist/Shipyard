@@ -18,7 +18,7 @@ $dotenv->required([
     'DB_USERNAME'
 ]);
 $_SERVER['APP_ROOT'] = realpath(__DIR__);
-$_SERVER['BASE_URL_ABS'] = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['BASE_URL'];
+$_SERVER['BASE_URL_ABS'] = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'undefined') . $_SERVER['BASE_URL'];
 $_SERVER['STORAGE'] = EnvironmentManager::storage();
 EnvironmentManager::initializeLogger();
 EnvironmentManager::initializeNotifier();

@@ -26,7 +26,9 @@ class APITestCase extends TestCase {
     public function setUp(): void {
         parent::setUp();
         $this->app = (new App())->get();
+        $_SERVER['DISABLE_EMAIL'] = true;
         $_SERVER['DISABLE_PAGINATION'] = true;
+        $_SERVER['HTTP_HOST'] = true;
         session_start();
     }
 
