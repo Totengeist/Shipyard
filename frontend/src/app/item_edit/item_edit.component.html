@@ -18,7 +18,8 @@
             <label for="description">Describe the item <small>(Why should someone download it? What considerations are there?)</small></label><br>
         </div>
         <div class="form-floating mb-3" style="text-align: right; margin-top: -35px;">
-            <input type="checkbox" name="state[]" id="state_private" value="private" [checked]="isPrivate()"> <label class="checkbox-label" for="state_private">Private</label>
+            <input *ngIf="authUser.can('edit '+itemType+'s')" type="checkbox" name="state[]" id="state_locked"   value="locked"   [checked]="isLocked()"  > <label class="checkbox-label" for="state_locked" *ngIf="authUser.can('edit '+itemType+'s')">Locked</label>
+            <input type="checkbox" name="state[]" id="state_private"  value="private"  [checked]="isPrivate()" > <label class="checkbox-label" for="state_private">Private</label>
             <input type="checkbox" name="state[]" id="state_unlisted" value="unlisted" [checked]="isUnlisted()"> <label class="checkbox-label" for="state_unlisted">Unlisted</label>
             <a href="https://www.markdownguide.org/cheat-sheet/" target="_blank">Markdown allowed</a>
         </div>

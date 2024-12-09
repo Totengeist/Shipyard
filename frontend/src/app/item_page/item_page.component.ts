@@ -26,6 +26,7 @@ export class ItemPageComponent implements OnInit {
   tags: any[] = [];
   screenshots: Screenshot[] = [];
   activeShot: Screenshot = {ref: null, description: null};
+  authUser: UserService = {} as UserService;
 
   constructor(private userService: UserService, private token: TokenStorageService, private http: HttpClient, private route: ActivatedRoute, private router: Router) {
     this.initializeFields();
@@ -35,6 +36,7 @@ export class ItemPageComponent implements OnInit {
     if( this.token.getUser() !== null ) {
       this.currentUser = this.token.getUser();
     }
+    this.authUser = this.userService;
     this.initializeFields();
     this.route.params.subscribe(params => {
       this.itemId = params.slug;
@@ -106,6 +108,14 @@ export class ItemPageComponent implements OnInit {
 
   isUnlisted(): boolean {
     return (this.item.flags & 2) == 2;
+  }
+
+  isLocked(): boolean {
+    return (this.item.flags & 4) == 4;
+  }
+
+  canEdit(): boolean {
+    return this.authUser.can('edit '+this.itemType+'s')||(this.belongsToCurrentUser() && !this.isLocked());
   }
 
   belongsToCurrentUser(): boolean {

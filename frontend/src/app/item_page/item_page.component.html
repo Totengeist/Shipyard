@@ -1,6 +1,7 @@
 <div id="item-details">
 <h1>{{ item.title }}</h1>
-<div>By <a href="/user/{{ user.ref }}" routerLink="/user/{{ user.ref }}">{{ user.name }}</a> <span *ngIf="belongsToCurrentUser()"> [ <a href="/{{ itemType }}/{{ item.ref }}/edit" routerLink="/{{ itemType }}/{{ item.ref }}/edit">edit</a> ]</span> <span class="private-label" *ngIf="isPrivate()"> Private</span> <span class="unlisted-label" *ngIf="isUnlisted()"> Unlisted</span></div>
+<div>By <a href="/user/{{ user.ref }}" routerLink="/user/{{ user.ref }}">{{ user.name }}</a> <span *ngIf="canEdit()"> [ <a href="/{{ itemType }}/{{ item.ref }}/edit" routerLink="/{{ itemType }}/{{ item.ref }}/edit">edit</a> ]</span> <span *ngIf="belongsToCurrentUser() && isLocked()"> Locked</span> <span class="private-label" *ngIf="isPrivate()"> Private</span> <span class="unlisted-label" *ngIf="isUnlisted()"> Unlisted</span></div>
+<div class="alert alert-warning" *ngIf="belongsToCurrentUser() && isLocked()">This item has been locked by a moderator. If you feel this was in error, feel free to <a href="/about" routerLink="/about">contact us</a>.</div>
 <div class="alert alert-secondary" >
 <span *ngIf="hasParent()">This item is derived from <a href="{{ itemType }}/{{parent.ref}}" [routerLink]="['/'+itemType+'/'+parent.ref]">{{parent.title}}</a><span *ngIf="!parentBelongsToSameUser()">&nbsp;by <a href="/user/{{ parent.user.ref }}" routerLink="/user/{{ parent.user.ref }}">{{parent.user.name}}</a></span>.&nbsp;</span>
 <span *ngIf="belongsToCurrentUser()">Have you made changes to this item? <a href="new;parent={{ itemId }};itemType={{ itemType }}" [routerLink]="['/new', {parent: itemId, itemType: itemType}]">Upload a revision</a>!</span>

@@ -38,7 +38,7 @@ export class ItemEditComponent implements OnInit {
   activeShot: Screenshot = {ref: null, description: null, primary: true};
   uppy: Uppy = new Uppy();
   screenshotUppy: Uppy = new Uppy();
-  userServ: UserService = {} as UserService;
+  authUser: UserService = {} as UserService;
 
   constructor(private userService: UserService, private token: TokenStorageService, private http: HttpClient, private route: ActivatedRoute, private router: Router) {
     this.initializeFields();
@@ -48,6 +48,7 @@ export class ItemEditComponent implements OnInit {
     if( this.token.getUser() !== null ) {
       this.currentUser = this.token.getUser();
     }
+    this.authUser = this.userService;
     this.initializeFields();
     this.route.params.subscribe(params => {
       this.itemId = params.slug;
@@ -62,8 +63,9 @@ export class ItemEditComponent implements OnInit {
           if( data.user !== null ) {
             this.user = data.user;
           }
-          if (this.currentUser.ref !== this.user.ref) {
-            this.router.navigate(['/']);
+          if (!this.canEdit()) {
+            console.log('Unauthorized');
+            this.router.navigate(['/'+this.itemType+'/'+this.itemId]);
           }
           this.tags = data.tags;
           if (data.primary_screenshot.length > 0) {
@@ -255,6 +257,14 @@ export class ItemEditComponent implements OnInit {
 
   isUnlisted(): boolean {
     return (this.item.flags & 2) == 2;
+  }
+
+  isLocked(): boolean {
+    return (this.item.flags & 4) == 4;
+  }
+
+  canEdit(): boolean {
+    return this.authUser.can('edit '+this.itemType+'s')||(this.belongsToCurrentUser() && !this.isLocked());
   }
 
   belongsToCurrentUser(): boolean {

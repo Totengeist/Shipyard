@@ -15,6 +15,7 @@ const httpOptions = {
 })
 export class UserService {
   roles: string[] = [];
+  permissions: string[] = [];
   isLoginFailed = false;
   errorMessage = '';
   showDashboard = false;
@@ -32,6 +33,7 @@ export class UserService {
     if (this.isLoggedIn()) {
       const user = this.tokenStorageService.getUser();
       this.roles = user.roles;
+      this.permissions = user.permissions;
       this.showDashboard = (this.roles.length > 0);
       this.username = user.name;
 
@@ -39,6 +41,7 @@ export class UserService {
       this.activeLogin = interval(30000).subscribe(() => { this.refresh(); console.log('Session check'); });
     } else {
       this.roles = [];
+      this.permissions = [];
       this.showDashboard = false;
       this.username = '';
     }
@@ -56,6 +59,10 @@ export class UserService {
         console.log( err.message );
       }
     );
+  }
+
+  can(permission: string): boolean {
+    return this.permissions.includes(permission);
   }
 
   removeSteam(): Observable<any> {
