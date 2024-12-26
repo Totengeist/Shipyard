@@ -3,9 +3,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
 import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import { TokenStorageService } from '../../_services/token-storage.service';
-
-const AUTH_API = 'http://localhost/Shipyard/api/v1/';
 
 
 @Component({
@@ -44,7 +43,7 @@ export class AdminRolesComponent implements OnInit {
       })
     };
 
-    return this.http.get(AUTH_API + 'role', httpOptions);
+    return this.http.get(environment.apiUrl + 'role', httpOptions);
   }
 
 
