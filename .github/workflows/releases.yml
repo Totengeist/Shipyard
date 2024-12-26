@@ -1,0 +1,115 @@
+name: Releases
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      refToBuild:
+        description: 'Tag to build'
+        type: string
+
+env:
+  TAG: ${{ inputs.refToBuild || github.ref_name }}
+
+jobs:
+  build:
+    name: Build Release
+    runs-on: ubuntu-22.04
+
+    env:
+      APP_TITLE: Shipyard
+      BASE_URL: /
+      LOG_LEVEL: OFF
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_DATABASE: shipyard
+      DB_USERNAME: root
+      DB_PASSWORD: root
+
+    services:
+      mysql:
+        image: mysql:latest
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: false
+          MYSQL_DATABASE: shipyard
+        ports:
+          - 3306/tcp
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        ref: ${{ env.TAG }}
+
+    - name: Set Swap Space
+      uses: pierotofy/set-swap-space@master
+      with:
+        swap-size-gb: 10
+
+    - name: Install PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 7.4
+        extensions: mysql
+
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: latest
+        cache: 'npm'
+        cache-dependency-path: ./frontend/package-lock.json
+
+    - name: Validate composer.json and composer.lock
+      run: composer validate --strict --no-check-version
+      working-directory: ./backend
+
+    - name: Install backend dependencies
+      run: composer install --prefer-dist --no-progress --no-suggest
+      working-directory: ./backend
+
+    - name: Install frontend dependencies
+      run: npm ci
+      working-directory: ./frontend
+
+    - name: Start MySQL
+      run: |
+        sudo /etc/init.d/mysql start
+        mysql -h 127.0.0.1 --port 3306 -u root -proot -e 'CREATE DATABASE IF NOT EXISTS shipyard;'
+
+    - name: Run Migration
+      run: php src/public/install/index.php
+      working-directory: ./backend
+
+    - name: Run backend test suite
+      run: composer test
+      timeout-minutes: 5
+      working-directory: ./backend
+
+    - name: Run frontend builder
+      run: npm run build
+      working-directory: ./frontend
+
+    - name: Build release archive
+      run: |
+        ls -lha
+        cp frontend/dist/frontend/browser/*.{js,css,map,html} backend/src/public/
+        cp README.md backend/
+        pushd backend
+        zip -r shipyard-${{ inputs.refToBuild || github.ref_name }}.zip vendor/ src/ .env.example composer.json
+        popd
+
+    - name: Update release
+      uses: ncipollo/release-action@main
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        artifacts: "backend/shipyard-${{ inputs.refToBuild || github.ref_name }}.zip"
+        tag: ${{ env.TAG }}
+        name: "📦 Release ${{ env.TAG }}"
+        allowUpdates: false
+        artifactErrorsFailBuild: true
+        draft: true
+        prerelease: false
+
