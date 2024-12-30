@@ -6,10 +6,11 @@ use Shipyard\Traits\HasRef;
 use Valitron\Validator;
 
 /**
- * @property string $description
- * @property int    $file_id
- * @property File   $file
- * @property bool   $primary
+ * @property string      $description
+ * @property int         $file_id
+ * @property File        $file
+ * @property Thumbnail[] $thumbnails
+ * @property bool        $primary
  */
 class Screenshot extends Model {
     use HasRef;
@@ -77,6 +78,15 @@ class Screenshot extends Model {
     }
 
     /**
+     * Retrieve screenshots from items of a specific class.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function thumbnails() {
+        return $this->hasMany(Thumbnail::class);
+    }
+
+    /**
      * A ship has a file.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -108,6 +118,12 @@ class Screenshot extends Model {
     }
 
     public function delete() {
+        foreach ($this->thumbnails as $thumb) {
+            if (!$thumb->delete()) {
+                return false;
+            }
+        }
+
         return $this->file->delete() && parent::delete();
     }
 }

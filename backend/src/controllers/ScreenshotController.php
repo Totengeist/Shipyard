@@ -5,6 +5,7 @@ namespace Shipyard\Controllers;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Shipyard\FileManager;
+use Shipyard\ImageHandler;
 use Shipyard\Models\Screenshot;
 use Shipyard\Traits\ChecksPermissions;
 
@@ -88,6 +89,7 @@ class ScreenshotController extends Controller {
             }
             $screenshot->file_id = $screen_data['file_id'];
             $screenshot->save();
+            ImageHandler::generateThumbnails($screenshot);
             $item->assignScreenshot($screenshot);
         }
 

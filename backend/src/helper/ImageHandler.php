@@ -3,6 +3,8 @@
 namespace Shipyard;
 
 use Shipyard\Models\File;
+use Shipyard\Models\Screenshot;
+use Shipyard\Models\Thumbnail;
 
 /**
  * Performs standard image management functions.
@@ -12,7 +14,7 @@ use Shipyard\Models\File;
  *
  * @todo Support WebP
  */
-class ImageManager {
+class ImageHandler {
     /**
      * The functions and settings used to handle image file types.
      *
@@ -22,12 +24,12 @@ class ImageManager {
         'image/jpeg' => [
             'load' => 'imagecreatefromjpeg',
             'save' => 'imagejpeg',
-            'quality' => 100
+            'quality' => 85
         ],
         'image/png' => [
             'load' => 'imagecreatefrompng',
             'save' => 'imagepng',
-            'quality' => 0
+            'quality' => 9
         ],
         'image/gif' => [
             'load' => 'imagecreatefromgif',
@@ -49,11 +51,13 @@ class ImageManager {
     /**
      * Generates thumbnails of various sizes from a File object.
      *
-     * @param File $file
+     * @param Screenshot $screenshot
      *
      * @return bool
      */
-    public static function generateThumbnails($file) {
+    public static function generateThumbnails($screenshot) {
+        /** @var File $file */
+        $file = $screenshot->file;
         // Verify the file is an image and is supported.
         $type = explode(';', $file->media_type, 2)[0];
         if (strpos($type, 'image/') !== 0 || !isset(self::$handlers[$type])) {
@@ -66,10 +70,11 @@ class ImageManager {
             return false;
         }
 
+        $thumbnails = [];
         foreach (self::$thumb_sizes as $size) {
             $thumbnail = self::createThumbnail($image, $type, $size[0], $size[1]);
             $thumb_filepath = $file->getFilePath() . '-' . $size[0];
-            $thumb_filename = rtrim($file->filename, '.' . $file->extension) . '-' . $size[0] . '.' . $file->extension;
+            $thumb_filename = rtrim($file->filename, '.' . $file->extension) . '-' . $size[0];
             if ($thumbnail !== false) {
                 call_user_func(
                     self::$handlers[$type]['save'], // @phpstan-ignore argument.type
@@ -78,7 +83,7 @@ class ImageManager {
                     self::$handlers[$type]['quality']
                 );
             }
-            /** @var File $file */
+            /** @var File $thumb_file */
             $thumb_file = File::query()->create([
                 'filename' => $thumb_filename,
                 'media_type' => $file->media_type,
@@ -86,7 +91,9 @@ class ImageManager {
                 'filepath' => str_replace($_SERVER['STORAGE'], '', $thumb_filepath),
                 'compressed' => false
             ]);
+            $thumbnails[] = ['file_id' => $thumb_file->id];
         }
+        $screenshot->thumbnails()->createMany($thumbnails);
 
         return true;
     }

@@ -5,6 +5,7 @@ use Shipyard\Models\Permission;
 use Shipyard\Models\Role;
 
 echo "Dropping tables.<br>\n";
+Capsule::schema()->dropIfExists('thumbnails');
 Capsule::schema()->dropIfExists('item_screenshots');
 Capsule::schema()->dropIfExists('screenshots');
 Capsule::schema()->dropIfExists('item_tags');
@@ -209,6 +210,21 @@ Capsule::schema()->create('item_screenshots', function ($table) {
           ->on('screenshots')
           ->onDelete('cascade');
     $table->primary(['screenshot_id', 'item_id', 'type']);
+});
+echo "Creating thumbnails table.<br>\n";
+Capsule::schema()->create('thumbnails', function ($table) {
+    $table->integer('screenshot_id')->unsigned();
+    $table->integer('file_id')->unsigned();
+    $table->timestamps();
+    $table->foreign('screenshot_id')
+          ->references('id')
+          ->on('screenshots')
+          ->onDelete('cascade');
+    $table->foreign('file_id')
+          ->references('id')
+          ->on('files')
+          ->onDelete('cascade');
+    $table->primary(['screenshot_id', 'file_id']);
 });
 
 echo "Set schema version.<br>\n";
