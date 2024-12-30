@@ -67,7 +67,9 @@ jobs:
       working-directory: ./backend
 
     - name: Install backend dependencies
-      run: composer install --prefer-dist --no-progress --no-suggest
+      run: |
+        composer remove fakerphp/faker laracasts/testdummy phpunit/phpunit mikey179/vfsstream
+        composer install --prefer-dist --no-progress --no-suggest
       working-directory: ./backend
 
     - name: Install frontend dependencies
