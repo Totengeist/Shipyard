@@ -12,8 +12,8 @@
     ],
     "require": {
         "php": ">=7.2",
-        "illuminate/database": "~6.0",
-        "illuminate/pagination": "~6.0",
+        "illuminate/database": "^8.75",
+        "illuminate/pagination": "^8.75",
         "slim/slim": "4.*",
         "slim/psr7": "^1.1",
         "bryanjhv/slim-session": "~4.0",
