@@ -21,7 +21,7 @@ class APITestCase extends TestCase {
     /** @var \Psr\Http\Message\ResponseInterface|null */
     protected $response;
     /** @var \Slim\App */
-    protected $app;
+    protected $app; // @phpstan-ignore missingType.generics
 
     public function setUp(): void {
         parent::setUp();

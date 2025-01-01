@@ -10,7 +10,7 @@ class App {
      *
      * @var \Slim\App
      */
-    private static $app;
+    private static $app; // @phpstan-ignore missingType.generics
 
     public function __construct() {
         $container = new \DI\Container();
@@ -42,7 +42,7 @@ class App {
      *
      * @return \Slim\App
      */
-    public static function get() {
+    public static function get() { // @phpstan-ignore missingType.generics
         return self::$app;
     }
 }
