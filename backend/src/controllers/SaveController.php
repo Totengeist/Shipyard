@@ -147,7 +147,17 @@ class SaveController extends Controller {
 
         $save->downloads++;
         $save->save();
-        if ($save->file->compressed) {
+
+        $gzip = false;
+        if ($save->file->compressed && count($request->getHeader('Accept-Encoding')) > 0) {
+            foreach (explode(',', $request->getHeader('Accept-Encoding')[0]) as $encoding) {
+                if (strtolower(trim($encoding)) == 'gzip') {
+                    $gzip = true;
+                    break;
+                }
+            }
+        }
+        if (!$gzip && $save->file->compressed) {
             if (($file = gzopen($save->file->getFilePath(), 'r')) === false || ($str = stream_get_contents($file)) === false) {
                 throw new \Exception('Unable to open file: ' . json_encode($save));
             }
@@ -157,6 +167,14 @@ class SaveController extends Controller {
             }
         }
         $response->getBody()->write($str);
+
+        if ($gzip && $save->file->compressed) {
+            return $response
+              ->withHeader('Content-Disposition', 'attachment; filename="' . $save->file->filename . '.' . $save->file->extension . '"')
+              ->withHeader('Content-Type', 'text/plain')
+              ->withHeader('Content-Encoding', 'gzip')
+              ->withHeader('Content-Length', strval(strlen($str)));
+        }
 
         return $response
           ->withHeader('Content-Disposition', 'attachment; filename="' . $save->file->filename . '.' . $save->file->extension . '"')

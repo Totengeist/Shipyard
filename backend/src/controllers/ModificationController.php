@@ -147,7 +147,17 @@ class ModificationController extends Controller {
 
         $modification->downloads++;
         $modification->save();
-        if ($modification->file->compressed) {
+
+        $gzip = false;
+        if ($modification->file->compressed && count($request->getHeader('Accept-Encoding')) > 0) {
+            foreach (explode(',', $request->getHeader('Accept-Encoding')[0]) as $encoding) {
+                if (strtolower(trim($encoding)) == 'gzip') {
+                    $gzip = true;
+                    break;
+                }
+            }
+        }
+        if (!$gzip && $modification->file->compressed) {
             if (($file = gzopen($modification->file->getFilePath(), 'r')) === false || ($str = stream_get_contents($file)) === false) {
                 throw new \Exception('Unable to open file: ' . json_encode($modification));
             }
@@ -157,6 +167,14 @@ class ModificationController extends Controller {
             }
         }
         $response->getBody()->write($str);
+
+        if ($gzip && $modification->file->compressed) {
+            return $response
+              ->withHeader('Content-Disposition', 'attachment; filename="' . $modification->file->filename . '.' . $modification->file->extension . '"')
+              ->withHeader('Content-Type', $modification->file->media_type)
+              ->withHeader('Content-Encoding', 'gzip')
+              ->withHeader('Content-Length', strval(strlen($str)));
+        }
 
         return $response
           ->withHeader('Content-Disposition', 'attachment; filename="' . $modification->file->filename . '.' . $modification->file->extension . '"')
