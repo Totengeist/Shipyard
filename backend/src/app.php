@@ -31,7 +31,7 @@ class App {
         $app->add(
             new \Slim\Middleware\Session([
                 'autorefresh' => true,
-                'lifetime' => '1 hour',
+                'lifetime' => '24 hours',
             ])
         );
         require __DIR__ . '/config/routes.php';
