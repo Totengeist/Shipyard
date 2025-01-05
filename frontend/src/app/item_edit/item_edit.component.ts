@@ -106,6 +106,10 @@ export class ItemEditComponent implements OnInit {
       })
       .on('upload', (data, files) => {
         if( files.length == 0 ) {
+          const uppyDisplay = document.getElementById('uppy')
+          if (uppyDisplay !== null) {
+            uppyDisplay.style.display = 'none';
+          }
           this.uppy.addFile({
             name: '__shipyard__blank__'+selectedTypes[0],
             type: 'text/plain',

@@ -11,7 +11,7 @@
         <ul class="item-tags">
             <input type="hidden" id="remove_tags" name="remove_tags" required value="{{ removeTags.join(',') }}" />
             <input type="hidden" id="add_tags" name="add_tags" required value="{{ addTags.join(',') }}" />
-            <li *ngFor="let tag of tags">{{ tag.label }} <a (click)="removeTag(tag)" (keyup)="removeTag(tag)" role="link" tabindex={{0}}>x</a></li>
+            <li *ngFor="let tag of tags" (click)="removeTag(tag)" (keyup)="removeTag(tag)" role="link" tabindex={{0}}>{{ tag.label }}</li>
         </ul>
         <div class="form-floating mb-3">
             <textarea type="text" class="form-control" id="description" name="description" placeholder="Why should someone download this item? What considerations are there?" required style="height: 160px;" value="{{item.description}}"></textarea>

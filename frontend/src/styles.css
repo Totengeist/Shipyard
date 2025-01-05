@@ -216,3 +216,34 @@ form .checkbox-label {
 	width: min-content;
 	padding: 15px 0;
 }
+
+.item-alerts {
+    display: none;
+}
+
+.item-alerts:has(span) {
+    display: block;
+}
+
+.search-results {
+    padding: 10px;
+    position: relative;
+    top: -16px;
+    background-color: #ededed
+}
+
+#edit-form .item-tags {
+    list-style-type: none;
+    display: inline flow-root;
+}
+
+#edit-form .item-tags li {
+	border: 1px solid #dee2e6;
+	border-radius: 25px;
+	padding: 0 .8em;
+	float: left;
+}
+
+#edit-form .item-tags li:hover {
+	background-color: red;
+}
