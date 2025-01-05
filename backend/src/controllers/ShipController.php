@@ -203,6 +203,9 @@ class ShipController extends Controller {
         if ($abort !== true) {
             return $abort;
         }
+        if ($ship->isLocked() && $this->can('edit-ships') !== true) {
+            return $this->unauthorized_response(['This ship is locked to editing.']);
+        }
 
         if (isset($data['user_ref'])) {
             /** @var \Illuminate\Database\Eloquent\Builder $query */
@@ -272,6 +275,9 @@ class ShipController extends Controller {
         if ($parent_ship == null) {
             return $this->not_found_response('Ship');
         }
+        if ($parent_ship->isLocked() && $this->can('edit-ships') !== true) {
+            return $this->unauthorized_response(['The ship is locked to editing.']);
+        }
 
         $requestbody = (array) $request->getParsedBody();
         $requestbody['parent_id'] = $parent_ship->id;
@@ -317,6 +323,9 @@ class ShipController extends Controller {
         $ship = $query->first();
         if ($ship == null) {
             return $this->not_found_response('Ship');
+        }
+        if ($ship->isLocked() && $this->can('edit-ships') !== true) {
+            return $this->unauthorized_response(['The ship is locked to editing.']);
         }
 
         $requestbody = (array) $request->getParsedBody();

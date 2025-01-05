@@ -204,6 +204,10 @@ class ModificationController extends Controller {
             return $abort;
         }
 
+        if ($modification->isLocked() && $this->can('edit-modifications') !== true) {
+            return $this->unauthorized_response(['This modification is locked to editing.']);
+        }
+
         if (isset($data['user_ref'])) {
             /** @var \Illuminate\Database\Eloquent\Builder $query */
             $query = User::query()->where([['ref', $data['user_ref']]]);
@@ -273,6 +277,10 @@ class ModificationController extends Controller {
             return $this->not_found_response('Modification');
         }
 
+        if ($parent_mod->isLocked() && $this->can('edit-modifications') !== true) {
+            return $this->unauthorized_response(['This modification is locked to editing.']);
+        }
+
         $requestbody = (array) $request->getParsedBody();
         $requestbody['parent_id'] = $parent_mod->id;
         $request = $request->withParsedBody($requestbody);
@@ -317,6 +325,9 @@ class ModificationController extends Controller {
         $modification = $query->first();
         if ($modification == null) {
             return $this->not_found_response('Modification');
+        }
+        if ($modification->isLocked() && $this->can('edit-saves') !== true) {
+            return $this->unauthorized_response(['The modification is locked to editing.']);
         }
 
         $requestbody = (array) $request->getParsedBody();

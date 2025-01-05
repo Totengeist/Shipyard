@@ -203,6 +203,9 @@ class SaveController extends Controller {
         if ($abort !== true) {
             return $abort;
         }
+        if ($save->isLocked() && $this->can('edit-saves') !== true) {
+            return $this->unauthorized_response(['This save is locked to editing.']);
+        }
 
         if (isset($data['user_ref'])) {
             /** @var \Illuminate\Database\Eloquent\Builder $query */
@@ -282,6 +285,9 @@ class SaveController extends Controller {
         if ($parent_save == null) {
             return $this->not_found_response('Save');
         }
+        if ($parent_save->isLocked() && $this->can('edit-saves') !== true) {
+            return $this->unauthorized_response(['The save is locked to editing.']);
+        }
 
         $requestbody = (array) $request->getParsedBody();
         $requestbody['parent_id'] = $parent_save->id;
@@ -327,6 +333,9 @@ class SaveController extends Controller {
         $save = $query->first();
         if ($save == null) {
             return $this->not_found_response('Save');
+        }
+        if ($save->isLocked() && $this->can('edit-saves') !== true) {
+            return $this->unauthorized_response(['The save is locked to editing.']);
         }
 
         $requestbody = (array) $request->getParsedBody();
