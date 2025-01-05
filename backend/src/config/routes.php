@@ -64,6 +64,8 @@ $app->group($_SERVER['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $gro
 
         $group->get('/screenshot/{ref}', 'Shipyard\Controllers\ScreenshotController:show');
         $group->get('/screenshot/{ref}/download', 'Shipyard\Controllers\ScreenshotController:download');
+        $group->get('/screenshot/{ref}/preview', 'Shipyard\Controllers\ScreenshotController:preview');
+        $group->get('/screenshot/{ref}/preview/{size}', 'Shipyard\Controllers\ScreenshotController:preview');
 
         $group->get('/user/{ref}', 'Shipyard\Controllers\RegisterController:show');
 

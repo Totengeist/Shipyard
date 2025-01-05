@@ -215,6 +215,7 @@ echo "Creating thumbnails table.<br>\n";
 Capsule::schema()->create('thumbnails', function ($table) {
     $table->integer('screenshot_id')->unsigned();
     $table->integer('file_id')->unsigned();
+    $table->integer('size');
     $table->timestamps();
     $table->foreign('screenshot_id')
           ->references('id')

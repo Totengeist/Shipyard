@@ -145,13 +145,59 @@ class ScreenshotController extends Controller {
         if ($screenshot == null) {
             return $this->not_found_response('Screenshot');
         }
-        $payload = (string) json_encode($screenshot);
 
         $response->getBody()->write((string) $screenshot->file->file_contents());
 
         return $response
           ->withHeader('Content-Disposition', 'attachment; filename="' . $screenshot->file->filename . '.' . $screenshot->file->extension . '"')
           ->withHeader('Content-Type', $screenshot->file->media_type);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param array<string,string> $args
+     *
+     * @return Response
+     */
+    public function preview(Request $request, Response $response, $args) {
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Screenshot::query()->where([['ref', $args['ref']]]);
+        /** @var Screenshot $screenshot */
+        $screenshot = $query->first();
+        if ($screenshot == null) {
+            return $this->not_found_response('Screenshot');
+        }
+        if (!isset($args['size'])) {
+            $response->getBody()->write((string) $screenshot->file->file_contents());
+
+            return $response
+              ->withHeader('Content-Type', $screenshot->file->media_type);
+        }
+        $size = intval($args['size']);
+
+        $available = false;
+        foreach (ImageHandler::$thumb_sizes as $tsize) {
+            if ($tsize[0] == $size) {
+                $available = true;
+            }
+        }
+        if (!$available) {
+            return $this->not_found_response('Thumbnail');
+        }
+
+        $thumbs = $screenshot->thumbnails()->get();
+        foreach ($thumbs as $thumbnail) {
+            if ($thumbnail['size'] == $size) {
+                $response->getBody()->write((string) $thumbnail->file->file_contents());
+
+                return $response
+                  ->withHeader('Content-Disposition', 'attachment; filename="' . $thumbnail->file->filename . '.' . $thumbnail->file->extension . '"')
+                  ->withHeader('Content-Type', $thumbnail->file->media_type);
+            }
+        }
+
+        return $this->not_found_response('Thumbnail');
     }
 
     /**

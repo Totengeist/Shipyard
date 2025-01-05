@@ -43,7 +43,7 @@ class ImageHandler {
      *
      * @var int[][]
      */
-    protected static $thumb_sizes = [
+    public static $thumb_sizes = [
         [318, 200], // List thumbnail
         [800, 520], // Main thumbnail
     ];
@@ -91,7 +91,7 @@ class ImageHandler {
                 'filepath' => str_replace($_SERVER['STORAGE'], '', $thumb_filepath),
                 'compressed' => false
             ]);
-            $thumbnails[] = ['file_id' => $thumb_file->id];
+            $thumbnails[] = ['file_id' => $thumb_file->id, 'size' => $size[0]];
         }
         $screenshot->thumbnails()->createMany($thumbnails);
 

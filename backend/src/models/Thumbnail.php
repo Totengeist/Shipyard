@@ -5,6 +5,7 @@ namespace Shipyard\Models;
 /**
  * @property int        $file_id
  * @property int        $screenshot_id
+ * @property int        $size
  * @property File       $file
  * @property Screenshot $screenshot
  */
@@ -15,7 +16,7 @@ class Thumbnail extends Model {
      * @var string[]
      */
     protected $fillable = [
-        'file_id', 'screenshot_id',
+        'file_id', 'screenshot_id', 'size'
     ];
 
     /**
