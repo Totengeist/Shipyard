@@ -22,6 +22,7 @@ $app->group($_SERVER['BASE_URL'] . '/discord', function (RouteCollectorProxy $gr
     $group->get('/process_login', 'Shipyard\Controllers\DiscordController:process_login');
     $group->post('/remove', 'Shipyard\Controllers\DiscordController:remove');
 });
+$app->get($_SERVER['BASE_URL'] . '/activate/{token}', 'Shipyard\Controllers\RegisterController:activate_redirect');
 $app->group($_SERVER['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $group) {
     $group->post('/register', 'Shipyard\Controllers\RegisterController:register');
     $group->get('/activate/{token}', 'Shipyard\Controllers\RegisterController:activate');

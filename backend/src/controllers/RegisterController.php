@@ -8,6 +8,7 @@ use Shipyard\Auth;
 use Shipyard\Log;
 use Shipyard\Models\User;
 use Shipyard\Models\UserActivation;
+use Shipyard\NotificationManager;
 use Shipyard\Traits\ChecksPermissions;
 use Valitron\Validator;
 
@@ -146,11 +147,18 @@ class RegisterController extends Controller {
 
         $subdata = array_intersect_key($data, array_flip((array) ['name', 'email', 'password', 'password_confirmation']));
         $user = $this->create($subdata)->makeVisible(['email', 'created_at', 'updated_at']);
-        $user->create_activation();
-        Log::get()->channel('registration')->info('Registered user.', $user->toArray());
+        $activation = $user->create_activation();
+        Log::get()->channel('registration')->info('Registered user. Activation link: ' . $_SERVER['BASE_URL_ABS'] . '/activate/' . $activation->token, $user->toArray());
+        /** @var \Shipyard\EmailNotifier|null $channel */
+        $channel = NotificationManager::get()->channel('email-text');
+        if (null !== $channel) {
+            $channel->addAddress($user->email);
+        }
+        if ($channel !== null) {
+            $channel->send('Thank you for registering with Shipyard. Please click this link to activate your account or copy and paste the link into your browser:\n\n' . $_SERVER['BASE_URL_ABS'] . '/activate/' . $activation->token, 'Shipyard Account Activation');
+        }
 
         $payload = (string) json_encode(['user' => $user]);
-
         $response->getBody()->write($payload);
 
         return $response
@@ -181,14 +189,31 @@ class RegisterController extends Controller {
         $user->activate();
         Log::get()->channel('registration')->info('Activated user.', $user->toArray());
 
-        Auth::login($user);
-
         $payload = (string) json_encode($user);
 
         $response->getBody()->write($payload);
 
         return $response
           ->withHeader('Content-Type', 'application/json');
+    }
+
+    /**
+     * Handle an activation request for the application with redirect.
+     *
+     * @param array<string,string> $args
+     *
+     * @return Response
+     */
+    public function activate_redirect(Request $request, Response $response, $args) {
+        $activation_response = $this->activate($request, $response, $args);
+
+        if ($activation_response->getStatusCode() != 200) {
+            return $activation_response;
+        }
+
+        return $response
+          ->withHeader('Location', $_SERVER['BASE_URL_ABS'])
+          ->withStatus(302);
     }
 
     /**
