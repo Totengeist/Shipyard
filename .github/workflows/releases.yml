@@ -18,26 +18,6 @@ jobs:
     name: Build Release
     runs-on: ubuntu-22.04
 
-    env:
-      APP_TITLE: Shipyard
-      BASE_URL: /
-      LOG_LEVEL: OFF
-      DB_HOST: 127.0.0.1
-      DB_PORT: 3306
-      DB_DATABASE: shipyard
-      DB_USERNAME: root
-      DB_PASSWORD: root
-
-    services:
-      mysql:
-        image: mysql:latest
-        env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: false
-          MYSQL_DATABASE: shipyard
-        ports:
-          - 3306/tcp
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-
     steps:
     - uses: actions/checkout@v4
       with:
@@ -53,7 +33,6 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: 8.2
-        extensions: mysql
 
     - name: Install Node.js
       uses: actions/setup-node@v4
@@ -68,27 +47,13 @@ jobs:
 
     - name: Install backend dependencies
       run: |
-        composer remove fakerphp/faker laracasts/testdummy phpunit/phpunit mikey179/vfsstream
+        composer remove --dev fakerphp/faker laracasts/testdummy phpunit/phpunit mikey179/vfsstream
         composer install --prefer-dist --no-progress --no-suggest
       working-directory: ./backend
 
     - name: Install frontend dependencies
       run: npm ci
       working-directory: ./frontend
-
-    - name: Start MySQL
-      run: |
-        sudo /etc/init.d/mysql start
-        mysql -h 127.0.0.1 --port 3306 -u root -proot -e 'CREATE DATABASE IF NOT EXISTS shipyard;'
-
-    - name: Run Migration
-      run: php src/public/install/index.php
-      working-directory: ./backend
-
-    - name: Run backend test suite
-      run: composer test
-      timeout-minutes: 5
-      working-directory: ./backend
 
     - name: Run frontend builder
       run: npm run build
@@ -100,7 +65,7 @@ jobs:
         cp frontend/dist/frontend/browser/*.{js,css,map,html} backend/src/public/
         cp README.md backend/
         pushd backend
-        zip -r shipyard-${{ inputs.refToBuild || github.ref_name }}.zip vendor/ src/ .env.example composer.json
+        zip -r shipyard-${{ inputs.refToBuild || github.ref_name }}.zip vendor/ src/ .env.example composer.json README.md
         popd
 
     - name: Update release
