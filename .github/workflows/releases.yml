@@ -64,8 +64,10 @@ jobs:
         ls -lha
         cp frontend/dist/frontend/browser/*.{js,css,map,html} backend/src/public/
         cp README.md backend/
+        cp LICENSE backend/
+        cp CHANGELOG.md backend/
         pushd backend
-        zip -r shipyard-${{ inputs.refToBuild || github.ref_name }}.zip vendor/ src/ .env.example composer.json README.md
+        zip -r shipyard-${{ inputs.refToBuild || github.ref_name }}.zip vendor/ src/ .env.example composer.json README.md LICENSE CHANGELOG.md
         popd
 
     - name: Update release
