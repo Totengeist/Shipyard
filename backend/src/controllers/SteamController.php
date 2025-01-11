@@ -24,6 +24,7 @@ class SteamController extends Controller {
             'openid.claimed_id' => 'http://specs.openid.net/auth/2.0/identifier_select',
         ];
 
+        Log::get()->channel('registration')->info('Begin Steam ID registration.', Auth::user()->toArray());
         $steam_login_url = 'https://steamcommunity.com/openid/login?' . http_build_query($login_url_params, '', '&');
 
         header("location: $steam_login_url");
@@ -45,6 +46,7 @@ class SteamController extends Controller {
             'openid.claimed_id' => 'http://specs.openid.net/auth/2.0/identifier_select',
         ];
 
+        Log::get()->channel('registration')->info('Begin Steam ID login.', Auth::user()->toArray());
         $steam_login_url = 'https://steamcommunity.com/openid/login?' . http_build_query($login_url_params, '', '&');
 
         header("location: $steam_login_url");

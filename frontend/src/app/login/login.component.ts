@@ -2,6 +2,7 @@ import { NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { environment } from '../../environments/environment';
 import { UserService } from '../_services/user.service';
 
 @Component({
@@ -17,6 +18,7 @@ export class LoginComponent implements OnInit {
     password: null
   };
   user: UserService = {} as UserService;
+  apiUrl: string = environment.apiUrl;
 
   constructor(private route: ActivatedRoute, private userService: UserService) { }
 
