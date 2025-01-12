@@ -25,7 +25,7 @@ export class ProfileComponent implements OnInit {
   discordError = '';
   itemTypes: string[] = ['ship', 'save', 'modification'];
   items: Record<string, any[]> = {};
-  apiUrl: string = environment.apiUrl;
+  url: string = environment.standardUrl;
 
   constructor(private userService: UserService, private route: ActivatedRoute, private token: TokenStorageService, private http: HttpClient) { }
 

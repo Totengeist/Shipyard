@@ -18,7 +18,7 @@ export class LoginComponent implements OnInit {
     password: null
   };
   user: UserService = {} as UserService;
-  apiUrl: string = environment.apiUrl;
+  url: string = environment.standardUrl;
 
   constructor(private route: ActivatedRoute, private userService: UserService) { }
 
