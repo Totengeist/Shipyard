@@ -5,9 +5,13 @@ on:
   push:
     paths:
       - '**.php'
+      - '**.ts'
+      - '**.html'
   pull_request:
     paths:
       - '**.php'
+      - '**.ts'
+      - '**.html'
 
 jobs:
   backend:

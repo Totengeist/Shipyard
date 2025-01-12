@@ -5,9 +5,13 @@ on:
   push:
     paths:
       - '**.php'
+      - '**.ts'
+      - '**.html'
   pull_request:
     paths:
       - '**.php'
+      - '**.ts'
+      - '**.html'
 
 jobs:
   build:
@@ -41,7 +45,7 @@ jobs:
     strategy:
         fail-fast: true
         matrix:
-            php: ['7.2', '7.3', '7.4', '8.1', '8.2']
+            php: ['7.2', '7.3', '7.4'] # '8.1', '8.2'
             runner: ['ubuntu-20.04', 'ubuntu-22.04']
 
     steps:

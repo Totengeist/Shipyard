@@ -22,7 +22,7 @@ class DiscordController extends Controller {
             . urlencode($_SERVER['BASE_URL_ABS'] . '/discord/process_registration')
             . '&scope=identify';
 
-        Log::get()->channel('registration')->info('Begin Discord ID registration.', Auth::user()->toArray());
+        Log::get()->channel('registration')->info('Begin Discord ID registration.', (Auth::user() != null) ? Auth::user()->toArray() : []);
         header("location: $discord_login_url");
         exit;
     }
@@ -37,7 +37,7 @@ class DiscordController extends Controller {
             . urlencode($_SERVER['BASE_URL_ABS'] . '/discord/process_login')
             . '&scope=identify';
 
-        Log::get()->channel('registration')->info('Begin Discord ID login.', Auth::user()->toArray());
+        Log::get()->channel('registration')->info('Begin Discord ID login.');
         header("location: $discord_login_url");
         exit;
     }
