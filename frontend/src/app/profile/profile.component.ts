@@ -15,12 +15,7 @@ import { UserService } from '../_services/user.service';
   imports: [NgFor, NgIf, RouterLink]
 })
 export class ProfileComponent implements OnInit {
-  currentUser: User = {
-    name: null,
-    email: null,
-    hasSteamLogin: false,
-    hasDiscordLogin: false
-  };
+  currentUser: UserService = {} as UserService;
   steamError = '';
   discordError = '';
   itemTypes: string[] = ['ship', 'save', 'modification'];
@@ -30,7 +25,9 @@ export class ProfileComponent implements OnInit {
   constructor(private userService: UserService, private route: ActivatedRoute, private token: TokenStorageService, private http: HttpClient) { }
 
   ngOnInit(): void {
-    this.currentUser = this.token.getUser();
+    this.currentUser = this.userService;
+    this.userService.refresh();
+    //this.currentUser = this.token.getUser();
     const queryError: string|null = this.route.snapshot.queryParamMap.get('error');
     if ( queryError !== null ) {
       if ( queryError === 'steam_already_linked' ) {
@@ -40,7 +37,7 @@ export class ProfileComponent implements OnInit {
         this.discordError = 'This Discord ID is already associated with an existing user.';
       }
     }
-    this.getUser(this.token.getUser().ref).subscribe(
+    this.getUser(this.currentUser.ref).subscribe(
       data => {
         this.itemTypes.forEach((element: string) => {
           this.items[element] = data[element+'s'];
@@ -52,26 +49,28 @@ export class ProfileComponent implements OnInit {
     );
   }
 
-  removeSteam(): void {
+  removeSteam(): false {
     this.userService.removeSteam().subscribe(
       () => {
-        location.reload();
+        this.userService.refresh();
       },
       () => {
-        location.reload();
+        this.userService.refresh();
       }
     );
+    return false;
   }
 
-  removeDiscord(): void {
+  removeDiscord(): false {
     this.userService.removeDiscord().subscribe(
       () => {
-        location.reload();
+        this.userService.refresh();
       },
       () => {
-        location.reload();
+        this.userService.refresh();
       }
     );
+    return false;
   }
 
   getUser(itemId: string): Observable<any> {
@@ -81,11 +80,4 @@ export class ProfileComponent implements OnInit {
 
     return this.http.get(environment.apiUrl + 'user/' + itemId, httpOptions);
   }
-}
-
-interface User {
-    name: string|null,
-    email: string|null,
-    hasSteamLogin: boolean
-    hasDiscordLogin: boolean
 }

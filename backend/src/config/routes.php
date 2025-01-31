@@ -16,9 +16,7 @@ $app->group($_SERVER['BASE_URL'] . '/steam', function (RouteCollectorProxy $grou
     $group->post('/remove', 'Shipyard\Controllers\SteamController:remove');
 });
 $app->group($_SERVER['BASE_URL'] . '/discord', function (RouteCollectorProxy $group) {
-    $group->get('/register', 'Shipyard\Controllers\DiscordController:register');
     $group->get('/login', 'Shipyard\Controllers\DiscordController:login');
-    $group->get('/process_registration', 'Shipyard\Controllers\DiscordController:process_registration');
     $group->get('/process_login', 'Shipyard\Controllers\DiscordController:process_login');
     $group->post('/remove', 'Shipyard\Controllers\DiscordController:remove');
 });

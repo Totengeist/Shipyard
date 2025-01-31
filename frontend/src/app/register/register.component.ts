@@ -1,6 +1,7 @@
 import { NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../environments/environment';
 import { AuthService } from '../_services/auth.service';
 
 @Component({
@@ -20,6 +21,7 @@ export class RegisterComponent {
   isSuccessful = false;
   isSignUpFailed = false;
   errorMessage = '';
+  url: string = environment.standardUrl;
 
   constructor(private authService: AuthService) { }
 

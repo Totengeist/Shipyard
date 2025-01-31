@@ -55,7 +55,7 @@ footer.footer {
 	padding: 15px;
 }
 
-#steam-login {
+#steam-login, #discord-login {
 	display: block;
 	margin: auto;
 }

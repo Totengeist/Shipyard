@@ -19,8 +19,12 @@ export class UserService {
   isLoginFailed = false;
   errorMessage = '';
   showDashboard = false;
+  ref = '';
   username = '';
+  email = '';
   activeLogin: Subscription = new Subscription();
+  hasSteamLogin = false;
+  hasDiscordLogin = false;
 
   constructor(
     private authService: AuthService,
@@ -35,7 +39,12 @@ export class UserService {
       this.roles = user.roles;
       this.permissions = user.permissions;
       this.showDashboard = (this.roles.length > 0);
+      this.ref = user.ref;
       this.username = user.name;
+      this.email = user.email;
+
+      this.hasSteamLogin = user.hasSteamLogin;
+      this.hasDiscordLogin = user.hasDiscordLogin;
 
       this.activeLogin.unsubscribe();
       this.activeLogin = interval(30000).subscribe(() => { this.refresh(); console.log('Session check'); });
@@ -97,7 +106,7 @@ export class UserService {
   }
 
   refresh(): void {
-    this.getUserBoard().subscribe(
+    this.authService.me().subscribe(
       data => {
         this.saveUserData(data);
         this.initializeUserInfo();
@@ -154,9 +163,5 @@ export class UserService {
 
   isLoggedIn(): boolean {
     return !!this.tokenStorageService.getUser();
-  }
-
-  getUserBoard(): Observable<any> {
-    return this.authService.me();
   }
 }
