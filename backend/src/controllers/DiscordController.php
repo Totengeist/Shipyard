@@ -115,6 +115,7 @@ class DiscordController extends Controller {
             $user = $query->first();
             Auth::logout();
             if ($user == null) {
+                Auth::logout();
                 header('location: ' . $_SERVER['BASE_URL'] . '/home');
                 exit;
             }
