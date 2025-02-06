@@ -61,25 +61,10 @@ class Log {
      */
     public function __construct($logger = null) {
         if ($logger == null || is_string($logger)) {
-            if (!(isset($_SERVER['LOG_LEVEL']) || isset($_SERVER['LOG_FILE']))) {
-                $log_level = 'OFF';
-            } else {
-                $log_level = isset($_SERVER['LOG_LEVEL']) ? strtoupper($_SERVER['LOG_LEVEL']) : 'INFO';
-                $log_level = \in_array($log_level, ['DEBUG', 'INFO', 'NOTICE', 'WARNING', 'ERROR', 'CRITICAL', 'ALERT', 'EMERGENCY', 'OFF']) ? $log_level : 'INFO';
-            }
-
-            if ($log_level == 'OFF') {
-                $stream = new NullHandler();
-            } else {
-                $log_file = self::get_log_file();
-                $output = "%datetime%: [%channel%:%level_name%] > %message% %context% %extra%\n";
-                $formatter = new LineFormatter($output, null, true, true);
-                $stream = new StreamHandler($log_file, constant("\Monolog\Logger::$log_level"));
-                $stream->setFormatter($formatter);
-            }
+            $log_level = self::get_log_level();
 
             $logger = new Logger(is_string($logger) ? $logger : $_SERVER['APP_TITLE'] . ':main');
-            $logger->pushHandler($stream);
+            $logger->pushHandler(self::get_stream_handler($log_level));
             $logger->debug("Logger initialized: {$log_level}");
         }
 
@@ -91,6 +76,41 @@ class Log {
      */
     public function setAsGlobal() {
         self::$global_logger = $this;
+    }
+
+    /**
+     * @param string $log_level the lowest level of alert to log
+     *
+     * @return NullHandler|StreamHandler
+     */
+    public static function get_stream_handler($log_level = null) {
+        if ($log_level == null) {
+            $log_level = self::get_log_level();
+        }
+        if ($log_level == 'OFF') {
+            $stream = new NullHandler();
+        } else {
+            $log_file = self::get_log_file();
+            $format = "%datetime%: [%channel%:%level_name%] > %message% %context% %extra%\n";
+            $formatter = new LineFormatter($format, null, true, true);
+            $stream = new StreamHandler($log_file, constant("\Monolog\Logger::$log_level"));
+            $stream->setFormatter($formatter);
+        }
+
+        return $stream;
+    }
+
+    /**
+     * @return string
+     */
+    public static function get_log_level() {
+        $log_level = 'OFF';
+        if (isset($_SERVER['LOG_LEVEL']) || isset($_SERVER['LOG_FILE'])) {
+            $log_level = isset($_SERVER['LOG_LEVEL']) ? strtoupper($_SERVER['LOG_LEVEL']) : 'INFO';
+            $log_level = \in_array($log_level, ['DEBUG', 'INFO', 'NOTICE', 'WARNING', 'ERROR', 'CRITICAL', 'ALERT', 'EMERGENCY', 'OFF']) ? $log_level : 'INFO';
+        }
+
+        return $log_level;
     }
 
     /**
