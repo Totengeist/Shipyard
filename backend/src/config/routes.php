@@ -10,13 +10,13 @@ use Slim\Routing\RouteCollectorProxy;
 $app->group($_SERVER['BASE_URL'] . '/steam', function (RouteCollectorProxy $group) {
     $group->get('/register', 'Shipyard\Controllers\SteamController:register');
     $group->get('/login', 'Shipyard\Controllers\SteamController:login');
-    $group->get('/process_registration', 'Shipyard\Controllers\SteamController:process_registration');
-    $group->get('/process_login', 'Shipyard\Controllers\SteamController:process_login');
+    $group->get('/process_registration', 'Shipyard\Controllers\SteamController:processRegistration');
+    $group->get('/process_login', 'Shipyard\Controllers\SteamController:processLogin');
     $group->post('/remove', 'Shipyard\Controllers\SteamController:remove');
 });
 $app->group($_SERVER['BASE_URL'] . '/discord', function (RouteCollectorProxy $group) {
     $group->get('/login', 'Shipyard\Controllers\DiscordController:login');
-    $group->get('/process_login', 'Shipyard\Controllers\DiscordController:process_login');
+    $group->get('/process_login', 'Shipyard\Controllers\DiscordController:processLogin');
     $group->post('/remove', 'Shipyard\Controllers\DiscordController:remove');
 });
 $app->get($_SERVER['BASE_URL'] . '/activate/{token}', 'Shipyard\Controllers\RegisterController:activate_redirect');

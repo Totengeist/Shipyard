@@ -9,45 +9,41 @@ use Shipyard\Log;
 use Shipyard\Models\User;
 
 class SteamController extends Controller {
+    /** @var string */
+    private static $openidUrl = 'https://specs.openid.net/auth/2.0';
+    /** @var string */
+    private static $openIdIdent = '/identifier_select';
+    /** @var string */
+    private static $steamUrl = 'https://steamcommunity.com/openid';
+
     /**
      * Register a Steam account to a Shipyard account.
      *
      * @return void
      */
     public function register(Request $request, Response $response) {
-        $login_url_params = [
-            'openid.ns'         => 'http://specs.openid.net/auth/2.0',
-            'openid.mode'       => 'checkid_setup',
-            'openid.return_to'  => $_SERVER['BASE_URL_ABS'] . '/steam/process_registration',
-            'openid.realm'      => (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'],
-            'openid.identity'   => 'http://specs.openid.net/auth/2.0/identifier_select',
-            'openid.claimed_id' => 'http://specs.openid.net/auth/2.0/identifier_select',
-        ];
-
-        Log::get()->channel('registration')->info('Begin Steam ID registration.', (Auth::user() != null) ? Auth::user()->toArray() : []);
-        $steam_login_url = 'https://steamcommunity.com/openid/login?' . http_build_query($login_url_params, '', '&');
-
-        header("location: $steam_login_url");
-        exit;
+        $this->login($request, $response, 'registration');
     }
 
     /**
-     * Login using a registered Steam account.
+     * Register a Steam account to a Shipyard account or login using a registered Steam account.
+     *
+     * @param string $action the action to take (login/registration)
      *
      * @return void
      */
-    public function login(Request $request, Response $response) {
+    public function login(Request $request, Response $response, $action = 'login') {
         $login_url_params = [
-            'openid.ns'         => 'http://specs.openid.net/auth/2.0',
+            'openid.ns'         => $this->openidUrl,
             'openid.mode'       => 'checkid_setup',
-            'openid.return_to'  => $_SERVER['BASE_URL_ABS'] . '/steam/process_login',
+            'openid.return_to'  => $_SERVER['BASE_URL_ABS'] . '/steam/process_' . $action,
             'openid.realm'      => (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'],
-            'openid.identity'   => 'http://specs.openid.net/auth/2.0/identifier_select',
-            'openid.claimed_id' => 'http://specs.openid.net/auth/2.0/identifier_select',
+            'openid.identity'   => $this->openidUrl . $this->openIdIdent,
+            'openid.claimed_id' => $this->openidUrl . $this->openIdIdent,
         ];
 
-        Log::get()->channel('registration')->info('Begin Steam ID login.');
-        $steam_login_url = 'https://steamcommunity.com/openid/login?' . http_build_query($login_url_params, '', '&');
+        Log::get()->channel('registration')->info('Begin Steam ID ' . $action . '.');
+        $steam_login_url = $this->steamUrl . '/login?' . http_build_query($login_url_params, '', '&');
 
         header("location: $steam_login_url");
         exit;
@@ -58,12 +54,12 @@ class SteamController extends Controller {
      *
      * @return int|bool
      */
-    public function process_steam() {
+    public function processSteam() {
         $params = [
             'openid.assoc_handle' => $_GET['openid_assoc_handle'],
             'openid.signed'       => $_GET['openid_signed'],
             'openid.sig'          => $_GET['openid_sig'],
-            'openid.ns'           => 'http://specs.openid.net/auth/2.0',
+            'openid.ns'           => $this->openidUrl,
             'openid.mode'         => 'check_authentication',
         ];
 
@@ -87,16 +83,15 @@ class SteamController extends Controller {
         ]);
 
         // get the data
-        $result = file_get_contents('https://steamcommunity.com/openid/login', false, $context);
+        $result = file_get_contents($this->steamUrl . '/login', false, $context);
         if ($result === false) {
             return false;
         }
 
         if (preg_match("#is_valid\s*:\s*true#i", $result)) {
-            preg_match('#^https://steamcommunity.com/openid/id/([0-9]{17,25})#', $_GET['openid_claimed_id'], $matches);
-            $steamID64 = count($matches) ? (int) $matches[1] : 0;
+            preg_match('#^' . $this->steamUrl . '/id/(\d{17,25})#', $_GET['openid_claimed_id'], $matches);
 
-            return $steamID64;
+            return count($matches) ? (int) $matches[1] : 0;
         }
 
         return false;
@@ -107,15 +102,20 @@ class SteamController extends Controller {
      *
      * @return void|Response
      */
-    public function process_registration(Request $request, Response $response) {
-        if ($steamid = $this->process_steam()) {
+    public function processRegistration(Request $request, Response $response) {
+        /** @var User|null $auth_user */
+        $auth_user = Auth::user();
+
+        // If there is no authenticated user, then redirect to the login screen.
+        if ($auth_user == null) {
+            header('location: ' . $_SERVER['BASE_URL'] . '/login');
+            exit;
+        }
+        if ($steamid = $this->processSteam()) {
             /** @var \Illuminate\Database\Eloquent\Builder $query */
             $query = User::query()->where([['steamid', $steamid]]);
             /** @var User|null $existing_user */
             $existing_user = $query->first();
-
-            /** @var User $auth_user */
-            $auth_user = Auth::user();
 
             /** @var \Illuminate\Database\Eloquent\Builder $query */
             $query = User::query()->where([['ref', $auth_user->ref]]);
@@ -145,8 +145,8 @@ class SteamController extends Controller {
      *
      * @return void|Response
      */
-    public function process_login(Request $request, Response $response) {
-        if ($steamid = $this->process_steam()) {
+    public function processLogin(Request $request, Response $response) {
+        if ($steamid = $this->processSteam()) {
             /** @var \Illuminate\Database\Eloquent\Builder $query */
             $query = User::query()->where([['steamid', $steamid]]);
             /** @var User $user */
@@ -157,7 +157,7 @@ class SteamController extends Controller {
 
             Auth::login($user);
 
-            header('location: ' . $_SERVER['BASE_URL'] . '/home');
+            header('location: ' . $_SERVER['BASE_URL'] . '/profile');
             exit;
         }
         header('location: ' . $_SERVER['BASE_URL'] . '/login?error=steam_not_linked');
