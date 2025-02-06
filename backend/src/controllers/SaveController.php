@@ -148,37 +148,18 @@ class SaveController extends Controller {
         $save->downloads++;
         $save->save();
 
-        $gzip = false;
-        if ($save->file->compressed && count($request->getHeader('Accept-Encoding')) > 0) {
-            foreach (explode(',', $request->getHeader('Accept-Encoding')[0]) as $encoding) {
-                if (strtolower(trim($encoding)) == 'gzip') {
-                    $gzip = true;
-                    break;
-                }
-            }
-        }
-        if (!$gzip && $save->file->compressed) {
-            if (($file = gzopen($save->file->getFilePath(), 'r')) === false || ($str = stream_get_contents($file)) === false) {
-                throw new \Exception('Unable to open file: ' . json_encode($save));
-            }
-        } else {
-            if (($file = fopen($save->file->getFilePath(), 'r')) === false || ($str = stream_get_contents($file)) === false) {
-                throw new \Exception('Unable to open file: ' . json_encode($save));
-            }
-        }
-        $response->getBody()->write($str);
+        $encoding = 'none';
+        $file_contents = FileManager::getFileContents($save->file, $request->getHeader('Accept-Encoding'), $encoding);
+        $response->getBody()->write($file_contents);
 
-        if ($gzip && $save->file->compressed) {
-            return $response
-              ->withHeader('Content-Disposition', 'attachment; filename="' . $save->file->filename . '.' . $save->file->extension . '"')
-              ->withHeader('Content-Type', 'text/plain')
-              ->withHeader('Content-Encoding', 'gzip')
-              ->withHeader('Content-Length', strval(strlen($str)));
+        if ($encoding != 'none') {
+            $response = $response->withHeader('Content-Encoding', $encoding);
         }
 
         return $response
           ->withHeader('Content-Disposition', 'attachment; filename="' . $save->file->filename . '.' . $save->file->extension . '"')
-          ->withHeader('Content-Type', 'text/plain');
+          ->withHeader('Content-Type', 'text/plain')
+          ->withHeader('Content-Length', strval(strlen($file_contents)));
     }
 
     /**
@@ -207,6 +188,8 @@ class SaveController extends Controller {
             return $this->unauthorized_response(['This save is locked to editing.']);
         }
 
+        $final_data = array_intersect_key($data, array_flip(['title', 'description']));
+
         if (isset($data['user_ref'])) {
             /** @var \Illuminate\Database\Eloquent\Builder $query */
             $query = User::query()->where([['ref', $data['user_ref']]]);
@@ -215,14 +198,10 @@ class SaveController extends Controller {
             if ($user == null) {
                 return $this->not_found_response('User');
             }
-            $save->user_id = $user->id;
+            $final_data['user_id'] = $user->id;
         }
-        if (isset($data['title'])) {
-            $save->title = $data['title'];
-        }
-        if (isset($data['description'])) {
-            $save->description = $data['description'];
-        }
+
+        $save->fill($final_data);
 
         if (isset($data['primary_screenshot'])) {
             $ref = strtolower($data['primary_screenshot']);
@@ -247,14 +226,13 @@ class SaveController extends Controller {
         }
 
         if (isset($files['file'])) {
-            if (!is_array($files['file'])) {
-                if ($save->file != null) {
-                    $save->file->delete();
-                }
-                $save->file_id = FileManager::moveUploadedFile($files['file'])->id;
-            } else {
+            if (is_array($files['file'])) {
                 return $this->invalid_input_response(['file' => 'Multiple file uploads are not allowed.']);
             }
+            if ($save->file != null) {
+                $save->file->delete();
+            }
+            $save->file_id = FileManager::moveUploadedFile($files['file'])->id;
         }
 
         if (isset($data['state'])) {

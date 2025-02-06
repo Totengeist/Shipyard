@@ -148,37 +148,18 @@ class ModificationController extends Controller {
         $modification->downloads++;
         $modification->save();
 
-        $gzip = false;
-        if ($modification->file->compressed && count($request->getHeader('Accept-Encoding')) > 0) {
-            foreach (explode(',', $request->getHeader('Accept-Encoding')[0]) as $encoding) {
-                if (strtolower(trim($encoding)) == 'gzip') {
-                    $gzip = true;
-                    break;
-                }
-            }
-        }
-        if (!$gzip && $modification->file->compressed) {
-            if (($file = gzopen($modification->file->getFilePath(), 'r')) === false || ($str = stream_get_contents($file)) === false) {
-                throw new \Exception('Unable to open file: ' . json_encode($modification));
-            }
-        } else {
-            if (($file = fopen($modification->file->getFilePath(), 'r')) === false || ($str = stream_get_contents($file)) === false) {
-                throw new \Exception('Unable to open file: ' . json_encode($modification));
-            }
-        }
-        $response->getBody()->write($str);
+        $encoding = 'none';
+        $file_contents = FileManager::getFileContents($modification->file, $request->getHeader('Accept-Encoding'), $encoding);
+        $response->getBody()->write($file_contents);
 
-        if ($gzip && $modification->file->compressed) {
-            return $response
-              ->withHeader('Content-Disposition', 'attachment; filename="' . $modification->file->filename . '.' . $modification->file->extension . '"')
-              ->withHeader('Content-Type', $modification->file->media_type)
-              ->withHeader('Content-Encoding', 'gzip')
-              ->withHeader('Content-Length', strval(strlen($str)));
+        if ($encoding != 'none') {
+            $response = $response->withHeader('Content-Encoding', $encoding);
         }
 
         return $response
           ->withHeader('Content-Disposition', 'attachment; filename="' . $modification->file->filename . '.' . $modification->file->extension . '"')
-          ->withHeader('Content-Type', $modification->file->media_type);
+          ->withHeader('Content-Type', $modification->file->media_type)
+          ->withHeader('Content-Length', strval(strlen($file_contents)));
     }
 
     /**
@@ -208,6 +189,8 @@ class ModificationController extends Controller {
             return $this->unauthorized_response(['This modification is locked to editing.']);
         }
 
+        $final_data = array_intersect_key($data, array_flip(['title', 'description']));
+
         if (isset($data['user_ref'])) {
             /** @var \Illuminate\Database\Eloquent\Builder $query */
             $query = User::query()->where([['ref', $data['user_ref']]]);
@@ -216,14 +199,10 @@ class ModificationController extends Controller {
             if ($user == null) {
                 return $this->not_found_response('User');
             }
-            $modification->user_id = $user->id;
+            $final_data['user_id'] = $user->id;
         }
-        if (isset($data['title'])) {
-            $modification->title = $data['title'];
-        }
-        if (isset($data['description'])) {
-            $modification->description = $data['description'];
-        }
+
+        $modification->fill($final_data);
 
         if (isset($data['primary_screenshot'])) {
             $ref = strtolower($data['primary_screenshot']);
@@ -238,14 +217,13 @@ class ModificationController extends Controller {
         $this->edit_tags($data, $modification);
 
         if (isset($files['file'])) {
-            if (!is_array($files['file'])) {
-                if ($modification->file != null) {
-                    $modification->file->delete();
-                }
-                $modification->file_id = FileManager::moveUploadedFile($files['file'])->id;
-            } else {
+            if (is_array($files['file'])) {
                 return $this->invalid_input_response(['file' => 'Multiple file uploads are not allowed.']);
             }
+            if ($modification->file != null) {
+                $modification->file->delete();
+            }
+            $modification->file_id = FileManager::moveUploadedFile($files['file'])->id;
         }
 
         if (isset($data['state'])) {

@@ -210,4 +210,63 @@ class FileManager {
         gzclose($gzFile);
         fclose($outFile);
     }
+
+    /**
+     * Check if one or more compression formats are supported by a given request.
+     *
+     * @param string|string[] $compression the allowed compression types
+     * @param string|string[] $encoding    the encoding to check for
+     *
+     * @return string[]
+     */
+    public static function checkSupportedCompressions($compression, $encoding) {
+        if (is_array($compression)) {
+            $compression = implode(',', $compression);
+        }
+        if (trim($compression) == '') {
+            return [];
+        }
+        if (!is_array($encoding)) {
+            $encoding = [$encoding];
+        }
+
+        $accepted = explode(',', $compression);
+        $callback = function (&$v) {
+            $v = mb_strtolower(trim($v));
+        };
+        array_walk($accepted, $callback);
+
+        return array_intersect($encoding, $accepted);
+    }
+
+    /**
+     * Get the contents of a file.
+     *
+     * The returned string may contain compressed or uncompressed data depending on the allowed and supported compression formats.
+     *
+     * @param File            $file        the file to retrieve contents from
+     * @param string|string[] $accepted    the allowed compression types
+     * @param string          $compression the compression type in use
+     *
+     * @return string
+     */
+    public static function getFileContents($file, $accepted = '', &$compression = 'none') {
+        $str = '';
+        $gzip = count(self::checkSupportedCompressions($accepted, 'gzip'))>0;
+        // If the file is compressed, but the requester does not accept the compression format, then decompress the data
+        if (!$gzip && $file->compressed) {
+            if (($handle = gzopen($file->getFilePath(), 'r')) === false || ($str = stream_get_contents($handle)) === false) {
+                throw new \Exception('Unable to open file ' . $file->filename);
+            }
+        } else {
+            if (($handle = fopen($file->getFilePath(), 'r')) === false || ($str = stream_get_contents($handle)) === false) {
+                throw new \Exception('Unable to open file ' . $file->filename);
+            }
+            if ($gzip) {
+                $compression = 'gzip';
+            }
+        }
+
+        return $str;
+    }
 }

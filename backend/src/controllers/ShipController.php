@@ -148,41 +148,24 @@ class ShipController extends Controller {
         $ship->downloads++;
         $ship->save();
 
-        $gzip = false;
-        if ($ship->file->compressed && count($request->getHeader('Accept-Encoding')) > 0) {
-            foreach (explode(',', $request->getHeader('Accept-Encoding')[0]) as $encoding) {
-                if (strtolower(trim($encoding)) == 'gzip') {
-                    $gzip = true;
-                    break;
-                }
-            }
-        }
-        if (!$gzip && $ship->file->compressed) {
-            if (($file = gzopen($ship->file->getFilePath(), 'r')) === false || ($str = stream_get_contents($file)) === false) {
-                throw new \Exception('Unable to open file: ' . json_encode($ship));
-            }
-        } else {
-            if (($file = fopen($ship->file->getFilePath(), 'r')) === false || ($str = stream_get_contents($file)) === false) {
-                throw new \Exception('Unable to open file: ' . json_encode($ship));
-            }
-        }
-        $response->getBody()->write($str);
+        $encoding = 'none';
+        $file_contents = FileManager::getFileContents($ship->file, $request->getHeader('Accept-Encoding'), $encoding);
+        $response->getBody()->write($file_contents);
 
-        if ($gzip && $ship->file->compressed) {
-            return $response
-              ->withHeader('Content-Disposition', 'attachment; filename="' . $ship->file->filename . '.' . $ship->file->extension . '"')
-              ->withHeader('Content-Type', 'text/plain')
-              ->withHeader('Content-Encoding', 'gzip')
-              ->withHeader('Content-Length', strval(strlen($str)));
+        if ($encoding != 'none') {
+            $response = $response->withHeader('Content-Encoding', $encoding);
         }
 
         return $response
           ->withHeader('Content-Disposition', 'attachment; filename="' . $ship->file->filename . '.' . $ship->file->extension . '"')
-          ->withHeader('Content-Type', 'text/plain');
+          ->withHeader('Content-Type', 'text/plain')
+          ->withHeader('Content-Length', strval(strlen($file_contents)));
     }
 
     /**
      * Update the specified resource in storage.
+     *
+     * @todo Add better udpate validation
      *
      * @param array<string,string> $args
      *
@@ -207,6 +190,8 @@ class ShipController extends Controller {
             return $this->unauthorized_response(['This ship is locked to editing.']);
         }
 
+        $final_data = array_intersect_key($data, array_flip(['title', 'description']));
+
         if (isset($data['user_ref'])) {
             /** @var \Illuminate\Database\Eloquent\Builder $query */
             $query = User::query()->where([['ref', $data['user_ref']]]);
@@ -215,14 +200,10 @@ class ShipController extends Controller {
             if ($user == null) {
                 return $this->not_found_response('User');
             }
-            $ship->user_id = $user->id;
+            $final_data['user_id'] = $user->id;
         }
-        if (isset($data['title'])) {
-            $ship->title = $data['title'];
-        }
-        if (isset($data['description'])) {
-            $ship->description = $data['description'];
-        }
+
+        $ship->fill($final_data);
 
         if (isset($data['primary_screenshot'])) {
             $ref = strtolower($data['primary_screenshot']);
@@ -237,14 +218,13 @@ class ShipController extends Controller {
         $this->edit_tags($data, $ship);
 
         if (isset($files['file'])) {
-            if (!is_array($files['file'])) {
-                if ($ship->file != null) {
-                    $ship->file->delete();
-                }
-                $ship->file_id = FileManager::moveUploadedFile($files['file'])->id;
-            } else {
+            if (is_array($files['file'])) {
                 return $this->invalid_input_response(['file' => 'Multiple file uploads are not allowed.']);
             }
+            if ($ship->file != null) {
+                $ship->file->delete();
+            }
+            $ship->file_id = FileManager::moveUploadedFile($files['file'])->id;
         }
 
         if (isset($data['state'])) {
