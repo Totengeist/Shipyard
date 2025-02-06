@@ -157,7 +157,9 @@ class DiscordController extends Controller {
                 /** @var User $user */
                 $user = $query->first();
                 if ($user == null) {
-                    return $this->process_registration($discordid);
+                    $this->process_registration($discordid);
+
+                    return;
                 }
             }
             $user->discordid = (int) $discordid['id'];

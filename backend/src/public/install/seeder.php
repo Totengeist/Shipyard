@@ -36,5 +36,5 @@ Release::query()->firstOrCreate(['label' => 'Alpha1D']);
 Release::query()->firstOrCreate(['label' => 'Alpha2D']);
 
 if (file_exists(__DIR__ . '/custom_seeds.php')) {
-    include __DIR__ . '/custom_seeds.php';
+    include_once __DIR__ . '/custom_seeds.php';
 }

@@ -139,7 +139,6 @@ class SaveControllerTest extends APITestCase {
         $user2 = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
-        $faker = \Faker\Factory::create();
         $save = Factory::create('Shipyard\Models\Save', ['user_id' => $user->id]);
 
         $faker = \Faker\Factory::create();
@@ -164,11 +163,7 @@ class SaveControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
-        $faker = \Faker\Factory::create();
         $save = Factory::create('Shipyard\Models\Save', ['user_id' => $user->id]);
-
-        $faker = \Faker\Factory::create();
-        $title = $faker->words(3, true);
 
         $this->post('api/v1/save/' . $save->ref, ['state' => ['unlisted', 'private', 'locked']], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
@@ -188,7 +183,6 @@ class SaveControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
-        $faker = \Faker\Factory::create();
 
         $user1 = Factory::create('Shipyard\Models\User');
         $save = Factory::create('Shipyard\Models\Save', ['user_id' => $user1->id]);
@@ -251,7 +245,6 @@ class SaveControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
-        $faker = \Faker\Factory::create();
         $save = Factory::create('Shipyard\Models\Save', ['user_id' => $user->id]);
 
         $this->assertEquals($save->ref, Save::query()->where([['ref', $save->ref]])->first()->ref);
@@ -271,7 +264,6 @@ class SaveControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
-        $faker = \Faker\Factory::create();
 
         $user1 = Factory::create('Shipyard\Models\User');
         $save = Factory::create('Shipyard\Models\Save', ['user_id' => $user1->id]);
@@ -391,7 +383,6 @@ class SaveControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
-        $faker = \Faker\Factory::create();
         $save = Factory::create('Shipyard\Models\Save', ['user_id' => $user->id]);
 
         $faker = \Faker\Factory::create();

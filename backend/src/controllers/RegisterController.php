@@ -26,15 +26,6 @@ class RegisterController extends Controller {
     use ChecksPermissions;
 
     /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct() {
-        // $this->middleware('guest', ['except' => ['destroy', 'update']]);
-    }
-
-    /**
      * Create or add on to a validator.
      *
      * @param mixed[] $data

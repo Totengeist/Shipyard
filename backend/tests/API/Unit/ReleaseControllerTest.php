@@ -13,8 +13,6 @@ class ReleaseControllerTest extends APITestCase {
      * @return void
      */
     public function testCanListReleases() {
-        $admin = Factory::create('Shipyard\Models\User');
-
         $release = Factory::create('Shipyard\Models\Release');
         $this->get('api/v1/release', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([

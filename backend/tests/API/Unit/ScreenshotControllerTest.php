@@ -84,7 +84,7 @@ class ScreenshotControllerTest extends APITestCase {
         $user->activate();
         Auth::login($user);
 
-        $return = $this->post('api/v1/ship/' . $ship->ref . '/screenshots', ['description' => [$description]], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => [self::createSampleUpload('science-vessel.png')]])
+        $this->post('api/v1/ship/' . $ship->ref . '/screenshots', ['description' => [$description]], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => [self::createSampleUpload('science-vessel.png')]])
              ->assertJsonResponse([
                  'description' => $description,
              ]);
@@ -187,7 +187,7 @@ class ScreenshotControllerTest extends APITestCase {
         $user2->activate();
         Auth::login($user2);
 
-        $return = $this->post('api/v1/ship/' . $ship->ref . '/screenshots', ['description' => [$description]], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => [self::createSampleUpload('science-vessel.png')]])
+        $this->post('api/v1/ship/' . $ship->ref . '/screenshots', ['description' => [$description]], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => [self::createSampleUpload('science-vessel.png')]])
              ->assertStatus(403);
 
         $screenshot = Screenshot::query()->whereHas('ships', function ($q) use ($ship) {
@@ -200,15 +200,11 @@ class ScreenshotControllerTest extends APITestCase {
      * @return void
      */
     public function testAdminCanCreateEmptyScreenshots() {
-        $faker = \Faker\Factory::create();
         $ship = Factory::create('Shipyard\Models\Ship');
         $admin = Factory::create('Shipyard\Models\User');
         $admin->activate();
         $admin->assignRole('administrator');
         Auth::login($admin);
-
-        $slug = $faker->slug;
-        $label = '';
 
         $this->post('api/v1/ship/' . $ship->ref . '/screenshots', [], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => [self::createSampleUpload('science-vessel.png')]])
              ->assertJsonResponse([

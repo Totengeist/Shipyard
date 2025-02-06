@@ -25,7 +25,7 @@ class Auth {
         }
 
         $log_user = array_diff_key($user->attributesToArray(), ['email', 'created_at', 'updated_at']);
-        Log::get()->channel('auth')->info('Logged in user.');
+        Log::get()->channel('auth')->info('Logged in user.', $log_user);
         static::$session->set('user', $user);
     }
 

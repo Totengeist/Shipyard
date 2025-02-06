@@ -98,7 +98,6 @@ class UserControllerTest extends APITestCase {
      * @return void
      */
     public function testCanActivateUser() {
-        $faker = \Faker\Factory::create();
         $user = Factory::create('Shipyard\Models\User');
         $activation = $user->create_activation();
 

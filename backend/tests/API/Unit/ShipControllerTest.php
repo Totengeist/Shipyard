@@ -139,7 +139,6 @@ class ShipControllerTest extends APITestCase {
         $user2 = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
-        $faker = \Faker\Factory::create();
         $ship = Factory::create('Shipyard\Models\Ship', ['user_id' => $user->id]);
 
         $faker = \Faker\Factory::create();
@@ -164,11 +163,7 @@ class ShipControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
-        $faker = \Faker\Factory::create();
         $ship = Factory::create('Shipyard\Models\Ship', ['user_id' => $user->id]);
-
-        $faker = \Faker\Factory::create();
-        $title = $faker->words(3, true);
 
         $this->post('api/v1/ship/' . $ship->ref, ['state' => ['unlisted', 'private', 'locked']], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([
@@ -188,7 +183,6 @@ class ShipControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
-        $faker = \Faker\Factory::create();
 
         $user1 = Factory::create('Shipyard\Models\User');
         $ship = Factory::create('Shipyard\Models\Ship', ['user_id' => $user1->id]);
@@ -251,7 +245,6 @@ class ShipControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
-        $faker = \Faker\Factory::create();
         $ship = Factory::create('Shipyard\Models\Ship', ['user_id' => $user->id]);
 
         $this->assertEquals($ship->ref, Ship::query()->where([['ref', $ship->ref]])->first()->ref);
@@ -271,7 +264,6 @@ class ShipControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
-        $faker = \Faker\Factory::create();
 
         $user1 = Factory::create('Shipyard\Models\User');
         $ship = Factory::create('Shipyard\Models\Ship', ['user_id' => $user1->id]);
@@ -391,7 +383,6 @@ class ShipControllerTest extends APITestCase {
         $user = Factory::create('Shipyard\Models\User');
         $user->activate();
         Auth::login($user);
-        $faker = \Faker\Factory::create();
         $ship = Factory::create('Shipyard\Models\Ship', ['user_id' => $user->id]);
 
         $faker = \Faker\Factory::create();
