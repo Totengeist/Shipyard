@@ -437,7 +437,7 @@ class ModificationControllerTest extends APITestCase {
         $modification5 = Modification::query()->where([['ref', $modification5->ref]])->firstOrFail();
         $this->delete('api/v1/modification/' . $modification3->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
         $this->assertEquals($modification5->parent->parent->getKey(), $modification2->getKey());
-        $this->assertEquals($modification5->parent->parent->child->getKey(), $modification4->getKey());
+        $this->assertEquals($modification5->parent->parent->children->first()->getKey(), $modification4->getKey());
         $this->assertEquals($modification5->parent->parent_id, $modification2->id);
 
         // delete last

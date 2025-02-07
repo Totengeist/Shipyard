@@ -65,12 +65,12 @@ class Save extends Model {
     }
 
     /**
-     * A save can have a child.
+     * A save can have children.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function child() {
-        return $this->hasOne(Save::class, 'parent_id', 'id');
+    public function children() {
+        return $this->hasMany(Save::class, 'parent_id', 'id');
     }
 
     /**

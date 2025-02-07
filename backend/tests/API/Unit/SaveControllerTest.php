@@ -437,7 +437,7 @@ class SaveControllerTest extends APITestCase {
         $save5 = Save::query()->where([['ref', $save5->ref]])->firstOrFail();
         $this->delete('api/v1/save/' . $save3->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
         $this->assertEquals($save5->parent->parent->getKey(), $save2->getKey());
-        $this->assertEquals($save5->parent->parent->child->getKey(), $save4->getKey());
+        $this->assertEquals($save5->parent->parent->children->first()->getKey(), $save4->getKey());
         $this->assertEquals($save5->parent->parent_id, $save2->id);
 
         // delete last

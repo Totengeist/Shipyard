@@ -65,12 +65,12 @@ class Modification extends Model {
     }
 
     /**
-     * A modification can have a child.
+     * A modification can have children.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function child() {
-        return $this->hasOne(Modification::class, 'parent_id', 'id');
+    public function children() {
+        return $this->hasMany(Modification::class, 'parent_id', 'id');
     }
 
     /**
