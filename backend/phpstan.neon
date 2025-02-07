@@ -8,6 +8,9 @@ parameters:
 			message: '#^Method Tests\\[^\:]+\:\:test[^\(]+\(\) has no return type specified\.$#'
 			path: tests/*
 		-
+			message: '#^Call to static method create\(\) on an unknown class Laracasts\\TestDummy\\Factory.$#'
+			path: tests/*
+		-
 			message: '#^Variable \$(faker|factory) might not be defined\.#'
 			path: tests/*
 		-

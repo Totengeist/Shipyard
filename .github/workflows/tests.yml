@@ -51,10 +51,14 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Set Swap Space
-      uses: pierotofy/set-swap-space@master
-      with:
-        swap-size-gb: 10
+    - name: Increase swapfile
+      run: |
+        sudo swapoff -a
+        sudo fallocate -l 15G /swapfile
+        sudo chmod 600 /swapfile
+        sudo mkswap /swapfile
+        sudo swapon /swapfile
+        sudo swapon --show
 
     - name: Install PHP
       uses: shivammathur/setup-php@v2
@@ -78,11 +82,6 @@ jobs:
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest
-      if: ${{ matrix.php != '8.2' }}
-
-    - name: Install dependencies (PHP 8.2)
-      run: composer install --prefer-dist --no-progress --no-suggest --ignore-platform-reqs
-      if: ${{ matrix.php == '8.2' }}
 
     - name: Save Composer Cache
       uses: actions/cache/save@v4

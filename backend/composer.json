@@ -29,7 +29,7 @@
     "require-dev": {
         "phpunit/phpunit": "^9.4||^8.5",
         "fakerphp/faker": "^1.9",
-        "laracasts/testdummy": "^2.4",
+        "laracasts/testdummy": "2.5",
         "mikey179/vfsstream": "^1.6"
     },
     "autoload": {
@@ -42,8 +42,12 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/"
-        }
+            "Tests\\": "tests/",
+            "Laracasts\\TestDummy\\": "vendor/laracasts/testdummy/src/"
+        },
+        "files": [
+            "vendor/laracasts/testdummy/src/functions.php"
+        ]
     },
     "scripts": {
         "coverage": [
@@ -59,5 +63,17 @@
         "test": "phpunit --verbose --fail-on-warning",
         "testOnly": "phpunit --colors --filter",
         "test-timing": "phpunit --log-junit coverage/junit.xml"
-    }
+    },
+    "repositories": [{
+        "type": "package",
+        "package": {
+            "name": "laracasts/testdummy",
+            "version": "2.5",
+            "source": {
+                "url": "https://github.com/razorpay/TestDummy.git",
+                "type": "git",
+                "reference": "b3d666e"
+            }
+        }
+    }]
 }
