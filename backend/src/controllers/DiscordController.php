@@ -10,7 +10,9 @@ use Shipyard\Models\User;
 
 class DiscordController extends Controller {
     /** @var string * */
-    private $discord_api_endpoint = 'https://discord.com/api/v10';
+    private static $discordApi = 'https://discord.com/api/v10';
+    /** @var string * */
+    private static $discordUserUrl = 'https://discordapp.com/api/users/@me';
 
     /**
      * Login using a registered Discord account.
@@ -35,7 +37,7 @@ class DiscordController extends Controller {
      *
      * @return array<string, string|int>|false
      */
-    public function process_discord($code, $uri) {
+    public function processDiscord($code, $uri) {
         $payload = [
             'code'=>$code,
             'grant_type'=>'authorization_code',
@@ -54,7 +56,7 @@ class DiscordController extends Controller {
         ]);
 
         // get the data
-        $result = file_get_contents($this->discord_api_endpoint . '/oauth2/token', false, $context);
+        $result = file_get_contents(self::$discordApi . '/oauth2/token', false, $context);
         if ($result === false) {
             return false;
         }
@@ -69,7 +71,7 @@ class DiscordController extends Controller {
         ]);
 
         // get the data
-        $result = file_get_contents('https://discordapp.com/api/users/@me', false, $context);
+        $result = file_get_contents(self::$discordUserUrl, false, $context);
         if ($result === false) {
             return false;
         }
@@ -91,7 +93,7 @@ class DiscordController extends Controller {
      *
      * @return void|Response
      */
-    public function process_registration($discordid) {
+    public function processRegistration($discordid) {
         /** @var User|null $auth_user */
         $auth_user = Auth::user();
 
@@ -144,9 +146,9 @@ class DiscordController extends Controller {
      *
      * @return void|Response
      */
-    public function process_login(Request $request, Response $response) {
+    public function processLogin(Request $request, Response $response) {
         $code = $request->getQueryParams()['code'];
-        if ($discordid = $this->process_discord($code, 'process_login')) {
+        if ($discordid = $this->processDiscord($code, 'process_login')) {
             /** @var \Illuminate\Database\Eloquent\Builder $query */
             $query = User::query()->where([['discordid', $discordid['id']]]);
             /** @var User $user */
@@ -157,7 +159,7 @@ class DiscordController extends Controller {
                 /** @var User $user */
                 $user = $query->first();
                 if ($user == null) {
-                    $this->process_registration($discordid);
+                    $this->processRegistration($discordid);
 
                     return;
                 }

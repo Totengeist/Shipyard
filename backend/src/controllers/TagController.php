@@ -146,7 +146,7 @@ class TagController extends Controller {
      * @return Response
      */
     public function search(Request $request, Response $response, $args) {
-        $query_str = preg_replace('/[;]/i', '', $args['query']);
+        $query_str = preg_replace('/;/i', '', $args['query']);
         if ($query_str === null || $query_str === '') {
             $response->getBody()->write('[]');
 

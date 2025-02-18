@@ -34,16 +34,16 @@ class SteamController extends Controller {
      */
     public function login(Request $request, Response $response, $action = 'login') {
         $login_url_params = [
-            'openid.ns'         => $this->openidUrl,
+            'openid.ns'         => self::$openidUrl,
             'openid.mode'       => 'checkid_setup',
             'openid.return_to'  => $_SERVER['BASE_URL_ABS'] . '/steam/process_' . $action,
             'openid.realm'      => (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'],
-            'openid.identity'   => $this->openidUrl . $this->openIdIdent,
-            'openid.claimed_id' => $this->openidUrl . $this->openIdIdent,
+            'openid.identity'   => self::$openidUrl . self::$openIdIdent,
+            'openid.claimed_id' => self::$openidUrl . self::$openIdIdent,
         ];
 
         Log::get()->channel('registration')->info('Begin Steam ID ' . $action . '.');
-        $steam_login_url = $this->steamUrl . '/login?' . http_build_query($login_url_params, '', '&');
+        $steam_login_url = self::$steamUrl . '/login?' . http_build_query($login_url_params, '', '&');
 
         header("location: $steam_login_url");
         exit;
@@ -59,7 +59,7 @@ class SteamController extends Controller {
             'openid.assoc_handle' => $_GET['openid_assoc_handle'],
             'openid.signed'       => $_GET['openid_signed'],
             'openid.sig'          => $_GET['openid_sig'],
-            'openid.ns'           => $this->openidUrl,
+            'openid.ns'           => self::$openidUrl,
             'openid.mode'         => 'check_authentication',
         ];
 
@@ -83,13 +83,13 @@ class SteamController extends Controller {
         ]);
 
         // get the data
-        $result = file_get_contents($this->steamUrl . '/login', false, $context);
+        $result = file_get_contents(self::$steamUrl . '/login', false, $context);
         if ($result === false) {
             return false;
         }
 
         if (preg_match("#is_valid\s*:\s*true#i", $result)) {
-            preg_match('#^' . $this->steamUrl . '/id/(\d{17,25})#', $_GET['openid_claimed_id'], $matches);
+            preg_match('#^' . self::$steamUrl . '/id/(\d{17,25})#', $_GET['openid_claimed_id'], $matches);
 
             return count($matches) ? (int) $matches[1] : 0;
         }
