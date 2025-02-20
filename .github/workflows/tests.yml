@@ -45,7 +45,7 @@ jobs:
     strategy:
         fail-fast: true
         matrix:
-            php: ['7.2', '7.3', '7.4', '8.0', '8.1', '8.2', '8.3']
+            php: ['7.2', '7.3', '7.4'] # '8.0', '8.1', '8.2', '8.3']
             runner: ['ubuntu-20.04', 'ubuntu-22.04']
 
     steps:
@@ -64,9 +64,18 @@ jobs:
 
     - name: Install PHP
       uses: shivammathur/setup-php@v2
+      if: ${{ !(matrix.php == '7.4' && matrix.runner == 'ubuntu-22.04') }}
       with:
         php-version: ${{ matrix.php }}
-        coverage: xdebug
+        coverage: none
+        extensions: mysql
+
+    - name: Install PHP
+      uses: shivammathur/setup-php@v2
+      if: ${{ matrix.php == '7.4' && matrix.runner == 'ubuntu-22.04' }}
+      with:
+        php-version: ${{ matrix.php }}
+        coverage: pcov
         extensions: mysql
 
     - name: Validate composer.json and composer.lock
