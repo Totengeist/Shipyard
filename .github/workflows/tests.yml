@@ -50,6 +50,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
     - name: Increase swapfile
       run: |
@@ -64,6 +66,7 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php }}
+        coverage: xdebug
         extensions: mysql
 
     - name: Validate composer.json and composer.lock
@@ -121,3 +124,9 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./backend/coverage.xml
         verbose: true
+
+    - name: SonarQube Scan
+      uses: SonarSource/sonarqube-scan-action@v4
+      if: ${{ matrix.php == '7.4' && matrix.runner == 'ubuntu-22.04' }}
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
