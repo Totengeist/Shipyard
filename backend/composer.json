@@ -22,7 +22,7 @@
         "cocur/slugify": "^4.0 <=4.3.0",
         "nesbot/carbon": "^2.50",
         "php-di/slim-bridge": "^3.2",
-        "totengeist/iv-parsers": "dev-main-#96f65ea",
+        "totengeist/iv-parsers": "dev-main",
         "monolog/monolog": "^2.9",
         "phpmailer/phpmailer": "^6.9"
     },

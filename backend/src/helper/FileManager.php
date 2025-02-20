@@ -130,9 +130,9 @@ class FileManager {
         if (explode(';', $base_type)[0] == 'text/plain') {
             /** @var string $file_contents */
             $file_contents = file_get_contents($filepath);
-            $iv_type = IVFile::check_file_type($file_contents);
+            $iv_type = IVFile::checkFileType($file_contents);
             if ($iv_type !== false) {
-                return (string) IVFile::check_file_type($file_contents);
+                return (string) $iv_type;
             }
         }
 
