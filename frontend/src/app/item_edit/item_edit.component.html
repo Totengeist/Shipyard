@@ -31,13 +31,15 @@
     <h2>Edit screenshots</h2>
     <form id="screenshots-form">
         <div id="item-screenshots" *ngIf="hasScreenshots()">
-        <ul class="screenshot-list">
+        <ul class="screenshot-list screenshot-edit">
             <li *ngFor="let screenshot of screenshots">
+                <span class="screenshot-controls">
+                    <span *ngIf="screenshot.primary">🌟</span>
+                    <a (click)="makePrimaryScreenshot(screenshot)" (keyup)="makePrimaryScreenshot(screenshot)" role="link" tabindex={{0}} *ngIf="!screenshot.primary" class="screenshot-control" title="Make primary">⭐</a>
+                    <a (click)="editScreenshotDescription(screenshot)" (keyup)="editScreenshotDescription(screenshot)" role="link" tabindex={{0}} class="screenshot-control" title="Edit description">📝</a>
+                    <a (click)="deleteScreenshot(screenshot)" (keyup)="deleteScreenshot(screenshot)" role="link" tabindex={{0}} class="screenshot-control" title="Delete">🗑️</a>
+                </span>
                 <img src="api/v1/screenshot/{{ screenshot.ref }}/download" alt="{{ screenshot.description }}" title="{{ screenshot.description }}">
-                <a (click)="deleteScreenshot(screenshot)" (keyup)="deleteScreenshot(screenshot)" role="link" tabindex={{0}}>X</a>
-                <a (click)="editScreenshotDescription(screenshot)" (keyup)="editScreenshotDescription(screenshot)" role="link" tabindex={{0}}>E</a>
-                <span *ngIf="screenshot.primary">P</span>
-                <a (click)="makePrimaryScreenshot(screenshot)" (keyup)="makePrimaryScreenshot(screenshot)" role="link" tabindex={{0}} *ngIf="!screenshot.primary">M</a>
             </li>
         </ul>
         </div>

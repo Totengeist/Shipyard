@@ -12,8 +12,8 @@ header.billboard {
 }
 
 header.billboard h1 {
-    font-size: x-large;
-    font-weight: bold;
+	font-size: x-large;
+	font-weight: bold;
 }
 
 #app {
@@ -46,7 +46,6 @@ footer.footer {
 }
 
 #login {
-	width: fit-content;
 	margin: auto;
 	width: 300px;
 }
@@ -161,7 +160,7 @@ div#item-details {
 }
 
 div#item-screenshots .primary-screenshot img {
-    width: 100%;
+	width: 100%;
 }
 
 ul.screenshot-list {
@@ -189,6 +188,38 @@ ul.screenshot-list li img {
 	object-fit: cover;
 }
 
+ul.screenshot-edit li {
+	margin: 5px 15px 5px 0px;
+}
+
+ul.screenshot-edit li img {
+	margin-bottom: 25px;
+	position: inherit;
+}
+
+ul.screenshot-edit li:hover .screenshot-controls {
+	display: inline;
+}
+
+ul.screenshot-edit li:hover img {
+	margin-top: 1px;
+	margin-bottom: 0px;
+	position: relative;
+	top: -25px;
+}
+
+ul.screenshot-edit .screenshot-controls {
+	background-color: rgba(255, 255, 255, 0.2);
+	display: none;
+	float: right;
+	position: relative;
+	z-index: 1;
+}
+
+ul.screenshot-edit .screenshot-control {
+	cursor: pointer;
+}
+
 div.result-controls, p.download-button {
 	margin: auto;
 	width: fit-content;
@@ -205,10 +236,10 @@ form#upload textarea {
 }
 
 form .checkbox-label {
-    position: unset;
-    padding: 0 1.5em 0 .5em;
-    line-height: .8em;
-    margin: unset;
+	position: unset;
+	padding: 0 1.5em 0 .5em;
+	line-height: .8em;
+	margin: unset;
 }
 
 #uppy {
@@ -218,23 +249,23 @@ form .checkbox-label {
 }
 
 .item-alerts {
-    display: none;
+	display: none;
 }
 
 .item-alerts:has(span) {
-    display: block;
+	display: block;
 }
 
 .search-results {
-    padding: 10px;
-    position: relative;
-    top: -16px;
-    background-color: #ededed
+	padding: 10px;
+	position: relative;
+	top: -16px;
+	background-color: #ededed
 }
 
 #edit-form .item-tags {
-    list-style-type: none;
-    display: inline flow-root;
+	list-style-type: none;
+	display: inline flow-root;
 }
 
 #edit-form .item-tags li {
