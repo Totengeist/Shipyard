@@ -15,7 +15,7 @@ class ScreenshotModelTest extends TestCase {
         /** @var Screenshot $screenshot1 */
         $screenshot1 = Screenshot::query()->create([
             'description' => $faker->words(5, true),
-            'file_id' => $faker->randomDigit(), /* @phpstan-ignore-line */
+            'file_id' => $faker->randomDigit(),
         ]);
 
         /** @var Screenshot $screenshot2 */
