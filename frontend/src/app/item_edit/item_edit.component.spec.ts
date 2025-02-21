@@ -1,20 +1,22 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
-import { ModificationsComponent } from './modifications.component';
+import { ItemEditComponent } from './item_edit.component';
 
-describe('ModificationsComponent', () => {
-  let component: ModificationsComponent;
-  let fixture: ComponentFixture<ModificationsComponent>;
+describe('ItemEditComponent', () => {
+  let component: ItemEditComponent;
+  let fixture: ComponentFixture<ItemEditComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ModificationsComponent]
+      imports: [ItemEditComponent, HttpClientTestingModule, RouterTestingModule]
     })
       .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ModificationsComponent);
+    fixture = TestBed.createComponent(ItemEditComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

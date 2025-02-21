@@ -1,3 +1,5 @@
-<li *ngFor="let permission of permissions">
-  <a href="/admin/permission/{{ permission.slug }}/edit" routerLink="/admin/permission/{{ permission.slug }}/edit">{{ permission.label }}</a>
-</li>
+<ul>
+    <li *ngFor="let permission of permissions">
+      <a href="/admin/permission/{{ permission.slug }}/edit" routerLink="/admin/permission/{{ permission.slug }}/edit">{{ permission.label }}</a>
+    </li>
+</ul>

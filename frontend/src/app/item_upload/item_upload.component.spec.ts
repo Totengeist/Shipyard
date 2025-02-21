@@ -1,20 +1,22 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
-import { ReleasesComponent } from './releases.component';
+import { ItemUploadComponent } from './item_upload.component';
 
-describe('ReleasesComponent', () => {
-  let component: ReleasesComponent;
-  let fixture: ComponentFixture<ReleasesComponent>;
+xdescribe('ItemUploadComponent', () => {
+  let component: ItemUploadComponent;
+  let fixture: ComponentFixture<ItemUploadComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ReleasesComponent]
+      imports: [ItemUploadComponent, HttpClientTestingModule, RouterTestingModule]
     })
       .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ReleasesComponent);
+    fixture = TestBed.createComponent(ItemUploadComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

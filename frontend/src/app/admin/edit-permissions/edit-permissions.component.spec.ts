@@ -1,20 +1,22 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
-import { EditPermissionsComponent } from './edit-permissions.component';
+import { AdminEditPermissionsComponent } from './edit-permissions.component';
 
-describe('EditPermissionsComponent', () => {
-  let component: EditPermissionsComponent;
-  let fixture: ComponentFixture<EditPermissionsComponent>;
+describe('AdminEditPermissionsComponent', () => {
+  let component: AdminEditPermissionsComponent;
+  let fixture: ComponentFixture<AdminEditPermissionsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EditPermissionsComponent]
+      imports: [AdminEditPermissionsComponent, HttpClientTestingModule, RouterTestingModule]
     })
       .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(EditPermissionsComponent);
+    fixture = TestBed.createComponent(AdminEditPermissionsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

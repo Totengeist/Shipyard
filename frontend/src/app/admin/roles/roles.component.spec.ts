@@ -1,20 +1,21 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RolesComponent } from './roles.component';
+import { AdminRolesComponent } from './roles.component';
 
-describe('RolesComponent', () => {
-  let component: RolesComponent;
-  let fixture: ComponentFixture<RolesComponent>;
+describe('AdminRolesComponent', () => {
+  let component: AdminRolesComponent;
+  let fixture: ComponentFixture<AdminRolesComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RolesComponent]
+      imports: [AdminRolesComponent, HttpClientTestingModule]
     })
       .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RolesComponent);
+    fixture = TestBed.createComponent(AdminRolesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
