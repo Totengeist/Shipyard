@@ -1,7 +1,7 @@
 {
     "name": "totengeist/shipyard",
     "description": "TLS Shipyard",
-    "version": "0.1.1-alpha",
+    "version": "0.1.2-alpha",
     "type": "project",
     "license": "GPL-3.0-or-later",
     "authors": [
@@ -22,7 +22,7 @@
         "cocur/slugify": "^4.0 <=4.3.0",
         "nesbot/carbon": "^2.50",
         "php-di/slim-bridge": "^3.2",
-        "totengeist/iv-parsers": "dev-main",
+        "totengeist/iv-parsers": "^0.2",
         "monolog/monolog": "^2.9",
         "phpmailer/phpmailer": "^6.9"
     },
