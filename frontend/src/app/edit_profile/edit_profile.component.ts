@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { TokenStorageService } from '../_services/token-storage.service';
 import { UserService } from '../_services/user.service';
+import { UserInterface } from '../_types/user.interface';
 
 @Component({
   selector: 'app-edit-profile',
@@ -13,11 +14,11 @@ import { UserService } from '../_services/user.service';
   imports: [NgIf, FormsModule]
 })
 export class EditProfileComponent implements OnInit {
-  currentUser: User = {
-    name: null,
-    email: null,
-    password: null,
-    password_confirmation: null,
+  currentUser: UserInterface = {
+    name: '',
+    email: '',
+    password: '',
+    password_confirmation: '',
     ref: '',
   };
   steamError = '';
@@ -43,12 +44,4 @@ export class EditProfileComponent implements OnInit {
     };
     this.userService.edit(user);
   }
-}
-
-interface User {
-    name: string|null,
-    email: string|null,
-    password: string|null,
-    password_confirmation: string|null,
-    ref: string,
 }

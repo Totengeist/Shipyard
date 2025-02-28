@@ -7,6 +7,9 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { TokenStorageService } from '../_services/token-storage.service';
 import { UserService } from '../_services/user.service';
+import { ItemInterface } from '../_types/item.interface';
+import { ScreenshotInterface } from '../_types/screenshot.interface';
+import { UserInterface } from '../_types/user.interface';
 
 @Component({
   selector: 'app-item-page',
@@ -16,16 +19,16 @@ import { UserService } from '../_services/user.service';
   imports: [RouterLink, NgIf, MarkdownComponent, NgFor, NgClass]
 })
 export class ItemPageComponent implements OnInit {
-  currentUser: User = {ref: null, name: null, email: null};
+  currentUser: UserInterface = {ref: '', name: '', email: ''};
   itemType = '';
   itemId = '';
-  item: Item = {ref: null, title: null, description: null, downloads: -1, user: {ref: null, name: null, email: null}, flags: 0};
-  parent: Item = {ref: null, title: null, description: null, downloads: -1, user: {ref: null, name: null, email: null}, flags: 0};
-  children: Item[] = [];
-  user: User = {ref: null, name: null, email: null};
+  item!: ItemInterface;
+  parent!: ItemInterface;
+  children: ItemInterface[] = [];
+  user!: UserInterface;
   tags: any[] = [];
-  screenshots: Screenshot[] = [];
-  activeShot: Screenshot = {ref: null, description: null};
+  screenshots: ScreenshotInterface[] = [];
+  activeShot!: ScreenshotInterface;
   authUser: UserService = {} as UserService;
 
   constructor(private userService: UserService, private token: TokenStorageService, private http: HttpClient, private route: ActivatedRoute, private router: Router) {
@@ -43,7 +46,7 @@ export class ItemPageComponent implements OnInit {
       this.getItem(this.itemType, this.itemId).subscribe(
         data => {
           this.item = data;
-          this.parent = {ref: null, title: null, description: null, downloads: -1, user: {ref: null, name: null, email: null}, flags: 0}
+          this.parent = {ref: '', title: null, description: null, downloads: -1, user: {ref: '', name: '', email: ''}, flags: 0}
           if( data.parent !== null ) {
             this.parent = data.parent;
           }
@@ -76,15 +79,15 @@ export class ItemPageComponent implements OnInit {
 
   initializeFields(): void {
     this.itemType = this.route.snapshot.data.item_type;
-    this.item = {ref: null, title: null, description: null, downloads: -1, user: {ref: null, name: null, email: null}, flags: 0}
-    this.parent = {ref: null, title: null, description: null, downloads: -1, user: {ref: null, name: null, email: null}, flags: 0}
-    this.user = {ref: null, name: null, email: null}
+    this.item = {ref: '', title: '', description: '', downloads: -1, user: {ref: '', name: '', email: ''}, flags: 0}
+    this.parent = {ref: '', title: null, description: null, downloads: -1, user: {ref: '', name: '', email: ''}, flags: 0}
+    this.user = {ref: '', name: '', email: ''}
     this.tags = [];
     this.screenshots = []
-    this.activeShot = {ref: null, description: null};
+    this.activeShot = {ref: '', description: null, primary: false};
   }
 
-  setActiveScreenshot(screenshot: Screenshot): void {
+  setActiveScreenshot(screenshot: ScreenshotInterface): void {
     this.activeShot = screenshot;
   }
 
@@ -92,7 +95,7 @@ export class ItemPageComponent implements OnInit {
     if( this.parent === null || this.parent === undefined ) {
       return false;
     }
-    return (this.parent.ref !== null);
+    return (this.parent.ref !== '');
   }
 
   hasChildren(): boolean {
@@ -151,25 +154,4 @@ export class ItemPageComponent implements OnInit {
     }
     return false;
   }
-
-}
-
-interface Item {
-    ref: string|null,
-    title: string|null,
-    description: string|null
-    downloads: number,
-    user: User,
-    flags: number
-}
-
-interface Screenshot {
-    ref: string|null,
-    description: string|null
-}
-
-interface User {
-    ref: string|null,
-    name: string|null,
-    email: string|null
 }

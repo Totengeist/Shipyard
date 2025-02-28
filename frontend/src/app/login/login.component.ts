@@ -13,10 +13,7 @@ import { UserService } from '../_services/user.service';
   imports: [NgIf, FormsModule]
 })
 export class LoginComponent implements OnInit {
-  form: LoginFormData = {
-    username: null,
-    password: null
-  };
+  form: Record<string,string> = {};
   user: UserService = {} as UserService;
   url: string = environment.standardUrl;
 
@@ -46,9 +43,4 @@ export class LoginComponent implements OnInit {
       this.userService.login(username, password);
     }
   }
-}
-
-interface LoginFormData {
-    username: string|null,
-    password: string|null
 }

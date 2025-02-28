@@ -12,12 +12,7 @@ import { AuthService } from '../_services/auth.service';
   imports: [NgIf, FormsModule]
 })
 export class RegisterComponent {
-  form: RegisterFormData = {
-    name: null,
-    email: null,
-    password: null,
-    password_confirmation: null
-  };
+  form: Record<string,string> = {};
   isSuccessful = false;
   isSignUpFailed = false;
   errorMessage = '';
@@ -42,11 +37,4 @@ export class RegisterComponent {
       );
     }
   }
-}
-
-interface RegisterFormData {
-    name: string|null,
-    email: string|null,
-    password: string|null,
-    password_confirmation: string|null
 }

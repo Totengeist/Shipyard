@@ -141,8 +141,7 @@ export class UserService {
     );
   }
 
-  edit(user: {username: string|null, email: string|null, password: string|null, password_confirmation: string|null, ref: string} ): void {
-    console.log(user);
+  edit(user: {username: string|null, email: string|null, password: string|undefined, password_confirmation: string|undefined, ref: string} ): void {
     this.authService.edit(user.ref, user.username, user.email, user.password, user.password_confirmation).subscribe(
       data => {
         this.saveUserData(data);

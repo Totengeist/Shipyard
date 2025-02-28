@@ -13,6 +13,9 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { TokenStorageService } from '../_services/token-storage.service';
 import { UserService } from '../_services/user.service';
+import { ItemInterface } from '../_types/item.interface';
+import { ScreenshotInterface } from '../_types/screenshot.interface';
+import { UserInterface } from '../_types/user.interface';
 import { SearchComponent } from '../search/search.component';
 
 @Component({
@@ -24,18 +27,18 @@ import { SearchComponent } from '../search/search.component';
 })
 export class ItemEditComponent implements OnInit {
   supportedTypes: any = {ship: ['ship file', ['.ship']], save: ['save file', ['.space']], modification: ['mod archive', ['.zip']]}; // eslint-disable-line @typescript-eslint/no-explicit-any
-  currentUser: User = {ref: null, name: null, email: null};
+  currentUser: UserInterface|null = null;
   itemType = '';
   itemId = '';
-  item: Item = {ref: null, title: null, description: null, downloads: -1, user: {ref: null, name: null, email: null}, flags: 0};
-  parent: Item = {ref: null, title: null, description: null, downloads: -1, user: {ref: null, name: null, email: null}, flags: 0};
-  children: Item[] = [];
-  user: User = {ref: null, name: null, email: null};
+  item!: ItemInterface;
+  parent!: ItemInterface|null;
+  children: ItemInterface[] = [];
+  user!: UserInterface;
   tags: any[] = [];
   removeTags: string[] = [];
   addTags: string[] = [];
-  screenshots: Screenshot[] = [];
-  activeShot: Screenshot = {ref: null, description: null, primary: true};
+  screenshots: ScreenshotInterface[] = [];
+  activeShot!: ScreenshotInterface;
   uppy: Uppy = new Uppy();
   screenshotUppy: Uppy = new Uppy();
   authUser: UserService = {} as UserService;
@@ -45,9 +48,7 @@ export class ItemEditComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if( this.token.getUser() !== null ) {
-      this.currentUser = this.token.getUser();
-    }
+    this.currentUser = this.token.getUser();
     this.authUser = this.userService;
     this.initializeFields();
     this.route.params.subscribe(params => {
@@ -55,7 +56,7 @@ export class ItemEditComponent implements OnInit {
       this.getItem().subscribe(
         data => {
           this.item = data;
-          this.parent = {ref: null, title: null, description: null, downloads: -1, user: {ref: null, name: null, email: null}, flags: 0}
+          this.parent = null;
           if( data.parent !== null ) {
             this.parent = data.parent;
           }
@@ -135,7 +136,7 @@ export class ItemEditComponent implements OnInit {
         if (response.status >= 200 && response.status < 300) {
           const data = JSON.parse(JSON.stringify(response.body));
           this.screenshots = data;
-          data.forEach((element: Screenshot) => {
+          data.forEach((element: ScreenshotInterface) => {
             if (element.primary) {
               this.activeShot = element;
             }
@@ -146,12 +147,12 @@ export class ItemEditComponent implements OnInit {
 
   initializeFields(): void {
     this.itemType = this.route.snapshot.data.item_type;
-    this.item = {ref: null, title: null, description: null, downloads: -1, user: {ref: null, name: null, email: null}, flags: 0}
-    this.parent = {ref: null, title: null, description: null, downloads: -1, user: {ref: null, name: null, email: null}, flags: 0}
-    this.user = {ref: null, name: null, email: null}
+    this.item = {ref: '', title: '', description: '', downloads: -1, user: {ref: '', name: '', email: ''}, flags: 0};
+    this.parent = null;
+    this.user = {ref: '', name: '', email: ''};
     this.tags = [];
     this.screenshots = [];
-    this.activeShot = {ref: null, description: null, primary: true};
+    this.activeShot = {ref: '', description: null, primary: true};
   }
 
   // check if the tag was added
@@ -173,7 +174,7 @@ export class ItemEditComponent implements OnInit {
     return false;
   }
 
-  public deleteScreenshot(screenshot: Screenshot):void {
+  public deleteScreenshot(screenshot: ScreenshotInterface):void {
     const verify = confirm('Are you sure you want to delete this screenshot? This action is irreversible.');
     if (verify) {
       const httpOptions = {
@@ -187,7 +188,7 @@ export class ItemEditComponent implements OnInit {
     }
   }
 
-  public editScreenshotDescription(screenshot: Screenshot):void {
+  public editScreenshotDescription(screenshot: ScreenshotInterface):void {
     let description = screenshot.description
     if (description === null) {
       description = '';
@@ -209,7 +210,7 @@ export class ItemEditComponent implements OnInit {
       });
   }
 
-  public makePrimaryScreenshot(screenshot: Screenshot):void {
+  public makePrimaryScreenshot(screenshot: ScreenshotInterface):void {
     const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', Accept: '*/*' })
     };
@@ -272,7 +273,7 @@ export class ItemEditComponent implements OnInit {
   }
 
   belongsToCurrentUser(): boolean {
-    if (this.currentUser.ref === null) {
+    if (this.currentUser === null) {
       return false;
     }
     return (this.currentUser.ref === this.user.ref)
@@ -305,25 +306,4 @@ export class ItemEditComponent implements OnInit {
     return false;
   }
 
-}
-
-interface Item {
-    ref: string|null,
-    title: string|null,
-    description: string|null
-    downloads: number,
-    user: User,
-    flags: number
-}
-
-interface Screenshot {
-    ref: string|null,
-    description: string|null,
-    primary: boolean
-}
-
-interface User {
-    ref: string|null,
-    name: string|null,
-    email: string|null
 }

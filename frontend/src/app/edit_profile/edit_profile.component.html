@@ -28,7 +28,7 @@
           </div>
         </div>
         <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="email" name="email" placeholder="{{ currentUser.email }}" value="{{ currentUser.email }}" required [(ngModel)]="currentUser.email" />
+            <input type="text" class="form-control" id="email" name="email" *ngIf="currentUser && currentUser.email" placeholder="{{ currentUser.email }}" value="{{ currentUser.email }}" required [(ngModel)]="currentUser.email" />
             <label for="name">Email</label>
         </div>
         <div class="form-floating mb-3">
