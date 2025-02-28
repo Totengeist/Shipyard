@@ -1,11 +1,10 @@
 import { NgIf, NgFor, NgClass } from '@angular/common';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core'; // eslint-disable-line import/named
 
 import { from, fromEvent, Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
 
-import { environment } from '../../environments/environment';
+import { ApiService } from '../_services/api.service';
 
 @Component({
   selector: 'app-search',
@@ -22,7 +21,7 @@ export class SearchComponent implements OnInit {
   showSearches = false;
   isSearching = false;
 
-  constructor(private http: HttpClient) {}
+  constructor(private api: ApiService) {}
 
   ngOnInit() {
     this.itemSearch();
@@ -79,11 +78,8 @@ export class SearchComponent implements OnInit {
     if( searchString === '' ) {
       return from(new Promise(resolve => resolve({'data': []})));
     }
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', Accept: '*/*' })
-    };
 
-    return this.http.get(environment.apiUrl + 'search/tag/' + searchString, httpOptions);
+    return this.api.get(`/search/tag/${searchString}`);
   }
 
 }

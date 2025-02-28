@@ -1,5 +1,4 @@
 import { NgIf, NgFor, NgClass } from '@angular/common';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
@@ -11,6 +10,7 @@ import XHR from '@uppy/xhr-upload';
 import { MarkdownComponent } from 'ngx-markdown';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { ApiService } from '../_services/api.service';
 import { TokenStorageService } from '../_services/token-storage.service';
 import { UserService } from '../_services/user.service';
 import { ItemInterface } from '../_types/item.interface';
@@ -43,7 +43,7 @@ export class ItemEditComponent implements OnInit {
   screenshotUppy: Uppy = new Uppy();
   authUser: UserService = {} as UserService;
 
-  constructor(private userService: UserService, private token: TokenStorageService, private http: HttpClient, private route: ActivatedRoute, private router: Router) {
+  constructor(private api: ApiService, private userService: UserService, private token: TokenStorageService, private route: ActivatedRoute, private router: Router) {
     this.initializeFields();
   }
 
@@ -57,10 +57,12 @@ export class ItemEditComponent implements OnInit {
         data => {
           this.item = data;
           this.parent = null;
-          if( data.parent !== null ) {
+          if( data.parent != null ) {
             this.parent = data.parent;
           }
-          this.children = data.children;
+          if( data.children != null ) {
+            this.children = data.children;
+          }
           if( data.user !== null ) {
             this.user = data.user;
           }
@@ -68,7 +70,9 @@ export class ItemEditComponent implements OnInit {
             console.log('Unauthorized');
             this.router.navigate(['/'+this.itemType+'/'+this.itemId]);
           }
-          this.tags = data.tags;
+          if( data.tags ) {
+            this.tags = data.tags;
+          }
           if (data.primary_screenshot.length > 0) {
             this.activeShot = data.primary_screenshot[0];
           }
@@ -147,7 +151,7 @@ export class ItemEditComponent implements OnInit {
 
   initializeFields(): void {
     this.itemType = this.route.snapshot.data.item_type;
-    this.item = {ref: '', title: '', description: '', downloads: -1, user: {ref: '', name: '', email: ''}, flags: 0};
+    this.item = {ref: '', title: '', description: '', downloads: -1, user: {ref: '', name: '', email: ''}, flags: 0, primary_screenshot: []};
     this.parent = null;
     this.user = {ref: '', name: '', email: ''};
     this.tags = [];
@@ -177,11 +181,7 @@ export class ItemEditComponent implements OnInit {
   public deleteScreenshot(screenshot: ScreenshotInterface):void {
     const verify = confirm('Are you sure you want to delete this screenshot? This action is irreversible.');
     if (verify) {
-      const httpOptions = {
-        headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', Accept: '*/*' })
-      };
-
-      this.http.delete(environment.apiUrl + 'screenshot/' + screenshot.ref, httpOptions).subscribe(
+      this.api.delete(`/screenshot/${screenshot.ref}`).subscribe(
         () => {
           this.updateScreenshots();
         });
@@ -198,31 +198,20 @@ export class ItemEditComponent implements OnInit {
       return;
     }
 
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', Accept: '*/*' })
-    };
-    const body = new URLSearchParams();
-    body.set('description', new_description);
-
-    this.http.post(environment.apiUrl + 'screenshot/' + screenshot.ref, body.toString(), httpOptions).subscribe(
+    this.api.post(`/screenshot/${screenshot.ref}`, {description: new_description}).subscribe(
       () => {
         this.updateScreenshots();
       });
   }
 
   public makePrimaryScreenshot(screenshot: ScreenshotInterface):void {
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', Accept: '*/*' })
-    };
-    const body = new URLSearchParams();
     if (screenshot.ref == null) {
       console.log('Unable to mark screenshot as primary. Screenshot ID is unknown.');
       return
     }
-    body.set('primary_screenshot', screenshot.ref);
 
 
-    this.http.post(environment.apiUrl + this.itemType + '/' + this.item.ref, body.toString(), httpOptions).subscribe(
+    this.api.post(`/${this.itemType}/${this.item.ref}`, {primary_screenshot: screenshot.ref}).subscribe(
       () => {
         this.updateScreenshots();
       });
@@ -283,20 +272,12 @@ export class ItemEditComponent implements OnInit {
     return (this.parent!.user!.ref === this.user.ref)
   }
 
-  getItem(): Observable<any> {
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', Accept: '*/*' })
-    };
-
-    return this.http.get(environment.apiUrl + this.itemType + '/' + this.itemId, httpOptions);
+  getItem(): Observable<ItemInterface> {
+    return this.api.get(`/${this.itemType}/${this.itemId}`);
   }
 
-  getScreenshots(): Observable<any> {
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', Accept: '*/*' })
-    };
-
-    return this.http.get(environment.apiUrl + this.itemType + '/' + this.itemId + '/screenshots', httpOptions);
+  getScreenshots(): Observable<ScreenshotInterface[]> {
+    return this.api.get(`/${this.itemType}/${this.itemId}/screenshots`);
   }
 
   hasScreenshots(): boolean {
@@ -305,5 +286,4 @@ export class ItemEditComponent implements OnInit {
     }
     return false;
   }
-
 }

@@ -1,9 +1,8 @@
 import { NgFor } from '@angular/common';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
 import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { ApiService } from '../_services/api.service';
 import { TokenStorageService } from '../_services/token-storage.service';
 
 @Component({
@@ -16,7 +15,7 @@ import { TokenStorageService } from '../_services/token-storage.service';
 export class ReleasesComponent implements OnInit {
   releases: Release[] = [];
 
-  constructor(private token: TokenStorageService, private http: HttpClient) { }
+  constructor(private api: ApiService, private token: TokenStorageService) { }
 
   ngOnInit(): void {
     this.getReleases().subscribe(
@@ -31,14 +30,9 @@ export class ReleasesComponent implements OnInit {
     );
   }
 
-  getReleases(): Observable<any> { // eslint-disable-line @typescript-eslint/no-explicit-any
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', Accept: '*/*' })
-    };
-
-    return this.http.get(environment.apiUrl + 'release', httpOptions);
+  getReleases(): Observable<any> {
+    return this.api.get('/release');
   }
-
 }
 
 interface Release { label: string, slug: string }

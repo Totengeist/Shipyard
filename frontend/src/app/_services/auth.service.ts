@@ -1,57 +1,55 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
-
-const httpOptions = {
-  headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', Accept: '*/*' })
-};
+import { UserInterface } from '../_types/user.interface';
+import { ApiService } from './api.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  constructor(private http: HttpClient) { }
+  constructor(private api: ApiService) { }
 
-  login(email: string, password: string): Observable<any> {
-    const body = new URLSearchParams();
-    body.set('email', email);
-    body.set('password', password);
+  login(email: string, password: string): Observable<UserInterface> {
+    const body = {
+      email: email,
+      password: password
+    };
 
-    return this.http.post(environment.apiUrl + 'login', body.toString(), httpOptions);
+    return this.api.post<UserInterface>('/login', body);
   }
 
   logout(): Observable<any> {
-    return this.http.post(environment.apiUrl + 'logout', (new URLSearchParams()).toString(), httpOptions);
+    return this.api.post('/logout');
   }
 
-  me(): Observable<any> {
-    return this.http.get(environment.apiUrl + 'me', httpOptions);
+  me(): Observable<UserInterface> {
+    return this.api.get<UserInterface>('/me');
   }
 
   register(name: string, email: string, password: string, passwordConfirmation: string): Observable<any> {
-    const body = new URLSearchParams();
-    body.set('name', name);
-    body.set('email', email);
-    body.set('password', password);
-    body.set('password_confirmation', passwordConfirmation);
+    const body = {
+      name: name,
+      email: email,
+      password: password,
+      password_confirmation: passwordConfirmation
+    };
 
-    return this.http.post(environment.apiUrl + 'register', body.toString(), httpOptions);
+    return this.api.post('/register', body);
   }
 
-  edit(ref: string, name: string|null, email: string|null, password: string|null, passwordConfirmation: string|null): Observable<any> {
-    const body = new URLSearchParams();
+  edit(ref: string, name: string|null, email: string|null, password: string|undefined, passwordConfirmation: string|undefined): Observable<any> {
+    const body: Record<string, string> = {};
     if( name !== null ) {
-      body.set('name', name);
+      body.name = name;
     }
     if( email !== null ) {
-      body.set('email', email);
+      body.email = email;
     }
-    if( password !== null && password === passwordConfirmation ) {
-      body.set('password', password);
-      body.set('password_confirmation', passwordConfirmation);
+    if( password !== undefined && password === passwordConfirmation ) {
+      body.password = password;
+      body.password_confirmation = passwordConfirmation;
     }
 
-    return this.http.post(environment.apiUrl + 'user/' + ref, body.toString(), httpOptions);
+    return this.api.post(`/user/${ref}`, body);
   }
 }

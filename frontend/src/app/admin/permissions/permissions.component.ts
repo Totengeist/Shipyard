@@ -1,9 +1,8 @@
 import { NgFor } from '@angular/common';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
 import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { ApiService } from '../../_services/api.service';
 import { TokenStorageService } from '../../_services/token-storage.service';
 
 @Component({
@@ -16,7 +15,7 @@ import { TokenStorageService } from '../../_services/token-storage.service';
 export class AdminPermissionsComponent implements OnInit {
   permissions: any[] = [];
 
-  constructor(private token: TokenStorageService, private http: HttpClient) { }
+  constructor(private api: ApiService, private token: TokenStorageService) { }
 
   ngOnInit(): void {
     this.getPermissions().subscribe(
@@ -32,11 +31,7 @@ export class AdminPermissionsComponent implements OnInit {
   }
 
   getPermissions(): Observable<any> {
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', Accept: '*/*' })
-    };
-
-    return this.http.get(environment.apiUrl + 'permission', httpOptions);
+    return this.api.get('/permission');
   }
 
 

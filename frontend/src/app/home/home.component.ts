@@ -1,9 +1,8 @@
 import { NgFor, NgIf } from '@angular/common';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
 import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { ApiService } from '../_services/api.service';
 
 @Component({
   selector: 'app-home',
@@ -17,7 +16,7 @@ export class HomeComponent implements OnInit {
   itemTypes: string[] = ['ship', 'save', 'modification'];
   items: Record<string, any[]> = {};
 
-  constructor(private http: HttpClient) { }
+  constructor(private api: ApiService) { }
 
   ngOnInit(): void {
     this.getItems();
@@ -52,10 +51,6 @@ export class HomeComponent implements OnInit {
   }
 
   getItemsByType(itemType: string): Observable<any> {
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', Accept: '*/*' })
-    };
-
-    return this.http.get(environment.apiUrl + itemType, httpOptions);
+    return this.api.get(`/${itemType}`);
   }
 }

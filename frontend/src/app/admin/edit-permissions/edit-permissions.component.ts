@@ -1,8 +1,8 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { ApiService } from '../../_services/api.service';
 import { TokenStorageService } from '../../_services/token-storage.service';
 
 
@@ -16,7 +16,7 @@ export class AdminEditPermissionsComponent implements OnInit {
   slug = '';
   label = '';
 
-  constructor(private token: TokenStorageService, private http: HttpClient, private activatedRoute: ActivatedRoute) { }
+  constructor(private api: ApiService, private token: TokenStorageService, private activatedRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.slug = this.activatedRoute.snapshot.params.slug;
@@ -40,7 +40,7 @@ export class AdminEditPermissionsComponent implements OnInit {
       })
     };
 
-    return this.http.get(environment.apiUrl + 'permission/' + this.slug, httpOptions);
+    return this.api.get(`/permission/${this.slug}`, httpOptions);
   }
 
 }

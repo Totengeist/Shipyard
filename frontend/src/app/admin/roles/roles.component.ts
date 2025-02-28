@@ -1,9 +1,8 @@
 import { NgFor } from '@angular/common';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
 import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { ApiService } from '../../_services/api.service';
 import { TokenStorageService } from '../../_services/token-storage.service';
 
 
@@ -17,13 +16,13 @@ import { TokenStorageService } from '../../_services/token-storage.service';
 export class AdminRolesComponent implements OnInit {
   roles: any[] = [];
 
-  constructor(private token: TokenStorageService, private http: HttpClient) { }
+  constructor(private api: ApiService, private token: TokenStorageService) { }
 
   ngOnInit(): void {
     this.getRoles().subscribe(
       data => {
-        if ( data !== null ) {
-          data.forEach((element: any) => {
+        if ( data.data !== null ) {
+          data.data.forEach((element: any) => {
             this.roles.push({label: element.label, slug: element.slug});
           });
         }
@@ -35,15 +34,7 @@ export class AdminRolesComponent implements OnInit {
   }
 
   getRoles(): Observable<any> {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/x-www-form-urlencoded',
-        Accept: '*/*',
-        Authorization: 'Bearer ' + this.token.getToken()
-      })
-    };
-
-    return this.http.get(environment.apiUrl + 'role', httpOptions);
+    return this.api.get('/role');
   }
 
 

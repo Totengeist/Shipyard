@@ -1,11 +1,13 @@
 import { NgFor, NgIf } from '@angular/common';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { ApiService } from '../_services/api.service';
 import { TokenStorageService } from '../_services/token-storage.service';
 import { UserService } from '../_services/user.service';
+import { ItemInterface } from '../_types/item.interface';
+import { UserInterface } from '../_types/user.interface';
 
 @Component({
   selector: 'app-profile',
@@ -19,10 +21,10 @@ export class ProfileComponent implements OnInit {
   steamError = '';
   discordError = '';
   itemTypes: string[] = ['ship', 'save', 'modification'];
-  items: Record<string, any[]> = {};
+  items: Record<string, ItemInterface[]> = {};
   url: string = environment.standardUrl;
 
-  constructor(private userService: UserService, private route: ActivatedRoute, private token: TokenStorageService, private http: HttpClient) { }
+  constructor(private api: ApiService, private userService: UserService, private route: ActivatedRoute, private token: TokenStorageService) { }
 
   ngOnInit(): void {
     this.currentUser = this.userService;
@@ -40,7 +42,7 @@ export class ProfileComponent implements OnInit {
     this.getUser(this.currentUser.ref).subscribe(
       data => {
         this.itemTypes.forEach((element: string) => {
-          this.items[element] = data[element+'s'];
+          this.items[element] = data[element+'s' as keyof UserInterface] as ItemInterface[];
         });
       },
       () => {
@@ -73,11 +75,7 @@ export class ProfileComponent implements OnInit {
     return false;
   }
 
-  getUser(itemId: string): Observable<any> {
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', Accept: '*/*' })
-    };
-
-    return this.http.get(environment.apiUrl + 'user/' + itemId, httpOptions);
+  getUser(itemId: string): Observable<UserInterface> {
+    return this.api.get<UserInterface>(`/user/${itemId}`);
   }
 }

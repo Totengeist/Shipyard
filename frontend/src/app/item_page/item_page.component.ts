@@ -1,10 +1,9 @@
 import { NgIf, NgFor, NgClass } from '@angular/common';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { MarkdownComponent } from 'ngx-markdown';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { ApiService } from '../_services/api.service';
 import { TokenStorageService } from '../_services/token-storage.service';
 import { UserService } from '../_services/user.service';
 import { ItemInterface } from '../_types/item.interface';
@@ -31,7 +30,7 @@ export class ItemPageComponent implements OnInit {
   activeShot!: ScreenshotInterface;
   authUser: UserService = {} as UserService;
 
-  constructor(private userService: UserService, private token: TokenStorageService, private http: HttpClient, private route: ActivatedRoute, private router: Router) {
+  constructor(private api: ApiService, private userService: UserService, private token: TokenStorageService, private route: ActivatedRoute, private router: Router) {
     this.initializeFields();
   }
 
@@ -46,15 +45,19 @@ export class ItemPageComponent implements OnInit {
       this.getItem(this.itemType, this.itemId).subscribe(
         data => {
           this.item = data;
-          this.parent = {ref: '', title: null, description: null, downloads: -1, user: {ref: '', name: '', email: ''}, flags: 0}
-          if( data.parent !== null ) {
+          this.parent = {ref: '', title: null, description: null, downloads: -1, user: {ref: '', name: '', email: ''}, flags: 0, primary_screenshot: []}
+          if( data.parent != null ) {
             this.parent = data.parent;
           }
-          this.children = data.children;
-          if( data.user !== null ) {
+          if( data.children != null) {
+            this.children = data.children;
+          }
+          if( data.user != null ) {
             this.user = data.user;
           }
-          this.tags = data.tags;
+          if( data.tags != null) {
+            this.tags = data.tags;
+          }
           if (data.primary_screenshot.length > 0) {
             this.activeShot = data.primary_screenshot[0];
           }
@@ -79,8 +82,8 @@ export class ItemPageComponent implements OnInit {
 
   initializeFields(): void {
     this.itemType = this.route.snapshot.data.item_type;
-    this.item = {ref: '', title: '', description: '', downloads: -1, user: {ref: '', name: '', email: ''}, flags: 0}
-    this.parent = {ref: '', title: null, description: null, downloads: -1, user: {ref: '', name: '', email: ''}, flags: 0}
+    this.item = {ref: '', title: '', description: '', downloads: -1, user: {ref: '', name: '', email: ''}, flags: 0, primary_screenshot: []}
+    this.parent = {ref: '', title: null, description: null, downloads: -1, user: {ref: '', name: '', email: ''}, flags: 0, primary_screenshot: []}
     this.user = {ref: '', name: '', email: ''}
     this.tags = [];
     this.screenshots = []
@@ -132,20 +135,12 @@ export class ItemPageComponent implements OnInit {
     return (this.parent!.user!.ref === this.user.ref)
   }
 
-  getItem(itemType: string, itemId: string): Observable<any> {
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', Accept: '*/*' })
-    };
-
-    return this.http.get(environment.apiUrl + itemType + '/' + itemId, httpOptions);
+  getItem(itemType: string, itemId: string): Observable<ItemInterface> {
+    return this.api.get<ItemInterface>(`/${itemType}/${itemId}`);
   }
 
-  getScreenshots(itemType: string, itemId: string): Observable<any> {
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', Accept: '*/*' })
-    };
-
-    return this.http.get(environment.apiUrl + itemType + '/' + itemId + '/screenshots', httpOptions);
+  getScreenshots(itemType: string, itemId: string): Observable<ScreenshotInterface[]> {
+    return this.api.get<ScreenshotInterface[]>(`${itemType}/${itemId}/screenshots`);
   }
 
   hasScreenshots(): boolean {
