@@ -41,10 +41,7 @@ trait HasRef {
     }
 
     /**
-     * Override the save function to verify a name is present and to clean the
-     * slug.
-     *
-     * @todo remove special characters from slugs
+     * Override the save function to create a reference ID if it isn't provided.
      *
      * @param mixed[] $options
      *

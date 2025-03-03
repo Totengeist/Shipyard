@@ -2,9 +2,6 @@
 
 namespace Shipyard;
 
-/**
- * @todo Generalize to send notifications through one or more channels (email, log file, Gotify, Pushover, etc.)
- */
 abstract class Notifier {
     /**
      * Enables or disables notifications.

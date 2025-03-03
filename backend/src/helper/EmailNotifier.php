@@ -5,9 +5,6 @@ namespace Shipyard;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 
-/**
- * @todo Generalize to send notifications through one or more channels (email, log file, Gotify, Pushover, etc.)
- */
 class EmailNotifier extends Notifier {
     /**
      * The mailer.

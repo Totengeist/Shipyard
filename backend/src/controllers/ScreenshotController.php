@@ -15,8 +15,6 @@ class ScreenshotController extends Controller {
     /**
      * Display a listing of the resource.
      *
-     * @todo expand screenshots to items other than ships (item_ref and tag_label?)
-     *
      * @return Response
      */
     public function index(Request $request, Response $response) {
