@@ -10,7 +10,7 @@ use Shipyard\Models\User;
 
 class SteamController extends Controller {
     /** @var string */
-    private static $openidUrl = 'https://specs.openid.net/auth/2.0';
+    private static $openidUrl = 'http://specs.openid.net/auth/2.0';
     /** @var string */
     private static $openIdIdent = '/identifier_select';
     /** @var string */
@@ -22,17 +22,18 @@ class SteamController extends Controller {
      * @return void
      */
     public function register(Request $request, Response $response) {
-        $this->login($request, $response, 'registration');
+        $this->login($request, $response, [], 'registration');
     }
 
     /**
      * Register a Steam account to a Shipyard account or login using a registered Steam account.
      *
-     * @param string $action the action to take (login/registration)
+     * @param array<string,string> $args
+     * @param string               $action the action to take (login/registration)
      *
      * @return void
      */
-    public function login(Request $request, Response $response, $action = 'login') {
+    public function login(Request $request, Response $response, $args, $action = 'login') {
         $login_url_params = [
             'openid.ns'         => self::$openidUrl,
             'openid.mode'       => 'checkid_setup',
