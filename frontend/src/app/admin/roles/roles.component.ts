@@ -9,7 +9,6 @@ import { TokenStorageService } from '../../_services/token-storage.service';
 @Component({
   selector: 'app-roles',
   templateUrl: './roles.component.html',
-  styleUrls: ['./roles.component.css'],
   standalone: true,
   imports: [NgFor, RouterLink]
 })

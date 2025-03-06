@@ -9,7 +9,6 @@ import { UserInterface } from '../_types/user.interface';
 @Component({
   selector: 'app-edit-profile',
   templateUrl: './edit_profile.component.html',
-  styleUrls: ['./edit_profile.component.css'],
   standalone: true,
   imports: [NgIf, FormsModule]
 })

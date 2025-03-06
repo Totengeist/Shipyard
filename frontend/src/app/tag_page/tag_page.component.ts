@@ -9,7 +9,6 @@ import { UserService } from '../_services/user.service';
 @Component({
   selector: 'app-tag-page',
   templateUrl: './tag_page.component.html',
-  styleUrls: ['./tag_page.component.css'],
   standalone: true,
   imports: [NgFor, NgIf, RouterLink]
 })

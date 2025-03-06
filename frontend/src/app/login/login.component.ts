@@ -8,7 +8,6 @@ import { UserService } from '../_services/user.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],
   standalone: true,
   imports: [NgIf, FormsModule]
 })

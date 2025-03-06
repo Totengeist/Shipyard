@@ -8,7 +8,6 @@ import { TokenStorageService } from '../../_services/token-storage.service';
 @Component({
   selector: 'app-permissions',
   templateUrl: './permissions.component.html',
-  styleUrls: ['./permissions.component.css'],
   standalone: true,
   imports: [NgFor, RouterLink]
 })

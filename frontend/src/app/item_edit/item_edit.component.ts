@@ -21,7 +21,6 @@ import { SearchComponent } from '../search/search.component';
 @Component({
   selector: 'app-item-edit',
   templateUrl: './item_edit.component.html',
-  styleUrls: ['./item_edit.component.css'],
   standalone: true,
   imports: [SearchComponent, FormsModule, RouterLink, NgIf, MarkdownComponent, NgFor, NgClass]
 })

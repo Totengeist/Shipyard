@@ -13,7 +13,6 @@ import { UserInterface } from '../_types/user.interface';
 @Component({
   selector: 'app-item-page',
   templateUrl: './item_page.component.html',
-  styleUrls: ['./item_page.component.css'],
   standalone: true,
   imports: [RouterLink, NgIf, MarkdownComponent, NgFor, NgClass]
 })

@@ -12,7 +12,6 @@ import { UserService } from './../_services/user.service';
 @Component({
   selector: 'app-item-upload',
   templateUrl: './item_upload.component.html',
-  styleUrls: ['./item_upload.component.css'],
   standalone: true,
   imports: [FormsModule, NgIf, RouterLink]
 })

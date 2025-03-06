@@ -8,7 +8,6 @@ import { TokenStorageService } from '../_services/token-storage.service';
 @Component({
   selector: 'app-item-list',
   templateUrl: './tag_list.component.html',
-  styleUrls: ['./tag_list.component.css'],
   standalone: true,
   imports: [NgFor, RouterLink, NgIf]
 })

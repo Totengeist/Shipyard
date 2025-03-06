@@ -9,7 +9,6 @@ import { UserService } from '../_services/user.service';
 @Component({
   selector: 'app-user-page',
   templateUrl: './user_page.component.html',
-  styleUrls: ['./user_page.component.css'],
   standalone: true,
   imports: [NgFor, NgIf, RouterLink]
 })

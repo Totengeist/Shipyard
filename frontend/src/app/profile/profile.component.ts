@@ -12,7 +12,6 @@ import { UserInterface } from '../_types/user.interface';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.css'],
   standalone: true,
   imports: [NgFor, NgIf, RouterLink]
 })
