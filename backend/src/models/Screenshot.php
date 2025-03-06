@@ -2,18 +2,18 @@
 
 namespace Shipyard\Models;
 
+use Shipyard\Traits\HasFile;
 use Shipyard\Traits\HasRef;
 use Valitron\Validator;
 
 /**
  * @property string      $description
- * @property int         $file_id
- * @property File        $file
  * @property Thumbnail[] $thumbnails
  * @property bool        $primary
  */
 class Screenshot extends Model {
     use HasRef;
+    use HasFile;
 
     /**
      * Label to use for tag table.
@@ -87,15 +87,6 @@ class Screenshot extends Model {
     }
 
     /**
-     * A ship has a file.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function file() {
-        return $this->belongsTo(File::class);
-    }
-
-    /**
      * Create or add on to a validator.
      *
      * @param mixed          $data
@@ -117,6 +108,11 @@ class Screenshot extends Model {
         return $v;
     }
 
+    /**
+     * Delete the screenshot, it's associated file, and all thumbnails.
+     *
+     * @return bool
+     */
     public function delete() {
         foreach ($this->thumbnails as $thumb) {
             if (!$thumb->delete()) {

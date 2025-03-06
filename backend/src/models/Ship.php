@@ -2,6 +2,7 @@
 
 namespace Shipyard\Models;
 
+use Shipyard\Traits\HasFile;
 use Shipyard\Traits\HasRef;
 use Shipyard\Traits\HasReleases;
 use Shipyard\Traits\HasScreenshots;
@@ -9,8 +10,6 @@ use Shipyard\Traits\HasTags;
 use Valitron\Validator;
 
 /**
- * @property int    $file_id
- * @property File   $file
  * @property string $title
  * @property string $description
  * @property int    $flags
@@ -23,6 +22,7 @@ class Ship extends Model {
     use HasReleases;
     use HasScreenshots;
     use HasRef;
+    use HasFile;
 
     /**
      * Label to use for tag table.
@@ -74,15 +74,6 @@ class Ship extends Model {
     }
 
     /**
-     * A ship has a file.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function file() {
-        return $this->belongsTo(File::class);
-    }
-
-    /**
      * Create or add on to a validator.
      *
      * @param mixed          $data
@@ -105,15 +96,6 @@ class Ship extends Model {
         ]);
 
         return $v;
-    }
-
-    /**
-     * Delete the resource and the associated file.
-     *
-     * @return bool
-     */
-    public function delete() {
-        return $this->file->delete() && parent::delete();
     }
 
     /**

@@ -48,6 +48,16 @@ $factory('Shipyard\Models\Modification', function ($faker) {
     ];
 });
 
+$factory('Shipyard\Models\File', function ($faker) {
+    return [
+        'filename' => $faker->regexify('[a-z0-4]{20}'),
+        'media_type' => $faker->randomElement(['application/tls-save+introversion', 'application/tls-ship+introversion', 'image/png; charset=binary']),
+        'extension' => $faker->randomElement(['space', 'ship', 'png']),
+        'filepath' => $faker->regexify('[a-z0-4]{20}'),
+        'compressed' => true
+    ];
+});
+
 $factory('Shipyard\Models\Tag', [
     'slug' => $faker->slug,
     'label' => $faker->words(5, true),
@@ -66,5 +76,14 @@ $factory('Shipyard\Models\Screenshot', function ($faker) {
     return [
         'description' => $faker->paragraph(),
         'file_id' => $file->id,
+    ];
+});
+
+$factory('Shipyard\Models\Thumbnail', function ($faker) {
+    $file = Shipyard\FileManager::moveUploadedFile(Tests\APITestCase::createSampleUpload('science-vessel.png'));
+
+    return [
+        'size' => 800,
+        'file_id' => $file->id
     ];
 });
