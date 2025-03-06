@@ -50,6 +50,9 @@ class ItemController extends Controller {
         if ($user == null) {
             /** @var \Illuminate\Database\Eloquent\Builder $content */
             $content = $this->modelType::with('user', 'primary_screenshot', 'tags')->whereRaw('(flags & 1 <> 1 AND flags & 2 <> 2)')->orderBy('updated_at', 'DESC');
+        } elseif ($user->can('edit-' . $this->modelSlug . 's')) {
+            /** @var \Illuminate\Database\Eloquent\Builder $content */
+            $content = $this->modelType::with('user', 'primary_screenshot', 'tags')->orderBy('updated_at', 'DESC');
         } else {
             /** @var \Illuminate\Database\Eloquent\Builder $content */
             $content = $this->modelType::with('user', 'primary_screenshot', 'tags')->whereRaw('(flags & 1 <> 1 AND flags & 2 <> 2)')->orWhere('user_id', $user->id)->orderBy('updated_at', 'DESC');
