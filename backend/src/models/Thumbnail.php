@@ -38,4 +38,19 @@ class Thumbnail extends Model {
     public function screenshot() {
         return $this->belongsTo(Screenshot::class);
     }
+
+    /**
+     * Delete the thumbnail and it's database record.
+     *
+     * @return bool
+     */
+    public function delete() {
+        if ($this->file->delete()) {
+            Thumbnail::query()->where([['file_id', $this->file_id], ['screenshot_id', $this->screenshot_id]])->delete();
+
+            return true;
+        }
+
+        return false;
+    }
 }
