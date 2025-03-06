@@ -254,10 +254,12 @@ class ItemController extends Controller {
             if (is_array($files['file'])) {
                 return $this->invalid_input_response(['file' => 'Multiple file uploads are not allowed.']);
             }
-            if ($model->file != null) {
-                $model->file->delete();
+            if (strpos($files['file']->getClientFilename(), '__shipyard__blank__') != 0) {
+                if ($model->file != null) {
+                    $model->file->delete();
+                }
+                $model->file_id = FileManager::moveUploadedFile($files['file'])->id;
             }
-            $model->file_id = FileManager::moveUploadedFile($files['file'])->id;
         }
 
         if (isset($data['state'])) {
