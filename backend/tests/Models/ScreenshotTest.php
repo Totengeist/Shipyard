@@ -4,6 +4,7 @@ namespace Tests\Models;
 
 use Laracasts\TestDummy\Factory;
 use Shipyard\Models\Screenshot;
+use Shipyard\Models\Thumbnail;
 use Tests\TestCase;
 
 class ScreenshotModelTest extends TestCase {
@@ -21,6 +22,25 @@ class ScreenshotModelTest extends TestCase {
         /** @var Screenshot $screenshot2 */
         $screenshot2 = Screenshot::query()->findOrFail($screenshot1->id);
         $this->assertEquals($screenshot1->description, $screenshot2->description);
+    }
+
+    /**
+     * @return void
+     */
+    public function testCanDeleteScreenshotWithThumbnails() {
+        $screen = Factory::create('Shipyard\Models\Screenshot');
+        $thumb1 = Factory::create('Shipyard\Models\Thumbnail', ['screenshot_id' => $screen->id]);
+        $thumb2 = Factory::create('Shipyard\Models\Thumbnail', ['screenshot_id' => $screen->id]);
+
+        $this->assertFalse($screen->thumbnails()->get()->isEmpty());
+        $this->assertEquals($screen->id, $thumb1->screenshot->id);
+
+        $screen->delete();
+
+        $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
+        Screenshot::query()->findOrFail($screen->id);
+        $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
+        Thumbnail::query()->where([['file_id', $thumb1->file_id], ['screenshot_id', $screen->id]])->firstOrFail();
     }
 
     public function testCanAssignScreenshot() {
