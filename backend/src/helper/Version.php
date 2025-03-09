@@ -15,4 +15,17 @@ class Version {
 
         return json_decode($composerJson, true)['version'];
     }
+
+    /**
+     * Retrieve the current commit hash.
+     *
+     * @return string the version string
+     */
+    public static function getCommit() {
+        if (($commitHash = file_get_contents($_SERVER['APP_ROOT'] . '/../COMMIT')) === false) {
+            return '';
+        }
+
+        return $commitHash;
+    }
 }
