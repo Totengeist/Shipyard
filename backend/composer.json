@@ -1,7 +1,7 @@
 {
     "name": "totengeist/shipyard",
     "description": "TLS Shipyard",
-    "version": "0.1.2-alpha",
+    "version": "0.1.1-alpha",
     "type": "project",
     "license": "GPL-3.0-or-later",
     "authors": [
@@ -15,7 +15,7 @@
         "illuminate/database": "~6.0|^8.75",
         "illuminate/pagination": "~6.0|^8.75",
         "slim/slim": "4.*",
-        "slim/psr7": "^1.1",
+        "slim/psr7": "1.4.1|^1.5",
         "bryanjhv/slim-session": "~4.0",
         "vlucas/phpdotenv": "^5.0",
         "vlucas/valitron": "^1.4",
