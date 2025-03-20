@@ -22,7 +22,9 @@ class PermissionController extends Controller {
             return $perm_check;
         }
 
-        $payload = (string) json_encode(Permission::all());
+        /** @var \Illuminate\Database\Eloquent\Builder $builder */
+        $builder = Permission::query();
+        $payload = (string) json_encode($this->paginate($builder));
         $response->getBody()->write($payload);
 
         return $response
