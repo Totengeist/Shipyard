@@ -45,6 +45,19 @@ footer.footer {
 	display: unset;
 }
 
+footer.footer a {
+    color: #796399;
+}
+
+footer.footer a:hover {
+    color: #514266;
+}
+
+footer.footer .footer-brand {
+    font-weight: bold;
+    color: #ffffff;
+}
+
 #login {
 	margin: auto;
 	width: 300px;

@@ -44,9 +44,6 @@
           <li>
             <a href="/saves" class="nav-link" routerLink="saves">Saves</a>
           </li>
-          <!--<li>
-            <a href="/releases" class="nav-link" routerLink="releases">Releases</a>
-          </li>-->
           <li>&nbsp;</li>
           <li>
             <a href="/new" class="nav-link" routerLink="new">Upload an item!</a>
@@ -60,7 +57,15 @@
       <div class="content"><router-outlet></router-outlet></div>
   </div>
   <footer class="footer navbar navbar-expand navbar-dark bg-dark">
-    <div>© 2024 Totengeist</div>
+    <div>
+      <span class="footer-brand">{{ version.app }}</span>
+      <span *ngIf="isAbout() && (version.version !== '' || version.commit !== '')">
+        <span *ngIf="(version.version !== '' && version.commit !== '')"> (<a href="https://github.com/Totengeist/Shipyard/releases/tag/v{{ version.version }}">v{{ version.version }}</a>-<a href="https://github.com/Totengeist/Shipyard/compare/v{{ version.version }}...{{ version.commit }}">{{ version.commit }}</a>)</span>
+        <span *ngIf="version.version !== '' && version.commit === ''"> (<a href="https://github.com/Totengeist/Shipyard/releases/tag/v{{ version.version }}">v{{ version.version }}</a>)</span>
+        <span *ngIf="version.version === '' && version.commit !== ''"> (<a href="https://github.com/Totengeist/Shipyard/commit/{{ version.commit }}">{{ version.commit }}</a>)</span>
+      </span>
+      <span> © 2024 Totengeist</span>
+    </div>
     <div>This website is not affiliated with Introversion Software. No copyright or trademark infringement is intended. We do not own nor claim to own the rights to any Introversion trademarks or copyrights.</div>
   </footer>
 </div>
