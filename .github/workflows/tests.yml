@@ -110,6 +110,10 @@ jobs:
         mysql -h 127.0.0.1 --port 3306 -u root -proot -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';"
       if: ${{ matrix.php == '7.2' || matrix.php == '7.3' }}
 
+    - name: Write COMMIT file
+      run: git log -1 --pretty=format:"%h" >COMMIT
+      working-directory: ./backend
+
     - name: Run Migration
       run: php src/public/install/index.php
       working-directory: ./backend
