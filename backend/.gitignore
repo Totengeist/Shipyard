@@ -11,7 +11,6 @@ docs/
 src/public/*.css
 src/public/*.js
 src/public/*.map
-src/public/index.html
 src/public/install/custom_seeds.php
 src/storage/
 vendor/
