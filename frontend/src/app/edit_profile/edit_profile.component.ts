@@ -26,7 +26,10 @@ export class EditProfileComponent implements OnInit {
   constructor(private userService: UserService, private route: ActivatedRoute, private token: TokenStorageService) {  }
 
   ngOnInit(): void {
-    this.currentUser = this.token.getUser();
+    const user = this.token.getUser();
+    if (user) {
+      this.currentUser = user;
+    }
   }
 
   onSubmit(): void {

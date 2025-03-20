@@ -16,10 +16,10 @@ import { UserService } from './../_services/user.service';
   imports: [FormsModule, NgIf, RouterLink]
 })
 export class ItemUploadComponent implements OnInit {
-  supportedTypes: any = {ship: ['ship file', ['.ship']], save: ['save file', ['.space']], modification: ['mod archive', ['.zip']]}; // eslint-disable-line @typescript-eslint/no-explicit-any
-  itemType = '';
+  supportedTypes: {ship: [string, string[]], save: [string, string[]], modification: [string, string[]]} = {ship: ['ship file', ['.ship']], save: ['save file', ['.space']], modification: ['mod archive', ['.zip']]};
+  itemType: keyof {ship: [string, string[]], save: [string, string[]], modification: [string, string[]]}|'' = '';
   parent = '';
-  uppy: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  uppy: Uppy = new Uppy();
   user: UserService = {} as UserService;
 
   constructor(private userService: UserService, private route: ActivatedRoute, private router: Router) { }
@@ -28,7 +28,7 @@ export class ItemUploadComponent implements OnInit {
     this.user = this.userService;
     let availableTypes: string[] = [];
     for (const value of Object.values(this.supportedTypes)) {
-      availableTypes = availableTypes.concat((value as any)[1]);
+      availableTypes = availableTypes.concat((value)[1]);
     }
     let selectedTypes = availableTypes;
 
@@ -38,8 +38,8 @@ export class ItemUploadComponent implements OnInit {
     if( this.route.snapshot.paramMap.get('itemType') !== null ) {
       const typeCheck = this.route.snapshot.paramMap.get('itemType') ?? '';
       if (typeCheck in this.supportedTypes) {
-        this.itemType = typeCheck;
-        selectedTypes = (this.supportedTypes as any)[typeCheck][1];
+        this.itemType = typeCheck as keyof {ship: [string, string[]], save: [string, string[]], modification: [string, string[]]};
+        selectedTypes = this.supportedTypes[this.itemType][1];
       }
     }
 
@@ -70,7 +70,7 @@ export class ItemUploadComponent implements OnInit {
         if( this.parent != '' ) {
           endpoint += '/'+this.parent+'/upgrade';
         }
-        this.uppy.getPlugin('XHRUpload').setOptions({ endpoint });
+        this.uppy.getPlugin('XHRUpload')?.setOptions({ endpoint });
       })
       .on('file-removed', () => {
         this.itemType = '';

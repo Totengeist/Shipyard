@@ -4,6 +4,8 @@ import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ApiService } from '../_services/api.service';
 import { TokenStorageService } from '../_services/token-storage.service';
+import { PaginationInterface } from '../_types/pagination.interface';
+import { TagInterface } from '../_types/tag.interface';
 
 @Component({
   selector: 'app-item-list',
@@ -12,7 +14,7 @@ import { TokenStorageService } from '../_services/token-storage.service';
   imports: [NgFor, RouterLink, NgIf]
 })
 export class TagListComponent implements OnInit {
-  tags: any[] = [];
+  tags: TagInterface[] = [];
   page = 1;
   lastPage = -1;
   showPrev = false;
@@ -37,7 +39,7 @@ export class TagListComponent implements OnInit {
           } else {
             this.showNext = false;
           }
-          data.data.forEach((element: any) => {
+          data.data.forEach((element: TagInterface) => {
             this.tags.push({
               label: element.label,
               slug: element.slug,
@@ -52,7 +54,7 @@ export class TagListComponent implements OnInit {
     });
   }
 
-  getTags(page = 1): Observable<any> {
+  getTags(page = 1): Observable<PaginationInterface<TagInterface>> {
     let pageUrl = '';
     if (page > 1) {
       pageUrl = '?page=' + page;

@@ -6,7 +6,7 @@
 <h3 *ngIf="type==='save'">Saves</h3>
 <h3 *ngIf="type==='modification'">Mods</h3>
 <ul>
-    <li *ngFor="let item of items[type]" title="{{ item.title }} by {{ item.username }}">
+    <li *ngFor="let item of items[type]" title="{{ item.title }}">
         <a href="/{{ type }}/{{ item.ref }}" routerLink="/{{ type }}/{{ item.ref }}">{{ item.title }}</a>
     </li>
 </ul>

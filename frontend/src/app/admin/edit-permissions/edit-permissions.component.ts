@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ApiService } from '../../_services/api.service';
 import { TokenStorageService } from '../../_services/token-storage.service';
+import { PermissionInterface } from '../../_types/permission.interface';
 
 
 @Component({
@@ -30,7 +31,7 @@ export class AdminEditPermissionsComponent implements OnInit {
     );
   }
 
-  getPermission(): Observable<any> {
+  getPermission(): Observable<PermissionInterface> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/x-www-form-urlencoded',

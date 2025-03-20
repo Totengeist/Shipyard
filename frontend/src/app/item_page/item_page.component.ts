@@ -8,6 +8,7 @@ import { TokenStorageService } from '../_services/token-storage.service';
 import { UserService } from '../_services/user.service';
 import { ItemInterface } from '../_types/item.interface';
 import { ScreenshotInterface } from '../_types/screenshot.interface';
+import { TagInterface } from '../_types/tag.interface';
 import { UserInterface } from '../_types/user.interface';
 
 @Component({
@@ -24,7 +25,7 @@ export class ItemPageComponent implements OnInit {
   parent!: ItemInterface;
   children: ItemInterface[] = [];
   user!: UserInterface;
-  tags: any[] = [];
+  tags: TagInterface[] = [];
   screenshots: ScreenshotInterface[] = [];
   activeShot!: ScreenshotInterface;
   authUser: UserService = {} as UserService;
@@ -34,8 +35,9 @@ export class ItemPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if( this.token.getUser() !== null ) {
-      this.currentUser = this.token.getUser();
+    const user = this.token.getUser();
+    if( user !== null ) {
+      this.currentUser = user;
     }
     this.authUser = this.userService;
     this.initializeFields();

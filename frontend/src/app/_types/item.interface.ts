@@ -1,4 +1,5 @@
 import { ScreenshotInterface } from '../_types/screenshot.interface';
+import { TagInterface } from '../_types/tag.interface';
 import { UserInterface } from '../_types/user.interface';
 
 export interface ItemInterface {
@@ -10,6 +11,6 @@ export interface ItemInterface {
     flags: number
     parent?: ItemInterface,
     children?: ItemInterface[],
-    tags?: any[],
+    tags?: TagInterface[],
     primary_screenshot: ScreenshotInterface[]
 }

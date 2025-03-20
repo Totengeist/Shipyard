@@ -15,6 +15,7 @@ import { TokenStorageService } from '../_services/token-storage.service';
 import { UserService } from '../_services/user.service';
 import { ItemInterface } from '../_types/item.interface';
 import { ScreenshotInterface } from '../_types/screenshot.interface';
+import { TagInterface } from '../_types/tag.interface';
 import { UserInterface } from '../_types/user.interface';
 import { SearchComponent } from '../search/search.component';
 
@@ -25,7 +26,7 @@ import { SearchComponent } from '../search/search.component';
   imports: [SearchComponent, FormsModule, RouterLink, NgIf, MarkdownComponent, NgFor, NgClass]
 })
 export class ItemEditComponent implements OnInit {
-  supportedTypes: any = {ship: ['ship file', ['.ship']], save: ['save file', ['.space']], modification: ['mod archive', ['.zip']]}; // eslint-disable-line @typescript-eslint/no-explicit-any
+  supportedTypes: {ship: [string, string[]], save: [string, string[]], modification: [string, string[]]} = {ship: ['ship file', ['.ship']], save: ['save file', ['.space']], modification: ['mod archive', ['.zip']]};
   currentUser: UserInterface|null = null;
   itemType = '';
   itemId = '';
@@ -33,7 +34,7 @@ export class ItemEditComponent implements OnInit {
   parent!: ItemInterface|null;
   children: ItemInterface[] = [];
   user!: UserInterface;
-  tags: any[] = [];
+  tags: TagInterface[] = [];
   removeTags: string[] = [];
   addTags: string[] = [];
   screenshots: ScreenshotInterface[] = [];
@@ -83,9 +84,9 @@ export class ItemEditComponent implements OnInit {
       this.updateScreenshots();
     });
 
-    let selectedTypes = [];
+    let selectedTypes: string[] = [];
     if (this.itemType in this.supportedTypes) {
-      selectedTypes = (this.supportedTypes as any)[this.itemType][1];
+      selectedTypes = this.supportedTypes[this.itemType as keyof {ship: [string, string[]], save: [string, string[]], modification: [string, string[]]} ][1];
     }
 
     this.uppy = new Uppy({
@@ -135,7 +136,6 @@ export class ItemEditComponent implements OnInit {
       .use(XHR, { endpoint: environment.apiUrl+this.itemType+'/'+this.itemId+'/screenshots' })
       .use(ImageEditor)
       .on('upload-success', (file, response) => {
-        console.log(response.body);
         if (response.status >= 200 && response.status < 300) {
           const data = JSON.parse(JSON.stringify(response.body));
           this.screenshots = data;
@@ -159,7 +159,7 @@ export class ItemEditComponent implements OnInit {
   }
 
   // check if the tag was added
-  public removeTag(tag:any): void {
+  public removeTag(tag: TagInterface): void {
     this.removeTags.push(tag.slug);
     let index = this.tags.length - 1;
     while (index>= 0) {
@@ -170,10 +170,9 @@ export class ItemEditComponent implements OnInit {
     }
   }
   // check if the tag was removed
-  public addTag(item:any): boolean {
-    console.log(item);
-    this.addTags.push(item.slug);
-    this.tags.push(item);
+  public addTag(tag: TagInterface): boolean {
+    this.addTags.push(tag.slug);
+    this.tags.push(tag);
     return false;
   }
 

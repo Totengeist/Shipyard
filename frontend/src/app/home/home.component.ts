@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core'; // eslint-disable-line import
 import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ApiService } from '../_services/api.service';
+import { ItemInterface } from '../_types/item.interface';
+import { PaginationInterface } from '../_types/pagination.interface';
 
 @Component({
   selector: 'app-home',
@@ -13,7 +15,7 @@ import { ApiService } from '../_services/api.service';
 export class HomeComponent implements OnInit {
   content?: string;
   itemTypes: string[] = ['ship', 'save', 'modification'];
-  items: Record<string, any[]> = {};
+  items: Record<string, ItemInterface[]> = {};
 
   constructor(private api: ApiService) { }
 
@@ -26,20 +28,8 @@ export class HomeComponent implements OnInit {
       this.items[itemType] = [];
       this.getItemsByType(itemType).subscribe(
         data => {
-          data.data.forEach((element: any) => {
-            let screen = 'missing.png';
-            const screenList = element.primary_screenshot ?? [];
-            if (screenList.length > 0) {
-              screen = 'api/v1/screenshot/' + screenList[0].ref + '/download';
-            }
-            this.items[itemType].push({
-              title: element.title,
-              ref: element.ref,
-              description: (element.description ?? ''),
-              username: (element.user?.name ?? '' ),
-              userref: (element.user?.ref ?? ''),
-              screenshot: screen
-            });
+          data.data.forEach((element: ItemInterface) => {
+            this.items[itemType].push(element);
           });
         },
         () => {
@@ -49,7 +39,7 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  getItemsByType(itemType: string): Observable<any> {
-    return this.api.get(`/${itemType}`);
+  getItemsByType(itemType: string): Observable<PaginationInterface<ItemInterface>> {
+    return this.api.get<PaginationInterface<ItemInterface>>(`/${itemType}`);
   }
 }

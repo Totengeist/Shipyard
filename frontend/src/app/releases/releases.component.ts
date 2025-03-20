@@ -4,6 +4,8 @@ import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ApiService } from '../_services/api.service';
 import { TokenStorageService } from '../_services/token-storage.service';
+import { PaginationInterface } from '../_types/pagination.interface';
+import { ReleaseInterface } from '../_types/release.interface';
 
 @Component({
   selector: 'app-releases',
@@ -12,14 +14,14 @@ import { TokenStorageService } from '../_services/token-storage.service';
   imports: [NgFor, RouterLink]
 })
 export class ReleasesComponent implements OnInit {
-  releases: Release[] = [];
+  releases: ReleaseInterface[] = [];
 
   constructor(private api: ApiService, private token: TokenStorageService) { }
 
   ngOnInit(): void {
     this.getReleases().subscribe(
       data => {
-        data.data.forEach((element: Release) => {
+        data.data.forEach((element: ReleaseInterface) => {
           this.releases.push({label: element.label, slug: element.slug});
         });
       },
@@ -29,9 +31,7 @@ export class ReleasesComponent implements OnInit {
     );
   }
 
-  getReleases(): Observable<any> {
-    return this.api.get('/release');
+  getReleases(): Observable<PaginationInterface<ReleaseInterface>> {
+    return this.api.get<PaginationInterface<ReleaseInterface>>('/release');
   }
 }
-
-interface Release { label: string, slug: string }

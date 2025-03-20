@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, interval, Subscription } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { PermissionInterface } from '../_types/permission.interface';
+import { RoleInterface } from '../_types/role.interface';
 import { AuthService } from './auth.service';
 import { TokenStorageService } from './token-storage.service';
 
@@ -14,8 +16,8 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class UserService {
-  roles: string[] = [];
-  permissions: string[] = [];
+  roles: RoleInterface[] = [];
+  permissions: PermissionInterface[] = [];
   isLoginFailed = false;
   errorMessage = '';
   showDashboard = false;
@@ -34,20 +36,20 @@ export class UserService {
   ) { }
 
   initializeUserInfo(): void {
-    if (this.isLoggedIn()) {
-      const user = this.tokenStorageService.getUser();
-      this.roles = user.roles;
-      this.permissions = user.permissions;
+    const user = this.tokenStorageService.getUser();
+    if (user) {
+      this.roles = user.roles ?? [];
+      this.permissions = this.getPermissions(this.roles);
       this.showDashboard = (this.roles.length > 0);
       this.ref = user.ref;
-      this.username = user.name;
+      this.username = user.name??'';
       this.email = user.email;
 
-      this.hasSteamLogin = user.hasSteamLogin;
-      this.hasDiscordLogin = user.hasDiscordLogin;
+      this.hasSteamLogin = user.hasSteamLogin ?? false;
+      this.hasDiscordLogin = user.hasDiscordLogin ?? false;
 
       this.activeLogin.unsubscribe();
-      this.activeLogin = interval(30000).subscribe(() => { this.refresh(); console.log('Session check'); });
+      this.activeLogin = interval(300000).subscribe(() => { this.refresh(); });
     } else {
       this.roles = [];
       this.permissions = [];
@@ -71,7 +73,11 @@ export class UserService {
   }
 
   can(permission: string): boolean {
-    return this.permissions.includes(permission);
+    return this.permissions.some(item => this.hasPermission(item, permission));
+  }
+
+  hasPermission(perm: PermissionInterface, check: string) {
+    return perm.label === check;
   }
 
   removeSteam(): Observable<any> {
@@ -82,33 +88,25 @@ export class UserService {
     return this.http.post(environment.standardUrl + 'discord/remove', httpOptions);
   }
 
-  saveUserData(data: any): void {
-    const roles: string[] = [];
-    data.roles?.forEach((element: any) => {
-      roles.push(element.label);
+  getPermissions(roles: RoleInterface[]): PermissionInterface[] {
+    const perms: PermissionInterface[] = [];
+    roles.forEach(function(role) {
+      if( role.permissions ) {
+        role.permissions.forEach(function(permission) {
+          if (!perms.includes(permission)) {
+            perms.push(permission);
+          }
+        });
+      }
     });
-    const permissions: string[] = [];
-    if (roles.length > 0) {
-      data.roles[0].permissions.forEach((element: any) => {
-        permissions.push(element.label);
-      });
-    }
-    const userData: object = {
-      name: data.name,
-      ref: data.ref,
-      email: data.email,
-      roles,
-      permissions,
-      hasSteamLogin: data.steam,
-      hasDiscordLogin: data.discord
-    };
-    this.tokenStorageService.saveUser(userData);
+
+    return perms;
   }
 
   refresh(): void {
     this.authService.me().subscribe(
       data => {
-        this.saveUserData(data);
+        this.tokenStorageService.saveUser(data);
         this.initializeUserInfo();
       },
       err => {
@@ -125,7 +123,7 @@ export class UserService {
   login(username: string, password: string): void {
     this.authService.login(username, password).subscribe(
       data => {
-        this.saveUserData(data);
+        this.tokenStorageService.saveUser(data);
         this.initializeUserInfo();
         this.isLoginFailed = false;
         this.router.navigate(['/home']);
@@ -144,7 +142,7 @@ export class UserService {
   edit(user: {username: string|null, email: string|null, password: string|undefined, password_confirmation: string|undefined, ref: string} ): void {
     this.authService.edit(user.ref, user.username, user.email, user.password, user.password_confirmation).subscribe(
       data => {
-        this.saveUserData(data);
+        this.tokenStorageService.saveUser(data);
         this.initializeUserInfo();
         this.isLoginFailed = false;
         this.router.navigate(['/home']);

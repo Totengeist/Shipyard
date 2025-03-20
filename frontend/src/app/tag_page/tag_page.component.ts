@@ -5,6 +5,8 @@ import { Observable } from 'rxjs';
 import { ApiService } from '../_services/api.service';
 import { TokenStorageService } from '../_services/token-storage.service';
 import { UserService } from '../_services/user.service';
+import { ItemInterface } from '../_types/item.interface';
+import { TagInterface } from '../_types/tag.interface';
 
 @Component({
   selector: 'app-tag-page',
@@ -13,9 +15,9 @@ import { UserService } from '../_services/user.service';
   imports: [NgFor, NgIf, RouterLink]
 })
 export class TagPageComponent implements OnInit {
-  tag: { slug: string, label: string, description: string } = { slug: '', label: '', description: '' };
+  tag: TagInterface = { slug: '', label: '', description: '' };
   itemTypes: string[] = ['ship', 'save', 'modification'];
-  items: Record<string, any[]> = {};
+  items: Record<string, ItemInterface[]> = {};
 
   constructor(private api: ApiService, private userService: UserService, private token: TokenStorageService, private route: ActivatedRoute, private router: Router) {  }
 
@@ -26,9 +28,8 @@ export class TagPageComponent implements OnInit {
         data => {
           this.tag = data;
           this.itemTypes.forEach((element: string) => {
-            this.items[element] = data[element+'s'];
+            this.items[element] = data[element+'s' as keyof TagInterface] as ItemInterface[];
           });
-          console.log(this.items);
         },
         () => {
           console.log('Error');
@@ -37,7 +38,7 @@ export class TagPageComponent implements OnInit {
     });
   }
 
-  getTag(itemId: string): Observable<any> {
-    return this.api.get(`tag/${itemId}`);
+  getTag(itemId: string): Observable<TagInterface> {
+    return this.api.get(`/tag/${itemId}`);
   }
 }

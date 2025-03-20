@@ -1,4 +1,5 @@
 import { ItemInterface } from '../_types/item.interface';
+import { RoleInterface } from '../_types/role.interface';
 
 export interface UserInterface {
     email: string,
@@ -9,4 +10,7 @@ export interface UserInterface {
     ships?: ItemInterface[],
     saves?: ItemInterface[],
     mods?: ItemInterface[],
+    hasSteamLogin?: boolean,
+    hasDiscordLogin?: boolean,
+    roles?: RoleInterface[],
 }

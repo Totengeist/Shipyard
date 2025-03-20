@@ -4,6 +4,8 @@ import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ApiService } from '../../_services/api.service';
 import { TokenStorageService } from '../../_services/token-storage.service';
+import { PaginationInterface } from '../../_types/pagination.interface';
+import { PermissionInterface } from '../../_types/permission.interface';
 
 @Component({
   selector: 'app-permissions',
@@ -12,16 +14,18 @@ import { TokenStorageService } from '../../_services/token-storage.service';
   imports: [NgFor, RouterLink]
 })
 export class AdminPermissionsComponent implements OnInit {
-  permissions: any[] = [];
+  permissions: PermissionInterface[] = [];
 
   constructor(private api: ApiService, private token: TokenStorageService) { }
 
   ngOnInit(): void {
     this.getPermissions().subscribe(
       data => {
-        data.forEach((element: any) => {
-          this.permissions.push({label: element.label, slug: element.slug});
-        });
+        if ( data.data !== null ) {
+          data.data.forEach((element: PermissionInterface) => {
+            this.permissions.push({label: element.label, slug: element.slug});
+          });
+        }
       },
       () => {
         console.log('Error');
@@ -29,7 +33,7 @@ export class AdminPermissionsComponent implements OnInit {
     );
   }
 
-  getPermissions(): Observable<any> {
+  getPermissions(): Observable<PaginationInterface<PermissionInterface>> {
     return this.api.get('/permission');
   }
 

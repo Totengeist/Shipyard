@@ -4,6 +4,9 @@ import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ApiService } from '../_services/api.service';
 import { TokenStorageService } from '../_services/token-storage.service';
+import { ItemInterface } from '../_types/item.interface';
+import { PaginationInterface } from '../_types/pagination.interface';
+import { ScreenshotInterface } from '../_types/screenshot.interface';
 
 @Component({
   selector: 'app-item-list',
@@ -13,7 +16,7 @@ import { TokenStorageService } from '../_services/token-storage.service';
 })
 export class ItemListComponent implements OnInit {
   itemType = '';
-  items: any[] = [];
+  items: ItemInterface[] = [];
   page = 1;
   lastPage = -1;
   showPrev = false;
@@ -39,20 +42,9 @@ export class ItemListComponent implements OnInit {
           } else {
             this.showNext = false;
           }
-          data.data.forEach((element: any) => {
-            let screen = 'missing.png';
-            const screenList = element.primary_screenshot ?? [];
-            if (screenList.length > 0) {
-              screen = 'api/v1/screenshot/' + screenList[0].ref + '/download';
-            }
-            this.items.push({
-              title: element.title,
-              ref: element.ref,
-              description: (element.description.substring(0, 150) ?? ''),
-              username: (element.user?.name ?? '' ),
-              userref: (element.user?.ref ?? ''),
-              screenshot: screen
-            });
+          data.data.forEach((element: ItemInterface) => {
+            element.description = element.description?.substring(0, 150) ?? '';
+            this.items.push(element);
           });
         },
         () => {
@@ -62,7 +54,7 @@ export class ItemListComponent implements OnInit {
     });
   }
 
-  getItems(page = 1): Observable<any> {
+  getItems(page = 1): Observable<PaginationInterface<ItemInterface>> {
     let pageUrl = '';
     if (page > 1) {
       pageUrl = '?page=' + page;
@@ -71,4 +63,10 @@ export class ItemListComponent implements OnInit {
     return this.api.get(`/${this.itemType}${pageUrl}`);
   }
 
+  getScreenshotUrl(screenshot: ScreenshotInterface[]|null): string {
+    if (screenshot && screenshot.length) {
+      return 'api/v1/screenshot/'+screenshot[0].ref+'/download';
+    }
+    return 'missing.png';
+  }
 }
