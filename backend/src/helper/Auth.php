@@ -136,6 +136,8 @@ class Auth {
      *
      * @param mixed[] $info session information
      *
+     * @todo Add a merge option.
+     *
      * @return void
      */
     public static function request_info($info) {

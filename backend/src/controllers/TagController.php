@@ -164,12 +164,6 @@ class TagController extends Controller {
             });
         }
         $tags = $query->paginate(30);
-        if ($tags == null) {
-            $response->getBody()->write('[]');
-
-            return $response
-              ->withHeader('Content-Type', 'application/json');
-        }
 
         $payload = (string) json_encode($tags);
         $response->getBody()->write($payload);

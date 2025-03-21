@@ -172,4 +172,14 @@ class APITestCase extends TestCase {
 
         return $this->assertJsonFragment($dataExpected, $dataActual, $negate);
     }
+
+    /**
+     * @return $this
+     */
+    public function assertJsonResponseEmpty() {
+        $dataActual = json_decode((string) $this->response->getBody(), true);
+        $this->assertEquals([], $dataActual);
+
+        return $this;
+    }
 }

@@ -6,9 +6,12 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Laracasts\TestDummy\Factory;
 use Shipyard\Auth;
 use Shipyard\Models\Tag;
+use Shipyard\Traits\ProcessesSlugs;
 use Tests\APITestCase;
 
 class TagControllerTest extends APITestCase {
+    use ProcessesSlugs;
+
     /**
      * @return void
      */
@@ -64,6 +67,33 @@ class TagControllerTest extends APITestCase {
              ]);
 
         $tag = json_decode(Tag::query()->where([['slug', $slug], ['label', $label]])->first()->toJson(), true);
+        $this->assertJsonFragment([
+            'slug' => $slug,
+            'label' => $label,
+        ], $tag);
+    }
+
+    /**
+     * @return void
+     */
+    public function testAdminCanCreateTagsWithoutSlugs() {
+        $faker = \Faker\Factory::create();
+        $admin = Factory::create('Shipyard\Models\User');
+        $admin->activate();
+        $admin->assignRole('administrator');
+        Auth::login($admin);
+
+        $label = $faker->words(3, true);
+        /** @var string $label */
+        $slug = self::slugify($label);
+
+        $this->post('api/v1/tag', ['label' => $label], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertJsonResponse([
+                 'slug' => $slug,
+                 'label' => $label,
+             ]);
+
+        $tag = json_decode(Tag::query()->where([['label', $label]])->first()->toJson(), true);
         $this->assertJsonFragment([
             'slug' => $slug,
             'label' => $label,
@@ -199,6 +229,24 @@ class TagControllerTest extends APITestCase {
     /**
      * @return void
      */
+    public function testUserCannotViewUpdateOrDeleteANonexistentTag() {
+        $faker = \Faker\Factory::create();
+        $admin = Factory::create('Shipyard\Models\User');
+        $admin->activate();
+        $admin->assignRole('administrator');
+        Auth::login($admin);
+
+        $this->get('api/v1/tag/' . $faker->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertStatus(404);
+        $this->post('api/v1/tag/' . $faker->slug, ['label' => 'no'], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertStatus(404);
+        $this->delete('api/v1/tag/' . $faker->slug, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertStatus(404);
+    }
+
+    /**
+     * @return void
+     */
     public function testAdminCanViewATag() {
         $tag = Factory::create('Shipyard\Models\Tag');
         $admin = Factory::create('Shipyard\Models\User');
@@ -210,6 +258,51 @@ class TagControllerTest extends APITestCase {
              ->assertJsonResponse([
                  'slug' => $tag->slug,
                  'label' => $tag->label,
+             ]);
+    }
+
+    /**
+     * @return void
+     */
+    public function testCanSearchForTags() {
+        $faker = \Faker\Factory::create();
+        /** @var string $label1 */
+        $label1 = $faker->words(3, true);
+        /** @var string $label2 */
+        $label2 = $faker->words(3, true);
+        /** @var string $label3 */
+        $label3 = $faker->words(3, true);
+
+        $tag1 = Factory::create('Shipyard\Models\Tag', ['label' => 'test' . $label1]);
+        $tag2 = Factory::create('Shipyard\Models\Tag', ['label' => 'test' . $label2]);
+        $tag3 = Factory::create('Shipyard\Models\Tag', ['label' => 'locked' . $label3, 'locked' => true]);
+
+        $this->get('api/v1/search/tag/test', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertJsonResponse([
+                 'slug' => $tag1->slug,
+                 'label' => $tag1->label,
+             ])->assertJsonResponse([
+                 'slug' => $tag2->slug,
+                 'label' => $tag2->label,
+             ]);
+
+        $this->get('api/v1/search/tag/;', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertJsonResponseEmpty();
+
+        $admin = Factory::create('Shipyard\Models\User');
+        $admin->activate();
+        $admin->assignRole('administrator');
+        Auth::login($admin);
+
+        $this->get('api/v1/search/tag/locked', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertJsonResponse([
+                 'slug' => $tag3->slug,
+                 'label' => $tag3->label,
+             ]);
+
+        $this->get('api/v1/search/tag/this-cant-find-anything-right', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertJsonResponse([
+                 'data' => [],
              ]);
     }
 }
