@@ -49,7 +49,7 @@ Progressing towards stability. Releases will no longer be marked as alpha or pre
 
 [iv-parsers]: https://github.com/Totengeist/IVParsers
 
-[unreleased]: https://github.com/Totengeist/Shipyard/compare/v0.1.2-alpha...HEAD
-[0.1.2-alpha]: https://github.com/Totengeist/Shipyard/releases/tag/v0.1.2-alpha
+[unreleased]: https://github.com/Totengeist/Shipyard/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/Totengeist/Shipyard/releases/tag/v0.1.2
 [0.1.1-alpha]: https://github.com/Totengeist/Shipyard/releases/tag/v0.1.1-alpha
 [0.1.0-alpha]: https://github.com/Totengeist/Shipyard/releases/tag/v0.1.0-alpha
