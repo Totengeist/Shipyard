@@ -1,4 +1,4 @@
-name: Releases
+name: releases
 
 on:
   push:
@@ -69,8 +69,15 @@ jobs:
         cp LICENSE backend/
         cp CHANGELOG.md backend/
         pushd backend
-        zip -r shipyard-${{ inputs.refToBuild || github.ref_name }}.zip vendor/ src/ .env.example composer.json README.md LICENSE CHANGELOG.md
+        zip -r shipyard-${{ inputs.refToBuild || github.ref_name }}.zip vendor/ src/ .env.example composer.json README.md LICENSE CHANGELOG.md COMMIT
         popd
+
+    - name: 'Upload Artifact'
+      uses: actions/upload-artifact@v4
+      with:
+        name: shipyard-release
+        path: "backend/shipyard-${{ inputs.refToBuild || github.ref_name }}.zip"
+        retention-days: 5
 
     - name: Update release
       uses: ncipollo/release-action@main
@@ -84,3 +91,33 @@ jobs:
         draft: true
         prerelease: false
 
+  deploy:
+    name: Deploy Release
+    runs-on: ubuntu-22.04
+    needs: build
+
+    steps:
+    - name: Download a single artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: shipyard-release
+
+    - name: Extract archive
+      run: |
+        shopt -s extglob
+        unzip shipyard-${{ inputs.refToBuild || github.ref_name }}.zip
+        rm shipyard-${{ inputs.refToBuild || github.ref_name }}.zip
+        var=$(cat COMMIT)
+        mkdir $var
+        mv -v !($var) $var
+
+    - name: Deploy
+      uses: burnett01/rsync-deployments@7.0.2
+      with:
+        switches: -avzrO --no-perms --delete
+        path: .
+        remote_path: ${{ secrets.DEPLOY_PATH }}
+        remote_host: ${{ secrets.DEPLOY_HOST }}
+        remote_port: ${{ secrets.DEPLOY_PORT }}
+        remote_user: ${{ secrets.DEPLOY_USER }}
+        remote_key: ${{ secrets.DEPLOY_KEY }}
