@@ -1,7 +1,7 @@
 import { NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { UserService } from '../_services/user.service';
 
@@ -9,7 +9,7 @@ import { UserService } from '../_services/user.service';
   selector: 'app-login',
   templateUrl: './login.component.html',
   standalone: true,
-  imports: [NgIf, FormsModule]
+  imports: [NgIf, FormsModule, RouterLink]
 })
 export class LoginComponent implements OnInit {
   form: Record<string,string> = {};

@@ -5,6 +5,7 @@ namespace Tests\API\Unit;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Laracasts\TestDummy\Factory;
 use Shipyard\Auth;
+use Shipyard\Models\PasswordReset;
 use Shipyard\Models\User;
 use Shipyard\Models\UserActivation;
 use Tests\APITestCase;
@@ -366,5 +367,59 @@ class UserControllerTest extends APITestCase {
             'name' => $user->name,
             'email' => $user->email,
         ], $user2);
+    }
+
+    /**
+     * @return void
+     */
+    public function testCanResetPasswords() {
+        $user = Factory::create('Shipyard\Models\User');
+        Auth::login($user);
+
+        $this->post('api/v1/password_reset', ['email' => $user->email], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+        ->assertStatus(200);
+
+        $password_reset = json_decode(PasswordReset::query()->where('email', $user->email)->first()->makeVisible(['token'])->toJson(), true); // @phpstan-ignore-line
+        $this->assertJsonFragment([
+            'email' => $user->email,
+        ], $password_reset);
+
+        $this->post('api/v1/password_reset/' . $password_reset['token'], ['password' => 'secret', 'password_confirmation' => 'secret'], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+        ->assertStatus(200);
+
+        $this->expectException(ModelNotFoundException::class);
+        PasswordReset::query()->where('email', $user->email)->firstOrFail();
+    }
+
+    /**
+     * @return void
+     */
+    public function testCantRequestPasswordResetWithBadEmail() {
+        $user = Factory::create('Shipyard\Models\User');
+
+        $this->post('api/v1/password_reset', ['email' => '1234'], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+        ->assertStatus(200);
+
+        $this->expectException(ModelNotFoundException::class);
+        PasswordReset::query()->where('email', '1234')->firstOrFail();
+    }
+
+    /**
+     * @return void
+     */
+    public function testCantResetPasswordWithBadToken() {
+        $this->post('api/v1/password_reset/1234', ['password' => 'secret', 'password_confirmation' => 'secret'], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+        ->assertStatus(200);
+    }
+
+    /**
+     * @return void
+     */
+    public function testCantResetMismatchedPasswords() {
+        $user = Factory::create('Shipyard\Models\User');
+        $reset = PasswordReset::query()->create(['email' => $user->email]);
+        $this->post('api/v1/password_reset/' . $reset->token, ['password' => 'secret', 'password_confirmation' => 'hidden'], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+        ->assertStatus(200);
+        $reset->delete();
     }
 }

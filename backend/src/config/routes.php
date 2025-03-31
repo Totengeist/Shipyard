@@ -25,6 +25,8 @@ $app->group($_SERVER['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $gro
     $group->get('/activate/{token}', 'Shipyard\Controllers\RegisterController:activate');
     $group->post('/login', 'Shipyard\Controllers\LoginController:login');
     $group->post('/logout', 'Shipyard\Controllers\LoginController:logout');
+    $group->post('/password_reset', 'Shipyard\Controllers\RegisterController:request_reset');
+    $group->post('/password_reset/{token}', 'Shipyard\Controllers\RegisterController:reset_password');
     $group->get('/version', function (Request $request, Response $response) {
         $payload = (string) json_encode(['app' => $_SERVER['APP_TITLE'], 'version' => Version::getVersion(), 'commit' => Version::getCommit()]);
         $response->getBody()->write($payload);

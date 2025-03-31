@@ -82,6 +82,23 @@ class User extends Model {
         return $this->hasMany($class, 'user_id', 'id');
     }
 
+    /**
+     * Properly set the user's password.
+     *
+     * @param string      $password
+     * @param string|null $confirm
+     *
+     * @return bool
+     */
+    public function set_password($password, $confirm = null) {
+        if ($confirm != null && $password != $confirm) {
+            return false;
+        }
+        $this->password = password_hash($password, PASSWORD_BCRYPT);
+
+        return true;
+    }
+
     /** @return UserActivation */
     public function create_activation() {
         /** @var UserActivation $activation */
@@ -90,6 +107,16 @@ class User extends Model {
         ]);
 
         return $activation;
+    }
+
+    /** @return PasswordReset */
+    public function create_password_reset() {
+        /** @var PasswordReset $reset */
+        $reset = PasswordReset::query()->create([
+            'email' => $this->email,
+        ]);
+
+        return $reset;
     }
 
     /** @return void */

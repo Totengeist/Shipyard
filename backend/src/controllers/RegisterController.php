@@ -6,6 +6,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Shipyard\Auth;
 use Shipyard\Log;
+use Shipyard\Models\PasswordReset;
 use Shipyard\Models\User;
 use Shipyard\Models\UserActivation;
 use Shipyard\NotificationManager;
@@ -103,6 +104,31 @@ class RegisterController extends Controller {
     }
 
     /**
+     * Create a validator for passwords.
+     *
+     * @param mixed[] $data
+     *
+     * @return Validator
+     */
+    protected function password_validator($data) {
+        $v = new Validator($data);
+        $v->rules([
+            'required' => [
+                ['password'],
+            ],
+            'lengthMin' => [
+                ['password', 6],
+            ],
+            'equals' => [
+                ['password', 'password_confirmation'],
+            ],
+        ]);
+        $v->validate();
+
+        return $v;
+    }
+
+    /**
      * Create a new user instance after a valid registration.
      *
      * @param array<string, string> $data
@@ -111,11 +137,12 @@ class RegisterController extends Controller {
      */
     protected function create(array $data) {
         /** @var User $user */
-        $user = User::query()->create([
+        $user = new User([
             'name' => $data['name'],
             'email' => $data['email'],
-            'password' => password_hash($data['password'], PASSWORD_BCRYPT),
         ]);
+        $user->set_password($data['password']);
+        $user->save();
 
         return $user;
     }
@@ -183,6 +210,93 @@ class RegisterController extends Controller {
         $payload = (string) json_encode($user);
 
         $response->getBody()->write($payload);
+
+        return $response
+          ->withHeader('Content-Type', 'application/json');
+    }
+
+    /**
+     * Handle a password reset request for the application.
+     *
+     * @param array<string,string> $args
+     *
+     * @return Response
+     */
+    public function request_reset(Request $request, Response $response, $args) {
+        try {
+            $data = (array) $request->getParsedBody();
+            /** @var \Illuminate\Database\Eloquent\Builder $query */
+            $query = User::query()->where('email', $data['email']);
+            /** @var User $user */
+            $user = $query->firstOrFail();
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $ex) {
+            Log::get()->channel('registration')->critical('Password reset error: ' . $ex->getMessage() . "\n" . $ex->getFile() . ':' . $ex->getLine());
+            $response->getBody()->write('[]');
+
+            return $response
+              ->withHeader('Content-Type', 'application/json');
+        }
+
+        $reset = $user->create_password_reset();
+        Log::get()->channel('registration')->info('Password reset requested. Reset link: ' . $_SERVER['BASE_URL_ABS'] . '/activate/' . $reset->token, $user->toArray());
+        /** @var \Shipyard\EmailNotifier|null $channel */
+        $channel = NotificationManager::get()->channel('email-text');
+        if (null !== $channel) {
+            $channel->addAddress($user->email);
+        }
+        if ($channel !== null) {
+            $channel->send('A password reset was requested for the account using this email address on Shipyard. Please click this link to reset your password or copy and paste the link into your browser:\n\n' . $_SERVER['BASE_URL_ABS'] . '/password_reset/' . $reset->token, 'Shipyard Account Activation');
+        }
+
+        $response->getBody()->write('[]');
+
+        return $response
+          ->withHeader('Content-Type', 'application/json');
+    }
+
+    /**
+     * Handle a password reset for the application.
+     *
+     * @param array<string,string> $args
+     *
+     * @return Response
+     */
+    public function reset_password(Request $request, Response $response, $args) {
+        try {
+            /** @var \Illuminate\Database\Eloquent\Builder $query */
+            $query = PasswordReset::query()->where('token', $args['token']);
+            /** @var PasswordReset $reset */
+            $reset = $query->firstOrFail();
+            /** @var \Illuminate\Database\Eloquent\Builder $query */
+            $query = User::query()->where('email', $reset->email);
+            /** @var User $user */
+            $user = $query->firstOrFail();
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $ex) {
+            Log::get()->channel('registration')->critical('Password reset error: ' . $ex->getMessage() . "\n" . $ex->getFile() . ':' . $ex->getLine());
+            $response->getBody()->write('[]');
+
+            return $response
+              ->withHeader('Content-Type', 'application/json');
+        }
+
+        $data = (array) $request->getParsedBody();
+        /** @var string[] $errors */
+        $errors = $this->password_validator($data)->errors();
+
+        if (count($errors)) {
+            Log::get()->channel('registration')->critical('Password reset error: ' . http_build_query($errors));
+            $response->getBody()->write('[]');
+
+            return $response
+              ->withHeader('Content-Type', 'application/json');
+        }
+
+        $user->set_password($data['password']);
+        $user->save();
+        $reset->delete();
+        Log::get()->channel('registration')->info('Reset user password.', $user->toArray());
+
+        $response->getBody()->write('[]');
 
         return $response
           ->withHeader('Content-Type', 'application/json');
@@ -307,7 +421,7 @@ class RegisterController extends Controller {
             $user->email = $subdata['email'];
         }
         if (isset($subdata['password'])) {
-            $user->password = password_hash($subdata['password'], PASSWORD_BCRYPT);
+            $user->set_password($subdata['password']);
         }
 
         $user->save();

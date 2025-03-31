@@ -40,7 +40,7 @@ class LoginController extends Controller {
         }
 
         if (password_needs_rehash($data['password'], PASSWORD_BCRYPT)) {
-            $user->password = password_hash($data['password'], PASSWORD_BCRYPT);
+            $user->set_password($data['password']);
             $user->save();
         }
 

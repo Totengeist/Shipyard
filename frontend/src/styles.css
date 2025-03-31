@@ -66,6 +66,10 @@ footer.footer .footer-brand {
 #login .card {
 	padding: 15px;
 }
+#login .form-group {
+    margin-bottom: 10px;
+    text-align: center;
+}
 
 #steam-login, #discord-login {
 	display: block;

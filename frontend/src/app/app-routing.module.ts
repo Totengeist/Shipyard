@@ -13,6 +13,7 @@ import { ItemListComponent } from './item_list/item_list.component';
 import { ItemPageComponent } from './item_page/item_page.component';
 import { ItemUploadComponent } from './item_upload/item_upload.component';
 import { LoginComponent } from './login/login.component';
+import { PasswordResetComponent } from './password_reset/password_reset.component';
 import { ProfileComponent } from './profile/profile.component';
 import { RegisterComponent } from './register/register.component';
 import { ReleasesComponent } from './releases/releases.component';
@@ -24,6 +25,8 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
+  { path: 'password_reset', component: PasswordResetComponent },
+  { path: 'password_reset/:token', component: PasswordResetComponent },
   { path: 'profile', component: ProfileComponent },
   { path: 'profile/edit', component: EditProfileComponent },
   { path: 'ships/:page', component: ItemListComponent, data: {item_type: 'ship'} },
