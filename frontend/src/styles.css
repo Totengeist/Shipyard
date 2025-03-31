@@ -7,7 +7,7 @@ html, body {
 header.billboard {
 	padding: 2rem 1rem;
 	margin-bottom: 2rem;
-	background-color: #c8cbce;;
+	background-color: #c8cbce;
 	border-radius: .3rem;
 }
 
@@ -46,16 +46,16 @@ footer.footer {
 }
 
 footer.footer a {
-    color: #796399;
+	color: #796399;
 }
 
 footer.footer a:hover {
-    color: #514266;
+	color: #514266;
 }
 
 footer.footer .footer-brand {
-    font-weight: bold;
-    color: #ffffff;
+	font-weight: bold;
+	color: #ffffff;
 }
 
 #login {
@@ -66,9 +66,10 @@ footer.footer .footer-brand {
 #login .card {
 	padding: 15px;
 }
+
 #login .form-group {
-    margin-bottom: 10px;
-    text-align: center;
+	margin-bottom: 10px;
+	text-align: center;
 }
 
 #steam-login, #discord-login {

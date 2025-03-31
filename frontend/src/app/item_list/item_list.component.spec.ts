@@ -1,7 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideRouter } from '@angular/router';
 
 import { ItemListComponent } from './item_list.component';
 
@@ -14,10 +14,10 @@ describe('ItemListComponent', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
+        provideRouter([]),
       ],
       imports: [
         ItemListComponent,
-        RouterTestingModule,
       ]
     })
       .compileComponents();

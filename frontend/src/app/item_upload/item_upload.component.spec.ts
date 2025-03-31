@@ -1,7 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideRouter } from '@angular/router';
 
 import { ItemUploadComponent } from './item_upload.component';
 
@@ -14,10 +14,10 @@ xdescribe('ItemUploadComponent', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
+        provideRouter([]),
       ],
       imports: [
         ItemUploadComponent,
-        RouterTestingModule,
       ]
     })
       .compileComponents();
