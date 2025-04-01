@@ -1,5 +1,5 @@
 import { NgFor, NgIf } from '@angular/common';
-import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
+import { Component, OnInit, inject } from '@angular/core'; // eslint-disable-line import/named
 import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ApiService } from '../_services/api.service';
@@ -13,11 +13,11 @@ import { PaginationInterface } from '../_types/pagination.interface';
   imports: [NgFor, NgIf, RouterLink]
 })
 export class HomeComponent implements OnInit {
+  private api = inject(ApiService);
+
   content?: string;
   itemTypes: string[] = ['ship', 'save', 'modification'];
   items: Record<string, ItemInterface[]> = {};
-
-  constructor(private api: ApiService) { }
 
   ngOnInit(): void {
     this.getItems();

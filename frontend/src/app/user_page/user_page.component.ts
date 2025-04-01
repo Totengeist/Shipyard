@@ -1,5 +1,5 @@
 import { NgFor, NgIf } from '@angular/common';
-import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
+import { Component, OnInit, inject } from '@angular/core'; // eslint-disable-line import/named
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ApiService } from '../_services/api.service';
@@ -15,11 +15,15 @@ import { UserInterface } from '../_types/user.interface';
   imports: [NgFor, NgIf, RouterLink]
 })
 export class UserPageComponent implements OnInit {
+  private api = inject(ApiService);
+  private token = inject(TokenStorageService);
+  private userService = inject(UserService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+
   name = '';
   itemTypes: string[] = ['ship', 'save', 'modification'];
   items: Record<string, ItemInterface[]> = {};
-
-  constructor(private api: ApiService, private token: TokenStorageService, private userService: UserService, private route: ActivatedRoute, private router: Router) {  }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {

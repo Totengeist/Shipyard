@@ -1,5 +1,5 @@
 import { NgFor } from '@angular/common';
-import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
+import { Component, OnInit, inject } from '@angular/core'; // eslint-disable-line import/named
 import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ApiService } from '../../_services/api.service';
@@ -15,9 +15,10 @@ import { RoleInterface } from '../../_types/role.interface';
   imports: [NgFor, RouterLink]
 })
 export class AdminRolesComponent implements OnInit {
-  roles: RoleInterface[] = [];
+  private api = inject(ApiService);
+  private token = inject(TokenStorageService);
 
-  constructor(private api: ApiService, private token: TokenStorageService) { }
+  roles: RoleInterface[] = [];
 
   ngOnInit(): void {
     this.getRoles().subscribe(

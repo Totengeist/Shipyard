@@ -1,5 +1,5 @@
 import { NgIf } from '@angular/common';
-import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
+import { Component, OnInit, inject } from '@angular/core'; // eslint-disable-line import/named
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { TokenStorageService } from '../_services/token-storage.service';
@@ -13,6 +13,10 @@ import { UserInterface } from '../_types/user.interface';
   imports: [NgIf, FormsModule]
 })
 export class EditProfileComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private token = inject(TokenStorageService);
+  private userService = inject(UserService);
+
   currentUser: UserInterface = {
     name: '',
     email: '',
@@ -22,8 +26,6 @@ export class EditProfileComponent implements OnInit {
   };
   steamError = '';
   discordError = '';
-
-  constructor(private userService: UserService, private route: ActivatedRoute, private token: TokenStorageService) {  }
 
   ngOnInit(): void {
     const user = this.token.getUser();

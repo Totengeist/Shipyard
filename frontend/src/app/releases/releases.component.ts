@@ -1,5 +1,5 @@
 import { NgFor } from '@angular/common';
-import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
+import { Component, OnInit, inject } from '@angular/core'; // eslint-disable-line import/named
 import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ApiService } from '../_services/api.service';
@@ -14,9 +14,10 @@ import { ReleaseInterface } from '../_types/release.interface';
   imports: [NgFor, RouterLink]
 })
 export class ReleasesComponent implements OnInit {
-  releases: ReleaseInterface[] = [];
+  private api = inject(ApiService);
+  private token = inject(TokenStorageService);
 
-  constructor(private api: ApiService, private token: TokenStorageService) { }
+  releases: ReleaseInterface[] = [];
 
   ngOnInit(): void {
     this.getReleases().subscribe(

@@ -1,5 +1,5 @@
 import { NgFor } from '@angular/common';
-import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
+import { Component, OnInit, inject } from '@angular/core'; // eslint-disable-line import/named
 import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ApiService } from '../../_services/api.service';
@@ -14,9 +14,10 @@ import { PermissionInterface } from '../../_types/permission.interface';
   imports: [NgFor, RouterLink]
 })
 export class AdminPermissionsComponent implements OnInit {
-  permissions: PermissionInterface[] = [];
+  private api = inject(ApiService);
+  private token = inject(TokenStorageService);
 
-  constructor(private api: ApiService, private token: TokenStorageService) { }
+  permissions: PermissionInterface[] = [];
 
   ngOnInit(): void {
     this.getPermissions().subscribe(

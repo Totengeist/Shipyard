@@ -1,5 +1,5 @@
 import { NgFor, NgIf } from '@angular/common';
-import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
+import { Component, OnInit, inject } from '@angular/core'; // eslint-disable-line import/named
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ApiService } from '../_services/api.service';
@@ -15,14 +15,17 @@ import { ScreenshotInterface } from '../_types/screenshot.interface';
   imports: [NgFor, RouterLink, NgIf]
 })
 export class ItemListComponent implements OnInit {
+  private api = inject(ApiService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private token = inject(TokenStorageService);
+
   itemType = '';
   items: ItemInterface[] = [];
   page = 1;
   lastPage = -1;
   showPrev = false;
   showNext = false;
-
-  constructor(private api: ApiService, private token: TokenStorageService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
     this.itemType = this.route.snapshot.data.item_type;

@@ -1,5 +1,5 @@
 import { NgIf } from '@angular/common';
-import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
+import { Component, OnInit, inject } from '@angular/core'; // eslint-disable-line import/named
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { environment } from '../../environments/environment';
@@ -12,11 +12,12 @@ import { UserService } from '../_services/user.service';
   imports: [NgIf, FormsModule, RouterLink]
 })
 export class LoginComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private userService = inject(UserService);
+
   form: Record<string,string> = {};
   user: UserService = {} as UserService;
   url: string = environment.standardUrl;
-
-  constructor(private route: ActivatedRoute, private userService: UserService) { }
 
   ngOnInit(): void {
     this.user = this.userService;

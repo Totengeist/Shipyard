@@ -1,5 +1,5 @@
 import { NgIf } from '@angular/common';
-import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
+import { Component, OnInit, inject } from '@angular/core'; // eslint-disable-line import/named
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ApiService } from './_services/api.service';
 import { UserService } from './_services/user.service';
@@ -11,14 +11,12 @@ import { UserService } from './_services/user.service';
   imports: [RouterLink, RouterLinkActive, NgIf, RouterOutlet]
 })
 export class AppComponent implements OnInit {
+  private api = inject(ApiService);
+  private router = inject(Router);
+  private userService = inject(UserService);
+
   user: UserService = {} as UserService;
   version: Record<string,string> = {app: 'Shipyard', version: '', commit: ''};
-
-  constructor(
-    private api: ApiService,
-    private router: Router,
-    private userService: UserService,
-  ) { }
 
   ngOnInit(): void {
     this.user = this.userService;

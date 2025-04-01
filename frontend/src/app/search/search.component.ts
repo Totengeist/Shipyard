@@ -1,5 +1,5 @@
 import { NgIf, NgFor, NgClass } from '@angular/common';
-import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core'; // eslint-disable-line import/named
+import { Component, OnInit, inject, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core'; // eslint-disable-line import/named
 import { from, fromEvent, Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
 import { ApiService } from '../_services/api.service';
@@ -17,11 +17,11 @@ export class SearchComponent implements OnInit {
   @ViewChild('searchInput', { static: true }) searchInput!: ElementRef;
   @Output() setNameEvent = new EventEmitter<{item: TagInterface}>();
 
+  private api = inject(ApiService);
+
   items: TagInterface[] = [];
   showSearches = false;
   isSearching = false;
-
-  constructor(private api: ApiService) {}
 
   ngOnInit() {
     this.itemSearch();

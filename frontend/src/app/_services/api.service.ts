@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { HttpOptionsInterface } from '../_types/http-options.interface';
@@ -9,12 +9,13 @@ import { TokenStorageService } from './token-storage.service';
   providedIn: 'root'
 })
 export class ApiService {
+  private token = inject(TokenStorageService);
+  private http = inject(HttpClient);
+
   apiUrl:string = environment.apiUrl.substring(0, environment.apiUrl.length - 1);
   httpOptions: HttpOptionsInterface = {
     headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded', Accept: '*/*' })
   };
-
-  constructor(private http: HttpClient, private token: TokenStorageService) { }
 
   post<T>(url: string, data: Record<string, string> = {}, httpOptions: HttpOptionsInterface = {}): Observable<T> {
     const body = new URLSearchParams();

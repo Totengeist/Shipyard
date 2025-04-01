@@ -1,5 +1,5 @@
 import { NgFor, NgIf } from '@angular/common';
-import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
+import { Component, OnInit, inject } from '@angular/core'; // eslint-disable-line import/named
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -16,14 +16,17 @@ import { UserInterface } from '../_types/user.interface';
   imports: [NgFor, NgIf, RouterLink]
 })
 export class ProfileComponent implements OnInit {
+  private api = inject(ApiService);
+  private route = inject(ActivatedRoute);
+  private token = inject(TokenStorageService);
+  private userService = inject(UserService);
+
   currentUser: UserService = {} as UserService;
   steamError = '';
   discordError = '';
   itemTypes: string[] = ['ship', 'save', 'modification'];
   items: Record<string, ItemInterface[]> = {};
   url: string = environment.standardUrl;
-
-  constructor(private api: ApiService, private userService: UserService, private route: ActivatedRoute, private token: TokenStorageService) { }
 
   ngOnInit(): void {
     this.currentUser = this.userService;

@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, interval, Subscription } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -16,6 +16,11 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class UserService {
+  private authService = inject(AuthService);
+  private tokenStorageService = inject(TokenStorageService);
+  private router = inject(Router);
+  private http = inject(HttpClient);
+
   roles: RoleInterface[] = [];
   permissions: PermissionInterface[] = [];
   isLoginFailed = false;
@@ -27,13 +32,6 @@ export class UserService {
   activeLogin: Subscription = new Subscription();
   hasSteamLogin = false;
   hasDiscordLogin = false;
-
-  constructor(
-    private authService: AuthService,
-    private tokenStorageService: TokenStorageService,
-    private router: Router,
-    private http: HttpClient
-  ) { }
 
   initializeUserInfo(): void {
     const user = this.tokenStorageService.getUser();

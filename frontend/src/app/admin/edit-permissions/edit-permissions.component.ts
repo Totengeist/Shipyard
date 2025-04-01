@@ -1,5 +1,5 @@
 import { HttpHeaders } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
+import { Component, OnInit, inject } from '@angular/core'; // eslint-disable-line import/named
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ApiService } from '../../_services/api.service';
@@ -13,10 +13,12 @@ import { PermissionInterface } from '../../_types/permission.interface';
   standalone: true
 })
 export class AdminEditPermissionsComponent implements OnInit {
+  private activatedRoute = inject(ActivatedRoute);
+  private api = inject(ApiService);
+  private token = inject(TokenStorageService);
+
   slug = '';
   label = '';
-
-  constructor(private api: ApiService, private token: TokenStorageService, private activatedRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.slug = this.activatedRoute.snapshot.params.slug;

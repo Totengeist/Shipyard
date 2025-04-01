@@ -1,5 +1,5 @@
 import { NgIf, NgFor, NgClass } from '@angular/common';
-import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
+import { Component, OnInit, inject } from '@angular/core'; // eslint-disable-line import/named
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import Uppy from '@uppy/core';
@@ -26,6 +26,12 @@ import { SearchComponent } from '../search/search.component';
   imports: [SearchComponent, FormsModule, RouterLink, NgIf, MarkdownComponent, NgFor, NgClass]
 })
 export class ItemEditComponent implements OnInit {
+  private api = inject(ApiService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private token = inject(TokenStorageService);
+  private userService = inject(UserService);
+
   supportedTypes: {ship: [string, string[]], save: [string, string[]], modification: [string, string[]]} = {ship: ['ship file', ['.ship']], save: ['save file', ['.space']], modification: ['mod archive', ['.zip']]};
   currentUser: UserInterface|null = null;
   itemType = '';
@@ -43,7 +49,7 @@ export class ItemEditComponent implements OnInit {
   screenshotUppy: Uppy = new Uppy();
   authUser: UserService = {} as UserService;
 
-  constructor(private api: ApiService, private userService: UserService, private token: TokenStorageService, private route: ActivatedRoute, private router: Router) {
+  constructor() {
     this.initializeFields();
   }
 

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UserInterface } from '../_types/user.interface';
 import { ApiService } from './api.service';
@@ -7,7 +7,7 @@ import { ApiService } from './api.service';
   providedIn: 'root'
 })
 export class AuthService {
-  constructor(private api: ApiService) { }
+  private api = inject(ApiService);
 
   login(email: string, password: string): Observable<UserInterface> {
     const body = {

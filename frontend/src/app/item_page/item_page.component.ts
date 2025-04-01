@@ -1,5 +1,5 @@
 import { NgIf, NgFor, NgClass } from '@angular/common';
-import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
+import { Component, OnInit, inject } from '@angular/core'; // eslint-disable-line import/named
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { MarkdownComponent } from 'ngx-markdown';
 import { Observable } from 'rxjs';
@@ -18,6 +18,12 @@ import { UserInterface } from '../_types/user.interface';
   imports: [RouterLink, NgIf, MarkdownComponent, NgFor, NgClass]
 })
 export class ItemPageComponent implements OnInit {
+  private api = inject(ApiService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private token = inject(TokenStorageService);
+  private userService = inject(UserService);
+
   currentUser: UserInterface = {ref: '', name: '', email: ''};
   itemType = '';
   itemId = '';
@@ -30,7 +36,7 @@ export class ItemPageComponent implements OnInit {
   activeShot!: ScreenshotInterface;
   authUser: UserService = {} as UserService;
 
-  constructor(private api: ApiService, private userService: UserService, private token: TokenStorageService, private route: ActivatedRoute, private router: Router) {
+  constructor() {
     this.initializeFields();
   }
 

@@ -1,5 +1,5 @@
 import { NgIf } from '@angular/common';
-import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
+import { Component, OnInit, inject } from '@angular/core'; // eslint-disable-line import/named
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import Uppy from '@uppy/core';
@@ -16,13 +16,15 @@ import { UserService } from './../_services/user.service';
   imports: [FormsModule, NgIf, RouterLink]
 })
 export class ItemUploadComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private userService = inject(UserService);
+
   supportedTypes: {ship: [string, string[]], save: [string, string[]], modification: [string, string[]]} = {ship: ['ship file', ['.ship']], save: ['save file', ['.space']], modification: ['mod archive', ['.zip']]};
   itemType: keyof {ship: [string, string[]], save: [string, string[]], modification: [string, string[]]}|'' = '';
   parent = '';
   uppy: Uppy = new Uppy();
   user: UserService = {} as UserService;
-
-  constructor(private userService: UserService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
     this.user = this.userService;

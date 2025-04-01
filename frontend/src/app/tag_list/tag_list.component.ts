@@ -1,5 +1,5 @@
 import { NgFor, NgIf } from '@angular/common';
-import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
+import { Component, OnInit, inject } from '@angular/core'; // eslint-disable-line import/named
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ApiService } from '../_services/api.service';
@@ -14,13 +14,16 @@ import { TagInterface } from '../_types/tag.interface';
   imports: [NgFor, RouterLink, NgIf]
 })
 export class TagListComponent implements OnInit {
+  private api = inject(ApiService);
+  private token = inject(TokenStorageService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+
   tags: TagInterface[] = [];
   page = 1;
   lastPage = -1;
   showPrev = false;
   showNext = false;
-
-  constructor(private api: ApiService, private token: TokenStorageService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {

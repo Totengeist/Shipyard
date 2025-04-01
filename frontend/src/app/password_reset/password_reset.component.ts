@@ -1,5 +1,5 @@
 import { NgFor, NgIf } from '@angular/common';
-import { Component, OnInit } from '@angular/core'; // eslint-disable-line import/named
+import { Component, OnInit, inject } from '@angular/core'; // eslint-disable-line import/named
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
@@ -12,6 +12,9 @@ import { ApiService } from '../_services/api.service';
   imports: [NgFor, NgIf, RouterLink, FormsModule]
 })
 export class PasswordResetComponent implements OnInit {
+  private api = inject(ApiService);
+  private route = inject(ActivatedRoute);
+
   token = '';
   request = false;
   send = false;
@@ -20,8 +23,6 @@ export class PasswordResetComponent implements OnInit {
   email: HTMLInputElement|null = null;
   password: HTMLInputElement|null = null;
   passwordConfirmation: HTMLInputElement|null = null;
-
-  constructor(private api: ApiService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.submit = document.getElementById('submit') as HTMLButtonElement;
