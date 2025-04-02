@@ -29,7 +29,11 @@ export class RegisterComponent {
           this.isSignUpFailed = false;
         },
         err => {
-          this.errorMessage = err.error.message;
+          const messages:string[] = [];
+          for (const value of Object.entries(err.error.errors)) {
+            messages.push((value[1] as string[])[0]);
+          }
+          this.errorMessage = messages.join(' ');
           this.isSignUpFailed = true;
         }
       );
