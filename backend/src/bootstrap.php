@@ -20,6 +20,7 @@ $dotenv->required([
 $_SERVER['APP_ROOT'] = realpath(__DIR__);
 $_SERVER['BASE_URL_ABS'] = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'undefined') . $_SERVER['BASE_URL'];
 $_SERVER['STORAGE'] = EnvironmentManager::storage();
+$_SERVER['AVSCAN'] = (isset($_SERVER['AVSCAN']) ? $_SERVER['AVSCAN'] : false);
 EnvironmentManager::initializeLogger();
 EnvironmentManager::initializeNotifier();
 

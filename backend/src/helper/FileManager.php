@@ -2,6 +2,7 @@
 
 namespace Shipyard;
 
+use Shipyard\Exceptions\ScanException;
 use Shipyard\Models\File;
 use Shipyard\Traits\CreatesUniqueIDs;
 use Slim\Psr7\UploadedFile;
@@ -27,6 +28,7 @@ class FileManager {
      * @return File the moved file
      */
     public static function moveUploadedFile(UploadedFile $uploadedFile, $attempts = 0) {
+        self::scanFile((string) $uploadedFile->getClientFilename());
         $extension = pathinfo((string) $uploadedFile->getClientFilename(), PATHINFO_EXTENSION);
         $media_type = $uploadedFile->getClientMediaType();
         $original_filename = pathinfo((string) $uploadedFile->getClientFilename(), PATHINFO_FILENAME);
@@ -70,6 +72,37 @@ class FileManager {
         Log::get()->channel('files')->notice('Saved file.', $file->makeVisible('filepath')->attributesToArray());
 
         return $file;
+    }
+
+    /**
+     * Scan a file with ClamAV.
+     *
+     * This runs clamscan on the file to determine if it is infected. Infected files are deleted
+     * and an error is thrown.
+     *
+     * @param string $path
+     *
+     * @return bool
+     */
+    public static function scanFile($path) {
+        if ($_SERVER['AVSCAN'] !== true) {
+            return true;
+        }
+        $safe_path = escapeshellarg($path);
+        $command = 'clamdscan --fdpass ' . $safe_path;
+        $out = '';
+        $code = -1;
+        exec($command, $out, $code);
+
+        if ($code == 1) {
+            unlink($path);
+            Log::get()->channel('files')->critical("Virus detected:\n" . implode("\n", $out));
+            throw new ScanException(implode("\n", $out));
+        }
+
+        Log::get()->channel('files')->critical('Virus scan completed without detections.');
+
+        return true;
     }
 
     /**
