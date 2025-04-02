@@ -9,9 +9,9 @@
 <h3 *ngIf="type==='modification'">Mods</h3>
 <div class="home-list">
 <ul class="home-list">
-    <li class="home-item" *ngFor="let item of items[type]" title="{{ item.title }} by {{ item.user?.name }}">
+    <li class="home-item" *ngFor="let item of items[type]" title="{{ item.title }} by {{ item.user.name }}">
         <a href="/{{ type }}/{{ item.ref }}" routerLink="/{{ type }}/{{ item.ref }}"><img [src]="item.primary_screenshot[0] ? 'api/v1/screenshot/' + item.primary_screenshot[0].ref + '/download' : 'missing.png'" alt=""></a>
-        <p><a href="/{{ type }}/{{ item.ref }}" routerLink="/{{ type }}/{{ item.ref }}">{{ item.title }}</a> by {{ item.user?.name }}</p>
+        <p><a href="/{{ type }}/{{ item.ref }}" routerLink="/{{ type }}/{{ item.ref }}">{{ item.title }}</a> by {{ item.user.name }}</p>
     </li>
     <li class="home-more">
         <a href="/{{ type }}s" routerLink="/{{ type }}s">View more</a>

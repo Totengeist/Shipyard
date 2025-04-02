@@ -18,7 +18,7 @@ $factory('Shipyard\Models\Ship', function ($faker) {
     $file = Shipyard\FileManager::moveUploadedFile(Tests\APITestCase::createSampleUpload());
 
     return [
-        'user_id' => $faker->randomDigit(),
+        'user_id' => 1,
         'title' => $faker->words(3, true),
         'description' => $faker->paragraph(),
         'file_id' => $file->id,
@@ -29,7 +29,7 @@ $factory('Shipyard\Models\Save', function ($faker) {
     $file = Shipyard\FileManager::moveUploadedFile(Tests\APITestCase::createSampleUpload('Battle.space'));
 
     return [
-        'user_id' => $faker->randomDigit(),
+        'user_id' => 1,
         'title' => $faker->words(3, true),
         'description' => $faker->paragraph(),
         'file_id' => $file->id,
@@ -40,7 +40,7 @@ $factory('Shipyard\Models\Modification', function ($faker) {
     $file = Shipyard\FileManager::moveUploadedFile(Tests\APITestCase::createSampleUpload('Battle.space'));
 
     return [
-        'user_id' => $faker->randomDigit(),
+        'user_id' => 1,
         'title' => $faker->words(3, true),
         'description' => $faker->paragraph(),
         'file_id' => $file->id,
