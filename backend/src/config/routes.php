@@ -121,6 +121,12 @@ $app->group($_SERVER['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $gro
              ->withStatus(404);
     })->add(LogMiddleware::class);
 })->add(LogMiddleware::class);
+// Item stubs.
+$app->group($_SERVER['BASE_URL'], function (RouteCollectorProxy $group) {
+    $group->get('/ship/{ref}', 'Shipyard\Controllers\ShipController:show_stub');
+    $group->get('/save/{ref}', 'Shipyard\Controllers\SaveController:show_stub');
+    $group->get('/modification/{ref}', 'Shipyard\Controllers\ModificationController:show_stub');
+});
 $app->get('/{path:.*}', function ($request, $response) {
     ob_start();
     require __DIR__ . '/../public/index.html';

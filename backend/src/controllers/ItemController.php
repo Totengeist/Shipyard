@@ -149,6 +149,71 @@ class ItemController extends Controller {
     }
 
     /**
+     * Display a stub page of the resource.
+     *
+     * @param array<string,string> $args
+     *
+     * @return Response
+     */
+    public function show_stub(Request $request, Response $response, $args) {
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = $this->modelType::query()->where([['ref', $args['ref']]])->with(['user', 'primary_screenshot', 'tags', 'parent', 'parent.user', 'children', 'children.user']);
+        /** @var Modification|Ship|Save $model */
+        $model = $query->first();
+        if ($model == null) {
+            return $this->not_found_response($this->modelName);
+        }
+        if ($model->isPrivate() && (Auth::user() === null || $model->user_id !== Auth::user()->id)) {
+            return $this->not_found_response($this->modelName);
+        }
+
+        $thumb = null;
+        if (!$model->primary_screenshot->isEmpty()) {
+            $screenshot = $model->primary_screenshot->first();
+            if (!$screenshot->thumbnails->isEmpty()) {
+                foreach ($model->primary_screenshot->first()->thumbnails as $thumb) {
+                    if ($thumb->size == '800') {
+                        $thumb = "/screenshot/{$screenshot->ref}/preview/800";
+                        break;
+                    }
+                }
+            }
+        }
+
+        $template = <<<TEMPLATE
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{$_SERVER['APP_TITLE']}</title>
+    <base href="{$_SERVER['BASE_URL']}/">
+    
+    <meta content="{$model->title} by {$model->user->name}" property="og:title" />
+    <meta content="{$model->description}" property="og:description" />
+    <meta content="{$_SERVER['BASE_URL_ABS']}/{$this->modelSlug}/{$args['ref']}" property="og:url" />
+    <meta content="{$_SERVER['BASE_URL_ABS']}/api/v1{$thumb}" property="og:image" />
+    <meta content="#43B581" data-react-helmet="true" name="theme-color" />
+    <meta name="twitter:card" content="summary_large_image">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://releases.transloadit.com/uppy/v3.27.3/uppy.min.css">
+  <link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="styles.css"></head>
+  <body>
+    <app-root></app-root>
+    <script src="runtime.js" defer=""></script><script src="polyfills.js" defer=""></script><script src="vendor.js" defer=""></script><script src="main.js" defer=""></script>
+  <script src="polyfills.js" type="module"></script><script src="main.js" type="module"></script></body>
+</html>
+
+TEMPLATE;
+
+        $response->getBody()->write($template);
+
+        return $response;
+    }
+
+    /**
      * Download the specified resource.
      *
      * @todo test with missing file
