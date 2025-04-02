@@ -12,6 +12,7 @@ use Valitron\Validator;
 /**
  * @property string $title
  * @property string $description
+ * @property User   $user
  * @property int    $flags
  * @property int    $user_id
  * @property int    $parent_id

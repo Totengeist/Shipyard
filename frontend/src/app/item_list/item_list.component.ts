@@ -68,7 +68,7 @@ export class ItemListComponent implements OnInit {
 
   getScreenshotUrl(screenshot: ScreenshotInterface[]|null): string {
     if (screenshot && screenshot.length) {
-      return 'api/v1/screenshot/'+screenshot[0].ref+'/download';
+      return 'api/v1/screenshot/'+screenshot[0].ref+'/preview/318';
     }
     return 'missing.png';
   }

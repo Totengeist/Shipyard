@@ -81,7 +81,7 @@ export class ItemPageComponent implements OnInit {
           }
         },
         () => {
-          console.log('Error');
+          console.log('Unable to retrieve screenshot data.');
         }
       );
     });
@@ -147,7 +147,7 @@ export class ItemPageComponent implements OnInit {
   }
 
   getScreenshots(itemType: string, itemId: string): Observable<ScreenshotInterface[]> {
-    return this.api.get<ScreenshotInterface[]>(`${itemType}/${itemId}/screenshots`);
+    return this.api.get<ScreenshotInterface[]>(`/${itemType}/${itemId}/screenshots`);
   }
 
   hasScreenshots(): boolean {

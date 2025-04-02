@@ -272,7 +272,7 @@ class ScreenshotControllerTest extends APITestCase {
         $this->get('api/v1/screenshot/' . $screenshot->ref . '/download', ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
 
         $this->assertEquals((string) $this->response->getBody(), $screenshot->file->file_contents());
-        $this->assertEquals($this->response->getHeader('Content-Disposition')[0], 'attachment; filename="' . $screenshot->file->filename . '.' . $screenshot->file->extension . '"');
+        $this->assertEquals($this->response->getHeader('Content-Disposition')[0], 'filename="' . $screenshot->file->filename . '.' . $screenshot->file->extension . '"');
 
         $this->get('api/v1/screenshot/' . $screenshot->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertJsonResponse([

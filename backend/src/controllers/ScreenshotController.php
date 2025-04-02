@@ -147,7 +147,7 @@ class ScreenshotController extends Controller {
         $response->getBody()->write((string) $screenshot->file->file_contents());
 
         return $response
-          ->withHeader('Content-Disposition', 'attachment; filename="' . $screenshot->file->filename . '.' . $screenshot->file->extension . '"')
+          ->withHeader('Content-Disposition', 'filename="' . $screenshot->file->filename . '.' . $screenshot->file->extension . '"')
           ->withHeader('Content-Type', $screenshot->file->media_type);
     }
 
@@ -190,7 +190,7 @@ class ScreenshotController extends Controller {
                 $response->getBody()->write((string) $thumbnail->file->file_contents());
 
                 return $response
-                  ->withHeader('Content-Disposition', 'attachment; filename="' . $thumbnail->file->filename . '.' . $thumbnail->file->extension . '"')
+                  ->withHeader('Content-Disposition', 'filename="' . $thumbnail->file->filename . '.' . $thumbnail->file->extension . '"')
                   ->withHeader('Content-Type', $thumbnail->file->media_type);
             }
         }
