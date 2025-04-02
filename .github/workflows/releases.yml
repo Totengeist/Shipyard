@@ -114,7 +114,7 @@ jobs:
     - name: Deploy
       uses: burnett01/rsync-deployments@7.0.2
       with:
-        switches: -avzrO --no-perms --delete
+        switches: -avzrO --no-perms
         path: .
         remote_path: ${{ secrets.DEPLOY_PATH }}
         remote_host: ${{ secrets.DEPLOY_HOST }}
