@@ -4,6 +4,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Shipyard\Middleware\LogMiddleware;
 use Shipyard\Middleware\SessionMiddleware;
+use Shipyard\SitemapGenerator;
 use Shipyard\Version;
 use Slim\Routing\RouteCollectorProxy;
 
@@ -126,6 +127,12 @@ $app->group($_SERVER['BASE_URL'], function (RouteCollectorProxy $group) {
     $group->get('/ship/{ref}', 'Shipyard\Controllers\ShipController:show_stub');
     $group->get('/save/{ref}', 'Shipyard\Controllers\SaveController:show_stub');
     $group->get('/modification/{ref}', 'Shipyard\Controllers\ModificationController:show_stub');
+});
+$app->get($_SERVER['BASE_URL'] . '/sitemap.xml', function ($request, $response) {
+    $response->getBody()->write(SitemapGenerator::generate());
+
+    return $response
+        ->withHeader('Content-Type', 'application/xml');
 });
 $app->get('/{path:.*}', function ($request, $response) {
     ob_start();

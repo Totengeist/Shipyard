@@ -17,6 +17,8 @@ use Valitron\Validator;
  * @property int    $user_id
  * @property int    $parent_id
  * @property int    $downloads
+ * @property string $created_at
+ * @property string $updated_at
  */
 class Save extends Model {
     use HasTags;
