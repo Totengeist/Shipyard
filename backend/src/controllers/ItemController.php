@@ -167,13 +167,16 @@ class ItemController extends Controller {
             return $this->not_found_response($this->modelName);
         }
 
-        $thumb = null;
+        $thumb = '';
         if (!$model->primary_screenshot->isEmpty()) {
             $screenshot = $model->primary_screenshot->first();
             if (!$screenshot->thumbnails->isEmpty()) {
                 foreach ($model->primary_screenshot->first()->thumbnails as $thumb) {
                     if ($thumb->size == '800') {
-                        $thumb = "/screenshot/{$screenshot->ref}/preview/800";
+                        $thumb = <<<THUMB
+
+                        <meta content="{$_SERVER['BASE_URL_ABS']}/api/v1/screenshot/{$screenshot->ref}/preview/800" property="og:image" />
+                        THUMB;
                         break;
                     }
                 }
@@ -190,8 +193,7 @@ class ItemController extends Controller {
     
     <meta content="{$model->title} by {$model->user->name}" property="og:title" />
     <meta content="{$model->description}" property="og:description" />
-    <meta content="{$_SERVER['BASE_URL_ABS']}/{$this->modelSlug}/{$args['ref']}" property="og:url" />
-    <meta content="{$_SERVER['BASE_URL_ABS']}/api/v1{$thumb}" property="og:image" />
+    <meta content="{$_SERVER['BASE_URL_ABS']}/{$this->modelSlug}/{$args['ref']}" property="og:url" />{$thumb}
     <meta content="#43B581" data-react-helmet="true" name="theme-color" />
     <meta name="twitter:card" content="summary_large_image">
 
