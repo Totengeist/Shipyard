@@ -105,7 +105,7 @@ jobs:
     - name: Extract archive
       run: |
         shopt -s extglob
-        unzip shipyard-${{ inputs.refToBuild || github.ref_name }}.zip
+        unzip shipyard-${{ inputs.refToBuild || github.ref_name }}.zip -x "src/public/install/"
         rm shipyard-${{ inputs.refToBuild || github.ref_name }}.zip
         var=$(cat COMMIT)
         mkdir $var
