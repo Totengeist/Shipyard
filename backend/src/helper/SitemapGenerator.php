@@ -21,7 +21,7 @@ class SitemapGenerator {
             $items = $items->get();
             foreach ($items as $item) {
                 /** @var Models\Ship|Models\Save|Models\Modification $item */
-                $output .= self::getItem(['url' => $_SERVER['BASE_URL_ABS'] . '/' . $type . '/' . $item->ref, 'modified' => date("Y-m-d\TH:i:sO", (int) strtotime($item->updated_at))]);
+                $output .= self::getItem(['url' => $_SERVER['BASE_URL_ABS'] . '/' . $type . '/' . $item->ref, 'modified' => date('c', (int) strtotime($item->updated_at))]);
             }
         }
 
@@ -35,8 +35,10 @@ class SitemapGenerator {
      */
     public static function getItem($data) {
         return <<<ITEM
-        <loc>{$data['url']}</loc>
-        <lastmod>{$data['modified']}</lastmod>
+        <url>
+            <loc>{$data['url']}</loc>
+            <lastmod>{$data['modified']}</lastmod>
+        </url>
         ITEM;
     }
 
