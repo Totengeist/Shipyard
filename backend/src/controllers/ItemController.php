@@ -173,44 +173,19 @@ class ItemController extends Controller {
             if (!$screenshot->thumbnails->isEmpty()) {
                 foreach ($model->primary_screenshot->first()->thumbnails as $thumb) {
                     if ($thumb->size == '800') {
-                        $thumb = <<<THUMB
-
-                        <meta content="{$_SERVER['BASE_URL_ABS']}/api/v1/screenshot/{$screenshot->ref}/preview/800" property="og:image" />
-                        THUMB;
+                        $thumb = "    <meta content=\"{$_SERVER['BASE_URL_ABS']}/api/v1/screenshot/{$screenshot->ref}/preview/800\" property=\"og:image\" />";
                         break;
                     }
                 }
             }
         }
 
-        $template = <<<TEMPLATE
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>{$_SERVER['APP_TITLE']}</title>
-    <base href="{$_SERVER['BASE_URL']}/">
-    
-    <meta content="{$model->title} by {$model->user->name}" property="og:title" />
-    <meta content="{$model->description}" property="og:description" />
-    <meta content="{$_SERVER['BASE_URL_ABS']}/{$this->modelSlug}/{$args['ref']}" property="og:url" />{$thumb}
-    <meta content="#43B581" data-react-helmet="true" name="theme-color" />
-    <meta name="twitter:card" content="summary_large_image">
+        ob_start();
+        require __DIR__ . '/../public/index_stub.html';
+        $template = ob_get_contents();
+        ob_end_clean();
 
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://releases.transloadit.com/uppy/v3.27.3/uppy.min.css">
-  <link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="styles.css"></head>
-  <body>
-    <app-root></app-root>
-    <script src="runtime.js" defer=""></script><script src="polyfills.js" defer=""></script><script src="vendor.js" defer=""></script><script src="main.js" defer=""></script>
-  <script src="polyfills.js" type="module"></script><script src="main.js" type="module"></script></body>
-</html>
-
-TEMPLATE;
-
-        $response->getBody()->write($template);
+        $response->getBody()->write((string) $template);
 
         return $response;
     }

@@ -20,7 +20,7 @@ class SitemapGenerator {
             $items = $class::with('user', 'primary_screenshot', 'tags')->whereRaw('(flags & 1 <> 1 AND flags & 2 <> 2)')->orderBy('updated_at', 'DESC');
             $items = $items->get();
             foreach ($items as $item) {
-                /** @var \Shipyard\Models\Ship|\Shipyard\Models\Save|\Shipyard\Models\Modification $item */
+                /** @var Models\Ship|Models\Save|Models\Modification $item */
                 $output .= self::getItem(['url' => $_SERVER['BASE_URL_ABS'] . '/' . $type . '/' . $item->ref, 'modified' => date("Y-m-d\TH:i:sO", (int) strtotime($item->updated_at))]);
             }
         }
