@@ -15,8 +15,8 @@ on:
 
 jobs:
   backend:
-    name: PHP 7.4 on ubuntu-22.04
-    runs-on: ubuntu-22.04
+    name: PHP 7.4 on ubuntu-latest
+    runs-on: ubuntu-latest
 
     defaults:
       run:
