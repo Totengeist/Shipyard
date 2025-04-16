@@ -7,7 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-*Stay tuned!*
+### Added
+
+- Password resets via email
+- OpenGraph data and landing pages for each item
+- Sitemap for SEO and discoverability
+- Base Atom feed for new items
+- ClamAV-based virus scanning on Linux (disabled by default)
+
+### Fixed
+
+- Issues with screenshot loading
 
 ## [0.1.2] - 2025-3-27
 
