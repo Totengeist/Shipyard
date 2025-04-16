@@ -17,7 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Issues with screenshot loading
+- Screenshot loading in frontend
+- Updating existing item files
 
 ## [0.1.2] - 2025-3-27
 

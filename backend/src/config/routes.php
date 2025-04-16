@@ -2,10 +2,10 @@
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Shipyard\AtomGenerator;
 use Shipyard\Middleware\LogMiddleware;
 use Shipyard\Middleware\SessionMiddleware;
 use Shipyard\SitemapGenerator;
-use Shipyard\AtomGenerator;
 use Shipyard\Version;
 use Slim\Routing\RouteCollectorProxy;
 

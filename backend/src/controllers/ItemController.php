@@ -7,6 +7,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Shipyard\Auth;
 use Shipyard\FileManager;
 use Shipyard\ItemHelper;
+use Shipyard\Log;
 use Shipyard\Models\Modification;
 use Shipyard\Models\Save;
 use Shipyard\Models\Screenshot;
@@ -72,6 +73,8 @@ class ItemController extends Controller {
     public function store(Request $request, Response $response) {
         $data = (array) $request->getParsedBody();
         $files = $request->getUploadedFiles();
+
+        Log::get()->channel('files')->error('Attempting to create a ' . $this->modelSlug, $data);
 
         $anonymous = false;
         /** @var User $user */
@@ -243,6 +246,8 @@ class ItemController extends Controller {
         $data = (array) $request->getParsedBody();
         $files = $request->getUploadedFiles();
 
+        Log::get()->channel('files')->error('Attempting to update a ' . $this->modelSlug, $data);
+
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = $this->modelType::query()->where([['ref', $args['ref']]]);
         /** @var Modification|Ship|Save $model */
@@ -299,7 +304,7 @@ class ItemController extends Controller {
             if (is_array($files['file'])) {
                 return $this->invalid_input_response(['file' => 'Multiple file uploads are not allowed.']);
             }
-            if (strpos($files['file']->getClientFilename(), '__shipyard__blank__') != 0) {
+            if (strpos($files['file']->getClientFilename(), '__shipyard__blank__') !== 0) {
                 if ($model->file != null) {
                     $model->file->delete();
                 }
