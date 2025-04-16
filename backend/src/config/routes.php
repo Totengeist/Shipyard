@@ -5,6 +5,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Shipyard\Middleware\LogMiddleware;
 use Shipyard\Middleware\SessionMiddleware;
 use Shipyard\SitemapGenerator;
+use Shipyard\AtomGenerator;
 use Shipyard\Version;
 use Slim\Routing\RouteCollectorProxy;
 
@@ -133,6 +134,12 @@ $app->get($_SERVER['BASE_URL'] . '/sitemap.xml', function ($request, $response) 
 
     return $response
         ->withHeader('Content-Type', 'application/xml');
+});
+$app->get($_SERVER['BASE_URL'] . '/feed', function ($request, $response) {
+    $response->getBody()->write(AtomGenerator::generate());
+
+    return $response
+        ->withHeader('Content-Type', 'application/atom+xml');
 });
 $app->get('/{path:.*}', function ($request, $response) {
     ob_start();
