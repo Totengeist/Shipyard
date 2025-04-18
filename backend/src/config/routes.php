@@ -70,6 +70,7 @@ $app->group($_SERVER['BASE_URL'] . '/api/v1', function (RouteCollectorProxy $gro
         $group->get('/user/{ref}', 'Shipyard\Controllers\RegisterController:show');
 
         $group->get('/search/tag/{query}', 'Shipyard\Controllers\TagController:search');
+        $group->get('/search/items', 'Shipyard\Controllers\SearchController:search');
     })->add(LogMiddleware::class);
 
     $group->group('', function (RouteCollectorProxy $group) {

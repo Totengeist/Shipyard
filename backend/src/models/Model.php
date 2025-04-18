@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Model as EloquentModel;
  * @method        \Illuminate\Database\Eloquent\Builder|static whereSlug(string $slug)
  * @method        \Illuminate\Database\Eloquent\Builder|static whereRef(string $ref)
  * @method static \Illuminate\Database\Eloquent\Builder|static query()
+ * @method static \Illuminate\Database\Eloquent\Builder|static selectRaw(string $expression)
  */
 class Model extends EloquentModel {
 }

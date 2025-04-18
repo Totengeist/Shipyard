@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sitemap for SEO and discoverability
 - Base Atom feed for new items
 - ClamAV-based virus scanning on Linux (disabled by default)
+- Basic search mechanism for filtering items
 
 ### Fixed
 
