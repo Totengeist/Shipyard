@@ -330,7 +330,7 @@ class RegisterController extends Controller {
      */
     public function show(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
-        $query = User::query()->where([['ref', $args['ref']]])->with(['ships', 'saves', 'modifications']);
+        $query = User::query()->where([['ref', $args['ref']]]);
         $user = $query->first();
         if ($user == null) {
             return $this->not_found_response('User');

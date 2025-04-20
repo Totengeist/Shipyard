@@ -4,8 +4,8 @@ import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ApiService } from '../_services/api.service';
 import { TokenStorageService } from '../_services/token-storage.service';
-import { UserService } from '../_services/user.service';
 import { ItemInterface } from '../_types/item.interface';
+import { PaginationInterface } from '../_types/pagination.interface';
 import { UserInterface } from '../_types/user.interface';
 
 @Component({
@@ -17,7 +17,6 @@ import { UserInterface } from '../_types/user.interface';
 export class UserPageComponent implements OnInit {
   private api = inject(ApiService);
   private token = inject(TokenStorageService);
-  private userService = inject(UserService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
@@ -31,10 +30,20 @@ export class UserPageComponent implements OnInit {
       this.getUser(itemId).subscribe(
         data => {
           this.name = data.name ?? '';
-          this.itemTypes.forEach((element: string) => {
-            this.items[element] = data[element+'s' as keyof UserInterface] as ItemInterface[];
+        },
+        () => {
+          console.log('Error');
+        }
+      );
+      this.getUserItems(itemId).subscribe(
+        data => {
+          data.data.forEach((element: ItemInterface) => {
+            if (this.items[element.item_type!] === undefined) {
+              this.items[element.item_type!] = [element];
+            } else {
+              this.items[element.item_type!].push(element);
+            }
           });
-          console.log(this.items);
         },
         () => {
           console.log('Error');
@@ -43,7 +52,11 @@ export class UserPageComponent implements OnInit {
     });
   }
 
-  getUser(itemId: string): Observable<UserInterface> {
-    return this.api.get(`/user/${itemId}`);
+  getUser(userId: string): Observable<UserInterface> {
+    return this.api.get(`/user/${userId}`);
+  }
+
+  getUserItems(userId: string): Observable<PaginationInterface<ItemInterface>> {
+    return this.api.get<PaginationInterface<ItemInterface>>(`/search/items?user=${userId}`);
   }
 }

@@ -7,7 +7,7 @@ import { ApiService } from '../_services/api.service';
 import { TokenStorageService } from '../_services/token-storage.service';
 import { UserService } from '../_services/user.service';
 import { ItemInterface } from '../_types/item.interface';
-import { UserInterface } from '../_types/user.interface';
+import { PaginationInterface } from '../_types/pagination.interface';
 
 @Component({
   selector: 'app-profile',
@@ -31,7 +31,6 @@ export class ProfileComponent implements OnInit {
   ngOnInit(): void {
     this.currentUser = this.userService;
     this.userService.refresh();
-    //this.currentUser = this.token.getUser();
     const queryError: string|null = this.route.snapshot.queryParamMap.get('error');
     if ( queryError !== null ) {
       if ( queryError === 'steam_already_linked' ) {
@@ -41,10 +40,14 @@ export class ProfileComponent implements OnInit {
         this.discordError = 'This Discord ID is already associated with an existing user.';
       }
     }
-    this.getUser(this.currentUser.ref).subscribe(
+    this.getUserItems(this.currentUser.ref).subscribe(
       data => {
-        this.itemTypes.forEach((element: string) => {
-          this.items[element] = data[element+'s' as keyof UserInterface] as ItemInterface[];
+        data.data.forEach((element: ItemInterface) => {
+          if (this.items[element.item_type!] === undefined) {
+            this.items[element.item_type!] = [element];
+          } else {
+            this.items[element.item_type!].push(element);
+          }
         });
       },
       () => {
@@ -77,7 +80,7 @@ export class ProfileComponent implements OnInit {
     return false;
   }
 
-  getUser(itemId: string): Observable<UserInterface> {
-    return this.api.get<UserInterface>(`/user/${itemId}`);
+  getUserItems(userId: string): Observable<PaginationInterface<ItemInterface>> {
+    return this.api.get<PaginationInterface<ItemInterface>>(`/search/items?user=${userId}`);
   }
 }

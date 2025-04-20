@@ -12,5 +12,6 @@ export interface ItemInterface {
     parent?: ItemInterface,
     children?: ItemInterface[],
     tags?: TagInterface[],
-    primary_screenshot: ScreenshotInterface[]
+    primary_screenshot: ScreenshotInterface[],
+    item_type?: string,
 }

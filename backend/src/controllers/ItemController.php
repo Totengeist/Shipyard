@@ -50,14 +50,16 @@ class ItemController extends Controller {
         $user = Auth::user();
         if ($user == null) {
             /** @var \Illuminate\Database\Eloquent\Builder $content */
-            $content = $this->modelType::with('user', 'primary_screenshot', 'tags')->whereRaw('(flags & 1 <> 1 AND flags & 2 <> 2)')->orderBy('updated_at', 'DESC');
+            $content = $this->modelType::with('user', 'primary_screenshot', 'tags')->whereRaw('(flags & 1 <> 1 AND flags & 2 <> 2)');
         } elseif ($user->can('edit-' . $this->modelSlug . 's')) {
             /** @var \Illuminate\Database\Eloquent\Builder $content */
-            $content = $this->modelType::with('user', 'primary_screenshot', 'tags')->orderBy('updated_at', 'DESC');
+            $content = $this->modelType::with('user', 'primary_screenshot', 'tags');
         } else {
             /** @var \Illuminate\Database\Eloquent\Builder $content */
-            $content = $this->modelType::with('user', 'primary_screenshot', 'tags')->whereRaw('(flags & 1 <> 1 AND flags & 2 <> 2)')->orWhere('user_id', $user->id)->orderBy('updated_at', 'DESC');
+            $content = $this->modelType::with('user', 'primary_screenshot', 'tags')->whereRaw('(flags & 1 <> 1 AND flags & 2 <> 2)')->orWhere('user_id', $user->id);
         }
+        $content = $content->orderBy('updated_at', 'DESC');
+        /** @var \Illuminate\Database\Eloquent\Builder $content */
         $payload = (string) json_encode($this->paginate($content));
         $response->getBody()->write($payload);
 
@@ -140,7 +142,7 @@ class ItemController extends Controller {
         if ($model == null) {
             return $this->not_found_response($this->modelName);
         }
-        if ($model->isPrivate() && (Auth::user() === null || $model->user_id !== Auth::user()->id)) {
+        if ($model->isPrivate() && ($this->isOrCan($model->user_id, 'edit-ships') !== true)) {
             return $this->not_found_response($this->modelName);
         }
         $payload = (string) json_encode($model);
@@ -166,7 +168,7 @@ class ItemController extends Controller {
         if ($model == null) {
             return $this->not_found_response($this->modelName);
         }
-        if ($model->isPrivate() && (Auth::user() === null || $model->user_id !== Auth::user()->id)) {
+        if ($model->isPrivate() && ($this->isOrCan($model->user_id, 'edit-ships') !== true)) {
             return $this->not_found_response($this->modelName);
         }
 

@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Screenshot loading in frontend
 - Updating existing item files
+- Item visibility in lists
 
 ## [0.1.2] - 2025-3-27
 
