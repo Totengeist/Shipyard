@@ -2,6 +2,8 @@
 
 namespace Shipyard;
 
+use League\CommonMark\CommonMarkConverter;
+
 class AtomGenerator {
     /**
      * Generate a sitemap.
@@ -21,11 +23,19 @@ class AtomGenerator {
             $items = $items->get();
             foreach ($items as $item) {
                 /** @var Models\Ship|Models\Save|Models\Modification $item */
+                $description = $item->description;
+                if ($item->primary_screenshot->first() != null) {
+                    $description = "![Screenshot]({$_SERVER['BASE_URL_ABS']}/api/v1/screenshot/{$item->primary_screenshot[0]->ref}/preview/800)\n\n" . $description;
+                }
+                $markdown = new CommonMarkConverter([
+                    'html_input' => 'strip',
+                    'allow_unsafe_links' => false,
+                ]);
                 $output .= self::getItem([
                     'type' => ucfirst($type),
                     'title' => $item->title,
                     'author' => $item->user->name,
-                    'description' => htmlspecialchars($item->description, ENT_XML1 | ENT_COMPAT | ENT_QUOTES, 'UTF-8'),
+                    'description' => htmlspecialchars($markdown->convert($description), ENT_XML1 | ENT_COMPAT | ENT_QUOTES, 'UTF-8'),
                     'url' => $_SERVER['BASE_URL_ABS'] . '/' . $type . '/' . $item->ref,
                     'id' => $type . '/' . $item->ref,
                     'modified' => date('c', (int) strtotime($item->updated_at)),
