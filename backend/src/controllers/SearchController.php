@@ -84,10 +84,25 @@ class SearchController extends Controller {
         $seeall = (int) ($authuser !== null && ($authuser->can('edit-' . $type) === true));
         $seeusr = (int) ($authuser !== null && isset($query['user']) && $query['user'] == $authuser->ref);
         if (!$seeall && !$seeusr) {
+            /** @var \Illuminate\Database\Eloquent\Builder $search */
             $search = $search->whereRaw('(flags & 1 <> 1 AND flags & 2 <> 2)');
         } elseif (!$seeall && $seeusr) {
+            /** @var \Illuminate\Database\Eloquent\Builder $search */
             $search = $search->where(function ($q) use ($authuser) {
                 $q->whereRaw('(flags & 1 <> 1 AND flags & 2 <> 2)')->orWhere('user_id', $authuser->id);
+            });
+        }
+
+        if (isset($query['tags'])) {
+            $selected_tags = [];
+            foreach (explode(',', $_GET['tags']) as $tag) {
+                if (trim($tag) != '') {
+                    $selected_tags[] = trim($tag);
+                }
+            }
+
+            $search = $search->whereHas('tags', function ($query) use ($selected_tags) {
+                $query->whereIn('tags.slug', $selected_tags);
             });
         }
 
