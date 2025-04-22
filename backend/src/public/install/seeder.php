@@ -17,7 +17,7 @@ $system->save();
 /** @var User $admin */
 $admin = User::query()->create([
     'name'       => 'administrator',
-    'email'      => 'admin@tls-wiki.com',
+    'email'      => 'shipyard@example.com',
     'password'   => password_hash('secret', PASSWORD_BCRYPT),
     'activated'  => true,
 ]);
