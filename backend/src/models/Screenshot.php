@@ -7,9 +7,12 @@ use Shipyard\Traits\HasRef;
 use Valitron\Validator;
 
 /**
- * @property string      $description
- * @property Thumbnail[] $thumbnails
- * @property bool        $primary
+ * @property string                         $description
+ * @property Thumbnail[]                    $thumbnails
+ * @property \Illuminate\Support\Collection $ships
+ * @property \Illuminate\Support\Collection $saves
+ * @property \Illuminate\Support\Collection $modifications
+ * @property bool                           $primary
  */
 class Screenshot extends Model {
     use HasRef;

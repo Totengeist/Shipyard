@@ -215,7 +215,35 @@ class ScreenshotControllerTest extends APITestCase {
     /**
      * @return void
      */
-    public function testUserCannotEditScreenshots() {
+    public function testOtherUserCannotEditScreenshots() {
+        $faker = \Faker\Factory::create();
+        $user = Factory::create('Shipyard\Models\User');
+        $ship = Factory::create('Shipyard\Models\Ship', ['user_id' => $user->id]);
+        $screenshot = $ship->screenshots()->create([
+            'description' => $faker->paragraph(),
+            'file_id' => $faker->randomDigit(),
+        ], ['type' => Ship::$tag_label]);
+        $description = $faker->paragraph();
+
+        $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertStatus(401);
+        $this->post('api/v1/screenshot/' . $screenshot->ref, ['description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertStatus(401);
+
+        $user2 = Factory::create('Shipyard\Models\User');
+        $user2->activate();
+        Auth::login($user2);
+
+        $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertStatus(200);
+        $this->post('api/v1/screenshot/' . $screenshot->ref, ['description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => [self::createSampleUpload('science-vessel.png')]])
+             ->assertStatus(403);
+    }
+
+    /**
+     * @return void
+     */
+    public function testUserCanEditScreenshots() {
         $faker = \Faker\Factory::create();
         $user = Factory::create('Shipyard\Models\User');
         $ship = Factory::create('Shipyard\Models\Ship', ['user_id' => $user->id]);
@@ -236,7 +264,14 @@ class ScreenshotControllerTest extends APITestCase {
         $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(200);
         $this->post('api/v1/screenshot/' . $screenshot->ref, ['description' => $description], ['HTTP_X-Requested-With' => 'XMLHttpRequest'], ['file' => [self::createSampleUpload('science-vessel.png')]])
-             ->assertStatus(403);
+             ->assertJsonResponse([
+                 'description' => $description,
+             ]);
+
+        $screenshot = json_decode(Screenshot::query()->find($screenshot->id)->toJson(), true);
+        $this->assertJsonFragment([
+            'description' => $description,
+        ], $screenshot);
     }
 
     /**
@@ -244,7 +279,9 @@ class ScreenshotControllerTest extends APITestCase {
      */
     public function testAdminCanEditScreenshots() {
         $faker = \Faker\Factory::create();
+        $ship = Factory::create('Shipyard\Models\Ship');
         $screenshot = Factory::create('Shipyard\Models\Screenshot');
+        $ship->screenshots()->attach($screenshot, ['type' => 'ship']);
         $description = $faker->paragraph();
 
         $admin = Factory::create('Shipyard\Models\User');
@@ -284,17 +321,20 @@ class ScreenshotControllerTest extends APITestCase {
     /**
      * @return void
      */
-    public function testUserCannotDeleteScreenshots() {
+    public function testOtherUserCannotDeleteScreenshots() {
+        $user = Factory::create('Shipyard\Models\User');
+        $ship = Factory::create('Shipyard\Models\Ship', ['user_id' => $user->id]);
         $screenshot = Factory::create('Shipyard\Models\Screenshot');
+        $ship->screenshots()->attach($screenshot, ['type' => 'ship']);
 
         $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
         $this->delete('api/v1/screenshot/' . $screenshot->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(401);
 
-        $user = Factory::create('Shipyard\Models\User');
-        $user->activate();
-        Auth::login($user);
+        $user2 = Factory::create('Shipyard\Models\User');
+        $user2->activate();
+        Auth::login($user2);
 
         $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
              ->assertStatus(200);
@@ -305,8 +345,38 @@ class ScreenshotControllerTest extends APITestCase {
     /**
      * @return void
      */
-    public function testAdminCanDeleteScreenshots() {
+    public function testUserCanDeleteScreenshots() {
+        $user = Factory::create('Shipyard\Models\User');
+        $ship = Factory::create('Shipyard\Models\Ship', ['user_id' => $user->id]);
         $screenshot = Factory::create('Shipyard\Models\Screenshot');
+        $ship->screenshots()->attach($screenshot, ['type' => 'ship']);
+
+        $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertStatus(401);
+        $this->delete('api/v1/screenshot/' . $screenshot->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertStatus(401);
+
+        $user->activate();
+        Auth::login($user);
+
+        $this->get('api/v1/me', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertStatus(200);
+        $this->delete('api/v1/screenshot/' . $screenshot->ref, ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+             ->assertJsonResponse([
+                 'message' => 'successful',
+             ]);
+
+        $this->expectException(ModelNotFoundException::class);
+        Screenshot::query()->findOrFail($screenshot->id);
+    }
+
+    /**
+     * @return void
+     */
+    public function testAdminCanDeleteScreenshots() {
+        $ship = Factory::create('Shipyard\Models\Ship');
+        $screenshot = Factory::create('Shipyard\Models\Screenshot');
+        $ship->screenshots()->attach($screenshot, ['type' => 'ship']);
         $admin = Factory::create('Shipyard\Models\User');
         $admin->activate();
         $admin->assignRole('administrator');

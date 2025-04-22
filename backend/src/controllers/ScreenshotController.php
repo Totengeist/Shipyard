@@ -7,6 +7,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Shipyard\FileManager;
 use Shipyard\ImageHandler;
 use Shipyard\Models\Screenshot;
+use Shipyard\Models\Ship;
 use Shipyard\Traits\ChecksPermissions;
 
 class ScreenshotController extends Controller {
@@ -206,11 +207,6 @@ class ScreenshotController extends Controller {
      * @return Response
      */
     public function update(Request $request, Response $response, $args) {
-        if (($perm_check = $this->can('edit-screenshots')) !== true) {
-            return $perm_check;
-        }
-        $data = (array) $request->getParsedBody();
-
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Screenshot::query()->where([['ref', $args['ref']]]);
         /** @var Screenshot $screenshot */
@@ -218,6 +214,16 @@ class ScreenshotController extends Controller {
         if ($screenshot == null) {
             return $this->not_found_response('Screenshot');
         }
+
+        /** @var Ship $item */
+        $item = $screenshot->ships->merge($screenshot->saves)->merge($screenshot->modifications)->first();
+        if ($item == null) {
+            return $this->not_found_response('Screenshot');
+        }
+        if (($perm_check = $this->isOrCan($item->user_id, 'edit-screenshots')) !== true) {
+            return $perm_check;
+        }
+        $data = (array) $request->getParsedBody();
         if (isset($data['description'])) {
             $screenshot->description = $data['description'];
         }
@@ -239,15 +245,21 @@ class ScreenshotController extends Controller {
      * @return Response
      */
     public function destroy(Request $request, Response $response, $args) {
-        if (($perm_check = $this->can('delete-screenshots')) !== true) {
-            return $perm_check;
-        }
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Screenshot::query()->where([['ref', $args['ref']]]);
         /** @var Screenshot $screenshot */
         $screenshot = $query->first();
         if ($screenshot == null) {
             return $this->not_found_response('Screenshot');
+        }
+
+        /** @var Ship $item */
+        $item = $screenshot->ships->merge($screenshot->saves)->merge($screenshot->modifications)->first();
+        if ($item == null) {
+            return $this->not_found_response('Screenshot');
+        }
+        if (($perm_check = $this->isOrCan($item->user_id, 'delete-screenshots')) !== true) {
+            return $perm_check;
         }
         $screenshot->delete();
 

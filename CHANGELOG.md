@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Screenshot loading in frontend
+- Editing and deleting screenshots
 - Updating existing item files
 - Item visibility in lists
 
