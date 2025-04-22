@@ -1,8 +1,7 @@
 <ul class="result-list">
     <li class="result-item" *ngFor="let item of items">
         <a href="/{{ itemType }}/{{ item.ref }}" routerLink="/{{ itemType }}/{{ item.ref }}"><img src="{{ getScreenshotUrl(item.primary_screenshot) }}" alt=""></a>
-        <p><a href="/{{ itemType }}/{{ item.ref }}" routerLink="/{{ itemType }}/{{ item.ref }}">{{ item.title }}</a> by <a href="/user/{{ item.user.ref }}" routerLink="/user/{{ item.user.ref }}">{{ item.user.name }}</a></p>
-        <p>{{ item.description }}</p>
+        <p><a href="/{{ itemType }}/{{ item.ref }}" routerLink="/{{ itemType }}/{{ item.ref }}">{{ item.title }}</a> by <a href="/user/{{ item.user.ref }}" routerLink="/user/{{ item.user.ref }}">{{ item.user.name }}</a><br>{{ item.description }}</p>
     </li>
 </ul>
 
