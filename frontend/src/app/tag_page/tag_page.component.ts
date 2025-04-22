@@ -6,6 +6,7 @@ import { ApiService } from '../_services/api.service';
 import { TokenStorageService } from '../_services/token-storage.service';
 import { UserService } from '../_services/user.service';
 import { ItemInterface } from '../_types/item.interface';
+import { PaginationInterface } from '../_types/pagination.interface';
 import { TagInterface } from '../_types/tag.interface';
 
 @Component({
@@ -31,9 +32,20 @@ export class TagPageComponent implements OnInit {
       this.getTag(itemId).subscribe(
         data => {
           this.tag = data;
-          this.itemTypes.forEach((element: string) => {
-            this.items[element] = data[element+'s' as keyof TagInterface] as ItemInterface[];
-          });
+          this.getTagItems().subscribe(
+            data => {
+              data.data.forEach((element: ItemInterface) => {
+                if (this.items[element.item_type!] === undefined) {
+                  this.items[element.item_type!] = [element];
+                } else {
+                  this.items[element.item_type!].push(element);
+                }
+              });
+            },
+            () => {
+              console.log('Error');
+            }
+          );
         },
         () => {
           console.log('Error');
@@ -44,5 +56,9 @@ export class TagPageComponent implements OnInit {
 
   getTag(itemId: string): Observable<TagInterface> {
     return this.api.get(`/tag/${itemId}`);
+  }
+
+  getTagItems(): Observable<PaginationInterface<ItemInterface>> {
+    return this.api.get<PaginationInterface<ItemInterface>>(`/search/items?tags=${this.tag.slug}`);
   }
 }
