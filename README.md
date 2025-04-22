@@ -18,7 +18,7 @@ The backend is developed on the [Slim][2] framework and the frontend is develope
 
 3. Point your webserver at the `src/public` directory. (From here, we'll use `https://example.com` as the root of Shipyard.)
 4. Navigate to `https://example.com/install/` to run the initial migration.
-5. **Delete the install directory.** Shipyard is in an early stage of development and doesn't have a proper installer yet. **Running the installer for a second time will reset the database.**
+5. **Delete the install directory.** Shipyard is in an early stage of development and doesn't have a proper installer yet. **Leaving the installer in place could allow an attacker to reset the database.**
 6. Login to the administrator account and set the email address and password. The default login credentials are:
 
    Username: `admin@tls-wiki.com`
@@ -31,7 +31,9 @@ The backend is developed on the [Slim][2] framework and the frontend is develope
 1. Backup your database, as well as the `storage` directory and `debug.log` file.
 2. Download the latest [release archive][7].
 3. Delete the existing Shipyard file structure. Extract the release archive to the same location.
-4. Replace the `storage` directory and `debug.log` file if necessary.
+4. Navigate to `https://example.com/install/` to run the update migration(s).
+5. **Delete the install directory.** Shipyard is in an early stage of development and doesn't have a proper installer yet. **Leaving the installer in place could allow an attacker to reset the database.**
+6. Replace the `storage` directory and `debug.log` file if necessary.
 
 ## Support
 
