@@ -4,9 +4,11 @@ require_once __DIR__ . '/../../bootstrap.php';
 
 use Illuminate\Database\Capsule\Manager as Capsule;
 
-$schema = Capsule::table('meta')->select(
-    ['name', 'default', 'value']
-)->where('name', '=', 'schema_version')->first();
+try {
+    $schema = Capsule::table('meta')->select(['name', 'default', 'value'])->where('name', '=', 'schema_version')->first();
+} catch (PDOException $e) {
+    $schema = null;
+}
 
 if ($schema == null) {
     echo "Installing.<br><br>\n\n";
