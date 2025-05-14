@@ -21,9 +21,13 @@ trait HasFile {
     /**
      * Delete the item and it's associated file.
      *
-     * @return bool
+     * @return bool|null
      */
     public function delete() {
+        if ($this->file == null) {
+            return parent::delete();
+        }
+
         return $this->file->delete() && parent::delete();
     }
 }

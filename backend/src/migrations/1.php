@@ -293,6 +293,9 @@ $admin = Role::query()->create(['slug' => 'administrator', 'label' => 'Administr
 $admin->givePermissionTo($edit_ships);
 $admin->givePermissionTo($edit_saves);
 $admin->givePermissionTo($edit_modifications);
+$admin->givePermissionTo($delete_ships);
+$admin->givePermissionTo($delete_saves);
+$admin->givePermissionTo($delete_modifications);
 $admin->givePermissionTo($delete_users);
 $admin->givePermissionTo($edit_users);
 $admin->givePermissionTo($view_roles);

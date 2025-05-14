@@ -280,6 +280,20 @@ export class ItemEditComponent implements OnInit {
     return this.api.get(`/${this.itemType}/${this.itemId}`);
   }
 
+  public deleteItem(): void {
+    const verify = confirm('Are you sure you want to delete this item? This action is irreversible.');
+    if (verify) {
+      this.api.delete(`/${this.itemType}/${this.itemId}`).subscribe(
+        () => {
+          this.router.navigate(['/home']);
+        },
+        (error) => {
+          console.error('Error deleting item:', error);
+        }
+      );
+    }
+  }
+
   getScreenshots(): Observable<ScreenshotInterface[]> {
     return this.api.get(`/${this.itemType}/${this.itemId}/screenshots`);
   }
