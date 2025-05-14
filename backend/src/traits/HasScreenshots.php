@@ -15,7 +15,7 @@ trait HasScreenshots {
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function screenshots() {
-        return $this->belongsToMany(Screenshot::class, 'item_screenshots', 'item_id', 'screenshot_id')->wherePivot('type', self::$tag_label)->withPivot('primary');
+        return $this->belongsToMany(Screenshot::class, 'item_screenshots', 'item_id', 'screenshot_id')->wherePivot('type', self::tag_label())->withPivot('primary');
     }
 
     /**
@@ -24,7 +24,7 @@ trait HasScreenshots {
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function primary_screenshot() {
-        return $this->belongsToMany(Screenshot::class, 'item_screenshots', 'item_id', 'screenshot_id')->wherePivot('type', '=', self::$tag_label)->wherePivot('primary', '=', true);
+        return $this->belongsToMany(Screenshot::class, 'item_screenshots', 'item_id', 'screenshot_id')->wherePivot('type', '=', self::tag_label())->wherePivot('primary', '=', true);
     }
 
     /**
@@ -55,7 +55,7 @@ trait HasScreenshots {
             $this->screenshots()->updateExistingPivot($screenshot->id, ['primary' => $primary]);
             $return = true;
         } else {
-            $return = $this->screenshots()->save($screenshot, ['type' => self::$tag_label, 'primary' => $primary]);
+            $return = $this->screenshots()->save($screenshot, ['type' => self::tag_label(), 'primary' => $primary]);
         }
         unset($this->screenshots);
         unset($this->primary_screenshot);

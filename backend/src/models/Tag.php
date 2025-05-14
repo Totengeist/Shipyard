@@ -64,6 +64,6 @@ class Tag extends Model {
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function retrieve_type($class) {
-        return $this->belongsToMany($class, 'item_tags', 'tag_id', 'item_id')->wherePivot('type', '=', $class::$tag_label);
+        return $this->belongsToMany($class, 'item_tags', 'tag_id', 'item_id')->wherePivot('type', '=', $class::tag_label());
     }
 }

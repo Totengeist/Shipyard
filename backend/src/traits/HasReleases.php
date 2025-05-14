@@ -14,7 +14,7 @@ trait HasReleases {
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function releases() {
-        return $this->belongsToMany(Release::class, 'item_releases', 'item_id', 'release_id')->wherePivot('type', self::$tag_label);
+        return $this->belongsToMany(Release::class, 'item_releases', 'item_id', 'release_id')->wherePivot('type', self::tag_label());
     }
 
     /**
@@ -32,7 +32,7 @@ trait HasReleases {
             $release = $query->firstOrFail();
         }
 
-        $return = $this->releases()->save($release, ['type' => self::$tag_label]);
+        $return = $this->releases()->save($release, ['type' => self::tag_label()]);
         unset($this->releases);
 
         return $return;

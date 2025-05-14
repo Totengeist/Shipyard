@@ -77,7 +77,7 @@ class Screenshot extends Model {
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function retrieve_type($class) {
-        return $this->belongsToMany($class, 'item_screenshots', 'screenshot_id', 'item_id')->wherePivot('type', '=', $class::$tag_label);
+        return $this->belongsToMany($class, 'item_screenshots', 'screenshot_id', 'item_id')->wherePivot('type', '=', $class::tag_label());
     }
 
     /**

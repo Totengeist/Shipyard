@@ -2,9 +2,6 @@
 
 namespace Shipyard;
 
-use Shipyard\Models\Modification;
-use Shipyard\Models\Save;
-use Shipyard\Models\Ship;
 use Shipyard\Models\Tag;
 
 class ItemHelper {
@@ -43,8 +40,8 @@ class ItemHelper {
     /**
      * Add and remove tags from a model.
      *
-     * @param array<string, string>  $data  the submitted data
-     * @param Modification|Ship|Save $model the model to add and remove tags from
+     * @param array<string, string> $data  the submitted data
+     * @param Models\Item           $model the model to add and remove tags from
      *
      * @return void
      */
@@ -72,7 +69,7 @@ class ItemHelper {
                 foreach ($add_tags as $add_tag) {
                     $tag_ids[] = $add_tag->id;
                 }
-                $model->tags()->attach($tag_ids, ['type' => get_class($model)::$tag_label]);
+                $model->tags()->attach($tag_ids, ['type' => get_class($model)::tag_label()]);
             }
         }
     }

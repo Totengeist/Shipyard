@@ -86,7 +86,7 @@ class File extends Model {
     /**
      * A file may have an item.
      *
-     * @return Ship|Save|Modification|Screenshot|Thumbnail|null
+     * @return Item|Screenshot|Thumbnail|null
      */
     public function item() {
         if ($this->ship !== null) {

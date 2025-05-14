@@ -14,7 +14,7 @@ trait HasTags {
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function tags() {
-        return $this->belongsToMany(Tag::class, 'item_tags', 'item_id', 'tag_id')->wherePivot('type', self::$tag_label);
+        return $this->belongsToMany(Tag::class, 'item_tags', 'item_id', 'tag_id')->wherePivot('type', self::tag_label());
     }
 
     /**
@@ -32,7 +32,7 @@ trait HasTags {
             $tag = $query->firstOrFail();
         }
 
-        $return = $this->tags()->save($tag, ['type' => self::$tag_label]);
+        $return = $this->tags()->save($tag, ['type' => self::tag_label()]);
         unset($this->tags);
 
         return $return;

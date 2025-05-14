@@ -8,10 +8,9 @@ use Shipyard\Auth;
 use Shipyard\FileManager;
 use Shipyard\ItemHelper;
 use Shipyard\Log;
+use Shipyard\Models\Item;
 use Shipyard\Models\Modification;
-use Shipyard\Models\Save;
 use Shipyard\Models\Screenshot;
-use Shipyard\Models\Ship;
 use Shipyard\Models\User;
 use Shipyard\Traits\ChecksPermissions;
 use Shipyard\Traits\ProcessesSlugs;
@@ -137,7 +136,7 @@ class ItemController extends Controller {
     public function show(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = $this->modelType::query()->where([['ref', $args['ref']]])->with(['user', 'primary_screenshot', 'tags', 'parent', 'parent.user', 'children', 'children.user']);
-        /** @var Modification|Ship|Save $model */
+        /** @var Item $model */
         $model = $query->first();
         if ($model == null) {
             return $this->not_found_response($this->modelName);
@@ -163,7 +162,7 @@ class ItemController extends Controller {
     public function show_stub(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = $this->modelType::query()->where([['ref', $args['ref']]])->with(['user', 'primary_screenshot', 'tags', 'parent', 'parent.user', 'children', 'children.user']);
-        /** @var Modification|Ship|Save $model */
+        /** @var Item $model */
         $model = $query->first();
         if ($model == null) {
             return $this->not_found_response($this->modelName);
@@ -208,7 +207,7 @@ class ItemController extends Controller {
     public function download(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = $this->modelType::query()->where([['ref', $args['ref']]]);
-        /** @var Modification|Ship|Save $model */
+        /** @var Item $model */
         $model = $query->first();
 
         if ($model == null || $model->file == null || file_exists($model->file->getFilePath()) === false) {
@@ -252,7 +251,7 @@ class ItemController extends Controller {
 
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = $this->modelType::query()->where([['ref', $args['ref']]]);
-        /** @var Modification|Ship|Save $model */
+        /** @var Item $model */
         $model = $query->first();
         if ($model == null) {
             return $this->not_found_response($this->modelName);
@@ -337,7 +336,7 @@ class ItemController extends Controller {
     public function upgrade(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = $this->modelType::query()->where([['ref', $args['ref']]]);
-        /** @var Modification|Ship|Save $parent_mod */
+        /** @var Item $parent_mod */
         $parent_mod = $query->first();
         if ($parent_mod == null) {
             return $this->not_found_response($this->modelName);
@@ -363,7 +362,7 @@ class ItemController extends Controller {
     public function index_screenshots(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = $this->modelType::query()->where([['ref', $args['ref']]]);
-        /** @var Modification|Ship|Save $model */
+        /** @var Item $model */
         $model = $query->first();
         if ($model == null) {
             return $this->not_found_response($this->modelName);
@@ -386,7 +385,7 @@ class ItemController extends Controller {
     public function store_screenshots(Request $request, Response $response, $args) {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = $this->modelType::query()->where([['ref', $args['ref']]]);
-        /** @var Modification|Ship|Save $model */
+        /** @var Item $model */
         $model = $query->first();
         if ($model == null) {
             return $this->not_found_response($this->modelName);
@@ -413,7 +412,7 @@ class ItemController extends Controller {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = $this->modelType::query()->where([['ref', $args['ref']]]);
 
-        /** @var Modification|Ship|Save $model */
+        /** @var Item $model */
         $model = $query->first();
         if ($model == null) {
             return $this->not_found_response($this->modelName);
@@ -426,8 +425,8 @@ class ItemController extends Controller {
         $query = $this->modelType::query()->where([['parent_id', $model->id]]);
         $children = $query->get();
         $children->each(function ($child, $key) use ($model) {
-            /* @var Modification|Ship|Save $child */
-            /* @var Modification|Ship|Save $model */
+            /* @var Item $child */
+            /* @var Item $model */
             $child->update(['parent_id' => $model->parent_id]);
         });
         $model->delete();
