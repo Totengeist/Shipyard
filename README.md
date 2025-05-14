@@ -3,7 +3,7 @@
 
 Shipyard is a sharing system for player created ships, saves and mods for the Introversion game [The Last Starship][1].
 
-The [live website] is managed by the community and is run by the [community wiki][4] staff. We are not affiliated with Introversion Software.
+The [live website][6] is managed by the community and is run by the [community wiki][4] staff. We are not affiliated with Introversion Software.
 
 The backend is developed on the [Slim][2] framework and the frontend is developed on the [Angular][3] framework.
 
