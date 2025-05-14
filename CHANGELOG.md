@@ -15,6 +15,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Base Atom feed for new items
 - ClamAV-based virus scanning on Linux (disabled by default)
 - Basic search mechanism for filtering items
+- Delete button on item edit pages
+
+### Changed
+
+- Deduplicate item classes
 
 ### Fixed
 
